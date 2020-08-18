@@ -2271,4 +2271,87 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(output[1] === "\"Hello, World\"");
         assert.ok(output[2] === "Adam");
     });
+
+    it("Test.2500 sortAnyArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: string[] = ["4", "1", "3", "9", "2"];
+        const sortedArray: string[] = Utility.sortAnyArray(inputArray);
+        Utility.debuggingLog(
+            `sortedArray[0]=${sortedArray[0]}`);
+        assert.ok(sortedArray.length === 5);
+        assert.ok(sortedArray[0] === "1");
+        assert.ok(sortedArray[sortedArray.length - 1] === "9");
+    });
+    it("Test.2501 sortNumberArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: number[] = [4, 1, 3, 9, 2];
+        const sortedArray: number[] = Utility.sortNumberArray(inputArray);
+        Utility.debuggingLog(
+            `sortedArray[0]=${sortedArray[0]}`);
+        assert.ok(sortedArray.length === 5);
+        assert.ok(sortedArray[0] === 1);
+        assert.ok(sortedArray[sortedArray.length - 1] === 9);
+    });
+    it("Test.2502 sortStringArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: string[] = ["4", "1", "3", "9", "2"];
+        const sortedArray: string[] = Utility.sortStringArray(inputArray);
+        Utility.debuggingLog(
+            `sortedArray[0]=${sortedArray[0]}`);
+        assert.ok(sortedArray.length === 5);
+        assert.ok(sortedArray[0] === "1");
+        assert.ok(sortedArray[sortedArray.length - 1] === "9");
+    });
+    it("Test.2503 sortValueCountPairArray()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
+        const sortedArray: Array<[number, number]> = Utility.sortValueCountPairArray(inputArray);
+        Utility.debuggingLog(
+            `sortedArray[0]=${sortedArray[0]}`);
+        assert.ok(sortedArray.length === 5);
+        assert.ok(sortedArray[0][0] === 1);
+        assert.ok(sortedArray[sortedArray.length - 1][0] === 9);
+    });
+
+    it("Test.2600 findMedian()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: number[] = [4, 1, 3, 9, 2];
+        const median = Utility.findMedian(inputArray);
+        Utility.debuggingLog(
+            `median=${median}`);
+        assert.ok(median === 3, `median=${median}`);
+    });
+    it("Test.2601 findValueCountPairMedian()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
+        const median: number = Utility.findValueCountPairMedian(inputArray) as number;
+        Utility.debuggingLog(
+            `median=${median}`);
+        assert.ok(median === 2.5, `median=${median}`);
+    });
+
+    it("Test.2700 findQuantiles()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: number[] = [4, 1, 3, 9, 2];
+        const quantiles: number[] = Utility.findQuantiles(inputArray, 4) as number[];
+        Utility.debuggingLog(
+            `quantiles=${quantiles}`);
+        assert.ok(quantiles[1] === 2, `quantiles[1]=${quantiles[1]}`);
+    });
+    it("Test.2701 findValueCountPairQuantiles()", function() {
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
+        const quantiles: number[] = Utility.findValueCountPairQuantiles(inputArray, 4) as number[];
+        Utility.debuggingLog(
+            `quantiles=${quantiles}`);
+        assert.ok(quantiles[1] === 2, `quantiles[1]=${quantiles[1]}`);
+    });
 });

@@ -48,7 +48,7 @@ export class UtilityLabelResolver {
           continue;
         }
         const labels: string[] = utteranceLabels[1];
-        const labelsIndexes: number[] = labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
+        const labelsIndexes: number[] = labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
         const labelsConcatenated: string = labels.join(',');
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), before calling score(), utterance=${utterance}`);
@@ -76,7 +76,7 @@ export class UtilityLabelResolver {
         let labelsPredictedIndexes: number[] = argMax.indexesMax;
         let labelsPredicted: string[] = labelsPredictedIndexes.map((x: number) => scoreResultArray[x].label.name);
         if (labelsPredictedScore < unknownLabelPredictionThreshold) {
-          labelsPredictedIndexes = [Utility.safeAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
+          labelsPredictedIndexes = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
           labelsPredicted = [Utility.UnknownLabel];
         }
         const labelsPredictedConcatenated: string = labelsPredicted.join(',');
@@ -90,7 +90,7 @@ export class UtilityLabelResolver {
           ['30%', '10%', '60%']);
         const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
-          labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x)),
+          labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x)),
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);

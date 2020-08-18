@@ -407,14 +407,14 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": IDictionaryStringIdGenericValue<number> } {
         let stringArray: string[] = Utility.split(content, delimiter);
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringIdNumberValueDictionaryFromUniqueStringArray(
         inputStringArray: string[]): IDictionaryStringIdGenericValue<number> {
-        inputStringArray = DictionaryMapUtility.sortStringArray(inputStringArray);
+        inputStringArray = Utility.sortStringArray(inputStringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> = { };
         for (let index: number = 0; index < inputStringArray.length; index++) {
             stringMap[inputStringArray[index]] = index;
@@ -445,7 +445,7 @@ export class DictionaryMapUtility {
             "stringMap": IDictionaryStringIdGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
         let stringArray: string[] = Array.from(stringSet.values());
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -461,7 +461,7 @@ export class DictionaryMapUtility {
             }
         }
         let stringArray: string[] = Array.from(stringSet.values());
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -566,14 +566,14 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": TMapStringKeyGenericValue<number> } {
         let stringArray: string[] = Utility.split(content, delimiter);
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
     }
     public static buildStringKeyNumberValueMapFromUniqueStringArray(
         inputStringArray: string[]): TMapStringKeyGenericValue<number> {
-        inputStringArray = DictionaryMapUtility.sortStringArray(inputStringArray);
+        inputStringArray = Utility.sortStringArray(inputStringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.newTMapStringKeyGenericValue();
         for (let index: number = 0; index < inputStringArray.length; index++) {
@@ -605,7 +605,7 @@ export class DictionaryMapUtility {
             "stringMap": TMapStringKeyGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
         let stringArray: string[] = Array.from(stringSet.values());
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
@@ -621,47 +621,10 @@ export class DictionaryMapUtility {
             }
         }
         let stringArray: string[] = Array.from(stringSet.values());
-        stringArray = DictionaryMapUtility.sortStringArray(stringArray);
+        stringArray = Utility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
         return { stringArray, stringMap };
-    }
-
-    public static sortAnyArray(inputStringArray: any[]): any[] {
-        return inputStringArray.sort(
-          (n1: any, n2: any) => {
-            if (n1 > n2) {
-              return 1;
-            }
-            if (n1 < n2) {
-              return -1;
-            }
-            return 0;
-          });
-    }
-    public static sortNumberArray(inputStringArray: number[]): number[] {
-        return inputStringArray.sort(
-          (n1: number, n2: number) => {
-            if (n1 > n2) {
-              return 1;
-            }
-            if (n1 < n2) {
-              return -1;
-            }
-            return 0;
-          });
-    }
-    public static sortStringArray(inputStringArray: string[]): string[] {
-        return inputStringArray.sort(
-          (n1: string, n2: string) => {
-            if (n1 > n2) {
-              return 1;
-            }
-            if (n1 < n2) {
-              return -1;
-            }
-            return 0;
-          });
     }
 
     public static validateStringArrayAndStringKeyNumberValueMap(

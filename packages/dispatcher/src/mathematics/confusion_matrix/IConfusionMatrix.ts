@@ -9,10 +9,32 @@ export interface IConfusionMatrix {
 
     reset(): void;
 
-    generateConfusionMatrixMetricStructure(): {
+    generateConfusionMatrixMetricStructure(quantileConfiguration: number): {
         "confusionMatrix": IConfusionMatrix,
         "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
         "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+        "microQuantileMetrics": {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number },
+        "macroQuantileMetrics": {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number },
         "microAverageMetrics": {
             "accuracy": number,
             "truePositives": number,
@@ -100,6 +122,30 @@ export interface IConfusionMatrix {
     getBinaryConfusionMatrices(): BinaryConfusionMatrix[];
 
     getTotal(binaryConfusionMatrices: BinaryConfusionMatrix[]): number;
+
+    getMicroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number): {
+        "quantilesPrecisions": number[],
+        "quantilesRecalls": number[],
+        "quantilesF1Scores": number[],
+        "quantilesTruePositives": number[],
+        "quantilesFalsePositives": number[],
+        "quantilesTrueNegatives": number[],
+        "quantilesFalseNegatives": number[],
+        "quantilesAccuracies": number[],
+        "quantilesSupports": number[],
+        "total": number };
+
+    getMacroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number): {
+        "quantilesPrecisions": number[],
+        "quantilesRecalls": number[],
+        "quantilesF1Scores": number[],
+        "quantilesTruePositives": number[],
+        "quantilesFalsePositives": number[],
+        "quantilesTrueNegatives": number[],
+        "quantilesFalseNegatives": number[],
+        "quantilesAccuracies": number[],
+        "quantilesSupports": number[],
+        "total": number };
 
     getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
         "averagePrecisionRecallF1Accuracy": number,

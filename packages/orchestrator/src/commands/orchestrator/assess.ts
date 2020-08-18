@@ -15,8 +15,8 @@ export default class OrchestratorAssess extends Command {
     $ bf orchestrator:assess --in=./path/to/ground-truth/file --prediction=./path/to/prediction/file --out=./path/to/output/folder/`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to a ground-truth .JSON file.'}),
-    prediction: flags.string({char: 't', description: 'Path to a prediction .JSON file.'}),
+    in: flags.string({char: 'i', description: 'Path to a ground-truth label file.'}),
+    prediction: flags.string({char: 't', description: 'Path to a prediction label file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),

@@ -104,6 +104,10 @@ export function mainCrossValidatorWithData(
             utteranceFeatureIndexArrays,
             data.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+        `crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
         `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
         `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
@@ -206,6 +210,10 @@ export async function mainCrossValidatorWithLuContent(
             utteranceFeatureIndexArrays,
             luData.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+        `crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
         `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
         `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
@@ -320,6 +328,10 @@ export function mainCrossValidatorWithColumnarContent(
             utteranceFeatureIndexArrays,
             columnarData.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
+        `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+        `crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+        `${crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
         `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
         `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +

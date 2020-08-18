@@ -176,6 +176,28 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
+            "macroQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
             "microAverageMetrics": {
                 "accuracy": number,
                 "truePositives": number,
@@ -257,6 +279,10 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
                 "total": number } } =
             confusionMatrixPrediction.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
+            `confusionMatrixPrediction.getMicroQuantileMetrics()=` +
+            `${confusionMatrixPrediction.getMicroQuantileMetrics()}` +
+            `confusionMatrixPrediction.getMacroQuantileMetrics()=` +
+            `${confusionMatrixPrediction.getMacroQuantileMetrics()}` +
             `confusionMatrixPrediction.getMicroAverageMetrics()=` +
             `${confusionMatrixPrediction.getMicroAverageMetrics()}` +
             `,confusionMatrixPrediction.getSummationMicroAverageMetrics()=` +

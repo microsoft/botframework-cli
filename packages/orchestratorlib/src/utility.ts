@@ -43,6 +43,42 @@ export class Utility {
 
   public static readonly UnknownLabelSet: Set<string> = new Set<string>(['', 'NONE', 'NULL', Utility.UnknownLabel]);
 
+  public static readonly ColumnNameMicroAverageRaw: string = 'Micro-Average';
+
+  public static readonly ColumnNameMicroAverage: string = Utility.getBolded(Utility.ColumnNameMicroAverageRaw);
+
+  public static readonly ColumnNameMicroFirstQuartile: string = Utility.getBolded('Micro-First-Quartile');
+
+  public static readonly ColumnNameMicroMedian: string = Utility.getBolded('Micro-Median');
+
+  public static readonly ColumnNameMicroThirdQuartile: string = 'Micro-Third-Quartile';
+
+  public static readonly ColumnNameMacroFirstQuartile: string = Utility.getBolded('Macro-First-Quartile');
+
+  public static readonly ColumnNameMacroMedian: string = Utility.getBolded('Macro-Median');
+
+  public static readonly ColumnNameMacroThirdQuartile: string = 'Macro-Third-Quartile';
+
+  public static readonly ColumnNameSummationMicroAverage: string = `Summation ${Utility.ColumnNameMicroAverageRaw}`;
+
+  public static readonly ColumnNameMacroAverageRaw: string = 'Macro-Average';
+
+  public static readonly ColumnNameMacroAverage: string = Utility.getBolded(Utility.ColumnNameMacroAverageRaw);
+
+  public static readonly ColumnNameSummationMacroAverage: string = `Summation ${Utility.ColumnNameMacroAverageRaw}`;
+
+  public static readonly ColumnNamePositiveSupportMacroAverage: string = `Positive-Support ${Utility.ColumnNameMacroAverageRaw}`;
+
+  public static readonly ColumnNamePositiveSupportSummationMacroAverage: string = `Positive-Support ${Utility.ColumnNameSummationMacroAverage}`;
+
+  public static readonly ColumnNameWeightedMacroAverage: string = `Weighted ${Utility.ColumnNameMacroAverageRaw}`;
+
+  public static readonly ColumnNameWeightedSummationMacroAverage: string = `Weighted ${Utility.ColumnNameSummationMacroAverage}`;
+
+  public static readonly ColumnNameMultiLabelExactAggregate: string = Utility.getBolded('Multi-Label Exact Aggregate');
+
+  public static readonly ColumnNameMultiLabelSubsetAggregate: string = Utility.getBolded('Multi-Label Subset Aggregate');
+
   // eslint-disable-next-line max-params
   public static processUtteranceMultiLabelTsv(
     lines: string[],
@@ -606,12 +642,12 @@ export class Utility {
       if (utterance in predictionSetUtteranceLabelsMap) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x.name));
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.map((x: Label) => x.toSimpleString()).join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: Label) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x.name));
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const predictionSetLabelsConcatenated: string = predictionSetLabels.map((x: Label) => x.toSimpleString()).join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
@@ -1008,6 +1044,7 @@ export class Utility {
       labelArrayAndMap);
   }
 
+  // eslint-disable-next-line complexity
   public static generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(
     confusionMatrix: IConfusionMatrix,
     multiLabelConfusionMatrixExact: MultiLabelConfusionMatrixExact,
@@ -1027,7 +1064,7 @@ export class Utility {
     const binaryConfusionMatrices: BinaryConfusionMatrix[] = confusionMatrix.getBinaryConfusionMatrices();
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), binaryConfusionMatrices.length=${binaryConfusionMatrices.length}`);
     for (let i: number = 0; i < binaryConfusionMatrices.length; i++) {
-      const label: string = Utility.safeAccessStringArray(labelArrayAndMap.stringArray, i);
+      const label: string = Utility.carefullyAccessStringArray(labelArrayAndMap.stringArray, i);
       const precision: number = Utility.round(binaryConfusionMatrices[i].getPrecision());
       const recall: number = Utility.round(binaryConfusionMatrices[i].getRecall());
       const f1: number = Utility.round(binaryConfusionMatrices[i].getF1Measure());
@@ -1064,6 +1101,7 @@ export class Utility {
       ['Label', 'Precision', 'Recall', 'F1', 'Accuracy', '#TruePositives', '#FalsePositives', '#TrueNegatives', '#FalseNegatives', 'Support', 'Total']);
     // -----------------------------------------------------------------------
     const predictingConfusionMatrixAverageOutputLines: string[][] = [];
+    // -----------------------------------------------------------------------
     const microAverageMetrics: {
       'averagePrecisionRecallF1Accuracy': number;
       'truePositives': number;
@@ -1072,19 +1110,184 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getMicroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineMicroAverage: any[] = [
-      'Micro-Average',
-      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-label, there is no negative, so calculation of precision is equal to that of recall.
-      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-label, there is no negative, so calculation of precision is equal to that of recall.
-      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-label, there is no negative, so calculation of precision is equal to that of recall.
-      Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-label, there is no negative, so calculation of precision is equal to that of recall.
+      Utility.ColumnNameMicroAverage,
+      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
+      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
+      'N/A', // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
+      Utility.getBolded(Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy)), // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
       microAverageMetrics.truePositives,
-      'N/A', // ---- NOTE ---- in multi-label, there is no negative, so calculation of precision is equal to that of recall.
+      'N/A', // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
       'N/A',
       microAverageMetrics.falseNegatives,
       'N/A',
       microAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroAverage);
+    // -----------------------------------------------------------------------
+    const microQuantileMetrics: {
+      'quantilesPrecisions': number[];
+      'quantilesRecalls': number[];
+      'quantilesF1Scores': number[];
+      'quantilesTruePositives': number[];
+      'quantilesFalsePositives': number[];
+      'quantilesTrueNegatives': number[];
+      'quantilesFalseNegatives': number[];
+      'quantilesAccuracies': number[];
+      'quantilesSupports': number[];
+      'total': number;
+    } = confusionMatrix.getMicroQuantileMetrics([], 4);
+    const predictingConfusionMatrixOutputLineMicroQuantile1: any[] = [
+      Utility.ColumnNameMicroFirstQuartile,
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 1) ?
+        Utility.round(microQuantileMetrics.quantilesPrecisions[1]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesRecalls, 1) ?
+        Utility.round(microQuantileMetrics.quantilesRecalls[1]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesF1Scores, 1) ?
+        Utility.getBolded(Utility.round(microQuantileMetrics.quantilesF1Scores[1])) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesAccuracies, 1) ?
+        Utility.getBolded(Utility.round(microQuantileMetrics.quantilesAccuracies[1])) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTruePositives, 1) ?
+        microQuantileMetrics.quantilesTruePositives[1] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalsePositives, 1) ?
+        microQuantileMetrics.quantilesFalsePositives[1] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTrueNegatives, 1) ?
+        microQuantileMetrics.quantilesTrueNegatives[1] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalseNegatives, 1) ?
+        microQuantileMetrics.quantilesFalseNegatives[1] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesSupports, 1) ?
+        microQuantileMetrics.quantilesSupports[1] : 'N/A',
+      microQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile1);
+    const predictingConfusionMatrixOutputLineMicroQuantile2: any[] = [
+      Utility.ColumnNameMicroMedian,
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 2) ?
+        Utility.round(microQuantileMetrics.quantilesPrecisions[2]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesRecalls, 2) ?
+        Utility.round(microQuantileMetrics.quantilesRecalls[2]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesF1Scores, 2) ?
+        Utility.getBolded(Utility.round(microQuantileMetrics.quantilesF1Scores[2])) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesAccuracies, 2) ?
+        Utility.getBolded(Utility.round(microQuantileMetrics.quantilesAccuracies[2])) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTruePositives, 2) ?
+        microQuantileMetrics.quantilesTruePositives[2] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalsePositives, 2) ?
+        microQuantileMetrics.quantilesFalsePositives[2] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTrueNegatives, 2) ?
+        microQuantileMetrics.quantilesTrueNegatives[2] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalseNegatives, 2) ?
+        microQuantileMetrics.quantilesFalseNegatives[2] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesSupports, 2) ?
+        microQuantileMetrics.quantilesSupports[2] : 'N/A',
+      microQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile2);
+    const predictingConfusionMatrixOutputLineMicroQuantile3: any[] = [
+      Utility.ColumnNameMicroThirdQuartile,
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 3) ?
+        Utility.round(microQuantileMetrics.quantilesPrecisions[3]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesRecalls, 3) ?
+        Utility.round(microQuantileMetrics.quantilesRecalls[3]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesF1Scores, 3) ?
+        Utility.round(microQuantileMetrics.quantilesF1Scores[3]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesAccuracies, 3) ?
+        Utility.round(microQuantileMetrics.quantilesAccuracies[3]) : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTruePositives, 3) ?
+        microQuantileMetrics.quantilesTruePositives[3] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalsePositives, 3) ?
+        microQuantileMetrics.quantilesFalsePositives[3] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesTrueNegatives, 3) ?
+        microQuantileMetrics.quantilesTrueNegatives[3] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesFalseNegatives, 3) ?
+        microQuantileMetrics.quantilesFalseNegatives[3] : 'N/A',
+      Utility.canAccessNumberArray(microQuantileMetrics.quantilesSupports, 3) ?
+        microQuantileMetrics.quantilesSupports[3] : 'N/A',
+      microQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile3);
+    // -----------------------------------------------------------------------
+    const macroQuantileMetrics: {
+      'quantilesPrecisions': number[];
+      'quantilesRecalls': number[];
+      'quantilesF1Scores': number[];
+      'quantilesTruePositives': number[];
+      'quantilesFalsePositives': number[];
+      'quantilesTrueNegatives': number[];
+      'quantilesFalseNegatives': number[];
+      'quantilesAccuracies': number[];
+      'quantilesSupports': number[];
+      'total': number;
+    } = confusionMatrix.getMacroQuantileMetrics([], 4);
+    const predictingConfusionMatrixOutputLineMacroQuantile1: any[] = [
+      Utility.ColumnNameMacroFirstQuartile,
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 1) ?
+        Utility.round(macroQuantileMetrics.quantilesPrecisions[1]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesRecalls, 1) ?
+        Utility.round(macroQuantileMetrics.quantilesRecalls[1]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesF1Scores, 1) ?
+        Utility.getBolded(Utility.round(macroQuantileMetrics.quantilesF1Scores[1])) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesAccuracies, 1) ?
+        Utility.getBolded(Utility.round(macroQuantileMetrics.quantilesAccuracies[1])) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTruePositives, 1) ?
+        macroQuantileMetrics.quantilesTruePositives[1] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalsePositives, 1) ?
+        macroQuantileMetrics.quantilesFalsePositives[1] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTrueNegatives, 1) ?
+        macroQuantileMetrics.quantilesTrueNegatives[1] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalseNegatives, 1) ?
+        macroQuantileMetrics.quantilesFalseNegatives[1] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesSupports, 1) ?
+        macroQuantileMetrics.quantilesSupports[1] : 'N/A',
+      macroQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile1);
+    const predictingConfusionMatrixOutputLineMacroQuantile2: any[] = [
+      Utility.ColumnNameMacroMedian,
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 2) ?
+        Utility.round(macroQuantileMetrics.quantilesPrecisions[2]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesRecalls, 2) ?
+        Utility.round(macroQuantileMetrics.quantilesRecalls[2]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesF1Scores, 2) ?
+        Utility.getBolded(Utility.round(macroQuantileMetrics.quantilesF1Scores[2])) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesAccuracies, 2) ?
+        Utility.getBolded(Utility.round(macroQuantileMetrics.quantilesAccuracies[2])) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTruePositives, 2) ?
+        macroQuantileMetrics.quantilesTruePositives[2] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalsePositives, 2) ?
+        macroQuantileMetrics.quantilesFalsePositives[2] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTrueNegatives, 2) ?
+        macroQuantileMetrics.quantilesTrueNegatives[2] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalseNegatives, 2) ?
+        macroQuantileMetrics.quantilesFalseNegatives[2] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesSupports, 2) ?
+        macroQuantileMetrics.quantilesSupports[2] : 'N/A',
+      macroQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile2);
+    const predictingConfusionMatrixOutputLineMacroQuantile3: any[] = [
+      Utility.ColumnNameMacroThirdQuartile,
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 3) ?
+        Utility.round(macroQuantileMetrics.quantilesPrecisions[3]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesRecalls, 3) ?
+        Utility.round(macroQuantileMetrics.quantilesRecalls[3]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesF1Scores, 3) ?
+        Utility.round(macroQuantileMetrics.quantilesF1Scores[3]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesAccuracies, 3) ?
+        Utility.round(macroQuantileMetrics.quantilesAccuracies[3]) : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTruePositives, 3) ?
+        macroQuantileMetrics.quantilesTruePositives[3] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalsePositives, 3) ?
+        macroQuantileMetrics.quantilesFalsePositives[3] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesTrueNegatives, 3) ?
+        macroQuantileMetrics.quantilesTrueNegatives[3] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesFalseNegatives, 3) ?
+        macroQuantileMetrics.quantilesFalseNegatives[3] : 'N/A',
+      Utility.canAccessNumberArray(macroQuantileMetrics.quantilesSupports, 3) ?
+        macroQuantileMetrics.quantilesSupports[3] : 'N/A',
+      macroQuantileMetrics.total,
+    ];
+    predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile3);
+    // -----------------------------------------------------------------------
     const summationMicroAverageMetrics: {
       'summationPrecision': number;
       'summationRecall': number;
@@ -1098,7 +1301,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getSummationMicroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineSummationMicroAverage: any[] = [
-      'Summation Micro-Average',
+      Utility.ColumnNameSummationMicroAverage,
       Utility.round(summationMicroAverageMetrics.summationPrecision),
       Utility.round(summationMicroAverageMetrics.summationRecall),
       Utility.round(summationMicroAverageMetrics.summationF1Score),
@@ -1111,6 +1314,7 @@ export class Utility {
       'N/A', // ---- summationMicroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationMicroAverage);
+    // -----------------------------------------------------------------------
     const macroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1124,11 +1328,11 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineMacroAverage: any[] = [
-      'Macro-Average',
+      Utility.ColumnNameMacroAverage,
       Utility.round(macroAverageMetrics.averagePrecision),
       Utility.round(macroAverageMetrics.averageRecall),
-      Utility.round(macroAverageMetrics.averageF1Score),
-      Utility.round(macroAverageMetrics.averageAccuracy),
+      Utility.getBolded(Utility.round(macroAverageMetrics.averageF1Score)),
+      Utility.getBolded(Utility.round(macroAverageMetrics.averageAccuracy)),
       'N/A', // ---- Utility.round(macroAverageMetrics.averageTruePositives),
       'N/A', // ---- Utility.round(macroAverageMetrics.averageFalsePositives),
       'N/A', // ---- Utility.round(macroAverageMetrics.averageTrueNegatives),
@@ -1137,6 +1341,7 @@ export class Utility {
       'N/A', // ---- macroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroAverage);
+    // -----------------------------------------------------------------------
     const summationMacroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1150,7 +1355,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getSummationMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineSummationMacroAverage: any[] = [
-      'Summation Macro-Average',
+      Utility.ColumnNameSummationMacroAverage,
       Utility.round(summationMacroAverageMetrics.averagePrecision),
       Utility.round(summationMacroAverageMetrics.averageRecall),
       Utility.round(summationMacroAverageMetrics.averageF1Score),
@@ -1163,6 +1368,7 @@ export class Utility {
       'N/A', // ---- summationMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationMacroAverage);
+    // -----------------------------------------------------------------------
     const positiveSupportLabelMacroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1176,7 +1382,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getPositiveSupportLabelMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLinePositiveSupportLabelMacroAverage: any[] = [
-      'Positive Support Macro-Average',
+      Utility.ColumnNamePositiveSupportMacroAverage,
       Utility.round(positiveSupportLabelMacroAverageMetrics.averagePrecision),
       Utility.round(positiveSupportLabelMacroAverageMetrics.averageRecall),
       Utility.round(positiveSupportLabelMacroAverageMetrics.averageF1Score),
@@ -1189,6 +1395,7 @@ export class Utility {
       'N/A', // ---- positiveSupportLabelMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLinePositiveSupportLabelMacroAverage);
+    // -----------------------------------------------------------------------
     const positiveSupportLabelSummationMacroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1202,7 +1409,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage: any[] = [
-      'Positive Support Summation Macro-Average',
+      Utility.ColumnNamePositiveSupportSummationMacroAverage,
       Utility.round(positiveSupportLabelSummationMacroAverageMetrics.averagePrecision),
       Utility.round(positiveSupportLabelSummationMacroAverageMetrics.averageRecall),
       Utility.round(positiveSupportLabelSummationMacroAverageMetrics.averageF1Score),
@@ -1215,6 +1422,7 @@ export class Utility {
       'N/A', // ---- positiveSupportLabelSummationMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage);
+    // -----------------------------------------------------------------------
     const weightedMacroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1224,7 +1432,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getWeightedMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineWeightedMacroAverage: any[] = [
-      'Weighted Macro-Average',
+      Utility.ColumnNameWeightedMacroAverage,
       Utility.round(weightedMacroAverageMetrics.averagePrecision),
       Utility.round(weightedMacroAverageMetrics.averageRecall),
       Utility.round(weightedMacroAverageMetrics.averageF1Score),
@@ -1237,6 +1445,7 @@ export class Utility {
       'N/A', // ---- weightedMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineWeightedMacroAverage);
+    // -----------------------------------------------------------------------
     const summationWeightedMacroAverageMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1250,7 +1459,7 @@ export class Utility {
       'total': number;
     } = confusionMatrix.getSummationWeightedMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineSummationWeightedMacroAverage: any[] = [
-      'Weighted Summation Macro-Average',
+      Utility.ColumnNameWeightedSummationMacroAverage,
       Utility.round(summationWeightedMacroAverageMetrics.averagePrecision),
       Utility.round(summationWeightedMacroAverageMetrics.averageRecall),
       Utility.round(summationWeightedMacroAverageMetrics.averageF1Score),
@@ -1263,6 +1472,7 @@ export class Utility {
       'N/A', // ---- summationWeightedMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationWeightedMacroAverage);
+    // -----------------------------------------------------------------------
     const exactMacroAggregateMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1277,11 +1487,11 @@ export class Utility {
     } = multiLabelConfusionMatrixExact.getMacroAverageMetrics([]);
     if (exactMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineExactMacroAggregate: any[] = [
-        'Multi-Label Exact Aggregate',
+        Utility.ColumnNameMultiLabelExactAggregate,
         Utility.round(exactMacroAggregateMetrics.averagePrecision),
         Utility.round(exactMacroAggregateMetrics.averageRecall),
-        Utility.round(exactMacroAggregateMetrics.averageF1Score),
-        Utility.round(exactMacroAggregateMetrics.averageAccuracy),
+        Utility.getBolded(Utility.round(exactMacroAggregateMetrics.averageF1Score)),
+        Utility.getBolded(Utility.round(exactMacroAggregateMetrics.averageAccuracy)),
         Utility.round(exactMacroAggregateMetrics.averageTruePositives),
         Utility.round(exactMacroAggregateMetrics.averageFalsePositives),
         Utility.round(exactMacroAggregateMetrics.averageTrueNegatives),
@@ -1291,6 +1501,7 @@ export class Utility {
       ];
       predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineExactMacroAggregate);
     }
+    // -----------------------------------------------------------------------
     const subsetMacroAggregateMetrics: {
       'averagePrecision': number;
       'averageRecall': number;
@@ -1305,11 +1516,11 @@ export class Utility {
     } = multiLabelConfusionMatrixSubset.getMacroAverageMetrics([]);
     if (subsetMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineSubsetMacroAggregate: any[] = [
-        'Multi-Label Subset Aggregate',
+        Utility.ColumnNameMultiLabelSubsetAggregate,
         Utility.round(subsetMacroAggregateMetrics.averagePrecision),
         Utility.round(subsetMacroAggregateMetrics.averageRecall),
-        Utility.round(subsetMacroAggregateMetrics.averageF1Score),
-        Utility.round(subsetMacroAggregateMetrics.averageAccuracy),
+        Utility.getBolded(Utility.round(subsetMacroAggregateMetrics.averageF1Score)),
+        Utility.getBolded(Utility.round(subsetMacroAggregateMetrics.averageAccuracy)),
         Utility.round(subsetMacroAggregateMetrics.averageTruePositives),
         Utility.round(subsetMacroAggregateMetrics.averageFalsePositives),
         Utility.round(subsetMacroAggregateMetrics.averageTrueNegatives),
@@ -1319,6 +1530,7 @@ export class Utility {
       ];
       predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSubsetMacroAggregate);
     }
+    // -----------------------------------------------------------------------
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getMicroAverageMetrics())=${JSON.stringify(confusionMatrix.getMicroAverageMetrics([]))}`);
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getMacroAverageMetrics([]))}`);
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics([]))}`);
@@ -1340,12 +1552,14 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives()}`);
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()=${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()}`);
     Utility.debuggingLog('Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), finished generating {MODEL_EVALUATION} content');
+    // -----------------------------------------------------------------------
     const confusionMatrixAverageMetricsHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Average confusion matrix metrics',
       predictingConfusionMatrixAverageOutputLines,
       ['Type', 'Precision', 'Recall', 'F1', 'Accuracy', '#TruePositives', '#FalsePositives', '#TrueNegatives', '#FalseNegatives', 'Support', 'Total']);
     // -----------------------------------------------------------------------
     return {confusionMatrix, multiLabelConfusionMatrixExact, multiLabelConfusionMatrixSubset, predictingConfusionMatrixOutputLines, confusionMatrixMetricsHtml, confusionMatrixAverageMetricsHtml};
+    // -----------------------------------------------------------------------
   }
 
   public static assessMultiLabelIntentSpuriousPredictions(
@@ -1375,12 +1589,12 @@ export class Utility {
       if (utterance in predictionSetUtteranceLabelsMap) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
       const predictionSetLabelsConcatenated: string = predictionSetLabels.join(',');
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
@@ -1441,6 +1655,8 @@ export class Utility {
         'confusionMatrixAverageMetricsHtml': string;}; };
     'predictionScoreStructureArray': PredictionScoreStructure[];
     'scoreOutputLines': string[][];
+    'groundTruthJsonContent': string;
+    'predictionJsonContent': string;
     } {
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
@@ -1484,6 +1700,8 @@ export class Utility {
           'confusionMatrixAverageMetricsHtml': string;}; };
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
+      'groundTruthJsonContent': string;
+      'predictionJsonContent': string;
     } = {
       evaluationReportLabelUtteranceStatistics: {
         evaluationSummary: '',
@@ -1526,6 +1744,8 @@ export class Utility {
           confusionMatrixAverageMetricsHtml: ''}},
       predictionScoreStructureArray: [],
       scoreOutputLines: [],
+      groundTruthJsonContent: '',
+      predictionJsonContent: '',
     };
     return evaluationOutput;
   }
@@ -1534,24 +1754,40 @@ export class Utility {
   public static generateEvaluationReportFiles(
     stringArray: string[],
     scoreOutputLines: string[][],
+    groundTruthJsonContent: string,
+    predictionJsonContent: string,
     evaluationSummary: string,
     labelsOutputFilename: string,
     evaluationSetScoreOutputFilename: string,
+    evaluationSetGroundTruthJsonContentFilename: string,
+    evaluationSetPredictionJsonContentFilename: string,
     evaluationSetSummaryOutputFilename: string): void {
     // ---- NOTE ---- output the labels by their index order to a file.
-    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile()');
+    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile(), filename=${labelsOutputFilename}`);
     Utility.storeDataArraysToTsvFile(
       labelsOutputFilename,
       stringArray.map((x: string) => [x]));
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.storeDataArraysToTsvFile()');
     // ---- NOTE ---- produce a score TSV file.
-    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile()');
+    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile(), filename=${evaluationSetScoreOutputFilename}`);
     Utility.storeDataArraysToTsvFile(
       evaluationSetScoreOutputFilename,
       scoreOutputLines);
     Utility.debuggingLog('Utility.generateEvaluationReport(), finishing calling Utility.storeDataArraysToTsvFile');
     // ---- NOTE ---- produce the evaluation summary file.
-    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.dumpFile()');
+    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetGroundTruthJsonContentFilename}`);
+    Utility.dumpFile(
+      evaluationSetGroundTruthJsonContentFilename,
+      groundTruthJsonContent);
+    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.dumpFile()');
+    // ---- NOTE ---- produce the evaluation summary file.
+    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetPredictionJsonContentFilename}`);
+    Utility.dumpFile(
+      evaluationSetPredictionJsonContentFilename,
+      predictionJsonContent);
+    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.dumpFile()');
+    // ---- NOTE ---- produce the evaluation summary file.
+    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetSummaryOutputFilename}`);
     Utility.dumpFile(
       evaluationSetSummaryOutputFilename,
       evaluationSummary);
@@ -1615,6 +1851,8 @@ export class Utility {
           'confusionMatrixAverageMetricsHtml': string;}; };
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
+      'groundTruthJsonContent': string;
+      'predictionJsonContent': string;
     } {
     // ---- NOTE ---- load the evaluation summary template.
     const evaluationSummary: string = EvaluationSummaryTemplateHtml.html;
@@ -1697,6 +1935,46 @@ export class Utility {
     const scoreOutputLines: string[][] = Utility.generateScoreOutputLines(
       predictionScoreStructureArray);
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateScoreOutputLines()');
+    // ---- NOTE ---- generate score output file lines.
+    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.generateGroundTruthJsons()');
+    const groundTruthJsons: Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+    }> = Utility.generateGroundTruthJsons(
+      predictionScoreStructureArray);
+    const groundTruthJsonContent: string = Utility.jsonStringify(groundTruthJsons);
+    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateGroundTruthJsons()');
+    // ---- NOTE ---- generate score output file lines.
+    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.generatePredictionJsons()');
+    const predictionJsons: Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+      'intent_scores': Array<{
+        'intent': string;
+        'score': number;
+      }>;
+      'entity_scores': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'score': number;
+      }>;
+    }> = Utility.generatePredictionJsons(
+      predictionScoreStructureArray);
+    const predictionJsonContent: string = Utility.jsonStringify(predictionJsons);
+    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generatePredictionJsons()');
     // ---- NOTE ---- debugging ouput.
     // if (Utility.toPrintDetailedDebuggingLogToConsole) {
     //   Utility.debuggingLog(`Utility.generateEvaluationReport(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray)}`);
@@ -1709,7 +1987,9 @@ export class Utility {
       evaluationReportLabelUtteranceStatistics,
       evaluationReportAnalyses,
       predictionScoreStructureArray,
-      scoreOutputLines};
+      scoreOutputLines,
+      groundTruthJsonContent,
+      predictionJsonContent};
   }
 
   // eslint-disable-next-line max-params
@@ -1917,6 +2197,155 @@ export class Utility {
     return scoreOutputLines;
   }
 
+  public static generateGroundTruthJsons(
+    predictionScoreStructureArray: PredictionScoreStructure[]): Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+    }> {
+    const predictionScoreStructureJsons: Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+    }> = [];
+    for (const predictionScoreStructure of predictionScoreStructureArray) {
+      if (predictionScoreStructure) {
+        const groundTruthJson: {
+          'text': string;
+          'intents': string[];
+          'entities': Array<{
+            'entity': string;
+            'startPos': number;
+            'endPos': number;
+            'text': string;
+          }>;
+        } = {
+          text: predictionScoreStructure.utterance,
+          intents: predictionScoreStructure.labels,
+          entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
+        };
+        predictionScoreStructureJsons.push(groundTruthJson);
+      }
+    }
+    return predictionScoreStructureJsons;
+  }
+
+  public static generatePredictionJsons(
+    predictionScoreStructureArray: PredictionScoreStructure[]): Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+      'intent_scores': Array<{
+        'intent': string;
+        'score': number;
+      }>;
+      'entity_scores': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'score': number;
+      }>;
+    }> {
+    const predictionScoreStructureJsons: Array<{
+      'text': string;
+      'intents': string[];
+      'entities': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }>;
+      'intent_scores': Array<{
+        'intent': string;
+        'score': number;
+      }>;
+      'entity_scores': Array<{
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'score': number;
+      }>;
+    }> = [];
+    for (const predictionScoreStructure of predictionScoreStructureArray) {
+      if (predictionScoreStructure) {
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- const intentResultScoreArray: Array<{
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   'intent': string;
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   'score': number;
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Intent).map((x: Result) => {
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   return {
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     intent: x.label.name,
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     score: x.score,
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   };
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- });
+        const intentResultScoreArray: Array<{
+          'intent': string;
+          'score': number;
+        }> = predictionScoreStructure.scoreResultArray.map((x: Result) => {
+          return {
+            intent: x.label.name,
+            score: x.score,
+          };
+        });
+        const entityResultScoreArray: Array<{
+          'entity': string;
+          'startPos': number;
+          'endPos': number;
+          'score': number;
+        }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Entity).map((x: Result) => {
+          return {
+            entity: x.label.name,
+            startPos: x.label.getStartPos(),
+            endPos: x.label.getStartPos(),
+            score: x.score,
+          };
+        });
+        const predictionJson: {
+          'text': string;
+          'intents': string[];
+          'entities': Array<{
+            'entity': string;
+            'startPos': number;
+            'endPos': number;
+            'text': string;
+          }>;
+          'intent_scores': Array<{
+            'intent': string;
+            'score': number;
+          }>;
+          'entity_scores': Array<{
+            'entity': string;
+            'startPos': number;
+            'endPos': number;
+            'score': number;
+          }>;
+        } = {
+          text: predictionScoreStructure.utterance,
+          intents: predictionScoreStructure.labelsPredicted,
+          entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
+          intent_scores: intentResultScoreArray,
+          entity_scores: entityResultScoreArray, // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
+        };
+        predictionScoreStructureJsons.push(predictionJson);
+      }
+    }
+    return predictionScoreStructureJsons;
+  }
+
   public static generateConfusionMatrixMetricsAndHtmlTable(
     predictionScoreStructureArray: PredictionScoreStructure[],
     labelArrayAndMap: {
@@ -2118,7 +2547,7 @@ export class Utility {
         }
         return 0;
       }).map(
-      (x: [string, string[]], index: number) => [index.toString(), x[0], Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(), x[1].length.toString(), Utility.round(x[1].length / labelUtterancesTotal).toString()]);
+      (x: [string, string[]], index: number) => [index.toString(), x[0], Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(), x[1].length.toString(), Utility.round(x[1].length / labelUtterancesTotal).toString()]);
     labelStatistics.push(['Total', 'N/A', 'N/A', labelUtterancesTotal.toString(), 'N/A']);
     const labelStatisticsHtml: string = Utility.convertDataArraysToHtmlTable(
       'Label statistics',
@@ -2986,32 +3415,59 @@ export class Utility {
     return entryname;
   }
 
-  public static safeAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
+  public static carefullyAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
     if (stringMap === undefined) {
-      Utility.debuggingThrow('stringMap === undefined');
+      Utility.debuggingThrow(
+        'stringMap === undefined');
     }
     const value: number = stringMap[key];
     if (value === undefined) {
-      Utility.debuggingThrow(`FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+      Utility.debuggingThrow(
+        `FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
     }
     return value;
   }
 
-  public static safeAccessStringArray(stringArray: string[], index: number): string {
+  public static carefullyAccessStringArray(stringArray: string[], index: number): string {
     if (stringArray === undefined) {
-      Utility.debuggingThrow('stringArray === undefined');
+      Utility.debuggingThrow(
+        'stringArray === undefined');
     }
     if (index < 0) {
-      Utility.debuggingThrow(`index ${index} not in range, stringArray.length=${stringArray.length}`);
+      Utility.debuggingThrow(
+        `index ${index} not in range, stringArray.length=${stringArray.length}`);
     }
     if (index >= stringArray.length) {
-      Utility.debuggingThrow(`index ${index} not in range, stringArray.length=${stringArray.length}`);
+      Utility.debuggingThrow(
+        `index ${index} not in range, stringArray.length=${stringArray.length}`);
     }
     const value: string = stringArray[index];
     if (value === undefined) {
-      Utility.debuggingThrow(`FAIL to use a index ${index} to access a stringArray ${Utility.jsonStringify(stringArray)}`);
+      Utility.debuggingThrow(
+        `FAIL to use a index ${index} to access a stringArray ${Utility.jsonStringify(stringArray)}`);
     }
     return value;
+  }
+
+  public static canAccessNumberArray(numberArray: number[], index: number): boolean {
+    if (numberArray === undefined) {
+      return false;
+    }
+    if (index < 0) {
+      return false;
+    }
+    if (index >= numberArray.length) {
+      return false;
+    }
+    const value: number = numberArray[index];
+    if (value === undefined) {
+      return false;
+    }
+    return true;
+  }
+
+  public static getBolded(input: any): string {
+    return `<b>${input}</b>`;
   }
 
   public static writeToConsole(outputContents: string) {

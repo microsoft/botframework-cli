@@ -20,6 +20,10 @@ import {Utility} from './utility';
 export class OrchestratorEvaluate {
   public static readonly trainingSetScoresOutputFilename: string = 'orchestrator_training_set_scores.txt';
 
+  public static readonly trainingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_training_set_ground_truth.json';
+
+  public static readonly trainingSetPredictionJsonContentOutputFilename: string = 'orchestrator_training_set_prediction.json';
+
   public static readonly trainingSetSummaryHtmlOutputFilename: string = 'orchestrator_training_set_summary.html';
 
   public static readonly trainingSetLabelsOutputFilename: string = 'orchestrator_training_set_labels.txt';
@@ -62,6 +66,8 @@ export class OrchestratorEvaluate {
       Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
     }
     const trainingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetScoresOutputFilename);
+    const trainingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetGroundTruthJsonContentOutputFilename);
+    const trainingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetPredictionJsonContentOutputFilename);
     const trainingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetSummaryHtmlOutputFilename);
     const trainingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetLabelsOutputFilename);
     // ---- NOTE ---- create a labelResolver object with a snapshot
@@ -158,8 +164,10 @@ export class OrchestratorEvaluate {
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;}; };
-        'predictionScoreStructureArray': PredictionScoreStructure[];
-        'scoreOutputLines': string[][];
+      'predictionScoreStructureArray': PredictionScoreStructure[];
+      'scoreOutputLines': string[][];
+      'groundTruthJsonContent': string;
+      'predictionJsonContent': string;
     } =
     Utility.generateEvaluationReport(
       UtilityLabelResolver.score,
@@ -186,9 +194,13 @@ export class OrchestratorEvaluate {
     Utility.generateEvaluationReportFiles(
       evaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       evaluationOutput.scoreOutputLines,
+      evaluationOutput.groundTruthJsonContent,
+      evaluationOutput.predictionJsonContent,
       evaluationSummary,
       trainingSetLabelsOutputFilename,
       trainingSetScoresOutputFilename,
+      trainingSetGroundTruthJsonContentOutputFilename,
+      trainingSetPredictionJsonContentOutputFilename,
       trainingSetSummaryHtmlOutputFilename);
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {

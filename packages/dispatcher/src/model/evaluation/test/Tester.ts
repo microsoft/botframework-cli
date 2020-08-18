@@ -151,6 +151,28 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
+            "macroQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
             "microAverageMetrics": {
                 "accuracy": number,
                 "truePositives": number,
@@ -232,6 +254,10 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
                 "total": number } } =
             confusionMatrixTest.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
+            `confusionMatrixTest.getMicroQuantileMetrics()=` +
+            `${confusionMatrixTest.getMicroQuantileMetrics()}` +
+            `confusionMatrixTest.getMacroQuantileMetrics()=` +
+            `${confusionMatrixTest.getMacroQuantileMetrics()}` +
             `confusionMatrixTest.getMicroAverageMetrics()=` +
             `${confusionMatrixTest.getMicroAverageMetrics()}` +
             `,confusionMatrixTest.getSummationMicroAverageMetrics()=` +

@@ -34,6 +34,8 @@ describe('Test Suite - predict', () => {
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
     const predictingSetScoreOutputFilename: string = orchestratorPredict.getPredictingSetScoreOutputFilename();
+    const predictingSetGroundTruthJsonContentOutputFilename: string = orchestratorPredict.getPredictingSetGroundTruthJsonContentOutputFilename();
+    const predictingSetPredictionJsonContentOutputFilename: string = orchestratorPredict.getPredictingSetPredictionJsonContentOutputFilename();
     const predictingSetSummaryOutputFilename: string = orchestratorPredict.getPredictingSetSummaryOutputFilename();
     const predictingLabelsOutputFilename: string = orchestratorPredict.getPredictingLabelsOutputFilename();
     const predictingSetSnapshotFilename: string = orchestratorPredict.getPredictingSetSnapshotFilename();
@@ -53,6 +55,8 @@ describe('Test Suite - predict', () => {
     if (toCleanUpAfterUnitTest) {
       try {
         Utility.deleteFile(predictingSetScoreOutputFilename);
+        Utility.deleteFile(predictingSetGroundTruthJsonContentOutputFilename);
+        Utility.deleteFile(predictingSetPredictionJsonContentOutputFilename);
         Utility.deleteFile(predictingSetSummaryOutputFilename);
         Utility.deleteFile(predictingLabelsOutputFilename);
       } catch (error) {

@@ -23,10 +23,33 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
 
     public abstract reset(): void;
 
-    public generateConfusionMatrixMetricStructure(): {
+    public generateConfusionMatrixMetricStructure(
+        quantileConfiguration: number = 4): {
         "confusionMatrix": IConfusionMatrix,
         "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
         "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+        "microQuantileMetrics": {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number },
+        "macroQuantileMetrics": {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number },
         "microAverageMetrics": {
             "accuracy": number,
             "truePositives": number,
@@ -121,6 +144,30 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
                 ({...accumulant, [id]: crossValidationBinaryConfusionMatrix[value]}), {});
         const binaryConfusionMatrices: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
+        const microQuantileMetrics: {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number } =
+            confusionMatrix.getMicroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
+        const macroQuantileMetrics: {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number } =
+            confusionMatrix.getMacroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
         const microAverageMetricArray: {
             "averagePrecisionRecallF1Accuracy": number,
             "truePositives": number,
@@ -575,6 +622,28 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
+            "macroQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
             "microAverageMetrics": {
                 "accuracy": number,
                 "truePositives": number,
@@ -654,6 +723,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
                 "averageFalseNegatives": number,
                 "averageSupport": number,
                 "total": number } } = {
+            microQuantileMetrics,
+            macroQuantileMetrics,
             confusionMatrix,
             labelBinaryConfusionMatrixBasicMetricMap,
             labelBinaryConfusionMatrixMap,
@@ -689,6 +760,170 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices.reduce(
                 (accumulation, entry) => accumulation + entry.getPositives(), 0);
         return total;
+    }
+
+    public getMicroQuantileMetrics(
+        binaryConfusionMatrices: BinaryConfusionMatrix[] = [],
+        quantileConfiguration: number = 4): {
+        "quantilesPrecisions": number[],
+        "quantilesRecalls": number[],
+        "quantilesF1Scores": number[],
+        "quantilesTruePositives": number[],
+        "quantilesFalsePositives": number[],
+        "quantilesTrueNegatives": number[],
+        "quantilesFalseNegatives": number[],
+        "quantilesAccuracies": number[],
+        "quantilesSupports": number[],
+        "total": number } {
+        if (Utility.isEmptyArray(binaryConfusionMatrices)) {
+            binaryConfusionMatrices =
+                this.getBinaryConfusionMatrices();
+        }
+        // ---- NOTE-use-getTotal() ---- const total: number =
+        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
+        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        const total: number =
+            this.getTotal(binaryConfusionMatrices);
+        const precisions: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getPrecision(), x.getSupport()]);
+        const quantilesPrecisions: number[] =
+            Utility.findValueCountPairQuantiles(precisions, quantileConfiguration) as number[];
+        const recalls: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getRecall(), x.getSupport()]);
+        const quantilesRecalls: number[] =
+            Utility.findValueCountPairQuantiles(recalls, quantileConfiguration) as number[];
+        const f1Scores: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getF1Score(), x.getSupport()]);
+        const quantilesF1Scores: number[] =
+            Utility.findValueCountPairQuantiles(f1Scores, quantileConfiguration) as number[];
+        const truePositives: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getTruePositives(), x.getSupport()]);
+        const quantilesTruePositives: number[] =
+            Utility.findValueCountPairQuantiles(truePositives, quantileConfiguration) as number[];
+        const falsePositives: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getFalsePositives(), x.getSupport()]);
+        const quantilesFalsePositives: number[] =
+            Utility.findValueCountPairQuantiles(falsePositives, quantileConfiguration) as number[];
+        const trueNegatives: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getTrueNegatives(), x.getSupport()]);
+        const quantilesTrueNegatives: number[] =
+            Utility.findValueCountPairQuantiles(trueNegatives, quantileConfiguration) as number[];
+        const falseNegatives: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getFalseNegatives(), x.getSupport()]);
+        const quantilesFalseNegatives: number[] =
+            Utility.findValueCountPairQuantiles(falseNegatives, quantileConfiguration) as number[];
+        const accuracies: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getAccuracy(), x.getSupport()]);
+        const quantilesAccuracies: number[] =
+            Utility.findValueCountPairQuantiles(accuracies, quantileConfiguration) as number[];
+        const supports: Array<[number, number]> = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => [x.getSupport(), x.getSupport()]);
+        const quantilesSupports: number[] =
+            Utility.findValueCountPairQuantiles(supports, quantileConfiguration) as number[];
+        const macroQuantileMetrics: {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number } = {
+                quantilesPrecisions,
+                quantilesRecalls,
+                quantilesF1Scores,
+                quantilesTruePositives,
+                quantilesFalsePositives,
+                quantilesTrueNegatives,
+                quantilesFalseNegatives,
+                quantilesAccuracies,
+                quantilesSupports,
+                total};
+        return macroQuantileMetrics;
+    }
+
+    public getMacroQuantileMetrics(
+        binaryConfusionMatrices: BinaryConfusionMatrix[] = [],
+        quantileConfiguration: number = 4): {
+        "quantilesPrecisions": number[],
+        "quantilesRecalls": number[],
+        "quantilesF1Scores": number[],
+        "quantilesTruePositives": number[],
+        "quantilesFalsePositives": number[],
+        "quantilesTrueNegatives": number[],
+        "quantilesFalseNegatives": number[],
+        "quantilesAccuracies": number[],
+        "quantilesSupports": number[],
+        "total": number } {
+        if (Utility.isEmptyArray(binaryConfusionMatrices)) {
+            binaryConfusionMatrices =
+                this.getBinaryConfusionMatrices();
+        }
+        // ---- NOTE-use-getTotal() ---- const total: number =
+        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
+        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        const total: number =
+            this.getTotal(binaryConfusionMatrices);
+        const precisions: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getPrecision());
+        const quantilesPrecisions: number[] =
+            Utility.findQuantiles(precisions, quantileConfiguration) as number[];
+        const recalls: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getRecall());
+        const quantilesRecalls: number[] =
+            Utility.findQuantiles(recalls, quantileConfiguration) as number[];
+        const f1Scores: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getF1Score());
+        const quantilesF1Scores: number[] =
+            Utility.findQuantiles(f1Scores, quantileConfiguration) as number[];
+        const truePositives: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getTruePositives());
+        const quantilesTruePositives: number[] =
+            Utility.findQuantiles(truePositives, quantileConfiguration) as number[];
+        const falsePositives: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getFalsePositives());
+        const quantilesFalsePositives: number[] =
+            Utility.findQuantiles(falsePositives, quantileConfiguration) as number[];
+        const trueNegatives: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getTrueNegatives());
+        const quantilesTrueNegatives: number[] =
+            Utility.findQuantiles(trueNegatives, quantileConfiguration) as number[];
+        const falseNegatives: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getFalseNegatives());
+        const quantilesFalseNegatives: number[] =
+            Utility.findQuantiles(falseNegatives, quantileConfiguration) as number[];
+        const accuracies: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getAccuracy());
+        const quantilesAccuracies: number[] =
+            Utility.findQuantiles(accuracies, quantileConfiguration) as number[];
+        const supports: number[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => x.getSupport());
+        const quantilesSupports: number[] =
+            Utility.findQuantiles(supports, quantileConfiguration) as number[];
+        const macroQuantileMetrics: {
+            "quantilesPrecisions": number[],
+            "quantilesRecalls": number[],
+            "quantilesF1Scores": number[],
+            "quantilesTruePositives": number[],
+            "quantilesFalsePositives": number[],
+            "quantilesTrueNegatives": number[],
+            "quantilesFalseNegatives": number[],
+            "quantilesAccuracies": number[],
+            "quantilesSupports": number[],
+            "total": number } = {
+                quantilesPrecisions,
+                quantilesRecalls,
+                quantilesF1Scores,
+                quantilesTruePositives,
+                quantilesFalsePositives,
+                quantilesTrueNegatives,
+                quantilesFalseNegatives,
+                quantilesAccuracies,
+                quantilesSupports,
+                total};
+        return macroQuantileMetrics;
     }
 
     public getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {

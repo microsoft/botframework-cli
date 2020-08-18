@@ -27,6 +27,8 @@ describe('Test Suite - evaluate', () => {
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
     const trainingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetScoresOutputFilename);
+    const trainingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetGroundTruthJsonContentOutputFilename);
+    const trainingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetPredictionJsonContentOutputFilename);
     const trainingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetSummaryHtmlOutputFilename);
     const trainingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetLabelsOutputFilename);
     await OrchestratorEvaluate.runAsync(
@@ -42,6 +44,8 @@ describe('Test Suite - evaluate', () => {
     if (toCleanUpAfterUnitTest) {
       try {
         Utility.deleteFile(trainingSetScoresOutputFilename);
+        Utility.deleteFile(trainingSetGroundTruthJsonContentOutputFilename);
+        Utility.deleteFile(trainingSetPredictionJsonContentOutputFilename);
         Utility.deleteFile(trainingSetSummaryHtmlOutputFilename);
         Utility.deleteFile(trainingSetLabelsOutputFilename);
         fs.rmdirSync(outputPath);

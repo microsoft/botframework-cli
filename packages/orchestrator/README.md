@@ -1,7 +1,7 @@
 @microsoft/bf-orchestrator
 ======================
 
-This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
+This package should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
@@ -71,23 +71,25 @@ USAGE
 OPTIONS
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'assess' command help.
-  -i, --in=in                     Path to a ground-truth .json file.
+  -i, --in=in                     Path to a ground-truth label file.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --prediction=prediction     Path to a prediction .json file.
+  -p, --prediction=prediction     Path to a prediction label file.
 
 DESCRIPTION
 
-  The "assess" command compares a prediction file against a ground-truth file. It then
-  generates two detailed evaluation reports, one on intent prediction, and the other entity.
+  The "assess" command compares a prediction file against a ground-truth file, then
+  generates two detailed evaluation reports, one on intent prediction and the other entity, along with some
+  auxiliary files.
+  The input files can be in LU, LUIS, QnA Maker, TSV, or a JSON label array format described below.
 
-  This command addresses the issues of frequent inconsistency among evaluations conducted by
-  more than one parties on the same ground-truth set, especially for evaluating competitive
-  technology or models owned by different parites. The Inconsistencies can come from following
-  sources:
+  This command intends to provide a comprehensive and consistent multi-class model evaluation tool in
+  order to avoid teams reporting their own inconsistent evaluation metrics, especially in a contest
+  evaluating competitive technology or models. Below are some sources of evaluation inconsistencies if
+  evaluation were conducted and metrics reported by the teams themselves:
 
   1)  Metric - one team may report Micro-Average, Macro Average, or else. As shown below,
-        there are many ways to compute an average of a metric, such as accuracy or F1, and
-        the discrepancy can be huge on different averaging techniques.
+        there can be many ways in computing a metric average, and
+        the discrepancy can be huge using different averaging formulations.
   2)  Datasets – even though every party tests on the same dataset source, the dataset might diverge
         after a while after some data massaging, sometimes due to processing errors or filtering logic.
         Some teams may prefer some datasets, but not others, for their particular technology or models.
@@ -95,31 +97,31 @@ DESCRIPTION
         De-duplicate or not can affect final metric calculation. 
   4)  Confusion matrix formulation – what is a TP, FP, TN, or FN? 
         Even though their textbook definition is clear, they can still be up to interpretation
-        in real world scenario. For example, does TN make sense in evaluating entity extracting?
-  5)  Label interpretation – Sometimes people might ignore some test results if the prediction
+        in real world scenarios. For example, TN may not make sense in evaluating entity extracting.
+  5)  Label interpretation – Sometimes people might ignore some test results if their prediction
         scores are too low. We should have a consistent way to include those predictions. On entity, some
         people may choose to evaluate based on per-token tags, instead of per-entuty-mention. 
-  6)  Label processing – what is an UNKNOWN label? Different teams may have their various strategies
-        in processing empty, UNKNOWN, or never-seen-before labels in the ground-truth or prediction files.
+  6)  Label processing – what is an UNKNOWN label? Different teams may have their unique strategies
+        in processing empty, UNKNOWN, or never-seen-before labels in the ground-truth and prediction files.
   7)  Evaluation Tool – every team has their own tools that might not be consistent in metric computation.
 
   The "assess" command aims to address these issues:
 
-  1)  Metric -- the "assess" command calculates as many macro average metrics as we can think of.
-      Which metric to focus on for decision-making is up to an evaluation committee.
+  1)  Metric -- the "assess" command calculates as many average/aggregate metrics as we can think of.
+      Which metric to focus on for decision-making is up to an evaluation committee or stakeholder.
       The tool has no bias, even though each party might have its favorites for its own agenda.
   2)  Datasets -- it's necessary to create a dataset repo for the community to share
-      ground-truth datasets and predictions. There should not be any bias against any datasets,
-      but it’s up to an evaluation committee or individual party to choose whatever evaluation datasets
-      (and performance metrics) they need for their projects.
-  3)  Data processing – this BF-orchestrator evaluation package provides consistent logic.
+      ground-truth datasets and predictions. Again it’s up to an evaluation committee or individual party to choose the
+      evaluation datasets (and performance metrics) compatible with their projects and scenarios.
+  3)  Data processing – this BF-orchestrator evaluation package provides consistent logic in processing datasets.
       For example, it does de-duplication, so an utterance and its label won’t contribute more than once
       in metric calculation.
-  4)  Confusion matrix formulation – again, this BF evaluation package provides consistent formulation logic.
+  4)  Confusion matrix formulation – again, this BF evaluation package provides consistent formulation logic in
+      intepreting the 4 confusion matrix cells.
       For example, entity evaluation does not have TN.
   5)  Label interpretation – again, consistent is key and this "assess" command does not silently
       ignore some test results for whatever reasons. Every test instance should contribute to
-      metric calculation unless they are spurious – due to processing mistakes by whoever prepares it. 
+      metric calculation unless they are spurious – due to processing mistakes by whoever prepared it. 
   6)  Label processing – this BF-Orchestrator package pre-processes labels and treats
       an utterance’s empty, None, and never-seen-before labels as UNKNOWN. Since BF-Orchestrator allows
       multi-label intents for utterances, UNKNOWN is stripped if it con-exists with known labels
@@ -133,8 +135,11 @@ DESCRIPTION
 
 INPUT
 
-  The two input JSON files each contains a JSON array of labeled utterances
-  following the schema and example shown below.
+  The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TSV or a JSON array format.
+  The TSV file format only supports intent labels and it must have 2 columns, labels and utterance,
+  sepatated by a TAB. The label column can contains multiple labels delimited by camma.
+  For entitiy labels, a user can choose LU, LUIS, or a JSON array format
+  that each entry contains a labeled utterance following the schema and example shown below.
   In the array, each JSON entry has a "text" attribute for an utterance. The utterance can have an array pf
   "intents." The utterance can also has an array of "entities."
   Each entity entry contains an "entity" attribute for its name, a "startPos" attribute indicating the offset
@@ -167,7 +172,8 @@ REPORT
   distributions of the utterances and their labels. It also groups each utterance's
   ground-truth and prediction intent and entity labels together, compares them, and determines if
   a prediction is in the ground-truth or vice versa. Using these analyese, the "assess" command
-  will generate HTML reports at the end. One report for intent evaluation and the other entity.
+  generates HTML reports and some auxiliary files at the end.
+  One report is for intent evaluation and the other for entity.
 
   Each report has the following sections:
 
@@ -215,42 +221,55 @@ REPORT
 
   0) Micro-Average - Orchestrator is essentially a multi-class ML learner and model, so evaluation can also be expressed
         as a multi-class confusion matrix, besides the series of binary per-label confusion matrices
-        mentioned above. In such a multi-class confusion matrix, every prediction is a positive,
+        mentioned above. In such a multi-class confusion matrix, every prediction is a positive and
         there is no negative. The diagonal cells of this multi-class confusion matrix are
         the TPs. The micro-average metric is the ratio of the sum of TPs over total. Total is the sum
         of all the supports (#positives) aggregated from the series of binary confusion matrices.
-  1) Summation Micro-Average - the second way coalescing the series of binary confusion matrices into one is by
+  1) Micro-First-Quartile - use the series of binary confusion matrices, sort them by a metric (e.g., F1) value,
+        and crate an bucket array that each bucket contain the per-label binary confusion matrix metric value as well
+        as the per-label support. From this metric-support array, the micro-first-quartile metric is
+        the metric value from the entry at the first quartile position in the bucket array.
+  2) Micro-Median - similar to Micro-First-Quartile, but at the second-quartile position, i.e., median.
+  3) Micro-Third-Quartile - similar to Micro-First-Quartile, but at the third-quartile position.
+  4) Macro-First-Quartile - use the series of binary confusion matrices, sort them by a metric (e.g., F1) value,
+        and crate a simple array of the per-label binary confusion matrix metrics. From this metric array, the
+        macro-first-quartile metric is the metric value at the first quartile position.
+  5) Macro-Median - similar to Macro-First-Quartile, but at the second-quartile position, i.e., median.
+  6) Macro-Third-Quartile - similar to Macro-First-Quartile, but at the third-quartile position.
+  7) Summation Micro-Average - the second way coalescing the series of binary confusion matrices into one is by
         summing up their TP, FP, TN, FN numbers. These 4 summations are then formed as one binary confusion
         matrix and can be used to calculate overall precision, recall, F1, and accuracy.
-  2) Macro-Average - another way coalescing the series of binary confusion matrices simply takes
+  8) Macro-Average - another way coalescing the series of binary confusion matrices simply takes
         arithmetic average of every metrics individually. The denominator for computing the averages
         is the number of labels existed in the ground-truth set.
-  3) Summation Macro-Average - While macro-average takes a simple arithmetic average on every metrics.
+  9) Summation Macro-Average - While macro-average takes a simple arithmetic average on every metrics.
         Summation macro-average only takes the average on the 4 confusion matrix cells, TP, FP, TN, and FN.
         Precision, recall, F1, and accuracy are then calculated by the 4 averaged cells.
-  4) Positive Support Macro-Average - some prediction file may not contain all the ground-truth utterances
+  10) Positive Support Macro-Average - some prediction file may not contain all the ground-truth utterances
         and may lack predictions for some ground-truth labels completely. The averaging denominator for this metric
         uses the number of prediction labels, i.e., number of the labels with a greater-than-zero support.
-  5) Positive Support Summation Macro-Average - this metric is similar to 3), but use 4)'s denominator.
-  6) Weighted Macro-Average - this metric averaging approach takes an weighted average of the series of binary
+  11) Positive Support Summation Macro-Average - this metric is similar to 3), but use 4)'s denominator.
+  12) Weighted Macro-Average - this metric averaging approach takes an weighted average of the series of binary
         per-label confusion matrices. The weights are the per-label prevalences, which are listed in the
         "Ground-Truth Label/Utterancce Statistics" tab.
-  7) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
+  13) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
         the 4 confusion matrix cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
         accuracy.
-  8) Multi-Label Exact Aggregate - Orchestrator supports multi-label intents for each utterance. I.e., an utterance
-        can belong to more than one categories (intents). For a multi-intent application, a model can
-        actually generate spurious intent predictions that can still boost the "per-label" metrics
+  14) Multi-Label Exact Aggregate - Orchestrator supports evaluating multi-label intents for each utterance.
+        I.e., an utterance can belong to more than one categories (intents). For a multi-intent application, a model can
+        actually generate spurious (too many) intent predictions that can still boost the "per-label" metrics
         described thus far. In a "per-label" metric, every label (an instance can have more than one label)
-        can contribute to metric computation.
-        To counter this problem, Multi-Label Exact Aggreagate is a "per-instance" metric that it builds a binary confusion matrix directly and only a instance can contribute to metric computation disregard the number
-        of labels it has.
+        can contribute to metric computation, therefore some instances may contribute more to metric
+        calculation more then others.
+        To counter this problem, Multi-Label Exact Aggreagate is a "per-instance" metric that it builds
+        a binary confusion matrix directly and an instance can only contribute to metric computation once
+        disregard the number of labels it has.
         An utterance is only a TP if a non-empty prediction's intent array is exactly equal to the ground-truth array. If a prediction's intent array contains at least one label not in the ground-truth array,
         then this utterance is a FP. Then, if an utterance's ground-truth intent array contains at least
         one label not in the prediction intent array, then this utterance is a FN. A TN only happens if both arrays
         are empty. Notice that this metric only applies to multi-intent predictions, it is not calculated for
         evaluating entity predictions.
-  9) Multi-Label Subset Aggregate - Similar to Multi-Label Exact Aggregate, but this metric's TP logic is less
+  15) Multi-Label Subset Aggregate - Similar to Multi-Label Exact Aggregate, but this metric's TP logic is less
         restrictive.
         An utterance is only a TP if a prediction's intent array is a non-empty subset of the ground-truth array. If a prediction's intent array contains at least one label not in the ground-truth array,
         then this utterance is a FP. If an utterance's prediction intent array is empty while it's not
