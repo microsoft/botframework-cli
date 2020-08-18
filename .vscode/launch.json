@@ -194,12 +194,14 @@
             ],
             "args": [
                 "dialog:merge",
-                "schemas/*.schema",
+                "libraries/**/*.schema",
+                "tests/**/*.schema",
                 "-o",
-                "schemas/app.schema"
+                "tests/tests.schema",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet/"
         },
         {
             "type": "node",
