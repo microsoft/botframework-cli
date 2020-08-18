@@ -27,12 +27,15 @@ $ bf
 ## Available Commands
 The following commands are currently available:
 * [Chatdown][1] 
-* [QnAMaker][2]
-* [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
-* [Luis][3]
+* [Config][2]
+* [Dialog][3]
+* [Luis][4]
+* [QnAMaker][5]
 
+<!--
 Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins#microsoftbf-cli-plugins))
 * [Dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
+-->
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
@@ -128,6 +131,10 @@ Security issues and bugs should be reported privately, via email, to the Microso
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-[1]:./packages/chatdown/README.md
-[2]:./packages/qnamaker/README.md
-[3]:./packages/luis/README.md
+[1]: ./packages/chatdown/README.md
+[2]: ./packages/cli#bf-config
+[3]: ./packages/dialog/README.md
+[4]: ./packages/luis/README.md
+[5]: ./packages/qnamaker/README.md
+
+
