@@ -1886,7 +1886,7 @@ export class Utility {
       unknownLabelPredictionThreshold > 0); // ---- NOTE ---- there is no UNKNOWN prediction unless the threshold is higher than 0.
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- collect utterance prediction and scores.
-    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call ScoringFunctionToPredictionScoreStructure()');
+    Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call scoringFunctionToPredictionScoreStructure()');
     const utteranceLabelsPairArray: [string, string[]][] = Object.entries(utteranceLabelsMap);
     const predictionScoreStructureArray: PredictionScoreStructure[] =
       scoringFunctionToPredictionScoreStructure(
@@ -1899,7 +1899,7 @@ export class Utility {
     // ---- NOTE-REFACTORED ----   evaluationReportLabelUtteranceStatistics.labelArrayAndMap,
     // ---- NOTE-REFACTORED ----   multiLabelPredictionThreshold,
     // ---- NOTE-REFACTORED ----   unknownLabelPredictionThreshold);
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling ScoringFunctionToPredictionScoreStructure()');
+    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling scoringFunctionToPredictionScoreStructure()');
     // ---- NOTE ---- generate evaluation report after calling the score() function.
     Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.generateEvaluationReportAnalyses()');
     const evaluationReportAnalyses: {
@@ -2582,7 +2582,12 @@ export class Utility {
     selectedOutputDataArraryHeaders: string[] = [],
     outputDataColumnWidthSettings: string[] = []): string {
     const labelsSelectedArrays: any[][] = indexes.map(
-      (x: number) => [scoreResultArray[x].label.name, scoreResultArray[x].score, scoreResultArray[x].closesttext]);
+      (x: number) => {
+        if ((x >= 0) && (x < scoreResultArray.length)) {
+          return [scoreResultArray[x].label.name, scoreResultArray[x].score, scoreResultArray[x].closesttext];
+        }
+        return [Utility.UnknownLabel, 0, ''];
+      });
     const selectedScoreStructureHtmlTable: string = Utility.convertDataArraysToHtmlTable(
       tableDescription,
       labelsSelectedArrays,
@@ -3152,7 +3157,7 @@ export class Utility {
         const labelspan: any = resultlabel.span;
         const labelspanoffset: number = labelspan.offset;
         const labelspanlength: number = labelspan.length;
-        const closesttext: string = result.closesttext;
+        const closesttext: string = result.closest_text;
         const scoreResult: Result = new Result(
           new Label(labeltype, label, new Span(labelspanoffset, labelspanlength)),
           score,
