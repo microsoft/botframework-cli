@@ -138,7 +138,8 @@
                 "libraries/**/*.schema",
                 "-o",
                 "${env:TEMP}/sdk.schema",
-                "--verbose"
+                "--verbose",
+                "--debug"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"
@@ -193,12 +194,14 @@
             ],
             "args": [
                 "dialog:merge",
-                "schemas/*.schema",
+                "libraries/**/*.schema",
+                "tests/**/*.schema",
                 "-o",
-                "schemas/app.schema"
+                "tests/tests.schema",
+                "--verbose"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog"
+            "cwd": "${workspaceFolder}/../botbuilder-dotnet/"
         },
         {
             "type": "node",
@@ -228,8 +231,8 @@
             "program": "${workspaceFolder}/packages/luis/bin/run",
             "outputCapture": "std",
             "outFiles": [
-                "./packages/luis/lib/**",
-                "./packages/lu/lib/**"
+                "${workspaceFolder}/packages/luis/lib/**",
+                "${workspaceFolder}/packages/lu/lib/**"
             ],
             "args": [
                 "luis:build",
@@ -239,7 +242,8 @@
                 "${env:LUIS_AUTHORING_KEY}"
             ],
             "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out"
+            "cwd": "${env:TEMP}/generate.out",
+            "sourceMaps": true
         },
         {
             "type": "node",
