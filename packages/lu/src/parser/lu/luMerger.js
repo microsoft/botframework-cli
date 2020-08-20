@@ -30,15 +30,15 @@ module.exports = {
      */
     Build: async function(luObjArray, verbose, luis_culture, luSearchFn){
         let allParsedContent = await buildLuJsonObject(luObjArray, verbose, luis_culture, luSearchFn)
-        let refTree = buildRefTree(allParsedContent)
+        let refTree = await buildRefTree(allParsedContent, luSearchFn)
         resolveTreeRefs(refTree, luObjArray);
         return allParsedContent
     }
 }
 
-const buildRefTree = function(allParsedContent) {
+const buildRefTree = async function(allParsedContent, luSearchFn) {
     let refs = {};
-    allParsedContent.LUISContent.forEach((parserObj, objIdx) => {
+    await Promise.all(allParsedContent.LUISContent.map(async (parserObj, objIdx) => {
         let luObj = {
             obj : parserObj.LUISJsonStructure,
             srcFile : parserObj.srcFile,
@@ -54,23 +54,23 @@ const buildRefTree = function(allParsedContent) {
             }
         }
         parserObj.LUISJsonStructure.uttHash = {};
-        (parserObj.LUISJsonStructure.utterances || []).forEach((utterance, uttIdx) => {
+        (parserObj.LUISJsonStructure.utterances || []).forEach(async (utterance, uttIdx) => {
             parserObj.LUISJsonStructure.uttHash[utterance.text] = '';
             if (helpers.isUtteranceLinkRef(utterance.text)) {
-                let parsedLinkUri = helpers.parseLinkURI(utterance.text);
+                let parsedLinkUri = await helpers.parseLinkURI(utterance.text, parserObj.srcFile, luSearchFn);
                 refs[parserObj.srcFile].luis.refs.push({
-                    refId : parsedLinkUri.fileName,
-                    uttId : uttIdx,
-                    parsedLink  : parsedLinkUri,
-                    uttObj : utterance,
-                    text : utterance.text,
-                    type : 'luis'
+                    refId: parsedLinkUri.fileName,
+                    uttId: uttIdx,
+                    parsedLink: parsedLinkUri,
+                    uttObj: utterance,
+                    text: utterance.text,
+                    type: 'luis'
                 })
             }
         })
-    })
+    }))
 
-    allParsedContent.QnAContent.forEach((parserObj, objIdx) => {
+    await Promise.all(allParsedContent.QnAContent.map(async (parserObj, objIdx) => {
         let qnaObj = {
             obj : parserObj.qnaJsonStructure,
             alt : allParsedContent.QnAAlterations[objIdx].qnaAlterations,
@@ -84,22 +84,23 @@ const buildRefTree = function(allParsedContent) {
                 refs[parserObj.srcFile].qna = qnaObj;
             }
         }
-        (parserObj.qnaJsonStructure.qnaList.forEach(qnaPair => {
-            qnaPair.questions.forEach((question, qIdx) => {
+        (parserObj.qnaJsonStructure.qnaList.forEach(async qnaPair => {
+            qnaPair.questions.forEach(async (question, qIdx) => {
                 if (helpers.isUtteranceLinkRef(question)) {
-                    let parsedLinkUri = helpers.parseLinkURI(question);
+                    let parsedLinkUri = await helpers.parseLinkURI(question)
                     refs[parserObj.srcFile].qna.refs.push({
-                        refId : parsedLinkUri.fileName,
-                        qId : qIdx,
-                        text : question,
-                        qObj : qnaPair,
-                        parsedLink : parsedLinkUri, 
-                        type : 'qna'
+                        refId: parsedLinkUri.fileName,
+                        qId: qIdx,
+                        text: question,
+                        qObj: qnaPair,
+                        parsedLink: parsedLinkUri,
+                        type: 'qna'
                     })
                 }
             })
         }))
-    });
+    }));
+
     return refs;
 }
 

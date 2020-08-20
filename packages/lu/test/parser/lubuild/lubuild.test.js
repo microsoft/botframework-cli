@@ -1,6 +1,13 @@
 const assert = require('chai').assert
 const nock = require('nock')
+const path = require('path')
+const NEWLINE = require('os').EOL
 const Builder = require('../../../src/parser/lubuild/builder').Builder
+const luObject = require('../../../src/parser/lu/lu')
+const luOptions = require('../../../src/parser/lu/luOptions')
+const txtfile = require('../../../src/parser/lufile/read-text-file');
+
+const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/lu-import-resolver')
 
 describe('builder: getActiveVersionIds function return version id sucessfully', () => {
   before(function () {
@@ -213,5 +220,40 @@ describe('builder: getActiveVersionIds function return version id failed for non
     } catch (e) {
       assert.equal(e.message, 'You do not have access')
     }
+  })
+})
+
+describe('builder: loadContents function can resolve import files with customized resolver', () => {
+  it('should load contents sucessfully after resolving imports', async () => {
+    let importResolver = async function (srcId, idsToFind) {
+      let luObjects = []
+      let parentFilePath = path.parse(path.resolve(srcId)).dir
+      for (let idx = 0; idx < idsToFind.length; idx++) {
+        let file = idsToFind[idx]
+        if (!path.isAbsolute(file.filePath)) {
+          file.filePath = path.resolve(parentFilePath, file.filePath)
+        }
+
+        if (file.filePath.endsWith(".lu")) {
+          file.filePath = file.filePath.slice(0, file.filePath.length - 2) + "en-us.lu"
+          luObjects.push(new luObject(txtfile.readSync(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
+        }
+      }
+      return luObjects
+    };
+
+    const builder = new Builder(() => { })
+    const result = await builder.loadContents(
+      [`${path.join(rootDir, "common.en-us.lu")}`],
+      "en-us",
+      "dev",
+      "westus",
+      undefined,
+      importResolver)
+
+    assert.equal(result.luContents.length, 1)
+    assert.isTrue(result.luContents[0].content.includes(
+      `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}## cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## welcome${NEWLINE}- welcome here`
+    ))
   })
 })

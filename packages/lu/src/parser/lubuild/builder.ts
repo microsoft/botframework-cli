@@ -34,7 +34,8 @@ export class Builder {
     culture: string,
     suffix: string,
     region: string,
-    schema?: string) {
+    schema?: string,
+    importResolver?: object) {
     let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
     let settings: any
     let recognizers = new Map<string, Recognizer>()
@@ -82,7 +83,7 @@ export class Builder {
       if (luFiles.length <= 0) continue
 
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture)
+        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture, importResolver)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } catch (err) {

@@ -4,9 +4,14 @@
  */
 
 const assert = require('chai').assert
+const NEWLINE = require('os').EOL
+const path = require('path')
 const crossTrainer = require('../../../src/parser/cross-train/crossTrainer')
 const sectionTypes = require('../../../src/parser/utils/enums/lusectiontypes')
-const NEWLINE = require('os').EOL
+const luObject = require('../../../src/parser/lu/lu')
+const luOptions = require('../../../src/parser/lu/luOptions')
+
+const rootDir = path.join(__dirname, './../../fixtures/')
 
 describe('luis:cross training tests among lu and qna contents', () => {
   it('luis:cross training can get expected result when handling multi locales and duplications', async () => {
@@ -897,5 +902,91 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('main.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
     assert.equal(luResult.get('dia1.lu').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
     assert.equal(qnaResult.get('dia1.qna').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+  })
+
+  it('luis:cross training can get expected result when customized import resolver is provided', async () => {
+    let importResolver = async function (srcId, idsToFind) {
+      let luObjects = []
+      let parentFilePath = path.parse(path.resolve(srcId)).dir
+      for (let idx = 0; idx < idsToFind.length; idx++) {
+        let file = idsToFind[idx]
+        if (!path.isAbsolute(file.filePath)) {
+          file.filePath = path.resolve(parentFilePath, file.filePath)
+        }
+
+        if (file.filePath.endsWith("common.lu")) {
+          luObjects.push(new luObject(`# common_intent${NEWLINE}- this is common utterance`, new luOptions(file.filePath, file.includeInCollate)))
+        } else if (file.filePath.endsWith("common.qna")) {
+          luObjects.push(new luObject(`# ? common_question${NEWLINE}\`\`\`${NEWLINE}this is common answer${NEWLINE}\`\`\``, new luOptions(file.filePath, file.includeInCollate)))
+        }
+      }
+      return luObjects
+    };
+
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content:
+        `[import](common.lu)
+      # dia1_trigger
+      - book a hotel for me`,
+      id: path.join(rootDir, 'main.en-us.lu')
+    })
+
+    qnaContentArray.push({
+      content:
+        `[import](common.qna)
+      # ? where is Seattle
+      \`\`\`
+      northwest of USA
+      \`\`\``,
+      id: path.join(rootDir, 'main.en-us.qna')
+    }
+    )
+
+    luContentArray.push({
+      content:
+        `# hotelLocation
+      - hotel in Seattle
+      - [import](common.lu#common_intent)`,
+      id: path.join(rootDir, 'dia1.en-us.lu')
+    }
+    )
+
+    qnaContentArray.push({
+      content:
+        `[import](common.qna)
+      # ? cancel
+      \`\`\`
+      please cancel that
+      \`\`\``,
+      id: path.join(rootDir, 'dia1.en-us.qna')
+    }
+    )
+
+    let crossTrainConfig = {
+      rootIds: [path.join(rootDir, "main.en-us.lu")],
+      triggerRules: {},
+      intentName: '_Interruption',
+      verbose: true
+    }
+
+    crossTrainConfig.triggerRules[path.join(rootDir, "main.en-us.lu")] = { 'dia1_trigger': path.join(rootDir, "dia1.en-us.lu") }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, importResolver)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    assert.equal(luResult.get(path.join(rootDir, "main.en-us.lu")).Sections.filter(s => s.SectionType === sectionTypes.SIMPLEINTENTSECTION).length, 3)
+    assert.equal(luResult.get(path.join(rootDir, "main.en-us.lu")).Sections.filter(s => s.SectionType === sectionTypes.SIMPLEINTENTSECTION)[1].Name, "common_intent")
+    assert.isTrue(luResult.get(path.join(rootDir, "main.en-us.lu")).Sections.filter(s => s.SectionType === sectionTypes.SIMPLEINTENTSECTION)[1].Body.includes(`- this is common utterance`))
+    assert.equal(luResult.get(path.join(rootDir, "dia1.en-us.lu")).Sections.filter(s => s.SectionType === sectionTypes.SIMPLEINTENTSECTION).length, 3)
+    assert.isTrue(luResult.get(path.join(rootDir, "dia1.en-us.lu")).Sections.filter(s => s.SectionType === sectionTypes.SIMPLEINTENTSECTION)[0].Body.includes(`- hotel in Seattle${NEWLINE}- this is common utterance`))
+
+    assert.equal(qnaResult.get(path.join(rootDir, "main.en-us.qna")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION).length, 3)
+    assert.isTrue(qnaResult.get(path.join(rootDir, "main.en-us.qna")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION)[1].Body.includes(`# ? common_question${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=main${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}this is common answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`))
+    assert.equal(qnaResult.get(path.join(rootDir, "dia1.en-us.qna")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION).length, 3)
+    assert.isTrue(qnaResult.get(path.join(rootDir, "dia1.en-us.qna")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION)[1].Body.includes(`# ? common_question${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=dia1${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}this is common answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`))
   })
 })

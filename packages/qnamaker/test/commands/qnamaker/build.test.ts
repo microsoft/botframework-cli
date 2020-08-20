@@ -379,15 +379,8 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
         qnaDocuments: [{
           id: 1,
           source: 'custom editorial',
-          questions: ['who are you'],
-          answer: 'I\'m Lucy',
-          metadata: []
-        },
-        {
-          id: 2,
-          source: 'custom editorial',
-          questions: ['weather'],
-          answer: 'It\'s rainy',
+          questions: ['Météo'],
+          answer: 'C\'est pluvieux',
           metadata: []
         }]
       })
@@ -398,8 +391,15 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
         qnaDocuments: [{
           id: 1,
           source: 'custom editorial',
-          questions: ['Météo'],
-          answer: 'C\'est pluvieux',
+          questions: ['who are you'],
+          answer: 'I\'m Lucy',
+          metadata: []
+        },
+        {
+          id: 2,
+          source: 'custom editorial',
+          questions: ['weather'],
+          answer: 'It\'s rainy',
           metadata: []
         }]
       })
