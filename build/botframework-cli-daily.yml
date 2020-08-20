@@ -16,7 +16,7 @@ schedules:
   displayName: Daily midnight build (UTC Time)
   branches:
     include:
-    - master
+    - main
 
 variables:
 - template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
