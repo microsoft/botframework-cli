@@ -95,21 +95,11 @@ Per above, Microsoft will only collect anonymous data to help improve the CLI. T
 
 Nightly builds are generated using the latest code. Therefore, they may not be stable, and most likely lack up to date documentation. These builds are better suited for more experienced users, although everyone is welcome to use them and provide feedback.
 
-You can get the latest nightly build of bot framework cli from the [BotBuilder MyGet](https://botbuilder.myget.org/gallery) feed. To install the nightly -
-
-```shell
-npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
-```
-
 Install using npm:
 ```shell
-npm i -g @microsoft/botframework-cli
+npm i -g @microsoft/botframework-cli@next
 ```
 
-To reset registry:
-```shell
-npm config set registry https://registry.npmjs.org/
-```
 
 ## Contributing
 
