@@ -41,6 +41,7 @@ export class UtilityLabelResolver {
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionScoreStructure[] {
     // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;
+    // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     const predictionScoreStructureArray: PredictionScoreStructure[] = [];
     for (const utteranceLabels of utteranceLabelsPairArray) {
       if (utteranceLabels) {
@@ -100,6 +101,7 @@ export class UtilityLabelResolver {
         const predictedScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
           labelsPredictedIndexes,
+          unknownLabelPredictionThreshold,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);
@@ -109,6 +111,7 @@ export class UtilityLabelResolver {
         const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
           labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x)),
+          unknownLabelPredictionThreshold,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);

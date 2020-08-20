@@ -208,8 +208,8 @@ export class OrchestratorPredict {
     // if (!Utility.exists(this.trainingFile)) {
     //   Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
     // }
-    this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth.json');
-    this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction.json');
+    this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth._instancesjson');
+    this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction_instances.json');
     this.predictingSetScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_scores.txt');
     this.predictingSetSummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_summary.html');
     this.predictingLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_labels.txt');

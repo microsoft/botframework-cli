@@ -26,8 +26,8 @@ describe('orchestrator:assess', () => {
   test
   .stdout()
   .command(['orchestrator:assess',
-    '--in=./resources/data/EvaluationJsonFormat/va_test.json',
-    '--prediction=./resources/data/EvaluationJsonFormat/va_predictions-top1.json',
+    '--in=./resources/data/EvaluationJsonFormat/orchestrator_testing_set_ground_truth_instances.json',
+    '--prediction=./resources/data/EvaluationJsonFormat/orchestrator_testing_set_prediction_instances.json',
     '--out=./resources/data/EvaluationJsonFormat/va_output'])
   .it('should run the command and produce outputs', (_ctx: any) => {
     // eslint-disable-next-line no-console

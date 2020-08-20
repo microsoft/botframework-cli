@@ -392,7 +392,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(
     evaluationSummary: string,
-    trainingSetLabels: string[],
+    dataSetLabels: string[],
     utteranceEntityLabelsMap: { [id: string]: Label[] },
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     evaluationSummaryTagEntityLabelUtteranceStatistics: string,
@@ -420,7 +420,7 @@ export class Utility {
     const labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': {[id: string]: number};} =
-      Utility.buildStringIdNumberValueDictionaryFromStringArray(trainingSetLabels);
+      Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
     // ---- TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
@@ -1803,7 +1803,7 @@ export class Utility {
         'stringMap': {[id: string]: number};},
       multiLabelPredictionThreshold: number,
       unknownLabelPredictionThreshold: number) => PredictionScoreStructure[],
-    trainingSetLabels: string[],
+    dataSetLabels: string[],
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     ambiguousCloseness: number,
@@ -1878,7 +1878,7 @@ export class Utility {
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateEvaluationReportLabelUtteranceStatistics(
       evaluationSummary,
-      trainingSetLabels,
+      dataSetLabels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       '{LABEL_TEXT_STATISTICS}',
@@ -1928,7 +1928,8 @@ export class Utility {
       evaluationReportLabelUtteranceStatistics.labelArrayAndMap,
       predictionScoreStructureArray,
       ambiguousCloseness,
-      lowConfidenceScoreThreshold);
+      lowConfidenceScoreThreshold,
+      unknownLabelPredictionThreshold);
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateEvaluationReportAnalyses()');
     // ---- NOTE ---- generate score output file lines.
     Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call Utility.generateScoreOutputLines()');
@@ -1995,7 +1996,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateEvaluationReportLabelUtteranceStatistics(
     evaluationSummary: string,
-    trainingSetLabels: string[],
+    dataSetLabels: string[],
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     evaluationSummaryTagIntentUtteranceStatistics: string,
@@ -2023,7 +2024,7 @@ export class Utility {
     const labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': {[id: string]: number};} =
-      Utility.buildStringIdNumberValueDictionaryFromStringArray(trainingSetLabels);
+      Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
     // ---- TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
@@ -2098,7 +2099,8 @@ export class Utility {
       'stringMap': {[id: string]: number};},
     predictionScoreStructureArray: PredictionScoreStructure[],
     ambiguousCloseness: number,
-    lowConfidenceScoreThreshold: number): {
+    lowConfidenceScoreThreshold: number,
+    unknownLabelPredictionThreshold: number): {
       'evaluationSummary': string;
       'ambiguousAnalysis': {
         'scoringAmbiguousUtterancesArrays': string[][];
@@ -2127,7 +2129,8 @@ export class Utility {
       'scoringAmbiguousUtteranceSimpleArrays': string[][];
     } = Utility.generateAmbiguousStatisticsAndHtmlTable(
       predictionScoreStructureArray,
-      ambiguousCloseness);
+      ambiguousCloseness,
+      unknownLabelPredictionThreshold);
     evaluationSummary = evaluationSummary.replace(
       '{AMBIGUOUS}', ambiguousAnalysis.scoringAmbiguousUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateEvaluationReportAnalyses(), finished generating {AMBIGUOUS} content');
@@ -2437,7 +2440,8 @@ export class Utility {
 
   public static generateAmbiguousStatisticsAndHtmlTable(
     predictionScoreStructureArray: PredictionScoreStructure[],
-    ambiguousCloseness: number): {
+    ambiguousCloseness: number,
+    unknownLabelPredictionThreshold: number): {
       'scoringAmbiguousUtterancesArrays': string[][];
       'scoringAmbiguousUtterancesArraysHtml': string;
       'scoringAmbiguousUtteranceSimpleArrays': string[][];
@@ -2457,6 +2461,7 @@ export class Utility {
           const labelsPredictedConcatenated: string = predictionScoreStructure.labelsPredictedConcatenated;
           const ambiguousScoreStructureHtmlTable: string = Utility.selectedScoreStructureToHtmlTable(
             predictionScoreStructure,
+            unknownLabelPredictionThreshold,
             '',
             ['Label', 'Score', 'Closest Example'],
             ['30%', '10%', '60%'],
@@ -2559,6 +2564,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static selectedScoreStructureToHtmlTable(
     predictionScoreStructure: PredictionScoreStructure,
+    unknownLabelPredictionThreshold: number,
     tableDescription: string = '',
     selectedOutputDataArraryHeaders: string[] = [],
     outputDataColumnWidthSettings: string[] = [],
@@ -2569,6 +2575,7 @@ export class Utility {
     return Utility.selectedScoreResultsToHtmlTable(
       predictionScoreStructure.scoreResultArray,
       indexes,
+      unknownLabelPredictionThreshold,
       tableDescription,
       selectedOutputDataArraryHeaders,
       outputDataColumnWidthSettings);
@@ -2578,6 +2585,7 @@ export class Utility {
   public static selectedScoreResultsToHtmlTable(
     scoreResultArray: Result[],
     indexes: number[],
+    unknownLabelPredictionThreshold: number,
     tableDescription: string = '',
     selectedOutputDataArraryHeaders: string[] = [],
     outputDataColumnWidthSettings: string[] = []): string {
@@ -2586,7 +2594,7 @@ export class Utility {
         if ((x >= 0) && (x < scoreResultArray.length)) {
           return [scoreResultArray[x].label.name, scoreResultArray[x].score, scoreResultArray[x].closesttext];
         }
-        return [Utility.UnknownLabel, 0, ''];
+        return [Utility.UnknownLabel, unknownLabelPredictionThreshold, ''];
       });
     const selectedScoreStructureHtmlTable: string = Utility.convertDataArraysToHtmlTable(
       tableDescription,

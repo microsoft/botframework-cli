@@ -44,12 +44,33 @@ describe('Test Suite - evaluate', () => {
     if (toCleanUpAfterUnitTest) {
       try {
         Utility.deleteFile(trainingSetScoresOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${trainingSetScoresOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(trainingSetGroundTruthJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${trainingSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(trainingSetPredictionJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${trainingSetPredictionJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(trainingSetSummaryHtmlOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${trainingSetSummaryHtmlOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(trainingSetLabelsOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${trainingSetLabelsOutputFilename}", error=${error}`);
+      }
+      try {
         fs.rmdirSync(outputPath);
       } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output folder=${outputPath}, error=${error}`);
       }
     }
     Utility.debuggingLog('THE END - Test.0000 OrchestratorEvaluate.runAsync()');

@@ -21,9 +21,9 @@ import {Utility} from './utility';
 export class OrchestratorTest {
   public static readonly testingSetScoresOutputFilename: string = 'orchestrator_testing_set_scores.txt';
 
-  public static readonly testingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_testing_set_ground_truth.json';
+  public static readonly testingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_testing_set_ground_truth_instances.json';
 
-  public static readonly testingSetPredictionJsonContentOutputFilename: string = 'orchestrator_testing_set_prediction.json';
+  public static readonly testingSetPredictionJsonContentOutputFilename: string = 'orchestrator_testing_set_prediction_instances.json';
 
   public static readonly testingSetSummaryHtmlOutputFilename: string = 'orchestrator_testing_set_summary.html';
 

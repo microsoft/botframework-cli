@@ -61,6 +61,10 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
             label + ":" + i + ", total     = " + binaryConfusionMatrix.getTotal());
     }
     Utility.debuggingLog(
+        "micro-quantile metrics = " + confusionMatrix.getMicroQuantileMetrics());
+    Utility.debuggingLog(
+        "macro-quantile metrics = " + confusionMatrix.getMacroQuantileMetrics());
+    Utility.debuggingLog(
         "micro-average metrics = " + confusionMatrix.getMicroAverageMetrics());
     Utility.debuggingLog(
         "summation-micro-average metrics = " + confusionMatrix.getSummationMicroAverageMetrics());

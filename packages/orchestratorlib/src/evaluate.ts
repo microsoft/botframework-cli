@@ -20,9 +20,9 @@ import {Utility} from './utility';
 export class OrchestratorEvaluate {
   public static readonly trainingSetScoresOutputFilename: string = 'orchestrator_training_set_scores.txt';
 
-  public static readonly trainingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_training_set_ground_truth.json';
+  public static readonly trainingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_training_set_ground_truth_instances.json';
 
-  public static readonly trainingSetPredictionJsonContentOutputFilename: string = 'orchestrator_training_set_prediction.json';
+  public static readonly trainingSetPredictionJsonContentOutputFilename: string = 'orchestrator_training_set_prediction_instances.json';
 
   public static readonly trainingSetSummaryHtmlOutputFilename: string = 'orchestrator_training_set_summary.html';
 

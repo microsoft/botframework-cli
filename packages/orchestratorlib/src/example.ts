@@ -6,7 +6,11 @@
 import {Label} from './label';
 
 export class Example {
-  public static newIntentExample(text: string, labels: string[], spanOffset: number = 0, spanLength: number = 0): Example {
+  public static newIntentExample(
+    text: string,
+    labels: string[],
+    spanOffset: number = 0,
+    spanLength: number = 0): Example {
     return new Example(text, labels.map((x: string) => Label.newIntentLabel(x, spanOffset, spanLength)));
   }
 

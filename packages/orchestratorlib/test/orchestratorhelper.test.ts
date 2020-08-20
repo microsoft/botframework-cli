@@ -10,6 +10,8 @@ import {} from 'mocha';
 // import {LabelType} from '../src/labeltype';
 import {Label} from '../src/label';
 // import {Span} from '../src/span';
+import {ScoreEntity} from '../src/scoreentity';
+import {ScoreIntent} from '../src/scoreintent';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
@@ -346,7 +348,117 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
   });
 
-  it('Test.0300 OrchestratorHelper.getOutputPath()', () => {
+  it('Test.0300 OrchestratorHelper.getJsonScoresUtterances()', function () {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    const utterance0: string = 'I want to see Medal for the General';
+    const utterance1: string = 'Play the top music from The Railway Children off Last Fm .';
+    const jsonObjectArray: {
+      'text': string;
+      'intents': string[];
+      'entities': {
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'text': string;
+      }[];
+      'intent_scores': {
+        'intent': string;
+        'score': number;
+      }[];
+      'entity_scores': {
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'score': number;
+      }[];
+    }[] = [
+      {
+        text: utterance0,
+        intents: ['Label0'],
+        entities: [
+          {
+            entity: 'movie_name',
+            startPos: 14,
+            endPos: 34,
+            text: 'Medal for the General',
+          },
+        ],
+        intent_scores: [
+          {
+            intent: 'Label0',
+            score: 0.8,
+          },
+          {
+            intent: 'Label1',
+            score: 0.6,
+          },
+        ],
+        entity_scores: [
+          {
+            entity: 'movie_name',
+            startPos: 14,
+            endPos: 34,
+            score: 0.7,
+          },
+        ],
+      },
+      {
+        text: utterance1,
+        intents: ['Label0', 'Label1'],
+        entities: [
+          {
+            entity: 'sort',
+            startPos: 9,
+            endPos: 11,
+            text: 'top',
+          },
+          {
+            entity: 'artist',
+            startPos: 24,
+            endPos: 43,
+            text: 'The Railway Children',
+          },
+          {
+            entity: 'service',
+            startPos: 49,
+            endPos: 55,
+            text: 'Last Fm',
+          },
+        ],
+        intent_scores: [
+          {
+            intent: 'Label0',
+            score: 0.8,
+          },
+          {
+            intent: 'Label1',
+            score: 0.6,
+          },
+        ],
+        entity_scores: [
+          {
+            entity: 'movie_name',
+            startPos: 14,
+            endPos: 34,
+            score: 0.7,
+          },
+        ],
+      },
+    ];
+    const utteranceLabelScoresMap: { [id: string]: ScoreIntent[] } = {};
+    const utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] } = {};
+    OrchestratorHelper.getJsonScoresUtterances(
+      jsonObjectArray,
+      utteranceLabelScoresMap,
+      utteranceEntityLabelScoresMap);
+    assert.ok(Object.entries(utteranceLabelScoresMap).length === 2,
+      `Object.entries(utteranceLabelScoresMap).length=${Object.entries(utteranceLabelScoresMap).length}`);
+    assert.ok(Object.entries(utteranceEntityLabelScoresMap).length === 2,
+      `Object.entries(utteranceEntityLabelScoresMap).length=${Object.entries(utteranceEntityLabelScoresMap).length}`);
+  });
+
+  it('Test.0400 OrchestratorHelper.getOutputPath()', () => {
     const baseOutputDir: string = './test/fixtures/output';
     const baseInputDir: string = './test/fixtures/dispatch/';
 
