@@ -66,7 +66,7 @@ export class Result {
         "startPos": number;
         "endPos": number;
         "score": number; } {
-        if (this.label.labeltype != LabelType.Entity) {
+        if (this.label.labeltype !== LabelType.Entity) {
             Utility.debuggingThrow(`this.label.labeltype|${this.label.labeltype}| !== LabelType.Entity|${LabelType.Entity}|`);
         }
         return {
@@ -80,7 +80,7 @@ export class Result {
     public toScoreIntentObject(): {
         "intent": string;
         "score": number; } {
-        if (this.label.labeltype != LabelType.Intent) {
+        if (this.label.labeltype !== LabelType.Intent) {
             Utility.debuggingThrow(`this.label.labeltype|${this.label.labeltype}| !== LabelType.Intent|${LabelType.Intent}|`);
         }
         return {
