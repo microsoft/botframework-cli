@@ -62,7 +62,7 @@ _See code: [src/commands/luis/index.ts](https://github.com/microsoft/botframewor
 
 ## `bf luis:application:assignazureaccount`
 
-Assign a LUIS azure accounts to an application
+Assigns an azure account to the LUIS application.
 
 ```
 USAGE
@@ -92,7 +92,7 @@ _See code: [src/commands/luis/application/assignazureaccount.ts](https://github.
 
 ## `bf luis:application:create`
 
-Creates a new LUIS application
+Creates a new LUIS application.
 
 ```
 USAGE
@@ -126,7 +126,7 @@ _See code: [src/commands/luis/application/create.ts](https://github.com/microsof
 
 ## `bf luis:application:delete`
 
-Deletes a LUIS application
+Deletes a LUIS application.
 
 ```
 USAGE
@@ -218,7 +218,7 @@ _See code: [src/commands/luis/application/list.ts](https://github.com/microsoft/
 
 ## `bf luis:application:publish`
 
-Publishes application's version
+Publishes a specific version of the application.
 
 ```
 USAGE
@@ -251,7 +251,7 @@ _See code: [src/commands/luis/application/publish.ts](https://github.com/microso
 
 ## `bf luis:application:query`
 
-Queries application for intent predictions
+Queries application for intent predictions.
 
 ```
 USAGE
@@ -282,7 +282,7 @@ _See code: [src/commands/luis/application/query.ts](https://github.com/microsoft
 
 ## `bf luis:application:rename`
 
-Renames the application and updates its description
+Updates the name or description of the LUIS application.
 
 ```
 USAGE
@@ -309,7 +309,7 @@ _See code: [src/commands/luis/application/rename.ts](https://github.com/microsof
 
 ## `bf luis:application:show`
 
-Shows application information
+Shows application information.
 
 ```
 USAGE
@@ -332,7 +332,7 @@ _See code: [src/commands/luis/application/show.ts](https://github.com/microsoft/
 
 ## `bf luis:build`
 
-Build lu files to train and publish luis applications
+Build lu files to train and publish LUIS applications.
 
 ```
 USAGE
@@ -384,7 +384,7 @@ _See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframewor
 
 ## `bf luis:convert`
 
-Convert .lu file(s) to a LUIS application JSON model or vice versa
+Convert .lu file(s) to a LUIS application JSON model or vice versa.
 
 ```
 USAGE
@@ -409,7 +409,7 @@ _See code: [src/commands/luis/convert.ts](https://github.com/microsoft/botframew
 
 ## `bf luis:cross-train`
 
-Lu and Qna cross train tool
+LUIS and QnA cross train tool.
 
 ```
 USAGE
@@ -438,7 +438,7 @@ _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botfr
 
 ## `bf luis:endpoints:list`
 
-Returns available deployment endpoints
+Returns available deployment endpoints.
 
 ```
 USAGE
@@ -468,7 +468,7 @@ _See code: [src/commands/luis/endpoints/list.ts](https://github.com/microsoft/bo
 
 ## `bf luis:generate:cs`
 
-Generate:cs generates a strongly typed C# source code from an exported (json) LUIS model.
+Generates strongly typed C# source code from an exported (json) LUIS model.
 
 ```
 USAGE
@@ -486,7 +486,7 @@ _See code: [src/commands/luis/generate/cs.ts](https://github.com/microsoft/botfr
 
 ## `bf luis:generate:ts`
 
-Generate:ts generates a strongly typed typescript source code from an exported (json) LUIS model.
+Generates a strongly typed typescript source code from an exported (json) LUIS model.
 
 ```
 USAGE
@@ -504,7 +504,7 @@ _See code: [src/commands/luis/generate/ts.ts](https://github.com/microsoft/botfr
 
 ## `bf luis:test`
 
-Test a .lu file or LUIS application JSON model against a published LUIS model
+Test a .lu file or LUIS application model (JSON) against a published LUIS model.
 
 ```
 USAGE
@@ -535,7 +535,7 @@ _See code: [src/commands/luis/test.ts](https://github.com/microsoft/botframework
 
 ## `bf luis:train:run`
 
-Issues asynchronous training request for LUIS application
+Issues asynchronous training request for a LUIS application.
 
 ```
 USAGE
@@ -564,7 +564,7 @@ _See code: [src/commands/luis/train/run.ts](https://github.com/microsoft/botfram
 
 ## `bf luis:train:show`
 
-Shows training status
+Gets the training status of all LUIS models (intents and entities) for the specified LUIS app. 
 
 ```
 USAGE
@@ -590,7 +590,7 @@ _See code: [src/commands/luis/train/show.ts](https://github.com/microsoft/botfra
 
 ## `bf luis:translate`
 
-Translate given LUIS application JSON model or lu file(s)
+Translate given LUIS application model (JSON) or .lu file(s).
 
 ```
 USAGE
@@ -638,7 +638,7 @@ _See code: [src/commands/luis/version/clone.ts](https://github.com/microsoft/bot
 
 ## `bf luis:version:delete`
 
-Deletes a LUIS application version
+Deletes a LUIS application version.
 
 ```
 USAGE
@@ -665,7 +665,7 @@ _See code: [src/commands/luis/version/delete.ts](https://github.com/microsoft/bo
 
 ## `bf luis:version:export`
 
-Exports a LUIS application to JSON format
+Exports a LUIS application to a file in JSON format.
 
 ```
 USAGE
@@ -734,7 +734,7 @@ _See code: [src/commands/luis/version/import.ts](https://github.com/microsoft/bo
 
 ## `bf luis:version:list`
 
-Returns application's versions
+Returns a list of version for a LUIS application.
 
 ```
 USAGE
@@ -769,7 +769,7 @@ _See code: [src/commands/luis/version/list.ts](https://github.com/microsoft/botf
 
 ## `bf luis:version:rename`
 
-Renames application version
+Renames the LUIS application version.
 
 ```
 USAGE
