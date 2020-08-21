@@ -1,12 +1,15 @@
-@microsoft/bf-orchestrator
+@microsoft/bf-orchestrator-cli
 ======================
 
-This package is intended for Microsoft use only and should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
+This package is not designed to be consumed as an independent package and should be consumed through @microsoft/botframework-cli instead.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
 
-# Prerequisite
+Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch).   Create and evaluate Orchestrator model used to arbitrate across multiple bot modules such as LUIS models, QnA knowledge bases and others.
+
+## Prerequisite
+
 - [Node.js](https://nodejs.org/) version 10 or higher
 - @microsoft/botframework-cli
 ```
@@ -19,14 +22,16 @@ cd <$(npm root -g)/@microsoft/botframework-cli/node_modules/orchestrator-core>
 ln -s libicudata.so /usr/lib/x86_64-linux-gnu/libicudata.so.60  
 ln -s libicuuc.so /usr/lib/x86_64-linux-gnu/libicuuc.so.60
 ln -s libicui18n.so /usr/lib/x86_64-linux-gnu/libicu18n.so.60
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)
+curl -LO -C - https://github.com/microsoft/onnxruntime/releases/download/v1.2.0/onnxruntime-linux-x64-1.2.0.tgz
+tar xvzf onnxruntime-linux-x64-1.2.0.tgz
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd):$(pwd)/onnxruntime-linux-x64-1.2.0/lib
 ```
 - For installation on Mac:
 ```
 brew install icu4c
 ```
 
-# Installation
+## Installation
 To install:
 
 ```
@@ -36,6 +41,7 @@ bf plugins:install @microsoft/bf-orchestrator-cli@beta
 # Commands
 
 <!-- commands -->
+
 * [`bf orchestrator`](#bf-orchestrator)
 * [`bf orchestrator:assess`](#bf-orchestratorassess)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
