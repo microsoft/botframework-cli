@@ -117,9 +117,8 @@ OPTIONS
 
 EXAMPLE
 
-       $ bf luis:application:create --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture 
-  {CULTURE}
-       --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
+       $ bf luis:application:create --endpoint={ENDPOINT} --subscriptionKey={SUBSCRIPTION_KEY} --name={NAME} --culture={CULTURE}
+       --description={DESCRIPTION} --versionId={INITIAL_VERSION_ID}
 ```
 
 _See code: [src/commands/luis/application/create.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/create.ts)_
