@@ -79,6 +79,10 @@ export class OrchestratorPredict {
 
   protected trainingFile: string = '';
 
+  protected predictingSetGroundTruthJsonContentOutputFilename: string = '';
+
+  protected predictingSetPredictionJsonContentOutputFilename: string = '';
+
   protected predictingSetScoreOutputFilename: string = '';
 
   protected predictingSetSummaryOutputFilename: string = '';
@@ -147,6 +151,8 @@ export class OrchestratorPredict {
         'confusionMatrixAverageMetricsHtml': string;}; };
     'predictionScoreStructureArray': PredictionScoreStructure[];
     'scoreOutputLines': string[][];
+    'groundTruthJsonContent': string;
+    'predictionJsonContent': string;
   } = Utility.generateEmptyEvaluationReport();
 
   /* eslint-disable max-params */
@@ -202,10 +208,20 @@ export class OrchestratorPredict {
     // if (!Utility.exists(this.trainingFile)) {
     //   Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
     // }
+    this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth._instancesjson');
+    this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction_instances.json');
     this.predictingSetScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_scores.txt');
     this.predictingSetSummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_summary.html');
     this.predictingLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_labels.txt');
     this.predictingSetSnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_training_set.blu');
+  }
+
+  public getPredictingSetGroundTruthJsonContentOutputFilename(): string {
+    return this.predictingSetGroundTruthJsonContentOutputFilename;
+  }
+
+  public getPredictingSetPredictionJsonContentOutputFilename(): string {
+    return this.predictingSetPredictionJsonContentOutputFilename;
   }
 
   public getPredictingSetScoreOutputFilename(): string {
@@ -582,9 +598,13 @@ export class OrchestratorPredict {
     Utility.generateEvaluationReportFiles(
       this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       this.currentEvaluationOutput.scoreOutputLines,
+      this.currentEvaluationOutput.groundTruthJsonContent,
+      this.currentEvaluationOutput.predictionJsonContent,
       evaluationSummary,
       this.getPredictingLabelsOutputFilename(),
       this.getPredictingSetScoreOutputFilename(),
+      this.getPredictingSetGroundTruthJsonContentOutputFilename(),
+      this.getPredictingSetPredictionJsonContentOutputFilename(),
       this.getPredictingSetSummaryOutputFilename());
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {

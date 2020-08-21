@@ -61,6 +61,10 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
             label + ":" + i + ", total     = " + binaryConfusionMatrix.getTotal());
     }
     Utility.debuggingLog(
+        "micro-quantile metrics = " + confusionMatrix.getMicroQuantileMetrics());
+    Utility.debuggingLog(
+        "macro-quantile metrics = " + confusionMatrix.getMacroQuantileMetrics());
+    Utility.debuggingLog(
         "micro-average metrics = " + confusionMatrix.getMicroAverageMetrics());
     Utility.debuggingLog(
         "summation-micro-average metrics = " + confusionMatrix.getSummationMicroAverageMetrics());
@@ -408,6 +412,28 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
+            "macroQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
             "microAverageMetrics": {
                 "accuracy": number,
                 "truePositives": number,

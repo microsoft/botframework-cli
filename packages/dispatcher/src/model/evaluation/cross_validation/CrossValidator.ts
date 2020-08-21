@@ -237,6 +237,28 @@ export class CrossValidator extends AbstractBaseEvaluator {
             "confusionMatrix": IConfusionMatrix,
             "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
             "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "microQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
+            "macroQuantileMetrics": {
+                "quantilesPrecisions": number[],
+                "quantilesRecalls": number[],
+                "quantilesF1Scores": number[],
+                "quantilesTruePositives": number[],
+                "quantilesFalsePositives": number[],
+                "quantilesTrueNegatives": number[],
+                "quantilesFalseNegatives": number[],
+                "quantilesAccuracies": number[],
+                "quantilesSupports": number[],
+                "total": number },
             "microAverageMetrics": {
                 "accuracy": number,
                 "truePositives": number,
@@ -318,6 +340,10 @@ export class CrossValidator extends AbstractBaseEvaluator {
                 "total": number } } =
             confusionMatrixCrossValidation.generateConfusionMatrixMetricStructure();
         Utility.debuggingLog(
+            `confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+            `${confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+            `confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+            `${confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
             `confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
             `,confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +

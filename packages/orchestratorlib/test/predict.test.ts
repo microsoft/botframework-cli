@@ -14,7 +14,7 @@ import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - predict', () => {
-  it('Test.0000 OrchestratorPredict - constructor()', async function () {
+  it('Test.0000 OrchestratorPredict', async function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
@@ -34,6 +34,8 @@ describe('Test Suite - predict', () => {
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
     const predictingSetScoreOutputFilename: string = orchestratorPredict.getPredictingSetScoreOutputFilename();
+    const predictingSetGroundTruthJsonContentOutputFilename: string = orchestratorPredict.getPredictingSetGroundTruthJsonContentOutputFilename();
+    const predictingSetPredictionJsonContentOutputFilename: string = orchestratorPredict.getPredictingSetPredictionJsonContentOutputFilename();
     const predictingSetSummaryOutputFilename: string = orchestratorPredict.getPredictingSetSummaryOutputFilename();
     const predictingLabelsOutputFilename: string = orchestratorPredict.getPredictingLabelsOutputFilename();
     const predictingSetSnapshotFilename: string = orchestratorPredict.getPredictingSetSnapshotFilename();
@@ -53,23 +55,41 @@ describe('Test Suite - predict', () => {
     if (toCleanUpAfterUnitTest) {
       try {
         Utility.deleteFile(predictingSetScoreOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output score file="${predictingSetScoreOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(predictingSetGroundTruthJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output ground-truth json file="${predictingSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(predictingSetPredictionJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output prediction json file="${predictingSetPredictionJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(predictingSetSummaryOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output summary file="${predictingSetSummaryOutputFilename}", error=${error}`);
+      }
+      try {
         Utility.deleteFile(predictingLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`error for deleting output files ('v' vommandlet): ${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output labels file="${predictingLabelsOutputFilename}", error=${error}`);
       }
       try {
         Utility.deleteFile(predictingSetSnapshotFilename);
       } catch (error) {
-        Utility.debuggingLog(`error for deleting output files ('s' commandlet): ${error}`);
+        Utility.debuggingLog(`error for deleting output files ('s' commandlet), FAILED deleting output snapshot file="${predictingSetSnapshotFilename}", error=${error}`);
       }
       try {
         fs.rmdirSync(outputPath);
       } catch (error) {
-        Utility.debuggingLog(`error for deleting output directory: ${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output folder=${outputPath}, error=${error}`);
       }
     }
-    Utility.debuggingLog('THE END - OrchestratorPredict - constructor()');
+    Utility.debuggingLog('THE END - OrchestratorPredict');
   });
 });
 

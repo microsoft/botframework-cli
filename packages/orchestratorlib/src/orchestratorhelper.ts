@@ -8,6 +8,8 @@ import * as fs from 'fs-extra';
 import {LabelType} from './labeltype';
 import {Label} from './label';
 import {Span} from './span';
+import {ScoreEntity} from './scoreentity';
+import {ScoreIntent} from './scoreintent';
 import {Utility} from './utility';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
@@ -546,27 +548,69 @@ export class OrchestratorHelper {
     utteranceEntityLabelsMap: { [id: string]: Label[] },
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
     try {
-      // eslint-disable-next-line no-prototype-builtins
-      if ((jsonObjectArray.length > 0) && (jsonObjectArray[0].hasOwnProperty('intents')) && (jsonObjectArray[0].hasOwnProperty('entities'))) {
+      if (jsonObjectArray.length > 0)  {
         jsonObjectArray.forEach((jsonObject: any) => {
           const utterance: string = jsonObject.text.trim();
-          const labels: string[] = jsonObject.intents;
-          const entities: any[] = jsonObject.entities;
-          labels.forEach((label: string) => {
-            OrchestratorHelper.addNewLabelUtterance(
-              utterance,
-              label,
-              hierarchicalLabel,
-              utteranceLabelsMap,
-              utteranceLabelDuplicateMap);
-          });
-          entities.forEach((entityEntry: any) => {
-            OrchestratorHelper.addNewEntityLabelUtterance(
-              utterance,
-              entityEntry,
-              utteranceEntityLabelsMap,
-              utteranceEntityLabelDuplicateMap);
-          });
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonObject.hasOwnProperty('intents')) {
+            const labels: string[] = jsonObject.intents;
+            labels.forEach((label: string) => {
+              OrchestratorHelper.addNewLabelUtterance(
+                utterance,
+                label,
+                hierarchicalLabel,
+                utteranceLabelsMap,
+                utteranceLabelDuplicateMap);
+            });
+          }
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonObject.hasOwnProperty('entities')) {
+            const entities: any[] = jsonObject.entities;
+            entities.forEach((entityEntry: any) => {
+              OrchestratorHelper.addNewEntityLabelUtterance(
+                utterance,
+                entityEntry,
+                utteranceEntityLabelsMap,
+                utteranceEntityLabelDuplicateMap);
+            });
+          }
+        });
+      }
+      return true;
+    } catch (error) {
+      return false;
+    }
+    return false;
+  }
+
+  static getJsonScoresUtterances(
+    jsonObjectArray: any,
+    utteranceLabelScoresMap: { [id: string]: ScoreIntent[] },
+    utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] }): boolean {
+    try {
+      if (jsonObjectArray.length > 0) {
+        jsonObjectArray.forEach((jsonObject: any) => {
+          const utterance: string = jsonObject.text.trim();
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonObject.hasOwnProperty('intent_scores')) {
+            const intentScores: any[] = jsonObject.intent_scores;
+            utteranceLabelScoresMap[utterance] = intentScores.map((intentScore: any) => {
+              const intent: string = intentScore.intent;
+              const score: number = intentScore.score;
+              return ScoreIntent.newScoreIntent(intent, score);
+            });
+          }
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonObject.hasOwnProperty('entity_scores')) {
+            const entityScores: any[] = jsonObject.entity_scores;
+            utteranceEntityLabelScoresMap[utterance] = entityScores.map((entityScore: any) => {
+              const entity: string = entityScore.entity;
+              const startPos: number = entityScore.startPos;
+              const endPos: number = entityScore.endPos;
+              const score: number = entityScore.score;
+              return ScoreEntity.newScoreEntityByPosition(entity, score, startPos, endPos);
+            });
+          }
         });
         return true;
       }

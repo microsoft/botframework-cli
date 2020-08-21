@@ -4,6 +4,9 @@
  */
 
 import {Label} from './label';
+import {LabelType} from './labeltype';
+
+import {Utility} from './utility';
 
 export class Result {
   public label: Label;
@@ -31,6 +34,34 @@ export class Result {
       label: this.label.toObject(),
       score: this.score,
       closesttext: this.closesttext,
+    };
+  }
+
+  public toScoreEntityObject(): {
+    'entity': string;
+    'startPos': number;
+    'endPos': number;
+    'score': number; } {
+    if (this.label.labeltype !== LabelType.Entity) {
+      Utility.debuggingThrow(`this.label.labeltype|${this.label.labeltype}| !== LabelType.Entity|${LabelType.Entity}|`);
+    }
+    return {
+      entity: this.label.name,
+      startPos: this.label.span.offset,
+      endPos: (this.label.span.offset + this.label.span.length - 1),
+      score: this.score,
+    };
+  }
+
+  public toScoreIntentObject(): {
+    'intent': string;
+    'score': number; } {
+    if (this.label.labeltype !== LabelType.Intent) {
+      Utility.debuggingThrow(`this.label.labeltype|${this.label.labeltype}| !== LabelType.Intent|${LabelType.Intent}|`);
+    }
+    return {
+      intent: this.label.name,
+      score: this.score,
     };
   }
 }

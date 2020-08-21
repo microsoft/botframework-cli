@@ -6,11 +6,93 @@
 import {Label} from "./Label";
 import {LabelType} from "./LabelType";
 import {Result} from "./Result";
+import {ScoreEntity} from "./ScoreEntity";
+import {ScoreIntent} from "./ScoreIntent";
 import {Span} from "./Span";
 
 import { Utility } from "../utility/Utility";
 
 export class LabelStructureUtility {
+    // eslint-disable-next-line max-params
+    public static getJsonIntentsEntitiesUtterances(
+        jsonObjectArray: any,
+        hierarchicalLabel: string,
+        utteranceLabelsMap: { [id: string]: string[] },
+        utteranceLabelDuplicateMap: Map<string, Set<string>>,
+        utteranceEntityLabelsMap: { [id: string]: Label[] },
+        utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+        try {
+            if (jsonObjectArray.length > 0) {
+                jsonObjectArray.forEach((jsonObject: any) => {
+                    const utterance: string = jsonObject.text.trim();
+                    // eslint-disable-next-line no-prototype-builtins
+                    if (jsonObject.hasOwnProperty("intents")) {
+                        const labels: string[] = jsonObject.intents;
+                        labels.forEach((label: string) => {
+                            LabelStructureUtility.addNewLabelUtterance(
+                              utterance,
+                              label,
+                              hierarchicalLabel,
+                              utteranceLabelsMap,
+                              utteranceLabelDuplicateMap);
+                            });
+                    }
+                    // eslint-disable-next-line no-prototype-builtins
+                    if (jsonObject.hasOwnProperty("entities")) {
+                        const entities: any[] = jsonObject.entities;
+                        entities.forEach((entityEntry: any) => {
+                            LabelStructureUtility.addNewEntityLabelUtterance(
+                              utterance,
+                              entityEntry,
+                              utteranceEntityLabelsMap,
+                              utteranceEntityLabelDuplicateMap);
+                        });
+                    }
+                });
+                return true;
+            }
+        } catch (error) {
+            return false;
+        }
+        return false;
+    }
+    public static getJsonScoresUtterances(
+        jsonObjectArray: any,
+        utteranceLabelScoresMap: { [id: string]: ScoreIntent[] },
+        utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] }): boolean {
+        try {
+            if (jsonObjectArray.length > 0) {
+                jsonObjectArray.forEach((jsonObject: any) => {
+                    const utterance: string = jsonObject.text.trim();
+                    // eslint-disable-next-line no-prototype-builtins
+                    if (jsonObject.hasOwnProperty("intent_scores")) {
+                        const intentScores: any[] = jsonObject.intent_scores;
+                        utteranceLabelScoresMap[utterance] = intentScores.map((intentScore: any) => {
+                            const intent: string = intentScore.intent;
+                            const score: number = intentScore.score;
+                            return ScoreIntent.newScoreIntent(intent, score);
+                        });
+                    }
+                    // eslint-disable-next-line no-prototype-builtins
+                    if (jsonObject.hasOwnProperty("entity_scores")) {
+                        const entityScores: any[] = jsonObject.entity_scores;
+                        utteranceEntityLabelScoresMap[utterance] = entityScores.map((entityScore: any) => {
+                            const entity: string = entityScore.entity;
+                            const startPos: number = entityScore.startPos;
+                            const endPos: number = entityScore.endPos;
+                            const score: number = entityScore.score;
+                            return ScoreEntity.newScoreEntityByPosition(entity, score, startPos, endPos);
+                        });
+                    }
+                });
+                return true;
+            }
+        } catch (error) {
+            return false;
+        }
+        return false;
+    }
+
     public static insertStringPairToStringIdStringSetNativeMap(
         key: string,
         value: string,

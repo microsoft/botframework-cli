@@ -21,6 +21,10 @@ import {Utility} from './utility';
 export class OrchestratorTest {
   public static readonly testingSetScoresOutputFilename: string = 'orchestrator_testing_set_scores.txt';
 
+  public static readonly testingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_testing_set_ground_truth_instances.json';
+
+  public static readonly testingSetPredictionJsonContentOutputFilename: string = 'orchestrator_testing_set_prediction_instances.json';
+
   public static readonly testingSetSummaryHtmlOutputFilename: string = 'orchestrator_testing_set_summary.html';
 
   public static readonly testingSetLabelsOutputFilename: string = 'orchestrator_testing_set_labels.txt';
@@ -67,6 +71,8 @@ export class OrchestratorTest {
       Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
     }
     const testingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetScoresOutputFilename);
+    const testingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetGroundTruthJsonContentOutputFilename);
+    const testingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetPredictionJsonContentOutputFilename);
     const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
@@ -148,6 +154,8 @@ export class OrchestratorTest {
           'confusionMatrixAverageMetricsHtml': string;}; };
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
+      'groundTruthJsonContent': string;
+      'predictionJsonContent': string;
     } =
     Utility.generateEvaluationReport(
       UtilityLabelResolver.score,
@@ -177,9 +185,13 @@ export class OrchestratorTest {
     Utility.generateEvaluationReportFiles(
       evaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
       evaluationOutput.scoreOutputLines,
+      evaluationOutput.groundTruthJsonContent,
+      evaluationOutput.predictionJsonContent,
       evaluationSummary,
       testingSetLabelsOutputFilename,
       testingSetScoresOutputFilename,
+      testingSetGroundTruthJsonContentOutputFilename,
+      testingSetPredictionJsonContentOutputFilename,
       testingSetSummaryHtmlOutputFilename);
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {

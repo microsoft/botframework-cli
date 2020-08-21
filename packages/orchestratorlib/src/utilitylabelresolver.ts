@@ -40,29 +40,33 @@ export class UtilityLabelResolver {
       'stringMap': {[id: string]: number};},
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionScoreStructure[] {
+    // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;
+    // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     const predictionScoreStructureArray: PredictionScoreStructure[] = [];
     for (const utteranceLabels of utteranceLabelsPairArray) {
       if (utteranceLabels) {
         const utterance: string = utteranceLabels[0];
         if (Utility.isEmptyString(utterance)) {
-          continue;
+          Utility.debuggingThrow('UtilityLabelResolver.score() failed to produce a prediction for an empty utterance');
         }
         const labels: string[] = utteranceLabels[1];
-        const labelsIndexes: number[] = labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x));
+        const labelsIndexes: number[] = labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
         const labelsConcatenated: string = labels.join(',');
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), before calling score(), utterance=${utterance}`);
         }
         const scoreResults: any = LabelResolver.score(utterance, LabelType.Intent);
         if (!scoreResults) {
-          continue;
+          Utility.debuggingThrow(`UtilityLabelResolver.score() failed to produce a prediction for utterance "${utterance}"`);
         }
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), scoreResults=${JSON.stringify(scoreResults)}`);
+          Utility.debuggingLog(`UtilityLabelResolver.score(), scoreResults.length=${scoreResults.length}`);
         }
         const scoreResultArray: Result[] = Utility.scoreResultsToArray(scoreResults, labelArrayAndMap.stringMap);
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(scoreResultArray)=${JSON.stringify(scoreResultArray)}`);
+          Utility.debuggingLog(`UtilityLabelResolver.score(), scoreResultArray.length=${scoreResultArray.length}`);
         }
         const scoreArray: number[] = scoreResultArray.map((x: Result) => x.score);
         const argMax: { 'indexesMax': number[]; 'max': number } =
@@ -75,25 +79,45 @@ export class UtilityLabelResolver {
         const labelsPredictedScore: number = argMax.max;
         let labelsPredictedIndexes: number[] = argMax.indexesMax;
         let labelsPredicted: string[] = labelsPredictedIndexes.map((x: number) => scoreResultArray[x].label.name);
-        if (labelsPredictedScore < unknownLabelPredictionThreshold) {
-          labelsPredictedIndexes = [Utility.safeAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
+        let labelsPredictedClosestText: string[] = labelsPredictedIndexes.map((x: number) => scoreResultArray[x].closesttext);
+        const unknownPrediction: boolean = labelsPredictedScore < unknownLabelPredictionThreshold;
+        if (unknownPrediction) {
+          labelsPredictedIndexes = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
           labelsPredicted = [Utility.UnknownLabel];
+          labelsPredictedClosestText = [];
+        }
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedIndexes)=${JSON.stringify(labelsPredictedIndexes)}`);
+          Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredicted)=${JSON.stringify(labelsPredicted)}`);
         }
         const labelsPredictedConcatenated: string = labelsPredicted.join(',');
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedConcatenated)="${JSON.stringify(labelsPredictedConcatenated)}"`);
+        }
         const labelsPredictedEvaluation: number = Utility.evaluateMultiLabelSubsetPrediction(labels, labelsPredicted);
-        const labelsPredictedClosestText: string[] = labelsPredictedIndexes.map((x: number) => scoreResultArray[x].closesttext);
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), labelsPredictedEvaluation="${labelsPredictedEvaluation}"`);
+        }
         const predictedScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
           labelsPredictedIndexes,
+          unknownLabelPredictionThreshold,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), predictedScoreStructureHtmlTable="${predictedScoreStructureHtmlTable}"`);
+        }
         const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArray,
-          labels.map((x: string) => Utility.safeAccessStringMap(labelArrayAndMap.stringMap, x)),
+          labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x)),
+          unknownLabelPredictionThreshold,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
+        }
         predictionScoreStructureArray.push(new PredictionScoreStructure(
           utterance,
           labelsPredictedEvaluation,
@@ -109,6 +133,9 @@ export class UtilityLabelResolver {
           scoreArray,
           predictedScoreStructureHtmlTable,
           labelsScoreStructureHtmlTable));
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.score(), finished scoring for utterance "${utterance}"`);
+        }
         // ---- NOTE ---- debugging ouput.
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           for (const result of scoreResults) {

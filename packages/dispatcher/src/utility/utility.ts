@@ -2041,6 +2041,169 @@ export class Utility {
         return entryname;
     }
 
+    public static carefullyAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
+        if (stringMap === undefined) {
+            Utility.debuggingThrow(
+                "stringMap === undefined");
+        }
+        const value: number = stringMap[key];
+        if (value === undefined) {
+            Utility.debuggingThrow(
+                `FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+        }
+        return value;
+    }
+
+    public static carefullyAccessAnyArray(anyArray: any[], index: number): any {
+        if (anyArray === undefined) {
+            Utility.debuggingThrow(
+                "anyArray === undefined");
+        }
+        if (index < 0) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, anyArray.length=${anyArray.length}`);
+        }
+        if (index >= anyArray.length) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, anyArray.length=${anyArray.length}`);
+        }
+        const value: any = anyArray[index];
+        if (value === undefined) {
+            Utility.debuggingThrow(
+                `FAIL to use a index ${index} to access a anyArray ${Utility.jsonStringify(anyArray)}`);
+        }
+        return value;
+    }
+    public static carefullyAccessStringArray(stringArray: string[], index: number): string {
+        if (stringArray === undefined) {
+            Utility.debuggingThrow(
+                "stringArray === undefined");
+        }
+        if (index < 0) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, stringArray.length=${stringArray.length}`);
+        }
+        if (index >= stringArray.length) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, stringArray.length=${stringArray.length}`);
+        }
+        const value: string = stringArray[index];
+        if (value === undefined) {
+            Utility.debuggingThrow(
+                `FAIL to use a index ${index} to access a stringArray ${Utility.jsonStringify(stringArray)}`);
+        }
+        return value;
+    }
+    public static carefullyAccessNumberArray(numberArray: number[], index: number): number {
+        if (numberArray === undefined) {
+            Utility.debuggingThrow(
+                "numberArray === undefined");
+        }
+        if (index < 0) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, numberArray.length=${numberArray.length}`);
+        }
+        if (index >= numberArray.length) {
+            Utility.debuggingThrow(
+                `index ${index} not in range, numberArray.length=${numberArray.length}`);
+        }
+        const value: number = numberArray[index];
+        if (value === undefined) {
+            Utility.debuggingThrow(
+                `FAIL to use a index ${index} to access a numberArray ${Utility.jsonStringify(numberArray)}`);
+        }
+        return value;
+    }
+
+    public static safeAccessAnyArray(anyArray: any[], index: number): any {
+        if (anyArray === undefined) {
+            return undefined;
+        }
+        if (index < 0) {
+            return undefined;
+        }
+        if (index >= anyArray.length) {
+            return undefined;
+        }
+        const value: any = anyArray[index];
+        return value;
+    }
+    public static safeAccessStringArray(stringArray: string[], index: number): string|undefined {
+        if (stringArray === undefined) {
+            return undefined;
+        }
+        if (index < 0) {
+            return undefined;
+        }
+        if (index >= stringArray.length) {
+            return undefined;
+        }
+        const value: string = stringArray[index];
+        return value;
+    }
+    public static safeAccessNumberArray(numberArray: number[], index: number): number|undefined {
+        if (numberArray === undefined) {
+            return undefined;
+        }
+        if (index < 0) {
+            return undefined;
+        }
+        if (index >= numberArray.length) {
+            return undefined;
+        }
+        const value: number = numberArray[index];
+        return value;
+    }
+
+    public static canAccessAnyArray(anyArray: any[], index: number): boolean {
+        if (anyArray === undefined) {
+            return false;
+        }
+        if (index < 0) {
+            return false;
+        }
+        if (index >= anyArray.length) {
+            return false;
+        }
+        const value: any = anyArray[index];
+        if (value === undefined) {
+            return false;
+        }
+        return true;
+    }
+    public static canAccessStringArray(stringArray: string[], index: number): boolean {
+        if (stringArray === undefined) {
+            return false;
+        }
+        if (index < 0) {
+            return false;
+        }
+        if (index >= stringArray.length) {
+            return false;
+        }
+        const value: string = stringArray[index];
+        if (value === undefined) {
+            return false;
+        }
+        return true;
+    }
+    public static canAccessNumberArray(numberArray: number[], index: number): boolean {
+        if (numberArray === undefined) {
+            return false;
+        }
+        if (index < 0) {
+            return false;
+        }
+        if (index >= numberArray.length) {
+            return false;
+        }
+        const value: number = numberArray[index];
+        if (value === undefined) {
+            return false;
+        }
+        return true;
+    }
+
     public static getObjectMd5Hash(objectValue: object): string|Int32Array {
         return Utility.getStringMd5Hash(Utility.jsonStringify(objectValue));
     }
@@ -2075,6 +2238,9 @@ export class Utility {
         return hash;
     }
 
+    public static isEmptyValueCountPairArray(inputArray: Array<[number, number]>): boolean {
+        return !(inputArray && inputArray.length > 0);
+    }
     public static isEmptyNumberF32I32U8Arrays(inputArray: Float32Array[] | Int32Array[] | Uint8Array[]): boolean {
         return !(inputArray && inputArray.length > 0);
     }
@@ -2097,6 +2263,9 @@ export class Utility {
         return !(inputArrays && inputArrays.length > 0);
     }
     public static isEmptyGenericArray<T>(inputArray: T[]): boolean {
+        return !(inputArray && inputArray.length > 0);
+    }
+    public static isEmptyAnyArray(inputArray: any[]): boolean {
         return !(inputArray && inputArray.length > 0);
     }
     public static isEmptyBooleanArray(inputArray: boolean[]): boolean {
@@ -2467,6 +2636,169 @@ export class Utility {
             sparseIndexedMap.set(key, value);
         }
         return sparseIndexedMap;
+    }
+
+    public static sortAnyArray(inputAnyArray: any[]): any[] {
+        if (Utility.isEmptyAnyArray(inputAnyArray)) { return []; }
+        return inputAnyArray.sort(
+          (n1: any, n2: any) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+    }
+    public static sortNumberArray(inputNumberArray: number[]): number[] {
+        if (Utility.isEmptyNumberArray(inputNumberArray)) { return []; }
+        return inputNumberArray.sort(
+          (n1: number, n2: number) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+    }
+    public static sortStringArray(inputStringArray: string[]): string[] {
+        if (Utility.isEmptyStringArray(inputStringArray)) { return []; }
+        return inputStringArray.sort(
+          (n1: string, n2: string) => {
+            if (n1 > n2) {
+              return 1;
+            }
+            if (n1 < n2) {
+              return -1;
+            }
+            return 0;
+          });
+    }
+    public static sortValueCountPairArray(inputValueCountPairArray: Array<[number, number]>): Array<[number, number]> {
+        if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return []; }
+        return inputValueCountPairArray.sort(
+            (valueCountPair1: [number, number], valueCountPair2: [number, number]) => {
+                if (valueCountPair1[0] > valueCountPair2[0]) {
+                    return 1;
+                }
+                if (valueCountPair1[0] < valueCountPair2[0]) {
+                    return -1;
+                }
+                return 0;
+          });
+    }
+
+    public static findMedian(
+        inputNumberArray: number[]): number|undefined {
+        if (Utility.isEmptyNumberArray(inputNumberArray)) { return undefined; }
+        const sortedNumberArray: number[] =
+            Utility.sortNumberArray(inputNumberArray);
+        if (Utility.isEmptyNumberArray(sortedNumberArray)) { return undefined; }
+        const count: number = sortedNumberArray.length;
+        let median: number;
+        {
+            const middleIndex: number = Math.floor(count / 2);
+            if (count % 2 === 0) {
+                median = (sortedNumberArray[middleIndex] + sortedNumberArray[middleIndex - 1]) / 2;
+            } else {
+                median = sortedNumberArray[middleIndex];
+            }
+        }
+        return median;
+    }
+    public static findValueCountPairMedian(
+        inputValueCountPairArray: Array<[number, number]>): number|undefined {
+        if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return undefined; }
+        const sortedValueCountPairArray: Array<[number, number]> =
+            Utility.sortValueCountPairArray(inputValueCountPairArray);
+        if (Utility.isEmptyValueCountPairArray(sortedValueCountPairArray)) { return undefined; }
+        const totalCount: number = sortedValueCountPairArray.reduce(
+            (accumulative: number, entry: [number, number]) => accumulative + entry[1], 0);
+        if (totalCount > 0) {
+            const middleCount: number = Math.floor(totalCount / 2);
+            const isEven: boolean = (totalCount % 2) === 0;
+            let accumulativeCountPrevious: number = 0;
+            let accumulativeCount: number = 0;
+            // tslint:disable-next-line: prefer-for-of
+            for (let index: number = 0; index < sortedValueCountPairArray.length; index++) {
+                const count: number = sortedValueCountPairArray[index][1];
+                accumulativeCount += count;
+                if (accumulativeCount > middleCount) {
+                    const value: number = sortedValueCountPairArray[index][0];
+                    if (!isEven) {
+                        return value;
+                    }
+                    if ((middleCount - accumulativeCountPrevious) > 0) {
+                        return value;
+                    }
+                    const valuePrevious: number = sortedValueCountPairArray[index - 1][0];
+                    return (value + valuePrevious) / 2;
+                }
+                accumulativeCountPrevious = accumulativeCount;
+            }
+        }
+        return undefined;
+    }
+    public static findQuantiles(
+        inputNumberArray: number[],
+        quantileConfiguration: number): number[]|undefined {
+        if (!quantileConfiguration || (quantileConfiguration < 2)) {
+            return undefined;
+        }
+        if (Utility.isEmptyNumberArray(inputNumberArray)) { return undefined; }
+        const sortedNumberArray: number[] =
+            Utility.sortNumberArray(inputNumberArray);
+        if (Utility.isEmptyNumberArray(sortedNumberArray)) { return undefined; }
+        const count: number = sortedNumberArray.length;
+        const step: number = count / quantileConfiguration;
+        if (step < 1)  { return undefined; }
+        const quantiles: number[] = [sortedNumberArray[0]];
+        let currentQuantileIndex: number = 0;
+        for (let quantileIndex: number = 0; quantileIndex < quantileConfiguration - 1; quantileIndex ++) {
+            currentQuantileIndex += step;
+            quantiles.push(sortedNumberArray[Math.floor(currentQuantileIndex)]);
+        }
+        quantiles.push(sortedNumberArray[sortedNumberArray.length - 1]);
+        return quantiles;
+    }
+    public static findValueCountPairQuantiles(
+        inputValueCountPairArray: Array<[number, number]>,
+        quantileConfiguration: number): number[]|undefined {
+        if (!quantileConfiguration || (quantileConfiguration < 2)) {
+            return undefined;
+        }
+        if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return undefined; }
+        const sortedValueCountPairArray: Array<[number, number]> =
+            Utility.sortValueCountPairArray(inputValueCountPairArray);
+        if (Utility.isEmptyValueCountPairArray(sortedValueCountPairArray)) { return undefined; }
+        const totalCount: number = sortedValueCountPairArray.reduce(
+            (accumulative: number, entry: [number, number]) => accumulative + entry[1], 0);
+        const step: number = totalCount / quantileConfiguration;
+        if (step < 1)  { return undefined; }
+        const quantiles: number[] = [sortedValueCountPairArray[0][0]];
+        let currentQuantileIndex: number = 0;
+        // ---- NOTE ---- the following nested-loop can be optimized.
+        for (let quantileIndex: number = 0; quantileIndex < quantileConfiguration - 1; quantileIndex ++) {
+            currentQuantileIndex += step;
+            let accumulativeCountPrevious: number = 0;
+            let accumulativeCount: number = 0;
+            // tslint:disable-next-line: prefer-for-of
+            for (let index: number = 0; index < sortedValueCountPairArray.length; index++) {
+                const count: number = sortedValueCountPairArray[index][1];
+                accumulativeCount += count;
+                if (accumulativeCount > currentQuantileIndex) {
+                    const value: number = sortedValueCountPairArray[index][0];
+                    quantiles.push(value);
+                    break;
+                }
+                accumulativeCountPrevious = accumulativeCount;
+            }
+        }
+        quantiles.push(sortedValueCountPairArray[sortedValueCountPairArray.length -  1][0]);
+        return quantiles;
     }
 
     protected static rngBurninIterations: number = 16384;

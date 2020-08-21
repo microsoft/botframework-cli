@@ -89,6 +89,10 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             "predictions": number[][] } =
             crossValidator.getCrossValidationResult();
         Utility.debuggingLog(
+            `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+            `crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
             `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
@@ -176,6 +180,10 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             "predictions": number[][] } =
             crossValidator.getCrossValidationResult();
         Utility.debuggingLog(
+            `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
+            `crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()=` +
+            `${crossValidationResult.confusionMatrixCrossValidation.getMacroQuantileMetrics()}` +
             `crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()=` +
             `${crossValidationResult.confusionMatrixCrossValidation.getMicroAverageMetrics()}` +
             `,crossValidationResult.confusionMatrixCrossValidation.getSummationMicroAverageMetrics()=` +
