@@ -55,7 +55,7 @@ export default class LuisApplicationAssignazureaccount extends Command {
       this.log(output)
 
     } catch (err) {
-      throw new CLIError(`Failed to assign accout: ${err}`)
+      throw new CLIError(`Failed to assign account: ${err}`)
     }
   }
 }
