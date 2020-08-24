@@ -152,12 +152,12 @@ export default class OrchestratorFinetune extends Command {
     return '4.8.0';
   }
 
-  private async writeOutputFile(input: string, output: string): Promise<string> {
+  private async writeOutputFile(inputPathConfiguration: string, output: string): Promise<string> {
     const tsvFilePath: string = path.join(output, 'create.tsv');
     let tsvContent: string = '';
     try {
       OrchestratorHelper.deleteFile(tsvFilePath);
-      tsvContent = await OrchestratorHelper.getTsvContent(input, false, true);
+      tsvContent = await OrchestratorHelper.getTsvContent(inputPathConfiguration, false, true);
       if (tsvContent.length === 0) {
         const errorMsg: string  = 'Invalid input';
         this.log(errorMsg);

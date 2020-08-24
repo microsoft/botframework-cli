@@ -15,8 +15,8 @@ import {OrchestratorAssess} from './assess';
 import {Utility} from '.';
 
 export class Orchestrator {
-  public static async createAsync(nlrPath: string, inputPath: string, outputPath: string, hierarchical: boolean = false): Promise<void> {
-    await OrchestratorCreate.runAsync(nlrPath, inputPath, outputPath, hierarchical);
+  public static async createAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false): Promise<void> {
+    await OrchestratorCreate.runAsync(nlrPath, inputPathConfiguration, outputPath, hierarchical);
   }
 
   // eslint-disable-next-line max-params
@@ -73,13 +73,13 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async testAsync(
-    nlrPath: string, inputPath: string, testPath: string, outputPath: string,
+    nlrPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
     await OrchestratorTest.runAsync(
-      nlrPath, inputPath, testPath, outputPath,
+      nlrPath, inputPathConfiguration, testPathConfiguration, outputPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
@@ -88,8 +88,8 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async assessAsync(
-    inputPath: string, predictionPath: string, outputPath: string): Promise<void> {
+    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string): Promise<void> {
     await OrchestratorAssess.runAsync(
-      inputPath, predictionPath, outputPath);
+      inputPathConfiguration, predictionPathConfiguration, outputPath);
   }
 }

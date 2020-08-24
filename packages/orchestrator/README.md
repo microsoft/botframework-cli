@@ -68,7 +68,7 @@ _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botf
 
 ## `bf orchestrator:assess`
 
-Create an evaluation report on a prediction file against a ground-truth file.
+Create an evaluation report on assessing predictions against ground-truth instances.
 
 ```
 USAGE
@@ -77,9 +77,11 @@ USAGE
 OPTIONS
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'assess' command help.
-  -i, --in=in                     Path to a ground-truth label file.
+  -i, --in=in                     Path to a ground-truth label file, or comma-separated paths to
+                                  a collection of files -- most uselful for crosss-valiaton.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --prediction=prediction     Path to a prediction label file.
+  -p, --prediction=prediction     Path to a prediction label file, or comma-separated paths to
+                                  a collection of files -- most uselful for crosss-valiaton.
 
 DESCRIPTION
 
@@ -142,8 +144,8 @@ DESCRIPTION
 INPUT
 
   The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TSV or a JSON array format.
-  The TSV file format only supports intent labels and it must have 2 columns, labels and utterance,
-  sepatated by a TAB. The label column can contains multiple labels delimited by camma.
+  The TSV file format only supports intent labels and it must have 2 columns, 'labels' and 'utterance',
+  sepatated by a TAB. The 'labels' column can contains multiple labels delimited by camma.
   For entitiy labels, a user can choose LU, LUIS, or a JSON array format
   that each entry contains a labeled utterance following the schema and example shown below.
   In the array, each JSON entry has a "text" attribute for an utterance. The utterance can have an array pf
@@ -290,7 +292,7 @@ _See code: [src\commands\orchestrator\assess.ts]https://github.com/microsoft/bot
 
 ## `bf orchestrator:build`
 
-Creates Orchestrator snapshot file and Orchestrator dialog definition file (optional) for each lu file in input folder.
+Creates Orchestrator snapshot (.blu) file and Orchestrator dialog definition file (optional) for each lu file in input folder.
 
 ```
 USAGE
@@ -300,7 +302,7 @@ OPTIONS
   -d, --debug
   -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator build command help
-  -i, --in=in        Path to lu file or folder with lu files  .
+  -i, --in=in        Path to lu file or folder with lu files.
   -m, --model=model  Path to Orchestrator model.
   -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
   --dialog           Generate multi language or cross train Orchestrator recognizers.
@@ -317,7 +319,7 @@ _See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/bot
 
 ## `bf orchestrator:create`
 
-Create orchestrator example file from .lu/.qna files, which represent bot modules
+Create orchestrator snapshot (.blu) file from .lu/.qna files, which represent bot modules
 
 ```
 USAGE
@@ -434,6 +436,9 @@ OPTIONS
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'predict' command help.
   -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
+                                  This argument is optional users can use the 'predict' command
+                                  to start an Orchestrator snapshot from scratch. The 'n' commandlet
+                                  can save the utterance labels into a snapshot (.blu) file.
   -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
   -m, --model=model               Directory or a config file hosting Orchestrator model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
@@ -536,7 +541,8 @@ OPTIONS
   -o, --out=out                   Directory where analysis and output files will be placed.
   -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
-  -t, --test=test                 Path to a test file.
+  -t, --test=test                 Path to a test file, or comma-separated paths to
+                                  a collection of test files -- most uselful for crosss-valiaton.
   -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION

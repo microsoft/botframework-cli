@@ -9,12 +9,12 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
 export class OrchestratorCreate {
-  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string, hierarchical: boolean = false) {
+  public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false) {
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
 
-    if (!inputPath || inputPath.length === 0) {
+    if (!inputPathConfiguration || inputPathConfiguration.length === 0) {
       throw new Error('Please provide path to input file/folder');
     }
 
@@ -23,15 +23,14 @@ export class OrchestratorCreate {
     }
 
     nlrPath = path.resolve(nlrPath);
-    inputPath = path.resolve(inputPath);
     outputPath = path.resolve(outputPath);
 
     await LabelResolver.createAsync(nlrPath);
-    LabelResolver.addExamples((await OrchestratorHelper.getUtteranceLabelsMap(inputPath, hierarchical)).utteranceLabelsMap);
+    LabelResolver.addExamples((await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)).utteranceLabelsMap);
 
     const snapshot: any = LabelResolver.createSnapshot();
 
-    const outPath: string = OrchestratorHelper.getOutputPath(outputPath, inputPath);
+    const outPath: string = OrchestratorHelper.getOutputPath(outputPath, inputPathConfiguration);
     OrchestratorHelper.writeToFile(outPath, snapshot);
     Utility.debuggingLog(`Snapshot written to ${outputPath}`);
   }

@@ -32,17 +32,17 @@ export class OrchestratorTest {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    nlrPath: string, inputPath: string, testPath: string, outputPath: string,
+    nlrPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
     ambiguousClosenessParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
-    if (Utility.isEmptyString(inputPath)) {
+    if (Utility.isEmptyString(inputPathConfiguration)) {
       Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
-    if (Utility.isEmptyString(testPath)) {
+    if (Utility.isEmptyString(testPathConfiguration)) {
       Utility.debuggingThrow(`Please provide a test file, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     if (Utility.isEmptyString(outputPath)) {
@@ -56,8 +56,8 @@ export class OrchestratorTest {
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
-    Utility.debuggingLog(`inputPath=${inputPath}`);
-    Utility.debuggingLog(`testPath=${testPath}`);
+    Utility.debuggingLog(`inputPath=${inputPathConfiguration}`);
+    Utility.debuggingLog(`testPath=${testPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`nlrPath=${nlrPath}`);
     Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
@@ -65,10 +65,10 @@ export class OrchestratorTest {
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
     // -----------------------------------------------------------------------
-    // ---- NOTE ---- load the training set
-    const trainingFile: string = inputPath;
-    if (!Utility.exists(trainingFile)) {
-      Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
+    // ---- NOTE ---- load the snapshot set
+    const snapshotFile: string = inputPathConfiguration;
+    if (!Utility.exists(snapshotFile)) {
+      Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${snapshotFile}`);
     }
     const testingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetScoresOutputFilename);
     const testingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetGroundTruthJsonContentOutputFilename);
@@ -77,25 +77,25 @@ export class OrchestratorTest {
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    await LabelResolver.createWithSnapshotAsync(nlrPath, trainingFile);
+    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
-    // ---- NOTE ---- process the training set, retrieve labels
+    // ---- NOTE ---- process the snapshot set, retrieve labels
     let processedUtteranceLabelsMap: {
       'utteranceLabelsMap': { [id: string]: string[] };
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': { [id: string]: Label[] };
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(trainingFile, false);
-    const trainingSetUtterancesLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
-    // ---- NOTE-NO-NEED ---- const trainingSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
-    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for training set');
-    const trainingSetLabels: string[] =
-      [...Object.values(trainingSetUtterancesLabelsMap)].reduce(
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(snapshotFile, false);
+    const snapshotSetUtterancesLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
+    // ---- NOTE-NO-NEED ---- const snapshotSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
+    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for snapshot set');
+    const snapshotSetLabels: string[] =
+      [...Object.values(snapshotSetUtterancesLabelsMap)].reduce(
         (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);
-    const trainingSetLabelSet: Set<string> =
-      new Set<string>(trainingSetLabels);
+    const snapshotSetLabelSet: Set<string> =
+      new Set<string>(snapshotSetLabels);
     // ---- NOTE ---- process the testing set.
-    processedUtteranceLabelsMap = await OrchestratorHelper.getUtteranceLabelsMap(testPath, false);
-    Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, trainingSetLabelSet);
+    processedUtteranceLabelsMap = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
+    Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
     const utteranceLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for testing set');
@@ -159,7 +159,7 @@ export class OrchestratorTest {
     } =
     Utility.generateEvaluationReport(
       UtilityLabelResolver.score,
-      trainingSetLabels,
+      snapshotSetLabels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       ambiguousCloseness,

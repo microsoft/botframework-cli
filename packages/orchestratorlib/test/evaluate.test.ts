@@ -26,11 +26,11 @@ describe('Test Suite - evaluate', () => {
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-    const trainingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetScoresOutputFilename);
-    const trainingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetGroundTruthJsonContentOutputFilename);
-    const trainingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetPredictionJsonContentOutputFilename);
-    const trainingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetSummaryHtmlOutputFilename);
-    const trainingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetLabelsOutputFilename);
+    const snapshotSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetScoresOutputFilename);
+    const snapshotSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetGroundTruthJsonContentOutputFilename);
+    const snapshotSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetPredictionJsonContentOutputFilename);
+    const snapshotSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetSummaryHtmlOutputFilename);
+    const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
     await OrchestratorEvaluate.runAsync(
       inputPath,
       outputPath,
@@ -43,29 +43,29 @@ describe('Test Suite - evaluate', () => {
     const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
     if (toCleanUpAfterUnitTest) {
       try {
-        Utility.deleteFile(trainingSetScoresOutputFilename);
+        Utility.deleteFile(snapshotSetScoresOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${trainingSetScoresOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${snapshotSetScoresOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(trainingSetGroundTruthJsonContentOutputFilename);
+        Utility.deleteFile(snapshotSetGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${trainingSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${snapshotSetGroundTruthJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(trainingSetPredictionJsonContentOutputFilename);
+        Utility.deleteFile(snapshotSetPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${trainingSetPredictionJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${snapshotSetPredictionJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(trainingSetSummaryHtmlOutputFilename);
+        Utility.deleteFile(snapshotSetSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${trainingSetSummaryHtmlOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${snapshotSetSummaryHtmlOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(trainingSetLabelsOutputFilename);
+        Utility.deleteFile(snapshotSetLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${trainingSetLabelsOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${snapshotSetLabelsOutputFilename}", error=${error}`);
       }
       try {
         fs.rmdirSync(outputPath);

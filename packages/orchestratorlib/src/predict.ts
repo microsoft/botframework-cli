@@ -77,7 +77,7 @@ export class OrchestratorPredict {
 
   protected unknownLabelPredictionThreshold: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
 
-  protected trainingFile: string = '';
+  protected snapshotFile: string = '';
 
   protected predictingSetGroundTruthJsonContentOutputFilename: string = '';
 
@@ -175,9 +175,6 @@ export class OrchestratorPredict {
     // }
     if (inputPath) {
       inputPath = path.resolve(inputPath);
-      if (!Utility.exists(inputPath)) {
-        Utility.debuggingThrow(`The input file path "${inputPath}" does not exist!`);
-      }
     } else {
       inputPath = '';
     }
@@ -203,17 +200,17 @@ export class OrchestratorPredict {
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
-    // ---- NOTE ---- load the training set
-    this.trainingFile = this.inputPath;
-    // if (!Utility.exists(this.trainingFile)) {
-    //   Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
+    // ---- NOTE ---- load the snapshot set
+    this.snapshotFile = this.inputPath;
+    // if (!Utility.exists(this.snapshotFile)) {
+    //   Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${snapshotFile}`);
     // }
     this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth._instancesjson');
     this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction_instances.json');
     this.predictingSetScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_scores.txt');
     this.predictingSetSummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_summary.html');
     this.predictingLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_labels.txt');
-    this.predictingSetSnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_training_set.blu');
+    this.predictingSetSnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_snapshot_set.blu');
   }
 
   public getPredictingSetGroundTruthJsonContentOutputFilename(): string {
@@ -243,9 +240,9 @@ export class OrchestratorPredict {
   public async buildLabelResolver(): Promise<void> {
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to create a LabelResolver object');
-    if (Utility.exists(this.trainingFile)) {
+    if (Utility.exists(this.snapshotFile)) {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createWithSnapshotAsync()');
-      await LabelResolver.createWithSnapshotAsync(this.nlrPath, this.trainingFile);
+      await LabelResolver.createWithSnapshotAsync(this.nlrPath, this.snapshotFile);
     } else {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
       await LabelResolver.createAsync(this.nlrPath);
@@ -559,13 +556,13 @@ export class OrchestratorPredict {
   }
 
   public commandLetV(): number {
-    // ---- NOTE ---- process the training set.
+    // ---- NOTE ---- process the snapshot set.
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     const utteranceLabelsMap: { [id: string]: string[] } = {};
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {
-      console.log('ERROR: There is no example in the training set, please add some.');
+      console.log('ERROR: There is no example in the snapshot set, please add some.');
       return -1;
     }
     Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);

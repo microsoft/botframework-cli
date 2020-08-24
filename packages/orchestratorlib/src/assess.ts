@@ -28,29 +28,29 @@ export class OrchestratorAssess {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    inputPath: string, predictionPath: string, outputPath: string): Promise<void> {
+    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments --------------------------------------
-    if (Utility.isEmptyString(inputPath)) {
-      Utility.debuggingThrow(`Please provide ground-truth file file, CWD=${process.cwd()}, called from OrchestratorAssess.runAsync()`);
+    if (Utility.isEmptyString(inputPathConfiguration)) {
+      Utility.debuggingThrow(`Please provide one or more ground-truth files, CWD=${process.cwd()}, called from OrchestratorAssess.runAsync()`);
     }
-    if (Utility.isEmptyString(predictionPath)) {
-      Utility.debuggingThrow(`Please provide a assess file, CWD=${process.cwd()}, called from OrchestratorAssess.runAsync()`);
+    if (Utility.isEmptyString(predictionPathConfiguration)) {
+      Utility.debuggingThrow(`Please provide ane or more prediction files, CWD=${process.cwd()}, called from OrchestratorAssess.runAsync()`);
     }
     if (Utility.isEmptyString(outputPath)) {
       Utility.debuggingThrow(`Please provide an output directory, CWD=${process.cwd()}, called from OrchestratorAssess.runAsync()`);
     }
-    Utility.debuggingLog(`inputPath=${inputPath}`);
-    Utility.debuggingLog(`predictionPath=${predictionPath}`);
+    Utility.debuggingLog(`inputPath=${inputPathConfiguration}`);
+    Utility.debuggingLog(`predictionPath=${predictionPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     // ---- NOTE ---- load the ground truth set ------------------------------
-    const groundTruthFile: string = inputPath;
-    if (!Utility.exists(groundTruthFile)) {
-      Utility.debuggingThrow(`ground-truth set file does not exist, groundTruthFile=${groundTruthFile}`);
+    const groundTruthFileConfiguration: string = inputPathConfiguration;
+    if (Utility.isEmptyString(groundTruthFileConfiguration)) {
+      Utility.debuggingThrow('ground-truth file configuration is empty');
     }
-    const predictionFile: string = predictionPath;
-    if (!Utility.exists(predictionFile)) {
-      Utility.debuggingThrow(`prediction set file does not exist, predictionFile=${predictionFile}`);
+    const predictionFileConfiguration: string = predictionPathConfiguration;
+    if (Utility.isEmptyString(predictionFileConfiguration)) {
+      Utility.debuggingThrow('prediction file configuration is empty');
     }
     const assessmentSetIntentSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetIntentSummaryHtmlOutputFilename);
     const assessmentSetIntentLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetIntentLabelsOutputFilename);
@@ -63,7 +63,7 @@ export class OrchestratorAssess {
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': { [id: string]: Label[] };
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
-      await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFile, false);
+      await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFileConfiguration, false);
     const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
@@ -76,7 +76,7 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
     // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFile);
+    // ---- NOTE-REFACTORED ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
     // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
     // ---- NOTE-REFACTORED ----   groundTruthSetJsonObjectArray,
     // ---- NOTE-REFACTORED ----   '',
@@ -117,7 +117,7 @@ export class OrchestratorAssess {
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': { [id: string]: Label[] };
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
-      await OrchestratorHelper.getUtteranceLabelsMap(predictionFile, false);
+      await OrchestratorHelper.getUtteranceLabelsMap(predictionFileConfiguration, false);
     const predictionSetUtteranceLabelsMap: { [id: string]: string[] } =
       predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
@@ -130,7 +130,7 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
     // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFile);
+    // ---- NOTE-REFACTORED ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
     // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
     // ---- NOTE-REFACTORED ----   predictionSetJsonObjectArray,
     // ---- NOTE-REFACTORED ----   '',

@@ -18,15 +18,15 @@ import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorEvaluate {
-  public static readonly trainingSetScoresOutputFilename: string = 'orchestrator_training_set_scores.txt';
+  public static readonly snapshotSetScoresOutputFilename: string = 'orchestrator_snapshot_set_scores.txt';
 
-  public static readonly trainingSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_training_set_ground_truth_instances.json';
+  public static readonly snapshotSetGroundTruthJsonContentOutputFilename: string = 'orchestrator_snapshot_set_ground_truth_instances.json';
 
-  public static readonly trainingSetPredictionJsonContentOutputFilename: string = 'orchestrator_training_set_prediction_instances.json';
+  public static readonly snapshotSetPredictionJsonContentOutputFilename: string = 'orchestrator_snapshot_set_prediction_instances.json';
 
-  public static readonly trainingSetSummaryHtmlOutputFilename: string = 'orchestrator_training_set_summary.html';
+  public static readonly snapshotSetSummaryHtmlOutputFilename: string = 'orchestrator_snapshot_set_summary.html';
 
-  public static readonly trainingSetLabelsOutputFilename: string = 'orchestrator_training_set_labels.txt';
+  public static readonly snapshotSetLabelsOutputFilename: string = 'orchestrator_snapshot_set_labels.txt';
 
   // eslint-disable-next-line max-params
   public static async runAsync(
@@ -60,19 +60,19 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
     // -----------------------------------------------------------------------
-    // ---- NOTE ---- load the training set
-    const trainingFile: string = inputPath;
-    if (!Utility.exists(trainingFile)) {
-      Utility.debuggingThrow(`training set file does not exist, trainingFile=${trainingFile}`);
+    // ---- NOTE ---- load the snapshot set
+    const snapshotFile: string = inputPath;
+    if (!Utility.exists(snapshotFile)) {
+      Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${snapshotFile}`);
     }
-    const trainingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetScoresOutputFilename);
-    const trainingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetGroundTruthJsonContentOutputFilename);
-    const trainingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetPredictionJsonContentOutputFilename);
-    const trainingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetSummaryHtmlOutputFilename);
-    const trainingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.trainingSetLabelsOutputFilename);
+    const snapshotSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetScoresOutputFilename);
+    const snapshotSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetGroundTruthJsonContentOutputFilename);
+    const snapshotSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetPredictionJsonContentOutputFilename);
+    const snapshotSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetSummaryHtmlOutputFilename);
+    const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
     // ---- NOTE ---- create a labelResolver object with a snapshot
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(nlrPath, trainingFile);
+    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
     // ---- NOTE ---- retrieve labels
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
@@ -82,7 +82,7 @@ export class OrchestratorEvaluate {
       Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), JSON.stringify(labels)=${JSON.stringify(labels)}`);
     }
     // -----------------------------------------------------------------------
-    // ---- NOTE ---- retrieve examples, process the training set, retrieve labels, and create a label-index map.
+    // ---- NOTE ---- retrieve examples, process the snapshot set, retrieve labels, and create a label-index map.
     const utteranceLabelsMap: { [id: string]: string[] } = {};
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
@@ -197,11 +197,11 @@ export class OrchestratorEvaluate {
       evaluationOutput.groundTruthJsonContent,
       evaluationOutput.predictionJsonContent,
       evaluationSummary,
-      trainingSetLabelsOutputFilename,
-      trainingSetScoresOutputFilename,
-      trainingSetGroundTruthJsonContentOutputFilename,
-      trainingSetPredictionJsonContentOutputFilename,
-      trainingSetSummaryHtmlOutputFilename);
+      snapshotSetLabelsOutputFilename,
+      snapshotSetScoresOutputFilename,
+      snapshotSetGroundTruthJsonContentOutputFilename,
+      snapshotSetPredictionJsonContentOutputFilename,
+      snapshotSetSummaryHtmlOutputFilename);
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutput=${Utility.jsonStringify(evaluationOutput)}`);
