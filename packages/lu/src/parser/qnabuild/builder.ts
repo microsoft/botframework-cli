@@ -313,15 +313,13 @@ export class Builder {
       }
     }
 
-    // compare models to update the model if a match found
-    // otherwise create a new kb
+    // delete the kb if it already exists
     if (kbId !== '') {
-      // To see if need update the model
-      await this.updateUrlKB(qnaBuildCore, url, kbId)
-    } else {
-      // create a new kb
-      kbId = await this.createUrlKB(qnaBuildCore, url, kbName)
+      await qnaBuildCore.deleteKB(kbId)
     }
+
+    // create a new kb
+    kbId = await this.createUrlKB(qnaBuildCore, url, kbName)
 
     const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
@@ -349,15 +347,13 @@ export class Builder {
       }
     }
 
-    // compare models to update the model if a match found
-    // otherwise create a new kb
+    // delete the kb if it already exists
     if (kbId !== '') {
-      // To see if need update the model
-      await this.updateFileKB(qnaBuildCore, fileName, fileUri, kbId)
-    } else {
-      // create a new kb
-      kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName)
+      await qnaBuildCore.deleteKB(kbId)
     }
+
+    // create a new kb
+    kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName)
 
     const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
@@ -485,24 +481,6 @@ export class Builder {
     return true
   }
 
-  async updateUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbId: string) {
-    await qnaBuildCore.replaceKB(kbId, {
-      qnaList: [],
-      urls: [],
-      files: []
-    })
-
-    const updateConfig = {
-      add: {
-        urls: [url]
-      }
-    }
-
-    const response = await qnaBuildCore.updateKB(kbId, updateConfig)
-    const operationId = response.operationId
-    await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
-  }
-
   async createUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbName: string) {
     const kbJson = {
       name: kbName,
@@ -517,27 +495,6 @@ export class Builder {
     const kbId = opResult.resourceLocation.split('/')[2]
 
     return kbId
-  }
-
-  async updateFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbId: string) {
-    await qnaBuildCore.replaceKB(kbId, {
-      qnaList: [],
-      urls: [],
-      files: []
-    })
-
-    let updateConfig = {
-      add: {
-        files: [{
-          fileName,
-          fileUri
-        }]
-      }
-    }
-
-    const response = await qnaBuildCore.updateKB(kbId, updateConfig)
-    const operationId = response.operationId
-    await this.getKBOperationStatus(qnaBuildCore, operationId, 1000)
   }
 
   async createFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbName: string) {
