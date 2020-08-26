@@ -72,5 +72,11 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.content.includes(`- {@add=add {@globalCount={@count={@countNumber=two} apples}}}`), true);
     })
 
+    it('Intent name with spaces are handled correctly with feature assignment', async () => {
+        let testJSON = require('../../fixtures/testcases/intentWithSpace.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes(`@ intent "test intent" usesFeature bar`), true);
+    })
+
     
 });
