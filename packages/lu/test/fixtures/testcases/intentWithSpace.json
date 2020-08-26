@@ -1,0 +1,39 @@
+{
+  "intents": [
+    {
+      "name": "test intent",
+      "features": [
+        {
+          "modelName": "bar",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "bar",
+      "roles": []
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "foo",
+      "intent": "test intent",
+      "entities": []
+    }
+  ],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": []
+}
