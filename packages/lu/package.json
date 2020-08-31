@@ -35,8 +35,6 @@
   "dependencies": {
     "@azure/cognitiveservices-luis-authoring": "4.0.0-preview.1",
     "@azure/ms-rest-azure-js": "2.0.1",
-    "@oclif/command": "~1.5.19",
-    "@oclif/errors": "~1.2.2",
     "@types/node-fetch": "~2.5.5",
     "antlr4": "^4.7.2",
     "chalk": "2.4.1",
@@ -53,8 +51,6 @@
     "tslib": "^1.10.0"
   },
   "devDependencies": {
-    "@oclif/test": "^1.2.5",
-    "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.2.0",
     "@types/lodash": "~4.14.159",
     "@types/mocha": "^5.2.7",
