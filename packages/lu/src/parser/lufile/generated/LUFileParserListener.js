@@ -371,6 +371,24 @@ LUFileParserListener.prototype.exitImportDefinition = function(ctx) {
 };
 
 
+// Enter a parse tree produced by LUFileParser#referenceSection.
+LUFileParserListener.prototype.enterReferenceSection = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#referenceSection.
+LUFileParserListener.prototype.exitReferenceSection = function(ctx) {
+};
+
+
+// Enter a parse tree produced by LUFileParser#referenceDefinition.
+LUFileParserListener.prototype.enterReferenceDefinition = function(ctx) {
+};
+
+// Exit a parse tree produced by LUFileParser#referenceDefinition.
+LUFileParserListener.prototype.exitReferenceDefinition = function(ctx) {
+};
+
+
 // Enter a parse tree produced by LUFileParser#qnaSection.
 LUFileParserListener.prototype.enterQnaSection = function(ctx) {
 };

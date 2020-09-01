@@ -621,6 +621,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
     // handle reference
     let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
+        let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
         for (const luImport of luImports) {
             let linkValueText = luImport.Description.replace('[', '').replace(']', '');
             let linkValue = luImport.Path.replace('(', '').replace(')', '');
@@ -663,6 +664,22 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
                 }
 
             } else {
+                if (linkValue.startsWith['['] && linkValue.endsWith(']')) {
+                    linkValue = linkValue.replace('[', '').replace(']', '').trim();
+                    let foundReference = references.find(refer => refer.ReferenceId === linkValue)
+                    if (foundReference) {
+                        linkValue = foundReference.Path
+                    } else {
+                        let errorMsg = `Cannot find reference "${linkValue}" when resolving import "${luImport.Description}${luImport.Path}".`;
+                            let error = BuildDiagnostic({
+                                message: errorMsg,
+                                range: luImport.Range
+                            })
+
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                    }
+                }
+
                 parsedContent.additionalFilesToParse.push(new fileToParse(linkValue));
             }
         }
@@ -758,6 +775,7 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     let hashTable = {}
     if (intents && intents.length > 0) {
+        let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
         for (const intent of intents) {
             let intentName = intent.Name;
             // insert only if the intent is not already present.
@@ -769,6 +787,22 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                 // Fix for BF-CLI #122. 
                 // Ensure only links are detected and passed on to be parsed.
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
+                    if (utterance.endsWith(']')) {
+                        let index = utterance.lastIndexOf('[');
+                        let referenceId = utterance.slice(index + 1, utterance.length - 1);
+                        let reference = references.find(refer => refer.ReferenceId === referenceId)
+                        if (!reference) {
+                            let errorMsg = `Cannot find reference ${reference} when resolving utternace "${utteranceAndEntities.contextText}".`;
+                            let error = BuildDiagnostic({
+                                message: errorMsg,
+                                range: utteranceAndEntities.range
+                            })
+
+                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                        }
+
+                        utterance = `${utterance.slice(0, index)}(${reference.path})`
+                    }
                     let parsedLinkUriInUtterance = await helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
