@@ -7,7 +7,7 @@ const luObject = require('../../../src/parser/lu/lu')
 const luOptions = require('../../../src/parser/lu/luOptions')
 const txtfile = require('../../../src/parser/lufile/read-text-file');
 
-const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/lu-import-resolver')
+const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver')
 
 describe('builder: getActiveVersionIds function return version id sucessfully', () => {
   before(function () {
@@ -244,7 +244,7 @@ describe('builder: loadContents function can resolve import files with customize
 
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
-      [`${path.join(rootDir, "common.en-us.lu")}`],
+      [`${path.join(rootDir, "lu-import-resolver", "common.en-us.lu")}`],
       "en-us",
       "dev",
       "westus",
@@ -254,6 +254,23 @@ describe('builder: loadContents function can resolve import files with customize
     assert.equal(result.luContents.length, 1)
     assert.isTrue(result.luContents[0].content.includes(
       `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}## cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## welcome${NEWLINE}- welcome here`
+    ))
+  })
+})
+
+describe('builder: loadContents function can resolve import files with new import format', () => {
+  it('should load contents sucessfully after resolving imports', async () => {
+    const builder = new Builder(() => { })
+    const result = await builder.loadContents(
+      [`${path.join(rootDir, "new-import-format", "a.lu")}`],
+      "en-us",
+      "dev",
+      "westus",
+      undefined)
+
+    assert.equal(result.luContents.length, 1)
+    assert.isTrue(result.luContents[0].content.includes(
+      `## cancel${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## greeting${NEWLINE}- hello`
     ))
   })
 })

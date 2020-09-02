@@ -1,0 +1,7 @@
+[import b.lu][1]
+
+# cancel
+- [import c.lu#stop][2]
+
+[1]:b.lu
+[2] : c.lu#stop

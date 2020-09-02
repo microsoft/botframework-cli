@@ -664,8 +664,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource) {
                 }
 
             } else {
-                if (linkValue.startsWith['['] && linkValue.endsWith(']')) {
-                    linkValue = linkValue.replace('[', '').replace(']', '').trim();
+                if (parseInt(linkValue, 10).toString() === linkValue) {
                     let foundReference = references.find(refer => refer.ReferenceId === linkValue)
                     if (foundReference) {
                         linkValue = foundReference.Path
@@ -801,7 +800,7 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
-                        utterance = `${utterance.slice(0, index)}(${reference.path})`
+                        utterance = `${utterance.slice(0, index)}(${reference.Path})`
                     }
                     let parsedLinkUriInUtterance = await helpers.parseLinkURI(utterance);
                     // examine and add these to filestoparse list.
