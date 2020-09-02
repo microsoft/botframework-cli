@@ -256,7 +256,10 @@ export class Builder {
 
           // update settings asset
           if (settings) {
-            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
+            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
+              "appId": recognizer.getAppId(),
+              "version": recognizer.versionId
+            }
           }
         }))
       }
@@ -479,7 +482,10 @@ export class Builder {
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = luisAppsMap[appName]
+        settings.luis[appName] = {
+          "appId": luisAppsMap[appName]["appId"],
+          "version": luisAppsMap[appName]["version"]
+        }
       }
     }
 
