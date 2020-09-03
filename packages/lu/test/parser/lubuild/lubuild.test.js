@@ -280,3 +280,101 @@ describe('builder: loadContents function can resolve import files with new impor
     ))
   })
 })
+
+describe('builder: loadContents function can catch invalid import exceptions successfully', () => {
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax2.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax3.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] Sorry unable to open"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference2.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] Sorry unable to open"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference3.lu")}`],
+        "en-us",
+        "dev",
+        "westus",
+        undefined)
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes(`[ERROR] URI: "https://xxxxx/1.lu" appears to be invalid.`))
+    }
+  })
+})
