@@ -4,12 +4,16 @@
  */
 
 import {Label} from './label';
+import {PredictionTypeArrayOutputIndex} from './predictiontype';
 
 export class PredictionLabelStructure {
   // eslint-disable-next-line max-params
   constructor(
     utterance: string,
-    labelsPredictedEvaluation: number[], // ---- 0: #TP, 1, #FN, 2: #FP
+    labelsPredictedEvaluationArray: number[],
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
     labels: Label[],
     labelsConcatenated: string,
     labelsIndexes: number[],
@@ -17,7 +21,7 @@ export class PredictionLabelStructure {
     labelsPredictedConcatenated: string,
     labelsPredictedIndexes: number[]) {
     this.utterance = utterance;
-    this.labelsPredictedEvaluation = labelsPredictedEvaluation;
+    this.labelsPredictedEvaluationArray = labelsPredictedEvaluationArray;
     this.labels = labels;
     this.labelsConcatenated = labelsConcatenated;
     this.labelsIndexes = labelsIndexes;
@@ -28,7 +32,10 @@ export class PredictionLabelStructure {
 
   public toObject(): {
     'utterance': string;
-    'labelsPredictedEvaluation': number[]; // ---- 0: #TP, 1, #FN, 2: #FP
+    'labelsPredictedEvaluationArray': number[];
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
     'labels': Label[];
     'labelsConcatenated': string;
     'labelsIndexes': number[];
@@ -37,7 +44,10 @@ export class PredictionLabelStructure {
     'labelsPredictedIndexes': number[]; } {
     return {
       utterance: this.utterance,
-      labelsPredictedEvaluation: this.labelsPredictedEvaluation, // ---- 0: #TP, 1, #FN, 2: #FP
+      labelsPredictedEvaluationArray: this.labelsPredictedEvaluationArray,
+      // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+      // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+      // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
       labels: this.labels,
       labelsConcatenated: this.labelsConcatenated,
       labelsIndexes: this.labelsIndexes,
@@ -47,9 +57,17 @@ export class PredictionLabelStructure {
     };
   }
 
+  public hasMisclassified(): boolean {
+    return (this.labelsPredictedEvaluationArray[PredictionTypeArrayOutputIndex.IndexForFalsePositive] > 0) ||
+    (this.labelsPredictedEvaluationArray[PredictionTypeArrayOutputIndex.IndexForFalseNegative] > 0);
+  }
+
   public utterance: string;
 
-  public labelsPredictedEvaluation: number[]; // ---- 0: #TP, 1, #FN, 2: #FP
+  public labelsPredictedEvaluationArray: number[];
+  // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+  // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+  // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
 
   public labels: Label[];
 

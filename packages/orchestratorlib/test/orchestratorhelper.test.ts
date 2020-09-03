@@ -348,7 +348,7 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
   });
 
-  it('Test.0300 OrchestratorHelper.getJsonScoresUtterances()', function () {
+  it('Test.0300 OrchestratorHelper.getJsonIntentEntityScoresUtterances()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance0: string = 'I want to see Medal for the General';
@@ -448,7 +448,7 @@ describe('Test Suite - orchestratorhelper', () => {
     ];
     const utteranceLabelScoresMap: { [id: string]: ScoreIntent[] } = {};
     const utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] } = {};
-    OrchestratorHelper.getJsonScoresUtterances(
+    OrchestratorHelper.getJsonIntentEntityScoresUtterances(
       jsonObjectArray,
       utteranceLabelScoresMap,
       utteranceEntityLabelScoresMap);

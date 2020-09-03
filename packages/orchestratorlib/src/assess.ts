@@ -72,24 +72,24 @@ export class OrchestratorAssess {
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } = {};
-    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
-    // ---- NOTE-REFACTORED ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
-    // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-    // ---- NOTE-REFACTORED ----   groundTruthSetJsonObjectArray,
-    // ---- NOTE-REFACTORED ----   '',
-    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceEntityLabelsMap,
-    // ---- NOTE-REFACTORED ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
-    // ---- NOTE-REFACTORED ---- Utility.processUnknowLabelsInUtteranceLabelsMap(
-    // ---- NOTE-REFACTORED ----   {
-    // ---- NOTE-REFACTORED ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED ----   });
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getJsonIntentsEntitiesUtterances() for groundTruth set');
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetJsonObjectArray,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   '',
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelsMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknowLabelsInUtteranceLabelsMap(
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   {
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   });
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for groundTruth set');
     const groundTruthSetLabels: string[] =
       [...Object.values(groundTruthSetUtteranceLabelsMap)].reduce(
         (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);
@@ -126,25 +126,25 @@ export class OrchestratorAssess {
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceLabelsMap: { [id: string]: string[] } = {};
-    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
-    // ---- NOTE-REFACTORED ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
-    // ---- NOTE-REFACTORED ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-    // ---- NOTE-REFACTORED ----   predictionSetJsonObjectArray,
-    // ---- NOTE-REFACTORED ----   '',
-    // ---- NOTE-REFACTORED ----   predictionSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED ----   predictionSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED ----   predictionSetUtteranceEntityLabelsMap,
-    // ---- NOTE-REFACTORED ----   predictionSetUtteranceEntityLabelDuplicateMap);
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetJsonObjectArray,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   '',
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelsMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelDuplicateMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelsMap,
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelDuplicateMap);
     Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
         utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap,
       },
       groundTruthSetLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getJsonIntentsEntitiesUtterances() for prediction set');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
     const predictionSetLabels: string[] =
       [...Object.values(predictionSetUtteranceLabelsMap)].reduce(
         (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);

@@ -3,11 +3,17 @@
  * Licensed under the MIT License.
  */
 
+import {PredictionType} from './predictiontype';
+
 export class PredictionStructure {
   // eslint-disable-next-line max-params
   constructor(
     utterance: string,
-    labelsPredictedEvaluation: number, // ---- 0: TP, 1, FN, 2: FP, 3: TN
+    labelsPredictedEvaluation: number,
+    // ---- NOTE ---- PredictionType.TruePositive(1):TP
+    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+    // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+    // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     labels: string[],
     labelsConcatenated: string,
     labelsIndexes: number[],
@@ -26,7 +32,11 @@ export class PredictionStructure {
 
   public toObject(): {
     'utterance': string;
-    'labelsPredictedEvaluation': number; // ---- 0: TP, 1, FN, 2: FP, 3: TN
+    'labelsPredictedEvaluation': number;
+    // ---- NOTE ---- PredictionType.TruePositive(1):TP
+    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+    // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+    // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     'labels': string[];
     'labelsConcatenated': string;
     'labelsIndexes': number[];
@@ -35,7 +45,11 @@ export class PredictionStructure {
     'labelsPredictedIndexes': number[]; } {
     return {
       utterance: this.utterance,
-      labelsPredictedEvaluation: this.labelsPredictedEvaluation, // ---- 0: TP, 1, FN, 2: FP, 3: TN
+      labelsPredictedEvaluation: this.labelsPredictedEvaluation,
+      // ---- NOTE ---- PredictionType.TruePositive(1):TP
+      // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+      // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+      // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       labels: this.labels,
       labelsConcatenated: this.labelsConcatenated,
       labelsIndexes: this.labelsIndexes,
@@ -45,9 +59,23 @@ export class PredictionStructure {
     };
   }
 
+  public isCorrectPrediction(): boolean {
+    return (this.labelsPredictedEvaluation === PredictionType.TruePositive) ||
+    (this.labelsPredictedEvaluation === PredictionType.TrueNegative);
+  }
+
+  public isMisclassified(): boolean {
+    return (this.labelsPredictedEvaluation === PredictionType.FalsePositive) ||
+    (this.labelsPredictedEvaluation === PredictionType.FalseNegative);
+  }
+
   public utterance: string;
 
-  public labelsPredictedEvaluation: number; // ---- 0: TP, 1, FN, 2: FP, 3: TN
+  public labelsPredictedEvaluation: number;
+  // ---- NOTE ---- PredictionType.TruePositive(1):TP
+  // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+  // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+  // ---- NOTE ---- PredictionType.TrueNegative(8):TN
 
   public labels: string[];
 

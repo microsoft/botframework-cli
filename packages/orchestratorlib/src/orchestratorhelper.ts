@@ -585,7 +585,7 @@ export class OrchestratorHelper {
     return false;
   }
 
-  static getJsonScoresUtterances(
+  static getJsonIntentEntityScoresUtterances(
     jsonObjectArray: any,
     utteranceLabelScoresMap: { [id: string]: ScoreIntent[] },
     utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] }): boolean {

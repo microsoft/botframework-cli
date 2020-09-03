@@ -3,20 +3,22 @@
  * Licensed under the MIT License.
  */
 
-import {LabelType} from "./LabelType";
 import {Label} from "./Label";
 import {Result} from "./Result";
-import {Score} from "./Score";
+import {ScoreEntity} from "./ScoreEntity";
+import {PredictionType} from "./PredictionType";
 
-import { Utility } from "../utility/Utility";
-
-export class ScoreEntity extends Score {
-    public static newScoreEntity(
+export class ScoreEntityUtterancePrediction extends ScoreEntity {
+    public static newScoreEntityUtterancePrediction(
+        utterance: string,
+        predictionType: PredictionType,
         entityLabel: string,
         score: number,
         spanOffset: number = 0,
-        spanLength: number = 0): ScoreEntity {
-        return new ScoreEntity(
+        spanLength: number = 0): ScoreEntityUtterancePrediction {
+        return new ScoreEntityUtterancePrediction(
+            utterance,
+            predictionType,
             Label.newEntityLabel(
                 entityLabel,
                 spanOffset,
@@ -24,12 +26,16 @@ export class ScoreEntity extends Score {
             score);
     }
 
-    public static newScoreEntityByPosition(
+    public static newScoreEntityUtterancePredictionByPosition(
+        utterance: string,
+        predictionType: PredictionType,
         entityLabel: string,
         score: number,
         spanStartPosition: number = 0,
-        spanEndPosition: number = 0): ScoreEntity {
-        return new ScoreEntity(
+        spanEndPosition: number = 0): ScoreEntityUtterancePrediction {
+        return new ScoreEntityUtterancePrediction(
+            utterance,
+            predictionType,
             Label.newEntityLabelByPosition(
                 entityLabel,
                 spanStartPosition,
@@ -37,22 +43,25 @@ export class ScoreEntity extends Score {
             score);
     }
 
-    public entity: Label;
+    public utterance: string;
+    public predictionType: PredictionType;
 
-    constructor(entity: Label, score: number) {
-        super(score);
-        if (entity.labeltype !== LabelType.Entity) {
-            Utility.debuggingThrow(`entity.labeltype|${entity.labeltype}| !== LabelType.Entity|${LabelType.Entity}|`);
-        }
-        this.entity = entity;
+    constructor(utterance: string, predictionType: PredictionType, entity: Label, score: number) {
+        super(entity, score);
+        this.utterance = utterance;
+        this.predictionType = predictionType;
     }
 
     public toObject(): {
+        "utterance": string,
+        "predictionType": PredictionType,
         "entity": string;
         "offset": number;
         "length": number;
         "score": number; } {
         return {
+            utterance: this.utterance,
+            predictionType: this.predictionType,
             entity: this.entity.name,
             offset: this.entity.span.offset,
             length: this.entity.span.length,
@@ -61,11 +70,15 @@ export class ScoreEntity extends Score {
     }
 
     public toObjectByPosition(): {
+        "utterance": string,
+        "predictionType": PredictionType,
         "entity": string;
         "startPos": number;
         "endPos": number;
         "score": number; } {
         return {
+            utterance: this.utterance,
+            predictionType: this.predictionType,
             entity: this.entity.name,
             startPos: this.entity.getStartPos(),
             endPos: this.entity.getEndPos(),
@@ -80,15 +93,18 @@ export class ScoreEntity extends Score {
                 this.entity.getStartPos(),
                 this.entity.getEndPos()),
             this.score,
-            "");
+            this.utterance);
     }
 
-    public equals(other: ScoreEntity): boolean {
+    public equals(other: ScoreEntityUtterancePrediction): boolean {
         if (!super.equals(other)) {
             return false;
         }
         if (other) {
-            if (!other.entity.equals(this.entity)) {
+            if (other.utterance !== this.utterance) {
+                return false;
+            }
+            if (other.predictionType !== this.predictionType) {
                 return false;
             }
             return true;

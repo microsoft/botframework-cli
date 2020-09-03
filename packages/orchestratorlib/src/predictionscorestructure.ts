@@ -11,7 +11,11 @@ export class PredictionScoreStructure extends PredictionStructure {
   // eslint-disable-next-line max-params
   constructor(
     utterance: string,
-    labelsPredictedEvaluation: number, // ---- 0: TP, 1, FN, 2: FP, 3: TN
+    labelsPredictedEvaluation: number,
+    // ---- NOTE ---- PredictionType.TruePositive(1):TP
+    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+    // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+    // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     labels: string[],
     labelsConcatenated: string,
     labelsIndexes: number[],
@@ -43,7 +47,11 @@ export class PredictionScoreStructure extends PredictionStructure {
 
   public toObject(): {
     'utterance': string;
-    'labelsPredictedEvaluation': number; // ---- 0: TP, 1, FN, 2: FP, 3: TN
+    'labelsPredictedEvaluation': number;
+    // ---- NOTE ---- PredictionType.TruePositive(1):TP
+    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+    // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+    // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     'labels': string[];
     'labelsConcatenated': string;
     'labelsIndexes': number[];
@@ -58,7 +66,11 @@ export class PredictionScoreStructure extends PredictionStructure {
     'labelsScoreStructureHtmlTable': string; } {
     return {
       utterance: this.utterance,
-      labelsPredictedEvaluation: this.labelsPredictedEvaluation, // ---- 0: TP, 1, FN, 2: FP, 3: TN
+      labelsPredictedEvaluation: this.labelsPredictedEvaluation,
+      // ---- NOTE ---- PredictionType.TruePositive(1):TP
+      // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+      // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+      // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       labels: this.labels,
       labelsConcatenated: this.labelsConcatenated,
       labelsIndexes: this.labelsIndexes,

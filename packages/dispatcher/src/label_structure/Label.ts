@@ -8,25 +8,37 @@ import {Span} from "./Span";
 
 export class Label {
     public static newIntentLabel(label: string, spanOffset: number = 0, spanLength: number = 0): Label {
-        return new Label(LabelType.Intent, label, new Span(spanOffset, spanLength));
+        return Label.newLabel(LabelType.Intent, label, spanOffset, spanLength);
     }
 
     public static newEntityLabel(label: string, spanOffset: number = 0, spanLength: number = 0): Label {
-        return new Label(LabelType.Entity, label, new Span(spanOffset, spanLength));
+        return Label.newLabel(LabelType.Entity, label, spanOffset, spanLength);
+    }
+
+    public static newLabel(labelType: LabelType, label: string, spanOffset: number = 0, spanLength: number = 0): Label {
+        return new Label(labelType, label, new Span(spanOffset, spanLength));
     }
 
     public static newIntentLabelByPosition(
         label: string,
         spanStartPosition: number = 0,
         spanEndPosition: number = 0): Label {
-        return new Label(LabelType.Intent, label, new Span(spanStartPosition, spanEndPosition - spanStartPosition + 1));
+        return Label.newLabelByPosition(LabelType.Intent, label, spanStartPosition, spanEndPosition);
     }
 
     public static newEntityLabelByPosition(
         label: string,
         spanStartPosition: number = 0,
         spanEndPosition: number = 0): Label {
-        return new Label(LabelType.Entity, label, new Span(spanStartPosition, spanEndPosition - spanStartPosition + 1));
+        return Label.newLabelByPosition(LabelType.Entity, label, spanStartPosition, spanEndPosition);
+    }
+
+    public static newLabelByPosition(
+        labelType: LabelType,
+        label: string,
+        spanStartPosition: number = 0,
+        spanEndPosition: number = 0): Label {
+        return new Label(labelType, label, new Span(spanStartPosition, spanEndPosition - spanStartPosition + 1));
     }
 
     public labeltype: LabelType;

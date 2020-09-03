@@ -61,7 +61,49 @@ export class Result {
         };
     }
 
+    public toScoreLabelObject(): {
+        "label": string;
+        "offset": number;
+        "length": number;
+        "score": number; } {
+        return {
+            label: this.label.name,
+            offset: this.label.span.offset,
+            length: this.label.span.length,
+            score: this.score,
+        };
+    }
+
+    public toScoreLabelObjectByPosition(): {
+        "label": string;
+        "startPos": number;
+        "endPos": number;
+        "score": number; } {
+        return {
+            label: this.label.name,
+            startPos: this.label.span.offset,
+            endPos: (this.label.span.offset + this.label.span.length - 1),
+            score: this.score,
+        };
+    }
+
     public toScoreEntityObject(): {
+        "entity": string;
+        "offset": number;
+        "length": number;
+        "score": number; } {
+        if (this.label.labeltype !== LabelType.Entity) {
+            Utility.debuggingThrow(`this.label.labeltype|${this.label.labeltype}| !== LabelType.Entity|${LabelType.Entity}|`);
+        }
+        return {
+            entity: this.label.name,
+            offset: this.label.span.offset,
+            length: this.label.span.length,
+            score: this.score,
+        };
+    }
+
+    public toScoreEntityObjectByPosition(): {
         "entity": string;
         "startPos": number;
         "endPos": number;

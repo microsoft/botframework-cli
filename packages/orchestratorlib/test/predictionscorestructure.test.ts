@@ -20,7 +20,11 @@ describe('Test Suite - scorestructure', () => {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance: string = 'utterance';
-    const labelsPredictedEvaluation: number = 0; // ---- 0: TP, 1, FN, 2: FP, 3: TN
+    const labelsPredictedEvaluation: number = 0;
+    // ---- NOTE ---- PredictionType.TruePositive(1):TP
+    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+    // ---- NOTE ---- PredictionType.FalseNegative(4):TN
+    // ---- NOTE ---- PredictionType.TrueNegative(8):FN
     const labels: string[] = ['label'];
     const labelsConcatenated: string = 'label';
     const labelsIndexes: number[] = [0];
@@ -51,7 +55,11 @@ describe('Test Suite - scorestructure', () => {
     Utility.debuggingLog(`scorestructure=${Utility.jsonStringify(scorestructure)}`);
     const scorestructureObject: {
       'utterance': string;
-      'labelsPredictedEvaluation': number; // ---- 0: TP, 1, FN, 2: FP, 3: TN
+      'labelsPredictedEvaluation': number;
+      // ---- NOTE ---- PredictionType.TruePositive(1):TP
+      // ---- NOTE ---- PredictionType.FalsePositive(2):FP
+      // ---- NOTE ---- PredictionType.FalseNegative(4):FN
+      // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       'labels': string[];
       'labelsConcatenated': string;
       'labelsIndexes': number[];
