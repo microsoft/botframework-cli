@@ -259,6 +259,12 @@ describe('builder: loadContents function can resolve import files with customize
 })
 
 describe('builder: loadContents function can resolve import files with new import format', () => {
+  before(function () {
+    nock('https://blobstore.azurewebsites.net')
+      .get(uri => uri.includes('1.lu'))
+      .reply(200, `# cancel${NEWLINE}- cancel the task`)
+  })
+
   it('should load contents sucessfully after resolving imports', async () => {
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
@@ -270,7 +276,7 @@ describe('builder: loadContents function can resolve import files with new impor
 
     assert.equal(result.luContents.length, 1)
     assert.isTrue(result.luContents[0].content.includes(
-      `## cancel${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## greeting${NEWLINE}- hello`
+      `## cancel${NEWLINE}- stop that${NEWLINE}- cancel the task${NEWLINE}${NEWLINE}${NEWLINE}## greeting${NEWLINE}- hello`
     ))
   })
 })
