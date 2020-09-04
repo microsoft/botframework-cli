@@ -22,7 +22,7 @@ const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
 
-const maxVersionsCount = 100
+const maxVersionCount = 100
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -161,7 +161,7 @@ export class Builder {
     botName: string,
     suffix: string,
     fallbackLocale: string,
-    keepVersions: number,
+    keptVersionCount: number,
     isStaging: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
     settings?: Settings,
@@ -229,7 +229,7 @@ export class Builder {
           // otherwise create a new application
           if (recognizer.getAppId() && recognizer.getAppId() !== '') {
             // To see if need update the model
-            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, keepVersions ?? maxVersionsCount)
+            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, keptVersionCount ?? maxVersionCount)
           } else {
             // create a new application
             needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
@@ -372,7 +372,7 @@ export class Builder {
     return currentApp
   }
 
-  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, keepVersions: number) {
+  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, keptVersionCount: number) {
     await delay(timeBucket)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
     recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
@@ -396,8 +396,8 @@ export class Builder {
       // get all available versions
       await delay(timeBucket)
       const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
-      if (keepVersions < versionObjs.length) {
-        const versionObjsToDelete = versionObjs.reverse().splice(0, versionObjs.length - keepVersions)
+      if (keptVersionCount < versionObjs.length) {
+        const versionObjsToDelete = versionObjs.reverse().splice(0, versionObjs.length - keptVersionCount)
         for (const versionObj of versionObjsToDelete) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
