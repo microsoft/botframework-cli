@@ -463,8 +463,7 @@ const resolveLuUriContent = async function(srcId, toResolve, luObjects) {
             // throw, invalid URI
             let errorMsg = `URI: "${uri}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
             let error = BuildDiagnostic({
-                message: errorMsg,
-                range: luImport.Range
+                message: errorMsg
             })
     
             throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));

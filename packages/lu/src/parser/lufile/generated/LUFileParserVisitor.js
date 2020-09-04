@@ -252,6 +252,18 @@ LUFileParserVisitor.prototype.visitImportDefinition = function(ctx) {
 };
 
 
+// Visit a parse tree produced by LUFileParser#referenceSection.
+LUFileParserVisitor.prototype.visitReferenceSection = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
+// Visit a parse tree produced by LUFileParser#referenceDefinition.
+LUFileParserVisitor.prototype.visitReferenceDefinition = function(ctx) {
+  return this.visitChildren(ctx);
+};
+
+
 // Visit a parse tree produced by LUFileParser#qnaSection.
 LUFileParserVisitor.prototype.visitQnaSection = function(ctx) {
   return this.visitChildren(ctx);
