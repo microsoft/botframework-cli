@@ -22,6 +22,8 @@ const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
 
+const maxVersionCount = 100
+
 export class Builder {
   private readonly handler: (input: string) => any
 
@@ -159,7 +161,7 @@ export class Builder {
     botName: string,
     suffix: string,
     fallbackLocale: string,
-    deleteOldVersion: boolean,
+    keptVersionCount: number,
     isStaging: boolean,
     multiRecognizers?: Map<string, MultiLanguageRecognizer>,
     settings?: Settings,
@@ -227,7 +229,7 @@ export class Builder {
           // otherwise create a new application
           if (recognizer.getAppId() && recognizer.getAppId() !== '') {
             // To see if need update the model
-            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, deleteOldVersion)
+            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, keptVersionCount ?? maxVersionCount)
           } else {
             // create a new application
             needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
@@ -256,7 +258,10 @@ export class Builder {
 
           // update settings asset
           if (settings) {
-            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
+            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
+              "appId": recognizer.getAppId(),
+              "version": recognizer.versionId
+            }
           }
         }))
       }
@@ -367,7 +372,7 @@ export class Builder {
     return currentApp
   }
 
-  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, deleteOldVersion: boolean) {
+  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, keptVersionCount: number) {
     await delay(timeBucket)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
     recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
@@ -387,11 +392,13 @@ export class Builder {
       this.handler(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
       await delay(timeBucket)
       await luBuildCore.importNewVersion(recognizer.getAppId(), currentApp, options)
-
-      if (deleteOldVersion) {
-        await delay(timeBucket)
-        const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
-        for (const versionObj of versionObjs) {
+      
+      // get all available versions
+      await delay(timeBucket)
+      const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
+      if (keptVersionCount < versionObjs.length) {
+        const versionObjsToDelete = versionObjs.reverse().splice(0, versionObjs.length - keptVersionCount)
+        for (const versionObj of versionObjsToDelete) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
             await delay(timeBucket)
@@ -479,7 +486,10 @@ export class Builder {
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = luisAppsMap[appName]
+        settings.luis[appName] = {
+          "appId": luisAppsMap[appName]["appId"],
+          "version": luisAppsMap[appName]["version"]
+        }
       }
     }
 

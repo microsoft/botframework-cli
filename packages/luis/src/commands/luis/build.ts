@@ -145,7 +145,12 @@ export default class LuisBuild extends Command {
 
       // update or create and then train and publish luis applications based on loaded resources
       if (log) this.log('Handling applications...')
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, deleteOldVersion, isStaging, multiRecognizers, settings, crosstrainedRecognizers, dialog)
+
+      // LUIS support maximun 100 versions for an application, keepVersions default set to 100 if deleteOldVersion is not specified.
+      let keptVersionCount = 100
+      if (deleteOldVersion) keptVersionCount = 1
+
+      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, keptVersionCount, isStaging, multiRecognizers, settings, crosstrainedRecognizers, dialog)
 
       // write dialog assets based on config
       if (out) {
