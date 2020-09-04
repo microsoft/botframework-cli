@@ -8,6 +8,7 @@ const SimpleIntentSection = require('./simpleIntentSection');
 const EntitySection = require('./entitySection');
 const NewEntitySection =  require('./newEntitySection');
 const ImportSection = require('./importSection');
+const ReferenceSection = require('./referenceSection');
 const QnaSection = require('./qnaSection');
 const ModelInfoSection = require('./modelInfoSection');
 const LUErrorListener = require('./luErrorListener');
@@ -143,6 +144,16 @@ class LUParser {
         }
 
         try {
+            let referenceSections = this.extractReferenceSections(fileContent);
+            referenceSections.forEach(section => errors = errors.concat(section.Errors));
+            sections = sections.concat(referenceSections);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing reference section: ${err.message}`
+            }))
+        }
+
+        try {
             let qnaSections = this.extractQnaSections(fileContent);
             qnaSections.forEach(section => errors = errors.concat(section.Errors));
             sections = sections.concat(qnaSections);
@@ -274,6 +285,24 @@ class LUParser {
         let importSectionList = importSections.map(x => new ImportSection(x));
 
         return importSectionList;
+    }
+
+    /**
+     * @param {FileContext} fileContext 
+     */
+    static extractReferenceSections(fileContext) {
+        if (fileContext === undefined
+            || fileContext === null) {
+                return [];
+        }
+
+        let referenceSections = fileContext.paragraph()
+            .map(x => x.referenceSection())
+            .filter(x => x !== undefined && x !== null);
+
+        let referenceSectionList = referenceSections.map(x => new ReferenceSection(x));
+
+        return referenceSectionList;
     }
 
     /**

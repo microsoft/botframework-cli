@@ -24,13 +24,16 @@ class ImportSection extends BaseSection {
     }
 
     ExtractDescriptionAndPath(parseTree) {
-        let importRegex = new RegExp(/\[([^\]]*)\]\(([^\)]*)\)/);
+        let importPathRegex = new RegExp(/\[([^\]]*)\]\(([^\)]*)\)/);
+        let importReferenceRegex = new RegExp(/\[([^\]]*)\]\[([^\]]*)\]/);
         let importStr = parseTree.importDefinition().IMPORT().getText();
+        let description;
+        let path;
+        let groups = importStr.match(importPathRegex);
+        if (!groups || groups.length !== 3) {
+            groups = importStr.match(importReferenceRegex);
+        }
 
-        let description
-        let path
-
-        let groups = importStr.match(importRegex);
         if (groups && groups.length === 3) {
             description = groups[1].trim();
             path = groups[2].trim();

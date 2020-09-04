@@ -131,9 +131,9 @@ const helpers = {
     isUtteranceLinkRef: function (utterance) {
         utterance = utterance || '';
         // Ensure only links are detected and passed on to be parsed.
-        // Valid link: [bar](xyz)
+        // Valid link: [bar](xyz), [bar][2]
         // Not a link: [bar](xyz|123), [bar[tar]](xyz), abc [foo](bar)
-        let linkDetectRegex = /^\[[^\[]+\]\([^|]+\)$/gi;
+        let linkDetectRegex = /^\[[^\[]+\](\([^|]+\)|\[[^\[]+\])$/gi;
         return linkDetectRegex.test(utterance);
     },
     /**
