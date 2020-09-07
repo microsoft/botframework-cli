@@ -153,6 +153,16 @@ describe('luis:build update application succeed when utterances changed', () => 
       .reply(201, '0.2')
 
     nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [
+        {
+          version: '0.2'
+        },
+        {
+          version: '0.1'
+        }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('train'))
       .reply(202, {
         statusId: 2,
@@ -216,6 +226,16 @@ describe('luis:build update application succeed when utterances added', () => {
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('import'))
       .reply(201, '0.2')
+    
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [
+        {
+          version: '0.2'
+        },
+        {
+          version: '0.1'
+        }])
 
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('train'))
@@ -704,15 +724,29 @@ describe('luis:build update application succeed with parameters set from luconfi
       .get(uri => uri.includes('apps'))
       .reply(200, [
         {
-          version: '0.1'
+          version: '0.4'
+        },
+        {
+          version: '0.3'
         },
         {
           version: '0.2'
+        },
+        {
+          version: '0.1'
         }
       ])
     
     nock('https://chinaeast2.api.cognitive.azure.cn')
-      .delete(uri => uri.includes('apps'))
+      .delete(uri => uri.includes('0.1'))
+      .reply(200)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .delete(uri => uri.includes('0.2'))
+      .reply(200)
+
+    nock('https://chinaeast2.api.cognitive.azure.cn')
+      .delete(uri => uri.includes('0.3'))
       .reply(200)
 
     nock('https://chinaeast2.api.cognitive.azure.cn')
@@ -848,6 +882,16 @@ describe('luis:build update application succeed when activeVersion is null', () 
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('import'))
       .reply(201, '0.2')
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [
+        {
+          version: '0.2'
+        },
+        {
+          version: '0.1'
+        }])
 
     nock('https://westus.api.cognitive.microsoft.com')
       .post(uri => uri.includes('train'))
