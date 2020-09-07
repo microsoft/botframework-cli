@@ -229,7 +229,8 @@ export class Builder {
           // otherwise create a new application
           if (recognizer.getAppId() && recognizer.getAppId() !== '') {
             // To see if need update the model
-            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, keptVersionCount ?? maxVersionCount)
+            const versionCount = keptVersionCount && keptVersionCount > 0 ? keptVersionCount : maxVersionCount
+            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, versionCount)
           } else {
             // create a new application
             needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
