@@ -25,7 +25,7 @@ class ReferenceSection extends BaseSection {
 
     ExtractIdAndPath(parseTree) {
         let referenceRegex = new RegExp(/\[([^\]]*)\]\s*:\s*([^\)]*)/);
-        let referenceStr = parseTree.referenceDefinition().REFERENCE().getText();
+        let referenceStr = parseTree.referenceDefinition().REFERENCE().getText().trim();
 
         let referenceId
         let path

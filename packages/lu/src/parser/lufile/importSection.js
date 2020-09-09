@@ -26,7 +26,7 @@ class ImportSection extends BaseSection {
     ExtractDescriptionAndPath(parseTree) {
         let importPathRegex = new RegExp(/\[([^\]]*)\]\(([^\)]*)\)/);
         let importReferenceRegex = new RegExp(/\[([^\]]*)\]\[([^\]]*)\]/);
-        let importStr = parseTree.importDefinition().IMPORT().getText();
+        let importStr = parseTree.importDefinition().IMPORT().getText().trim();
         let description;
         let path;
         let groups = importStr.match(importPathRegex);
