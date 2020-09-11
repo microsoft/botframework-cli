@@ -1934,14 +1934,14 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                         let settingsPair = settingsRegExp.exec(kvPair[2]);
                         if (settingsPair && settingsPair.groups && settingsPair.groups.property) {
                             if (!parsedContent.LUISJsonStructure.settings) {
-                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3] === "true"}];
+                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3].toLowerCase() === "true"}];
                             } else {
                                 // find the setting
                                 let sFound = parsedContent.LUISJsonStructure.settings.find(setting => setting.name == settingsPair.groups.property);
                                 if (sFound) {
                                     sFound.value = kvPair[3] === "true";
                                 } else {
-                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3] === "true"})
+                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3].toLowerCase() === "true"})
                                 }
                             }
                         }
