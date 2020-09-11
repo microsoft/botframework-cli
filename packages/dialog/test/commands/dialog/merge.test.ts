@@ -172,7 +172,7 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Copying.*nuget3.lg/i, lines) === 1, 'Did not copy .lg')
         assert(countMatches(/Copying.*nuget3.lu/i, lines) === 1, 'Did not copy .lu')
         assert(countMatches(/Copying.*nuget3.qna/i, lines) === 1, 'Did not copy .qna')
-        assert(await fs.pathExists(ppath.join(tempDir, 'generated', 'nuget3', 'assets', 'nuget3.qna')), 'Did not copy directory')
+        assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'nuget3', 'stuff', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
     })
