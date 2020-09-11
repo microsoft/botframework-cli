@@ -206,7 +206,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_MINMUM_PHRASE_LIMIT);
-                assert(err.text.includes(`0 phrases found in phrase list: PL0. Null or empty phrase list is allowed.`));
+                assert(err.text.includes(`0 phrases found in phrase list: PL0. Empty phrase list is not allowed.`));
                 done();
             })
     })
