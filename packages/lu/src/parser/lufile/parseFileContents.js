@@ -1422,7 +1422,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: currentLine
+                    context: range
                 })
         
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -1448,7 +1448,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     let pLValues = [];
     for (const phraseListValues of valuesList) {
         phraseListValues.split(/[,;]/g).map(item => item.trim()).forEach(item => pLValues.push(item));
-   }
+    }
 
     let pLEntityExists = parsedContent.LUISJsonStructure.model_features.find(item => item.name == entityName);
     if (pLEntityExists) {
@@ -1934,14 +1934,14 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                         let settingsPair = settingsRegExp.exec(kvPair[2]);
                         if (settingsPair && settingsPair.groups && settingsPair.groups.property) {
                             if (!parsedContent.LUISJsonStructure.settings) {
-                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3] === "true"}];
+                                parsedContent.LUISJsonStructure.settings = [{name : settingsPair.groups.property, value : kvPair[3].toLowerCase() === "true"}];
                             } else {
                                 // find the setting
                                 let sFound = parsedContent.LUISJsonStructure.settings.find(setting => setting.name == settingsPair.groups.property);
                                 if (sFound) {
                                     sFound.value = kvPair[3] === "true";
                                 } else {
-                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3] === "true"})
+                                    parsedContent.LUISJsonStructure.settings.push({name : settingsPair.groups.property, value : kvPair[3].toLowerCase() === "true"})
                                 }
                             }
                         }
