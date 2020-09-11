@@ -1422,7 +1422,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
                 let error = BuildDiagnostic({
                     message: errorMsg,
-                    context: currentLine
+                    context: range
                 })
         
                 throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
@@ -1448,7 +1448,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     let pLValues = [];
     for (const phraseListValues of valuesList) {
         phraseListValues.split(/[,;]/g).map(item => item.trim()).forEach(item => pLValues.push(item));
-   }
+    }
 
     let pLEntityExists = parsedContent.LUISJsonStructure.model_features.find(item => item.name == entityName);
     if (pLEntityExists) {

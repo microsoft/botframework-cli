@@ -120,6 +120,14 @@ const validateBoundaries = function(luisJSON) {
         }
     })
 
+    // phrase list - phraselist cannot be null or empty. 
+    phraseLists.forEach(item => {
+        console.log(item.words)
+        if (item.words === undefined || item.words.trim() === '' || item.words.split(',').length === 0) {
+            validationError(retCode.errorCode.BOUNDARY_MINMUM_PHRASE_LIMIT, `0 phrases found in phrase list: ${item.name}. Null or empty phrase list is allowed.`)
+        }
+    })
+
     // Roles - 10 roles per entity
     let totalRoles = 0;
     ["prebuiltEntities", "patternAnyEntities", "regex_entities", "closedLists", "composites", "entities"].forEach(scope => {
