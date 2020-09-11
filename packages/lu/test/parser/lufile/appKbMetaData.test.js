@@ -87,7 +87,7 @@ describe('App/ Kb meta data information', function () {
     it ('Settings information is parsed correctly', function(done){
         let testLU = `
 > !# @app.settings.NormalizeDiacritics = true
-> !# @app.settings.NormalizePunctuation = false
+> !# @app.settings.NormalizePunctuation = True
 > !# @app.settings.UseAllTrainingData = true
 
 # test
@@ -97,7 +97,7 @@ describe('App/ Kb meta data information', function () {
                 .then(res => {
                     assert.equal(res.LUISJsonStructure.settings.length, 3);
                     assert.equal(res.LUISJsonStructure.settings[1].name, "NormalizePunctuation")
-                    assert.equal(res.LUISJsonStructure.settings[1].value, false)
+                    assert.equal(res.LUISJsonStructure.settings[1].value, true)
                     done();
                 })
                 .catch(err => done(err))
