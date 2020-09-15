@@ -288,7 +288,7 @@ export default class SchemaMerger {
         try {
             this.log('Finding component files')
             await this.expandPackages(await glob(this.patterns.map(p => p.replace(/\\/g, '/'))))
-            this.analyze()
+            await this.analyze()
             let schema = await this.mergeSchemas()
             this.log('')
             await this.mergeUISchemas(schema)
@@ -476,10 +476,11 @@ export default class SchemaMerger {
             this.verifySchema(finalSchema)
             if (!this.failed) {
                 // Verify all refs work
-                let start = process.hrtime()
+                let start = process.hrtime.bigint()
                 fullSchema = await parser.dereference(clone(finalSchema))
-                let end = process.hrtime(start)[1] / 1000000000
-                this.vlog(`Expanding all $ref took ${end} seconds`)
+                let end = process.hrtime.bigint()
+                let elapsed = Number(end - start) / 1000000000
+                this.vlog(`Expanding all $ref took ${elapsed} seconds`)
                 this.log(`Writing ${this.currentFile}`)
                 await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
             }
@@ -597,18 +598,23 @@ export default class SchemaMerger {
                 }
             }
             if (isCS) {
-                let generatedPath = ppath.join(ppath.dirname(this.output), 'generated')
-                this.log(`Copying C# package assets to ${generatedPath}`)
+                let generatedPath = ppath.join(ppath.dirname(this.output), 'ImportedAssets')
+                let found = false
                 for (let files of this.files.values()) {
                     for (let componentPaths of files.values()) {
                         for (let componentPath of componentPaths) {
                             let component = componentPath.component
                             let path = componentPath.path
-                            // Don't copy .schema/.uischema so that we don't pick-up in project
-                            if (!component.isCSProject() && !path.endsWith('.schema') && !path.endsWith('.uischema')) {
+                            let relativePath = ppath.relative(ppath.dirname(component.path), path)
+                            // Copy anything found in exportedassets outside of project
+                            if (!component.isCSProject() && relativePath.toLowerCase().startsWith('exportedassets')) {
                                 // Copy package files to output
-                                let relativePath = ppath.relative(ppath.dirname(component.path), path)
-                                let outputPath = ppath.join(generatedPath, componentPath.component.name, relativePath)
+                                if (!found) {
+                                    found = true
+                                    this.log(`Copying C# package exported assets to ${generatedPath}`)
+                                }
+                                let remaining = relativePath.substring('exportedAssets/'.length)
+                                let outputPath = ppath.join(generatedPath, componentPath.component.name, remaining)
                                 this.vlog(`Copying ${path} to ${outputPath}`)
                                 await fs.ensureDir(ppath.dirname(outputPath))
                                 await fs.copyFile(path, outputPath)
@@ -779,7 +785,8 @@ export default class SchemaMerger {
                     this.popParent()
                 }
             } else if (this.debug) {
-                this.parsingWarning('  Could not find nuspec')
+                // Assume missing nuget is because of build complexities
+                this.parsingWarning('Could not find nuget')
             }
         }
     }
@@ -796,9 +803,16 @@ export default class SchemaMerger {
                     for (let pkgVersion of await fs.readdir(pkgPath)) {
                         versions.push(pkgVersion.toLowerCase())
                     }
-                    minVersion = minVersion || '0.0.0'
                     // NOTE: The semver package does not handle more complex nuget range revisions
                     // We get an exception and will ignore those dependencies.
+                    minVersion = minVersion || '0.0.0'
+                    if (minVersion.startsWith('$')) {
+                        // Deal with build variables by installing most recent version
+                        minVersion = nuget.maxSatisfying(versions, '0-1000')
+                        if (this.debug) {
+                            this.parsingWarning(`Using most recent version ${minVersion}`)
+                        }
+                    }
                     let version = nuget.minSatisfying(versions, minVersion)
                     pkgPath = ppath.join(pkgPath, version || '')
                     let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
@@ -982,7 +996,7 @@ export default class SchemaMerger {
     // Analyze component files to identify:
     // 1) Multiple definitions of the same file in a component. (Error)
     // 2) Multiple definitions of .schema across projects/components (Error)
-    private analyze() {
+    private async analyze() {
         for (let [ext, files] of this.files.entries()) {
             for (let [file, records] of files.entries()) {
                 let winner = records[0]
@@ -993,7 +1007,13 @@ export default class SchemaMerger {
                         if (winner.component === alt.component) {
                             same.push(alt)
                         } else if (ext === '.schema') {
-                            conflicts.push(alt)
+                            // Check for same content which can happen when project and nuget from project are 
+                            // both being used.
+                            let winnerSrc = await fs.readFile(winner.path, 'utf8')
+                            let altSrc = await fs.readFile(alt.path, 'utf8')
+                            if (winnerSrc !== altSrc) {
+                                conflicts.push(alt)
+                            }
                         }
                     }
                 }
@@ -1048,6 +1068,9 @@ export default class SchemaMerger {
     // Convert XML to JSON
     private async xmlToJSON(path: string): Promise<any> {
         let xml = (await fs.readFile(path)).toString()
+        if (xml.startsWith('\uFEFF')) {
+            xml = xml.slice(1)
+        }
         return new Promise((resolve, reject) =>
             xp.parseString(xml, (err: Error, result: any) => {
                 if (err) {
