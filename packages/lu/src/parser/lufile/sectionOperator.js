@@ -66,7 +66,7 @@ class SectionOperator {
     this.adjustRangeForErrors(this.Luresource.Errors, newLineRange - originalRange, endLine);
 
     // adjust updated sections' errors
-    const offset = oldSection.Range.Start.Line - newResource.Sections[0].Range.Start.Line;
+    const offset = oldSection.Range.Start.Line - 1;
     this.adjustRangeForErrors(newResource.Errors, offset);
     this.Luresource.Errors.push(...newResource.Errors);
 
@@ -80,7 +80,7 @@ class SectionOperator {
   deleteSection(id) {
     const sectionIndex = this.Luresource.Sections.findIndex(u => u.Id === id);
     if (sectionIndex < 0) {
-      return this;
+      return this.Luresource;
     }
 
     const oldSection = this.Luresource.Sections[sectionIndex];
@@ -122,7 +122,7 @@ class SectionOperator {
 
     // adjust original errors
     const newLineRange = sectionContent.split(/\r?\n/).length;
-    const startLine = sectionIndex <= 0 ? 1 : this.Luresource.Sections[sectionIndex].Range.Start.Line;
+    const startLine = sectionIndex < 0 ? 1 : this.Luresource.Sections[sectionIndex].Range.Start.Line;
     this.adjustRangeForErrors(this.Luresource.Errors, newLineRange, startLine);
 
     // adjust the insert errors of section
@@ -208,20 +208,19 @@ class SectionOperator {
     const sectionsSize = newSections.length;
     const oldStartLine = this.Luresource.Sections[oldIndex].Range.Start.Line;
     const oldEndLine = this.Luresource.Sections[oldIndex].Range.End.Line;
-    const newStartLine = newSections[0].Range.Start.Line;
     const newEndLine = newSections[newSections.length - 1].Range.End.Line;
 
     this.Luresource.Sections.splice(oldIndex, 1, ...newSections);
 
     // adjust updated sections' range
-    const updateOffset = oldStartLine - this.Luresource.Sections[oldIndex].Range.Start.Line;
+    const updateOffset = oldStartLine - 1;
     for (let i = oldIndex; i < oldIndex + sectionsSize; i++) {
       const section = this.Luresource.Sections[i];
       this.adjustSectionRange(section, updateOffset);
     }
 
     // adjust remaining sections' range
-    const remainingOffset = (newEndLine - newStartLine) - (oldEndLine - oldStartLine);
+    const remainingOffset = (newEndLine - 1) - (oldEndLine - oldStartLine);
     for (let i = oldIndex + sectionsSize; i < this.Luresource.Sections.length; i++) {
       const section = this.Luresource.Sections[i];
       this.adjustSectionRange(section, remainingOffset);
@@ -230,8 +229,7 @@ class SectionOperator {
 
   adjustRangeForInsertSection(postIndex, newSections) {
     const sectionsSize = newSections.length;
-    const insertOffset = postIndex <= 0 ? 0 : this.Luresource.Sections[postIndex].Range.Start.Line - 1;
-    const newStartLine = newSections[0].Range.Start.Line;
+    const insertOffset = postIndex < 0 ? 0 : this.Luresource.Sections[postIndex].Range.Start.Line - 1;
     const newEndLine = newSections[newSections.length - 1].Range.End.Line;
 
     this.Luresource.Sections.splice(postIndex, 0, ...newSections);
@@ -243,7 +241,7 @@ class SectionOperator {
     }
 
     // adjust remaining sections' range
-    const remainingOffset = newEndLine - newStartLine + 1;
+    const remainingOffset = newEndLine;
     for (let i = postIndex + sectionsSize; i < this.Luresource.Sections.length; i++) {
       const section = this.Luresource.Sections[i];
       this.adjustSectionRange(section, remainingOffset);
