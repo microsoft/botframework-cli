@@ -573,7 +573,10 @@ export default class SchemaMerger {
             }
             if (!this.failed) {
                 for (let locale of Object.keys(result)) {
-                    let uischema = {$schema: this.metaUISchemaId, ...result[locale]}
+                    let uischema = {$schema: this.metaUISchemaId}
+                    for (let key of Object.keys(result[locale]).sort()) {
+                        uischema[key] = result[locale][key]
+                    }
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
                     this.log(`Writing ${this.currentFile}`)
                     await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
