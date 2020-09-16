@@ -240,7 +240,7 @@ const updateToV7 = function(finalLUISJSON) {
             });
         });
         let phraseListsNamesInFinal = [];
-        (finalLUISJSON.phraselists || []).map((item) => {
+        (finalLUISJSON.phraselists || []).forEach((item) => {
             if (!phraseListsNamesInFinal.includes(item.name)) phraseListsNamesInFinal.push(item.name);
         });
         (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity, phraseListsNamesInFinal));

@@ -1011,7 +1011,20 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                                 utteranceEntity.role = item.role.trim();
                             }
                             // detect overlap and respect OnAmbiguousLabels
-                            let priorLabelFound = utteranceObject.entities.find(item => item.name == utteranceEntity.name);
+                            let priorLabelFound = utteranceObject.entities.find(item => {
+                                if (item.entity === utteranceEntity.entity) {
+                                    if (utteranceEntity.role === undefined || utteranceEntity.role === '') {
+                                        if (item.role === undefined || item.role === '') {
+                                            // do the labels overlap? 
+                                            if ((item.startPos >= utteranceEntity.startPos && item.endPos <= utteranceEntity.endPos) || 
+                                                (utteranceEntity.startPos >= item.startPos && utteranceEntity.endPos <= item.endPos)) {
+                                                    return true;
+                                                }
+                                        }
+                                    }
+                                }
+                                return false;
+                            });
                             if (priorLabelFound === undefined) {
                                 utteranceObject.entities.push(utteranceEntity)
                             } else {
