@@ -1010,7 +1010,39 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                             if (item.role && item.role !== '') {
                                 utteranceEntity.role = item.role.trim();
                             }
-                            if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) utteranceObject.entities.push(utteranceEntity)
+                            // detect overlap and respect OnAmbiguousLabels
+                            let priorLabelFound = utteranceObject.entities.find(item => item.name == utteranceEntity.name);
+                            if (priorLabelFound === undefined) {
+                                utteranceObject.entities.push(utteranceEntity)
+                            } else {
+                                if (!utteranceObject.entities.find(item => deepEqual(item, utteranceEntity))) 
+                                {
+                                    let overlapHandling = parsedContent.LUISJsonStructure.onAmbiguousLabels || 'takeLongestLabel';
+                                    switch (overlapHandling.toLowerCase()) {
+                                        case 'takefirst':
+                                            break;
+                                        case 'takelast':
+                                            priorLabelFound.startPos = utteranceEntity.startPos;
+                                            priorLabelFound.endPos = utteranceEntity.endPos;
+                                            break;
+                                        case 'throwanerror':
+                                            let oldUtterance = expandUtterance(utterance, priorLabelFound);
+                                            let newUtterance = expandUtterance(utterance, utteranceEntity);
+                                            let errorMsg = `[Error] Duplicate overlapping labels found for entity '${priorLabelFound.name}' for Intent '${priorLabelFound.intent}'.\n    1. ${oldUtterance}\n    2. ${newUtterance}`;
+                                            let error = BuildDiagnostic({
+                                                message: errorMsg,
+                                                range: utteranceAndEntities.range
+                                            })
+                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                        default:
+                                            // take the longest label
+                                            if ((utteranceEntity.startPos >= priorLabelFound.startPos) && (utteranceEntity.endPos >= priorLabelFound.endPos)) {
+                                                priorLabelFound.startPos = utteranceEntity.startPos;
+                                                priorLabelFound.endPos = utteranceEntity.endPos;
+                                            }
+                                    }
+                                }
+                            }
                         });
                     }
 
@@ -1033,6 +1065,14 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
             }
         }
     }
+}
+
+const expandUtterance = function(utterance, entity)
+{
+    let utteranceSplit = (utterance || '').split('');
+    utteranceSplit[entity.startPos] = `{@${entity.entity}=${utteranceSplit[entity.startPos]}`;
+    utteranceSplit[entity.endPos] = `${utteranceSplit[entity.endPos]}}`;
+    return utteranceSplit.join('');
 }
 
 const isChildEntity = function(entity, entitiesFound) {
@@ -1902,7 +1942,7 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
     if (modelInfos && modelInfos.length > 0) {
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
-            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity).(.*)=/g).map(item => item.trim());
+            let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity|parser).(.*)=/g).map(item => item.trim());
             
             // avoid to throw invalid model info when meeting enableSections info which is handled in luParser.js
             if (kvPair[1] === 'enableSections') continue
@@ -1927,7 +1967,12 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log)
                 if(hasError) {
                     continue;
                 }
-
+                if (kvPair[1].toLowerCase() === 'parser') {
+                    if (kvPair[2].toLowerCase().startsWith('onambiguouslabels')) {
+                        parsedContent.LUISJsonStructure.onAmbiguousLabels = kvPair[3].toLowerCase() || 'takeLongestLabel';
+                        continue;
+                    }
+                }
                 if (kvPair[1].toLowerCase() === 'app') {
                     if (kvPair[2].toLowerCase().startsWith('settings')) {
                         let settingsRegExp = /^settings.(?<property>.*?$)/gmi;
