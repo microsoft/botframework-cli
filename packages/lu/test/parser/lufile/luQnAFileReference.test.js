@@ -169,6 +169,23 @@ describe('Deep reference tests', function() {
             })
     })
 
+    it('Phrase lists defined as feautre to an entity are handled correctly when the phrase list definition is imported', function(done) {
+      let luContent = `
+[import phraselist](phraselists)
+
+# test
+- utterance
+
+@ ml test1 usesFeature phraseList1
+      `;
+      luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+        .then(res => {
+          assert.equal(res.entities[0].features[0].featureName, "phraseList1");
+          done()
+        })
+        .catch(err => done(err))
+    })
+
     it('Fix for BF-CLI #797 - deep references to phrase lists are handled correctly', function(done) {
         let luContent = `
 @ phraselist pl_1(interchangeable) =
@@ -318,6 +335,14 @@ const findLuFiles = async function(srcId, idsToFind){
     let retPayload = [];
     idsToFind.forEach(ask => {
         switch(ask.filePath) {
+            case 'phraselists':
+              retPayload.push(new luObj(`
+@ phraselist phraseList1 = 
+- one
+- two
+- three
+              `, new luOptions(ask.filePath)));
+              break;
             case './3nDepth.lu':
                 retPayload.push(new luObj(`
 @ ml AddToName r2 =

@@ -239,7 +239,11 @@ const updateToV7 = function(finalLUISJSON) {
                 }
             });
         });
-        (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
+        let phraseListsNamesInFinal = [];
+        (finalLUISJSON.phraselists || []).map((item) => {
+            if (!phraseListsNamesInFinal.includes(item.name)) phraseListsNamesInFinal.push(item.name);
+        });
+        (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity, phraseListsNamesInFinal));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
         // do we have nDepthEntities?
         let nDepthEntityExists = (finalLUISJSON.entities || []).find(x => x.children !== undefined && Array.isArray(x.children) && x.children.length !== 0);
@@ -489,8 +493,8 @@ const objectSortByStartPos = function (objectArray) {
     return ObjectByStartPos
 }
 
-const transformAllEntityConstraintsToFeatures = function(entity) {
-    addIsRequiredProperty(entity);
+const transformAllEntityConstraintsToFeatures = function(entity, phraseListsInFinal) {
+    addIsRequiredProperty(entity, phraseListsInFinal);
     if (entity.hasOwnProperty("instanceOf") && entity.instanceOf !== null) {
         if (entity.hasOwnProperty("features") && Array.isArray(entity.features)) {
             let featureFound = (entity.features || []).find(i => i.modelName == entity.instanceOf);
@@ -513,10 +517,15 @@ const transformAllEntityConstraintsToFeatures = function(entity) {
     entity.children.forEach(c => transformAllEntityConstraintsToFeatures(c));
 };
 
-const addIsRequiredProperty = function(item) {
+const addIsRequiredProperty = function(item, phraseListInFinal = []) {
     (item.features || []).forEach(feature => {
         if (feature.isRequired === undefined)
             feature.isRequired = false;
+        if (feature.modelName !== undefined && phraseListInFinal.includes(feature.modelName))
+        {
+            feature.featureName = feature.modelName;
+            delete feature.modelName;
+        }    
         delete feature.featureType;
         delete feature.modelType;
     });
