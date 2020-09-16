@@ -1345,6 +1345,8 @@ OPTIONS
                                          output
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+  
+  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain values for options
 
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
