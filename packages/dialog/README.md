@@ -36,7 +36,7 @@ _See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframew
 
 ## `bf dialog:merge PATTERNS`
 
-Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources in ExportedAssets are copied to ImportedAssets in the same location.
+Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an ExportedAssets directory it is copied to ImportedAssets/<package> in the --imports directory.
 
 ```
 USAGE
@@ -51,6 +51,9 @@ OPTIONS
   -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
   -v, --verbose          Show verbose logging of files as they are processed.
   --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
+
+  --imports=imports      Output path for imported assets.  Defaults to the directory of --out with an ImportedAssets
+                         directory.
 
 EXAMPLES
   $ bf dialog:merge myProject.csproj plugins/*.nuspec

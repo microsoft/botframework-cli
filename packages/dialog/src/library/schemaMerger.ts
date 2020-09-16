@@ -60,7 +60,7 @@ function normalize(path: string): string {
 
 // Deep merge of JSON objects
 function mergeObjects(obj1: any, obj2: any): any {
-    let target = {};
+    let target = {}
     let merger = (obj: any) => {
         for (let prop in obj) {
             let val = obj[prop]
@@ -156,6 +156,11 @@ class Component {
         return patterns
     }
 
+    // Test to see if root component
+    public isRoot(): boolean {
+        return this.parents.length === 0 || (this.parents.length === 1 && this.parents[0].parents.length === 0)
+    }
+
     // Check to see if this component is a parent of another component
     public isParent(node: Component): boolean {
         let found = false
@@ -201,6 +206,7 @@ export default class SchemaMerger {
     // Input parameters
     private readonly patterns: string[]
     private output: string
+    private readonly imports: string
     private readonly verbose: boolean
     private readonly log: any
     private readonly warn: any
@@ -257,6 +263,7 @@ export default class SchemaMerger {
      * Merger to combine component .schema and .uischema files to make a custom schema.
      * @param patterns Glob patterns for the .csproj or packge.json files to combine.
      * @param output The output file to create or empty string to use default.
+     * @param imports The output directory for imports.
      * @param verbose True to show files as processed.
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
@@ -266,9 +273,10 @@ export default class SchemaMerger {
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
+    public constructor(patterns: string[], output: string, imports: string | undefined, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
+        this.imports = imports ?? ppath.join(ppath.dirname(output), 'ImportedAssets')
         this.verbose = verbose
         this.log = log
         this.warn = warn
@@ -587,39 +595,17 @@ export default class SchemaMerger {
         return [kindName, locale]
     }
 
-    // For C# copy all assets into generated/<package>/
+    // Copy all exported assets into imported assets
     private async copyAssets(): Promise<void> {
-        if (!this.failed && !this.schemaPath) {
-            let isCS = false
+        if (!this.failed && !this.schemaPath && this.components.length > 0) {
+            this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
-                if (component.path.endsWith('.csproj') || component.path.endsWith('.nuspec')) {
-                    isCS = true
-                    break
-                }
-            }
-            if (isCS) {
-                let generatedPath = ppath.join(ppath.dirname(this.output), 'ImportedAssets')
-                let found = false
-                for (let files of this.files.values()) {
-                    for (let componentPaths of files.values()) {
-                        for (let componentPath of componentPaths) {
-                            let component = componentPath.component
-                            let path = componentPath.path
-                            let relativePath = ppath.relative(ppath.dirname(component.path), path)
-                            // Copy anything found in exportedassets outside of project
-                            if (!component.isCSProject() && relativePath.toLowerCase().startsWith('exportedassets')) {
-                                // Copy package files to output
-                                if (!found) {
-                                    found = true
-                                    this.log(`Copying C# package exported assets to ${generatedPath}`)
-                                }
-                                let remaining = relativePath.substring('exportedAssets/'.length)
-                                let outputPath = ppath.join(generatedPath, componentPath.component.name, remaining)
-                                this.vlog(`Copying ${path} to ${outputPath}`)
-                                await fs.ensureDir(ppath.dirname(outputPath))
-                                await fs.copyFile(path, outputPath)
-                            }
-                        }
+                if (!component.isRoot()) {
+                    let exported = ppath.join(ppath.dirname(component.path), 'exportedAssets')
+                    if (await fs.pathExists(exported)) {
+                        let imported = ppath.join(this.imports, component.name)
+                        this.vlog(`Copying ${exported} to ${imported}`)
+                        await fs.copy(exported, imported, {recursive: true})
                     }
                 }
             }
@@ -716,24 +702,6 @@ export default class SchemaMerger {
             }
             return false
         })
-    }
-
-    // Resolver for schema: -> metaSchema
-    private schemaProtocolResolver(): any {
-        let reader = (_file: parser.FileInfo) => {
-            return JSON.stringify(this.metaSchema)
-        }
-        return {
-            resolve: {
-                defintion: {
-                    order: 1,
-                    canRead: /^schema:/i,
-                    read(file: parser.FileInfo, _callback: any, _$refs: any) {
-                        return reader(file)
-                    }
-                }
-            }
-        }
     }
 
     private indent(): string {
@@ -917,7 +885,7 @@ export default class SchemaMerger {
                             let dependentPath = ppath.join(rootDir, 'node_modules', dependent, 'package.json')
                             if (await fs.pathExists(dependentPath)) {
                                 await this.expandPackageJson(dependentPath)
-                                break;
+                                break
                             } else {
                                 rootDir = ppath.dirname(rootDir)
                             }
