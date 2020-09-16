@@ -276,7 +276,7 @@ export default class SchemaMerger {
     public constructor(patterns: string[], output: string, imports: string | undefined, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
-        this.imports = imports ?? ppath.join(ppath.dirname(output), 'ImportedAssets')
+        this.imports = imports ?? ppath.dirname(output)
         this.verbose = verbose
         this.log = log
         this.warn = warn
@@ -603,7 +603,7 @@ export default class SchemaMerger {
                 if (!component.isRoot()) {
                     let exported = ppath.join(ppath.dirname(component.path), 'exportedAssets')
                     if (await fs.pathExists(exported)) {
-                        let imported = ppath.join(this.imports, component.name)
+                        let imported = ppath.join(this.imports, 'ImportedAssets', component.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
                         await fs.copy(exported, imported, {recursive: true})
                     }
