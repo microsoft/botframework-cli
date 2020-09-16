@@ -2675,7 +2675,7 @@ export class Utility {
     return reversed;
   }
 
-  public static processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
+  public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
     utteranceLabels: {
       'utteranceLabelsMap': { [id: string]: string[] };
       'utteranceLabelDuplicateMap': Map<string, Set<string>>; },
@@ -2694,7 +2694,7 @@ export class Utility {
           if (!hasConcreteLabel) {
             utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
             utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
-            Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
+            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
             continue;
           }
           utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
@@ -2720,14 +2720,14 @@ export class Utility {
         } else {
           labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
-          Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
+          Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }
     return utteranceLabels;
   }
 
-  public static processUnknowLabelsInUtteranceLabelsMap(
+  public static processUnknownLabelsInUtteranceLabelsMap(
     utteranceLabels: {
       'utteranceLabelsMap': { [id: string]: string[] };
       'utteranceLabelDuplicateMap': Map<string, Set<string>>; }): {
@@ -2745,7 +2745,7 @@ export class Utility {
           if (!hasConcreteLabel) {
             utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
             utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
-            Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMap(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
+            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
             continue;
           }
           utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
@@ -2771,7 +2771,7 @@ export class Utility {
         } else {
           labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
-          Utility.debuggingLog(`Utility.processUnknowLabelsInUtteranceLabelsMap(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
+          Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }

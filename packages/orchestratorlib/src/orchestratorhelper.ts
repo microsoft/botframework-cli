@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
@@ -115,7 +116,7 @@ export class OrchestratorHelper {
     const utteranceEntityLabelsMap: { [id: string]: Label[] } = {};
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
-    filePaths.forEach(async (filePathEntry: string) => {
+    for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
         await OrchestratorHelper.iterateInputFolder(
           filePathEntry,
@@ -134,8 +135,8 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap,
           hierarchical);
       }
-    });
-    Utility.processUnknowLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
+    }
+    Utility.processUnknownLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
     return {utteranceLabelsMap, utteranceLabelDuplicateMap, utteranceEntityLabelsMap, utteranceEntityLabelDuplicateMap};
   }
 

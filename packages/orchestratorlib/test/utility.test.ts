@@ -44,7 +44,7 @@ describe('Test Suite - utility', () => {
     }
   });
 
-  it('Test.0100 Utility.processUnknowLabelsInUtteranceLabelsMap()', function () {
+  it('Test.0100 Utility.processUnknownLabelsInUtteranceLabelsMap()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: { [id: string]: string[] } = {};
@@ -78,7 +78,7 @@ describe('Test Suite - utility', () => {
       `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
     Utility.debuggingLog(
       `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-    Utility.processUnknowLabelsInUtteranceLabelsMap(
+    Utility.processUnknownLabelsInUtteranceLabelsMap(
       utteranceLabels);
     Utility.debuggingLog(
       `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
@@ -99,7 +99,7 @@ describe('Test Suite - utility', () => {
     assert.ok((utteranceLabelDuplicateMap.get('C') as Set<string>).size === 1);
     assert.ok((utteranceLabelDuplicateMap.get('C') as Set<string>).has(Utility.UnknownLabel));
   });
-  it('Test.0101 Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet()', function () {
+  it('Test.0101 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: { [id: string]: string[] } = {};
@@ -134,7 +134,7 @@ describe('Test Suite - utility', () => {
       `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
     Utility.debuggingLog(
       `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-    Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
+    Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       utteranceLabels,
       labelSet);
     Utility.debuggingLog(

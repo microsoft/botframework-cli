@@ -84,7 +84,7 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelDuplicateMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknowLabelsInUtteranceLabelsMap(
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknownLabelsInUtteranceLabelsMap(
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
@@ -138,7 +138,7 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelDuplicateMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelDuplicateMap);
-    Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
+    Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
         utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap,

@@ -95,7 +95,7 @@ export class OrchestratorTest {
       new Set<string>(snapshotSetLabels);
     // ---- NOTE ---- process the testing set.
     processedUtteranceLabelsMap = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
-    Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
+    Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
     const utteranceLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for testing set');

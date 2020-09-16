@@ -502,5 +502,12 @@ describe('Test Suite - orchestratorhelper', () => {
       fs.mkdirSync(baseOutputDir, {recursive: true});
     }
   });
-});
 
+  it('Test.0500 OrchestratorHelper.getUtteranceLabelsMap()', async () => {
+    const inputFile: string = './test/fixtures/adaptive/RootDialog.lu';
+    const result: any = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
+    assert.ok('Hey' in result, 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
+    assert.ok('Add item' in result, 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
+    assert.ok('delete to do go shopping' in result, 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
+  });
+});

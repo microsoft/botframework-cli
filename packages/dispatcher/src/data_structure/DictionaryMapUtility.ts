@@ -38,7 +38,7 @@ export class DictionaryMapUtility {
     public static readonly UnknownLabelSet: Set<string> =
         new Set<string>(["", "NONE", DictionaryMapUtility.UnknownLabel]);
 
-    public static processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
+    public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
         utteranceLabels: {
             "utteranceLabelsMap": { [id: string]: string[] };
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; },
@@ -89,7 +89,7 @@ export class DictionaryMapUtility {
         return utteranceLabels;
     }
 
-    public static processUnknowLabelsInUtteranceLabelsMap(
+    public static processUnknownLabelsInUtteranceLabelsMap(
         utteranceLabels: {
             "utteranceLabelsMap": { [id: string]: string[] };
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; }): {

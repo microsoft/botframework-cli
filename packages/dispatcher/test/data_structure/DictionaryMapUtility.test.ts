@@ -97,7 +97,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok(stringMap.c === 2);
     });
 
-    it("Test.0100 Utility.processUnknowLabelsInUtteranceLabelsMap()", function () {
+    it("Test.0100 Utility.processUnknownLabelsInUtteranceLabelsMap()", function () {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: { [id: string]: string[] } = {};
@@ -131,7 +131,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-        DictionaryMapUtility.processUnknowLabelsInUtteranceLabelsMap(
+        DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMap(
           utteranceLabels);
         Utility.debuggingLog(
           `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
@@ -152,7 +152,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).size === 1);
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
     });
-    it("Test.0101 Utility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet()", function () {
+    it("Test.0101 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()", function () {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: { [id: string]: string[] } = {};
@@ -187,7 +187,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-        DictionaryMapUtility.processUnknowLabelsInUtteranceLabelsMapUsingLabelSet(
+        DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
           utteranceLabels,
           labelSet);
         Utility.debuggingLog(
