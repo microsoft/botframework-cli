@@ -39,7 +39,7 @@ steps:
   inputs:
     command: custom
     verbose: false
-    customCommand: 'install --global @microsoft/rush'
+    customCommand: 'install --global @microsoft/rush@5.33.0'
 
 - script: 'rush update'
   displayName: 'rush update'
