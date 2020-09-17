@@ -3,7 +3,7 @@
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
 # BF Command Line Interface
-[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=master)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=master)
+[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=main)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=main)
 
 The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
@@ -33,15 +33,15 @@ The following commands are currently available:
 * [QnAMaker][5]
 
 <!--
-Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins#microsoftbf-cli-plugins))
-* [Dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
+Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/main/packages/plugins#microsoftbf-cli-plugins))
+* [Dialog](https://github.com/microsoft/botframework-cli/tree/main/packages/dialog)
 -->
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
 * Dispatch
 
-See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
+See [Porting Map](https://github.com/microsoft/botframework-cli/blob/main/PortingMap.md) for a mapping reference between old and new tools
 
 ## Overview
 
@@ -59,7 +59,7 @@ Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), yo
 
 
 ### See Also
-* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/master/packages/cli)
+* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/main/packages/cli)
 * [Bot Framework Homepage](https://dev.botframework.com/)
 * [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
 * [LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/index)
