@@ -55,7 +55,7 @@ export class Utility {
   The computing process iterates through the per-label binary confusion matrices and
   calculates the sums of per-label "#TruePositives" and per-label "Support", respectively.
   The "Support" sum is stored in this row's "Total" field and "#TruePositives" sum in the "#TruePositives" field.
-  This metric is then the ratio of the "#TruePositives" sum over "Total"
+  This metric is then the ratio of the "#TruePositives" sum over "Total."
   `;
 
   public static readonly ColumnNameMicroFirstQuartile: string = Utility.getBolded('Micro-First-Quartile');
@@ -66,23 +66,23 @@ export class Utility {
   For every metric in this row, e.g., precision, the computing process collects the per-label precision
   metrics from the per-label binary confusion matrices, sorts them, and then expands each per-label precision by the
   number of label supports. It then finds the first quartile of the metric from the series of metrics.
-  These first-quartile metrics show the metrics' lower bound
+  These first-quartiles are the metrics' lower bound
   for the top 75% test instances.
   `;
 
   public static readonly ColumnNameMicroMedian: string = Utility.getBolded('Micro-Median');
 
   public static readonly DescriptionMicroMedian: string = `
-  Similar to the previous row, but this row focuses on median, another robust statistic.
-  These median metrics show the metrics' lower bound
+  Similar to the previous row, but metrics in this row focuses on median, another robust statistic.
+  These medians are the metrics' lower bound
   for the top 50% test instances.
   `;
 
   public static readonly ColumnNameMicroThirdQuartile: string = 'Micro-Third-Quartile';
 
   public static readonly DescriptionMicroThirdQuartile: string = `
-  Similar to the previous row, but this row focuses on the third quartile.
-  These third-quartile metrics show the metrics' lower bound
+  Similar to the previous row, but metrics in this row focuses on the third quartile.
+  These third-quartiles are the metrics' lower bound
   for the top 25% test instances.
   `;
 
@@ -91,22 +91,23 @@ export class Utility {
   public static readonly DescriptionMacroFirstQuartile: string = `
   Above three quantile metrics are micro, i.e., they are calcuated on the test instance level.
   Macro quantile metrics are calculated per label.
-  For this row, the first quartile metrics show the metrics' lower bound for the top 75% test labels.
+  The first quartiles are the metrics' lower bound
+  for the top 75% test labels.
   `;
 
   public static readonly ColumnNameMacroMedian: string = Utility.getBolded('Macro-Median');
 
   public static readonly DescriptionMacroMedian: string = `
-  Similar to the previous row, but this row focuses on median.
-  These median metrics show the metrics' lower bound
+  Similar to the previous row, but metrics in this row focuses on median.
+  These medians are the metrics' lower bound
   for the top 50% test labels.
   `;
 
   public static readonly ColumnNameMacroThirdQuartile: string = 'Macro-Third-Quartile';
 
   public static readonly DescriptionMacroThirdQuartile: string = `
-  Similar to the previous row, but this row focuses on the third quartile.
-  These third-quartile metrics show the metrics' lower bound
+  Similar to the previous row, but metrics in this row focuses on the third quartile.
+  These third-quartiles are the metrics' lower bound
   for the top 25% test labels.
   `;
 
@@ -181,12 +182,13 @@ export class Utility {
 
   public static readonly DescriptionMultiLabelExactAggregate: string = `
   This evaluation package supports multi-label instances and predictions.
-  In another word, an instance can be labeled and predicted with more than
+  In another word, a test instance can be labeled and predicted with more than
   one labels. The above metrics so far are calculated "per instance label," i.e., an instance can contribute to
-  a positive prediction more than one times, thus above metrics can encourage a model to predict more than one labels per test instances in
+  a positive prediction more than one times, thus the above metrics can encourage a model to predict more than one labels per test instances in
   order to achieve better performance results.
   To counter such behavior, metrics in this row are "per instance," i.e., an instance can only contribute to one positive prediction. 
-  The calcuating process build one binary confusion matrix and a true positive prediction must match the multi-label prediction
+  The calcuating process does not rely on the per-label binary confusion matrices, but
+  build jsut one binary confusion matrix in which a true positive prediction must match the multi-label prediction
   exactly with the ground-truth labels, otherwise it's a false positive. By the way, there is no negative prediction.
   `;
 
@@ -195,9 +197,9 @@ export class Utility {
   public static readonly DescriptionMultiLabelSubsetAggregate: string = `
   Similar to the previous row, but the metric computing process is less strict. A prediction can be a true positive
   as long as the predicted label set is a subset of the ground-truth set.
-  This subset approach makes sense as an action taken on a prediction can just correctly respond to one of the
-  label and the action is still safe.
-  Of course, this subset rule can discourage a model to predict less labels (just one is the safest strategy),
+  This subset approach makes sense as an action taking on a prediction can respond to one of the
+  correctly predicted labels and the action is still proper.
+  Of course, this subset rule can discourage a model from predicting more than one labels (one is the safest strategy),
   even though a test instance might be labeled with a large ground-truth label set.
   `;
 
