@@ -498,3 +498,147 @@ describe('Section range tests', () => {
         assert.equal(luresource.Sections[1].Range.End.Character, 7)
     });
 })
+
+describe('Section CRUD tests for insert and update sections with newline', () => {
+    let luresource = undefined;
+
+    let fileContent =
+`# ? who is CEO of Microsoft
+- Microsoft CEO
+
+\`\`\`
+Satya Nadella
+\`\`\``;
+
+    let updatedQnAConent =
+`# ? who is CEO of Facebook
+- Facebook CEO
+
+\`\`\`
+Mark Zuckerberg
+\`\`\``;
+
+    let insertQnAContent =
+`# ? how to greet
+
+\`\`\`
+hello
+\`\`\``
+
+    let insertQnAContent2 =
+`# ? how to cancel
+
+\`\`\`
+cancel that
+\`\`\``
+
+    let insertLuContent =
+`# welcome
+- welcome here`
+
+    let insertLuContent2 =
+`# stop
+- stop that`
+
+    it('update qna section test', () => {
+        luresource = luparser.parse(fileContent);
+
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, `${NEWLINE}${updatedQnAConent}${NEWLINE}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g, "\n"), `${updatedQnAConent}\n`);
+    });
+
+    it('insert qna section at begining test', () => {
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[0].Id, `${NEWLINE}${insertQnAContent}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 2);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g, "\n"), `${insertQnAContent}`);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g, "\n"), `${updatedQnAConent}\n`);
+    });
+
+    it('insert qna section at middle test', () => {
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[1].Id, `${NEWLINE}${NEWLINE}${insertQnAContent2}${NEWLINE}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 3);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[0].Body.replace(/\r\n/g, "\n"), `${insertQnAContent}\n\n`);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g, "\n"), `${insertQnAContent2}\n`);
+        assert.equal(luresource.Sections[2].Body.replace(/\r\n/g, "\n"), `${updatedQnAConent}\n`);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), `\n\n${insertQnAContent}\n\n\n${insertQnAContent2}\n\n${updatedQnAConent}\n`);
+    });
+
+    it('insert lu section at begining test', () => {
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[0].Id, `${NEWLINE}${insertLuContent}${NEWLINE}${NEWLINE}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 4);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(`# welcome\n${luresource.Sections[0].Body.replace(/\r\n/g, "\n")}`, `${insertLuContent}\n\n`);
+    });
+
+    it('update qna section with lu section test', () => {
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[3].Id, `${NEWLINE}${insertLuContent2}${NEWLINE}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 4);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.SIMPLEINTENTSECTION);
+        assert.equal(`# welcome\n${luresource.Sections[0].Body.replace(/\r\n/g, "\n")}`, `${insertLuContent}\n\n`);
+        assert.equal(luresource.Sections[1].Body.replace(/\r\n/g, "\n"), `${insertQnAContent}\n\n`);
+        assert.equal(luresource.Sections[2].Body.replace(/\r\n/g, "\n"), `${insertQnAContent2}\n\n`);
+        assert.equal(`# stop\n${luresource.Sections[3].Body.replace(/\r\n/g, "\n")}`, `${insertLuContent2}\n`);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), `\n\n\n${insertLuContent}\n\n\n${insertQnAContent}\n\n\n${insertQnAContent2}\n\n\n${insertLuContent2}\n`);
+    });
+});
+
+describe('Section CRUD tests for import section', () => {
+    let luresource = undefined;
+
+    let importContent1 = `[import](howto.source.qna)`;
+    let importContent2 = ` [import](guide.source.qna)`;
+
+    let qnaContent = 
+`# ? who is CEO of Microsoft
+- Microsoft CEO
+
+\`\`\`
+Satya Nadella
+\`\`\``;
+
+    let insertImportConent = ` [import](windows.source.qna)`;
+
+    it('insert qna section test', () => {
+        luresource = luparser.parse(`${importContent1}${NEWLINE}${importContent2}${NEWLINE}${NEWLINE}${qnaContent}`);
+        luresource = new SectionOperator(luresource).insertSection(luresource.Sections[2].Id, `${NEWLINE}${insertImportConent}`);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 4);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.IMPORTSECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.IMPORTSECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.IMPORTSECTION);
+        assert.equal(luresource.Sections[3].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), `${importContent1}\n${importContent2}\n\n\n${insertImportConent}\n${qnaContent}`);
+    });
+
+    it('delete qna section test', () => {
+        luresource = new SectionOperator(luresource).deleteSection(luresource.Sections[1].Id);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 3);
+        assert.equal(luresource.Sections[0].SectionType, LUSectionTypes.IMPORTSECTION);
+        assert.equal(luresource.Sections[1].SectionType, LUSectionTypes.IMPORTSECTION);
+        assert.equal(luresource.Sections[2].SectionType, LUSectionTypes.QNASECTION);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), `${importContent1}\n\n\n${insertImportConent}\n${qnaContent}`);
+    });
+});

@@ -32,6 +32,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean, sch
     }
     let merger = new SchemaMerger(patterns,
         output ? ppath.join(tempDir, output) : '',
+        undefined,        
         verbose || false,
         logger, logger, logger,
         undefined, 
@@ -168,10 +169,8 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget3.component1.schema/, lines) === 1, 'Missing nuget3.component1.schema')
-        assert(countMatches(/Copying/i, lines) === 4, 'Wrong number of copies')
-        assert(countMatches(/Copying.*nuget3.lg/i, lines) === 1, 'Did not copy .lg')
-        assert(countMatches(/Copying.*nuget3.lu/i, lines) === 1, 'Did not copy .lu')
-        assert(countMatches(/Copying.*nuget3.qna/i, lines) === 1, 'Did not copy .qna')
+        assert(countMatches(/Copying/i, lines) === 2, 'Wrong number of copies')
+        assert(countMatches(/Copying.*nuget3/i, lines) === 1, 'Did not copy nuget3')
         assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'nuget3', 'stuff', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
@@ -224,6 +223,9 @@ describe('dialog:merge', async () => {
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
+        assert(countMatches('Copying', lines) === 2, 'Wrong number of copies')
+        assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'dependent-package', 'assets', 'dependent-package.jpg')), 'Incomplete assets copy')
+        assert(!await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'root-package')), 'Copied rootx')
         await compareToOracle('root-package.schema')
         await compareToOracle('root-package.uischema')
     })
