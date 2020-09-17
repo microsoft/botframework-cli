@@ -12,7 +12,7 @@ import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
-import {OrchestratorHelper} from './orchestratorhelper';
+// import {OrchestratorHelper} from './orchestratorhelper';
 
 import {Example} from './example';
 // import {Label} from './label';
@@ -148,7 +148,8 @@ export class OrchestratorPredict {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;}; };
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};};
     'predictionScoreStructureArray': PredictionScoreStructure[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
@@ -202,9 +203,11 @@ export class OrchestratorPredict {
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
     // ---- NOTE ---- load the snapshot set
     this.snapshotFile = this.inputPath;
-    // if (!Utility.exists(this.snapshotFile)) {
-    //   Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${snapshotFile}`);
-    // }
+    if (this.snapshotFile) {
+      if (!Utility.exists(this.snapshotFile)) {
+        Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${this.snapshotFile}`);
+      }
+    }
     this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth._instancesjson');
     this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction_instances.json');
     this.predictingSetScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_scores.txt');
@@ -565,10 +568,13 @@ export class OrchestratorPredict {
       console.log('ERROR: There is no example in the snapshot set, please add some.');
       return -1;
     }
-    Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);
+    Utility.examplesToUtteranceLabelMaps(
+      examples,
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap);
     // ---- NOTE ---- integrated step to produce analysis reports.
-    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("false")');
-    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(false);
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("true")');
+    UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(true);
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentEvaluationOutput = Utility.generateEvaluationReport(
@@ -580,11 +586,12 @@ export class OrchestratorPredict {
       this.lowConfidenceScoreThreshold,
       this.multiLabelPredictionThreshold,
       this.unknownLabelPredictionThreshold);
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
     let evaluationSummary: string =
       this.currentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
-    // -----------------------------------------------------------------------
     evaluationSummary = evaluationSummary.replace(
       '{APP_NAME}',
       '');
@@ -607,7 +614,7 @@ export class OrchestratorPredict {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`this.currentEvaluationOutput=${Utility.jsonStringify(this.currentEvaluationOutput)}`);
     }
-    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
+    // -----------------------------------------------------------------------
     console.log(`> Leave-one-out cross validation is done and reports generated in '${this.predictingSetSummaryOutputFilename}'`);
     return 0;
   }
@@ -913,7 +920,7 @@ export class OrchestratorPredict {
 
   public commandLetN(): number {
     const snapshot: any = LabelResolver.createSnapshot();
-    OrchestratorHelper.writeToFile(this.getPredictingSetSnapshotFilename(), snapshot);
+    Utility.dumpFile(this.getPredictingSetSnapshotFilename(), snapshot);
     Utility.debuggingLog(`Snapshot written to ${this.getPredictingSetSnapshotFilename()}`);
     console.log(`> A new snapshot has been saved to '${this.getPredictingSetSnapshotFilename()}'`);
     return 0;

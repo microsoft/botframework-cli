@@ -820,7 +820,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             (x: BinaryConfusionMatrix) => [x.getSupport(), x.getSupport()]);
         const quantilesSupports: number[] =
             Utility.findValueCountPairQuantiles(supports, quantileConfiguration) as number[];
-        const macroQuantileMetrics: {
+        const microQuantileMetrics: {
             "quantilesPrecisions": number[],
             "quantilesRecalls": number[],
             "quantilesF1Scores": number[],
@@ -841,7 +841,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
                 quantilesAccuracies,
                 quantilesSupports,
                 total};
-        return macroQuantileMetrics;
+        return microQuantileMetrics;
     }
 
     public getMacroQuantileMetrics(

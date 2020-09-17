@@ -5,9 +5,11 @@
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import {Utility} from './utility';
+
+import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {Utility} from './utility';
 
 export class OrchestratorBuild {
   public static Orchestrator: any;
@@ -77,10 +79,12 @@ export class OrchestratorBuild {
     const labelResolver: any = LabelResolver.createLabelResolver();
     const baseName: string = path.basename(luFile, '.lu');
     Utility.debuggingLog('Created label resolver');
-
-    const result: any = (await OrchestratorHelper.getUtteranceLabelsMap(luFile, false)).utteranceLabelsMap;
+    const result: {
+      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(luFile, false);
     Utility.debuggingLog(`Processed ${luFile}`);
-
     LabelResolver.addExamples(result, labelResolver);
     const snapshot: any = labelResolver.createSnapshot();
     const snapshotFile: any = path.join(OrchestratorBuild.OutputPath, baseName + '.blu');

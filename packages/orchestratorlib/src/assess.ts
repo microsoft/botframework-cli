@@ -224,7 +224,8 @@ export class OrchestratorAssess {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionStructureArray': PredictionStructure[];
     } =
     Utility.generateAssessmentEvaluationReport(
@@ -316,7 +317,8 @@ export class OrchestratorAssess {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionLabelStructureArray': PredictionLabelStructure[];
     } =
     Utility.generateAssessmentLabelObjectEvaluationReport(

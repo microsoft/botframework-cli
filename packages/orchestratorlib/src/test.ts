@@ -151,7 +151,8 @@ export class OrchestratorTest {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
       'groundTruthJsonContent': string;
@@ -170,11 +171,11 @@ export class OrchestratorTest {
       Utility.debuggingLog(`evaluationOutput=${Utility.jsonStringify(evaluationOutput)}`);
     }
     Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReport()');
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
     let evaluationSummary: string =
       evaluationOutput.evaluationReportAnalyses.evaluationSummary;
-    // -----------------------------------------------------------------------
     evaluationSummary = evaluationSummary.replace(
       '{APP_NAME}',
       '');

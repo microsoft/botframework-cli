@@ -163,7 +163,8 @@ export class OrchestratorEvaluate {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
       'groundTruthJsonContent': string;
@@ -178,12 +179,12 @@ export class OrchestratorEvaluate {
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
-    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
     let evaluationSummary: string =
       evaluationOutput.evaluationReportAnalyses.evaluationSummary;
-    // -----------------------------------------------------------------------
     evaluationSummary = evaluationSummary.replace(
       '{APP_NAME}',
       '');
@@ -202,11 +203,10 @@ export class OrchestratorEvaluate {
       snapshotSetGroundTruthJsonContentOutputFilename,
       snapshotSetPredictionJsonContentOutputFilename,
       snapshotSetSummaryHtmlOutputFilename);
-    Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutput=${Utility.jsonStringify(evaluationOutput)}`);
     }
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- THE END
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), THE END');

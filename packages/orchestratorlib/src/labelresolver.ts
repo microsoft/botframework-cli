@@ -6,6 +6,7 @@
 import * as path from 'path';
 import {Utility} from './utility';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {Label} from './label';
 import {LabelType} from './labeltype';
 
 const oc: any = require('orchestrator-core');
@@ -74,12 +75,12 @@ export class LabelResolver {
     return labelResolver.addSnapshot(snapshot, prefix);
   }
 
-  public static addExample(example: any /* {label: label, text: utterance} */, labelResolver: any = null) {
+  public static addExample(example: any, labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
-    return labelResolver.addExample();
+    return labelResolver.addExample(example);
   }
 
-  public static removeExample(example: any /* {label: label, text: utterance} */, labelResolver: any = null) {
+  public static removeExample(example: any, labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
     return labelResolver.removeExample(example);
   }
@@ -114,23 +115,63 @@ export class LabelResolver {
     return labelResolver.setRuntimeParams(config, resetAll);
   }
 
-  public static addExamples(utteranceLabelsMap: {[id: string]: string[]}, labelResolver: any = null) {
+  public static addExamples(
+    utteranceIntentEntityLabels: {
+      utteranceLabelsMap: { [id: string]: string[] };
+      utteranceLabelDuplicateMap: Map<string, Set<string>>;
+      utteranceEntityLabelsMap: { [id: string]: Label[] };
+      utteranceEntityLabelDuplicateMap: Map<string, Label[]>; },
+    labelResolver: any = null) {
     if (labelResolver === null) {
       labelResolver = LabelResolver.LabelResolver;
     }
+    const utteranceLabelsMap: { [id: string]: string[] } = utteranceIntentEntityLabels.utteranceLabelsMap;
     // eslint-disable-next-line guard-for-in
     for (const utterance in utteranceLabelsMap) {
       const labels: string[] = utteranceLabelsMap[utterance];
-      for (const label of labels) {
-        try {
-          const success: any = labelResolver.addExample({label: label, text: utterance});
-          if (success) {
-            Utility.debuggingLog(`LabelResolver.addExamples(): Added { label: ${label}, text: ${utterance}}`);
-          } else {
-            Utility.debuggingLog(`LabelResolver.addExamples(): Failed adding { label: ${label}, text: ${utterance}}`);
+      if (labels && (labels.length > 0)) {
+        for (const label of labels) {
+          try {
+            const success: any = labelResolver.addExample({label: label, text: utterance});
+            // eslint-disable-next-line max-depth
+            if (success) {
+              Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance} }`);
+            } else {
+              Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }`);
+            }
+          } catch (error) {
+            Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
           }
-        } catch (error) {
-          Utility.debuggingLog(`LabelResolver.addExamples(): Failed adding { label: ${label}, text: ${utterance}}\n${error}`);
+        }
+      }
+    }
+    const utteranceEntityLabelsMap: { [id: string]: Label[] } = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
+    // eslint-disable-next-line guard-for-in
+    for (const utterance in utteranceEntityLabelsMap) {
+      const labels: Label[] = utteranceEntityLabelsMap[utterance];
+      if (labels && (labels.length > 0)) {
+        for (const label of labels) {
+          const entity: string = label.name;
+          const spanOffset: number = label.span.offset;
+          const spanLength: number = label.span.length;
+          try {
+            const success: any = labelResolver.addExample({
+              text: utterance,
+              labels: [{
+                name: entity,
+                label_type: 1,
+                span: {
+                  offset: spanOffset,
+                  length: spanLength}}]});
+            // eslint-disable-next-line max-depth
+            if (success) {
+              Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+            } else {
+              Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+            }
+          } catch (error) {
+            Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
+          }
         }
       }
     }

@@ -49,37 +49,157 @@ export class Utility {
 
   public static readonly ColumnNameMicroAverage: string = Utility.getBolded(Utility.ColumnNameMicroAverageRaw);
 
+  public static readonly DescriptionMicroAverage: string = `
+  This metric follows the micro-average metric defined in
+  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
+  The computing process iterates through the per-label binary confusion matrices and
+  calculates the sums of per-label "#TruePositives" and per-label "Support", respectively.
+  The "Support" sum is stored in this row's "Total" field and "#TruePositives" sum in the "#TruePositives" field.
+  This metric is then the ratio of the "#TruePositives" sum over "Total"
+  `;
+
   public static readonly ColumnNameMicroFirstQuartile: string = Utility.getBolded('Micro-First-Quartile');
+
+  public static readonly DescriptionMicroFirstQuartile: string = `
+  Average (or mean) is not a robust statistic (<a href="https://en.wikipedia.org/wiki/Robust_statistics">Robust Statistics</a>),
+  which can be easily influenced by outliers. Thus, we also compute robust quantile-based metrics in this report.
+  For every metric in this row, e.g., precision, the computing process collects the per-label precision
+  metrics from the per-label binary confusion matrices, sorts them, and then expands each per-label precision by the
+  number of label supports. It then finds the first quartile of the metric from the series of metrics.
+  These first-quartile metrics show the metrics' lower bound
+  for the top 75% test instances.
+  `;
 
   public static readonly ColumnNameMicroMedian: string = Utility.getBolded('Micro-Median');
 
+  public static readonly DescriptionMicroMedian: string = `
+  Similar to the previous row, but this row focuses on median, another robust statistic.
+  These median metrics show the metrics' lower bound
+  for the top 50% test instances.
+  `;
+
   public static readonly ColumnNameMicroThirdQuartile: string = 'Micro-Third-Quartile';
+
+  public static readonly DescriptionMicroThirdQuartile: string = `
+  Similar to the previous row, but this row focuses on the third quartile.
+  These third-quartile metrics show the metrics' lower bound
+  for the top 25% test instances.
+  `;
 
   public static readonly ColumnNameMacroFirstQuartile: string = Utility.getBolded('Macro-First-Quartile');
 
+  public static readonly DescriptionMacroFirstQuartile: string = `
+  Above three quantile metrics are micro, i.e., they are calcuated on the test instance level.
+  Macro quantile metrics are calculated per label.
+  For this row, the first quartile metrics show the metrics' lower bound for the top 75% test labels.
+  `;
+
   public static readonly ColumnNameMacroMedian: string = Utility.getBolded('Macro-Median');
+
+  public static readonly DescriptionMacroMedian: string = `
+  Similar to the previous row, but this row focuses on median.
+  These median metrics show the metrics' lower bound
+  for the top 50% test labels.
+  `;
 
   public static readonly ColumnNameMacroThirdQuartile: string = 'Macro-Third-Quartile';
 
+  public static readonly DescriptionMacroThirdQuartile: string = `
+  Similar to the previous row, but this row focuses on the third quartile.
+  These third-quartile metrics show the metrics' lower bound
+  for the top 25% test labels.
+  `;
+
   public static readonly ColumnNameSummationMicroAverage: string = `Summation ${Utility.ColumnNameMicroAverageRaw}`;
+
+  public static readonly DescriptionSummationMicroAverage: string = `
+  The metrics in this row are a little bit different from those of ${Utility.ColumnNameMicroAverage}.
+  The computng process first sums up per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+  metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
+  Precision, Recall, F1, Accuracy, etc.
+  `;
 
   public static readonly ColumnNameMacroAverageRaw: string = 'Macro-Average';
 
   public static readonly ColumnNameMacroAverage: string = Utility.getBolded(Utility.ColumnNameMacroAverageRaw);
 
+  public static readonly DescriptionMacroAverage: string = `
+  This metric follows the macro-average metric defined in
+  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
+  The computing process calcuates simple arithmetic means of the per-label Precision, Recall, F1, and Accuracy
+  metrics, repectively.
+  `;
+
   public static readonly ColumnNameSummationMacroAverage: string = `Summation ${Utility.ColumnNameMacroAverageRaw}`;
+
+  public static readonly DescriptionSummationMacroAverage: string = `
+  The calculating process for the metrics in this row is a little bit different from ${Utility.ColumnNameMacroAverage}.
+  It first calculates the averages of per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+  metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
+  Precision, Recall, F1, Accuracy, etc.
+  `;
 
   public static readonly ColumnNamePositiveSupportMacroAverage: string = `Positive-Support ${Utility.ColumnNameMacroAverageRaw}`;
 
+  public static readonly DescriptionPositiveSupportMacroAverage: string = `
+  The metrics in this row are similar to those of ${Utility.ColumnNameMacroAverage}.
+  However, instead of averaging over all train-set labels, metrics in this rows are the averages of test-set labels,
+  i.e., labels with a positive support in the test set.
+  Even though one might expect every label (in the train set) should have some test instances, but
+  sometimes a test set might not have test instances for some train set labels.
+  "Positive-support" metrics put an focus on test-set labels.
+  A test set might even contain instances whose labels are not in the train set. Those labels are renamed UNKNOWN for
+  evaluation purpose.
+  `;
+
   public static readonly ColumnNamePositiveSupportSummationMacroAverage: string = `Positive-Support ${Utility.ColumnNameSummationMacroAverage}`;
+
+  public static readonly DescriptionPositiveSupportSummationMacroAverage: string = `
+  The metrics in this row are similar to those of ${Utility.ColumnNameSummationMacroAverage}, but forcus on
+  labels with test instances.
+  `;
 
   public static readonly ColumnNameWeightedMacroAverage: string = `Weighted ${Utility.ColumnNameMacroAverageRaw}`;
 
+  public static readonly DescriptionWeightedMacroAverage: string = `
+  This metric follows the weighted-average metric defined in
+  <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
+  The computing process calcuates support/prevalency-weighted means of the per-label Precision, Recall, F1, and Accuracy
+  metrics, repectively.
+  `;
+
   public static readonly ColumnNameWeightedSummationMacroAverage: string = `Weighted ${Utility.ColumnNameSummationMacroAverage}`;
+
+  public static readonly DescriptionWeightedSummationMacroAverage: string = `
+  The calculating process for the metrics in this row is a little bit different from ${Utility.DescriptionWeightedMacroAverage}.
+  It first calculates the weighted averages of per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+  metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
+  Precision, Recall, F1, Accuracy, etc.
+  `;
 
   public static readonly ColumnNameMultiLabelExactAggregate: string = Utility.getBolded('Multi-Label Exact Aggregate');
 
+  public static readonly DescriptionMultiLabelExactAggregate: string = `
+  This evaluation package supports multi-label instances and predictions.
+  In another word, an instance can be labeled and predicted with more than
+  one labels. The above metrics so far are calculated "per instance label," i.e., an instance can contribute to
+  a positive prediction more than one times, thus above metrics can encourage a model to predict more than one labels per test instances in
+  order to achieve better performance results.
+  To counter such behavior, metrics in this row are "per instance," i.e., an instance can only contribute to one positive prediction. 
+  The calcuating process build one binary confusion matrix and a true positive prediction must match the multi-label prediction
+  exactly with the ground-truth labels, otherwise it's a false positive. By the way, there is no negative prediction.
+  `;
+
   public static readonly ColumnNameMultiLabelSubsetAggregate: string = Utility.getBolded('Multi-Label Subset Aggregate');
+
+  public static readonly DescriptionMultiLabelSubsetAggregate: string = `
+  Similar to the previous row, but the metric computing process is less strict. A prediction can be a true positive
+  as long as the predicted label set is a subset of the ground-truth set.
+  This subset approach makes sense as an action taken on a prediction can just correctly respond to one of the
+  label and the action is still safe.
+  Of course, this subset rule can discourage a model to predict less labels (just one is the safest strategy),
+  even though a test instance might be labeled with a large ground-truth label set.
+  `;
 
   // eslint-disable-next-line max-params
   public static processUtteranceMultiLabelTsv(
@@ -245,7 +365,8 @@ export class Utility {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionLabelStructureArray': PredictionLabelStructure[];
     } {
     // ---- NOTE ---- load the assessment evaluation summary template.
@@ -341,7 +462,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } = Utility.generateAssessmentLabelObjectEvaluationReportAnalyses(
       evaluationReportSpuriousPredictions.evaluationSummary,
       predictionLabelStructureArray,
@@ -515,7 +637,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } {
     // ---- NOTE ---- generate misclassified HTML.
     const misclassifiedAnalysis: {
@@ -535,12 +658,13 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } = Utility.generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
       predictionLabelStructureArray,
       labelArrayAndMap);
     evaluationSummary = evaluationSummary.replace(
       '{MODEL_EVALUATION}',
-      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml);
+      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageDescriptionMetricsHtml);
     Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportAnalyses(), finished generating {MODEL_EVALUATION} content');
     // ---- NOTE ---- return
     return {
@@ -595,6 +719,7 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } {
     const confusionMatrix: MultiLabelObjectConfusionMatrix = new MultiLabelObjectConfusionMatrix(
       labelArrayAndMap.stringArray,
@@ -784,7 +909,8 @@ export class Utility {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionStructureArray': PredictionStructure[];
     } {
     // ---- NOTE ---- load the assessment evaluation summary template.
@@ -880,7 +1006,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } = Utility.generateAssessmentEvaluationReportAnalyses(
       evaluationReportSpuriousPredictions.evaluationSummary,
       predictionStructureArray,
@@ -948,7 +1075,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } {
     // ---- NOTE ---- generate misclassified HTML.
     const misclassifiedAnalysis: {
@@ -968,12 +1096,13 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } = Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTable(
       predictionStructureArray,
       labelArrayAndMap);
     evaluationSummary = evaluationSummary.replace(
       '{MODEL_EVALUATION}',
-      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml);
+      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageDescriptionMetricsHtml);
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportAnalyses(), finished generating {MODEL_EVALUATION} content');
     // ---- NOTE ---- return
     return {
@@ -1028,6 +1157,7 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } {
     const confusionMatrix: MultiLabelConfusionMatrix = new MultiLabelConfusionMatrix(
       labelArrayAndMap.stringArray,
@@ -1066,6 +1196,7 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } {
     // -----------------------------------------------------------------------
     const predictingConfusionMatrixOutputLines: string[][] = [];
@@ -1109,6 +1240,7 @@ export class Utility {
       ['Label', 'Precision', 'Recall', 'F1', 'Accuracy', '#TruePositives', '#FalsePositives', '#TrueNegatives', '#FalseNegatives', 'Support', 'Total']);
     // -----------------------------------------------------------------------
     const predictingConfusionMatrixAverageOutputLines: string[][] = [];
+    const predictingConfusionMatrixAverageDescriptionOutputLines: string[][] = [];
     // -----------------------------------------------------------------------
     const microAverageMetrics: {
       'averagePrecisionRecallF1Accuracy': number;
@@ -1131,6 +1263,10 @@ export class Utility {
       microAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMicroAverage,
+      Utility.DescriptionMicroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const microQuantileMetrics: {
       'quantilesPrecisions': number[];
@@ -1167,6 +1303,10 @@ export class Utility {
       microQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile1);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMicroFirstQuartile,
+      Utility.DescriptionMicroFirstQuartile,
+    ]);
     const predictingConfusionMatrixOutputLineMicroQuantile2: any[] = [
       Utility.ColumnNameMicroMedian,
       Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 2) ?
@@ -1190,6 +1330,10 @@ export class Utility {
       microQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile2);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMicroMedian,
+      Utility.DescriptionMicroMedian,
+    ]);
     const predictingConfusionMatrixOutputLineMicroQuantile3: any[] = [
       Utility.ColumnNameMicroThirdQuartile,
       Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 3) ?
@@ -1213,6 +1357,10 @@ export class Utility {
       microQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMicroQuantile3);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMicroThirdQuartile,
+      Utility.DescriptionMicroThirdQuartile,
+    ]);
     // -----------------------------------------------------------------------
     const macroQuantileMetrics: {
       'quantilesPrecisions': number[];
@@ -1249,6 +1397,10 @@ export class Utility {
       macroQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile1);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMacroFirstQuartile,
+      Utility.DescriptionMacroFirstQuartile,
+    ]);
     const predictingConfusionMatrixOutputLineMacroQuantile2: any[] = [
       Utility.ColumnNameMacroMedian,
       Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 2) ?
@@ -1272,6 +1424,10 @@ export class Utility {
       macroQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile2);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMacroMedian,
+      Utility.DescriptionMacroMedian,
+    ]);
     const predictingConfusionMatrixOutputLineMacroQuantile3: any[] = [
       Utility.ColumnNameMacroThirdQuartile,
       Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 3) ?
@@ -1295,6 +1451,10 @@ export class Utility {
       macroQuantileMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroQuantile3);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMacroThirdQuartile,
+      Utility.DescriptionMacroThirdQuartile,
+    ]);
     // -----------------------------------------------------------------------
     const summationMicroAverageMetrics: {
       'summationPrecision': number;
@@ -1322,6 +1482,10 @@ export class Utility {
       'N/A', // ---- summationMicroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationMicroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameSummationMicroAverage,
+      Utility.DescriptionSummationMicroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const macroAverageMetrics: {
       'averagePrecision': number;
@@ -1349,6 +1513,10 @@ export class Utility {
       'N/A', // ---- macroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameMacroAverage,
+      Utility.DescriptionMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const summationMacroAverageMetrics: {
       'averagePrecision': number;
@@ -1376,6 +1544,10 @@ export class Utility {
       'N/A', // ---- summationMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameSummationMacroAverage,
+      Utility.DescriptionSummationMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const positiveSupportLabelMacroAverageMetrics: {
       'averagePrecision': number;
@@ -1403,6 +1575,10 @@ export class Utility {
       'N/A', // ---- positiveSupportLabelMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLinePositiveSupportLabelMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNamePositiveSupportMacroAverage,
+      Utility.DescriptionPositiveSupportMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const positiveSupportLabelSummationMacroAverageMetrics: {
       'averagePrecision': number;
@@ -1430,6 +1606,10 @@ export class Utility {
       'N/A', // ---- positiveSupportLabelSummationMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNamePositiveSupportSummationMacroAverage,
+      Utility.DescriptionPositiveSupportSummationMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const weightedMacroAverageMetrics: {
       'averagePrecision': number;
@@ -1453,6 +1633,10 @@ export class Utility {
       'N/A', // ---- weightedMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineWeightedMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameWeightedMacroAverage,
+      Utility.DescriptionWeightedMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const summationWeightedMacroAverageMetrics: {
       'averagePrecision': number;
@@ -1480,6 +1664,10 @@ export class Utility {
       'N/A', // ---- summationWeightedMacroAverageMetrics.total,
     ];
     predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSummationWeightedMacroAverage);
+    predictingConfusionMatrixAverageDescriptionOutputLines.push([
+      Utility.ColumnNameWeightedSummationMacroAverage,
+      Utility.DescriptionWeightedSummationMacroAverage,
+    ]);
     // -----------------------------------------------------------------------
     const exactMacroAggregateMetrics: {
       'averagePrecision': number;
@@ -1508,6 +1696,10 @@ export class Utility {
         exactMacroAggregateMetrics.total,
       ];
       predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineExactMacroAggregate);
+      predictingConfusionMatrixAverageDescriptionOutputLines.push([
+        Utility.ColumnNameMultiLabelExactAggregate,
+        Utility.DescriptionMultiLabelExactAggregate,
+      ]);
     }
     // -----------------------------------------------------------------------
     const subsetMacroAggregateMetrics: {
@@ -1537,6 +1729,10 @@ export class Utility {
         subsetMacroAggregateMetrics.total,
       ];
       predictingConfusionMatrixAverageOutputLines.push(predictingConfusionMatrixOutputLineSubsetMacroAggregate);
+      predictingConfusionMatrixAverageDescriptionOutputLines.push([
+        Utility.ColumnNameMultiLabelSubsetAggregate,
+        Utility.DescriptionMultiLabelSubsetAggregate,
+      ]);
     }
     // -----------------------------------------------------------------------
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getMicroAverageMetrics())=${JSON.stringify(confusionMatrix.getMicroAverageMetrics([]))}`);
@@ -1565,8 +1761,19 @@ export class Utility {
       'Average confusion matrix metrics',
       predictingConfusionMatrixAverageOutputLines,
       ['Type', 'Precision', 'Recall', 'F1', 'Accuracy', '#TruePositives', '#FalsePositives', '#TrueNegatives', '#FalseNegatives', 'Support', 'Total']);
+    const confusionMatrixAverageDescriptionMetricsHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
+      'Average confusion matrix metric descriptions',
+      predictingConfusionMatrixAverageDescriptionOutputLines,
+      ['Type', 'Description']);
     // -----------------------------------------------------------------------
-    return {confusionMatrix, multiLabelConfusionMatrixExact, multiLabelConfusionMatrixSubset, predictingConfusionMatrixOutputLines, confusionMatrixMetricsHtml, confusionMatrixAverageMetricsHtml};
+    return {
+      confusionMatrix,
+      multiLabelConfusionMatrixExact,
+      multiLabelConfusionMatrixSubset,
+      predictingConfusionMatrixOutputLines,
+      confusionMatrixMetricsHtml,
+      confusionMatrixAverageMetricsHtml,
+      confusionMatrixAverageDescriptionMetricsHtml};
     // -----------------------------------------------------------------------
   }
 
@@ -1660,7 +1867,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;}; };
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};};
     'predictionScoreStructureArray': PredictionScoreStructure[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
@@ -1705,7 +1913,8 @@ export class Utility {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
       'groundTruthJsonContent': string;
@@ -1749,7 +1958,8 @@ export class Utility {
           multiLabelConfusionMatrixSubset: new MultiLabelConfusionMatrixSubset([], {}),
           predictingConfusionMatrixOutputLines: [],
           confusionMatrixMetricsHtml: '',
-          confusionMatrixAverageMetricsHtml: ''}},
+          confusionMatrixAverageMetricsHtml: '',
+          confusionMatrixAverageDescriptionMetricsHtml: ''}},
       predictionScoreStructureArray: [],
       scoreOutputLines: [],
       groundTruthJsonContent: '',
@@ -1856,7 +2066,8 @@ export class Utility {
           'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
-          'confusionMatrixAverageMetricsHtml': string;}; };
+          'confusionMatrixAverageMetricsHtml': string;
+          'confusionMatrixAverageDescriptionMetricsHtml': string;};};
       'predictionScoreStructureArray': PredictionScoreStructure[];
       'scoreOutputLines': string[][];
       'groundTruthJsonContent': string;
@@ -1930,7 +2141,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } = Utility.generateEvaluationReportAnalyses(
       evaluationReportLabelUtteranceStatistics.evaluationSummary,
       evaluationReportLabelUtteranceStatistics.labelArrayAndMap,
@@ -2128,7 +2340,8 @@ export class Utility {
         'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
-        'confusionMatrixAverageMetricsHtml': string;};
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};
     } {
     // ---- NOTE ---- generate ambiguous HTML.
     const ambiguousAnalysis: {
@@ -2171,12 +2384,13 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } = Utility.generateConfusionMatrixMetricsAndHtmlTable(
       predictionScoreStructureArray,
       labelArrayAndMap);
     evaluationSummary = evaluationSummary.replace(
       '{MODEL_EVALUATION}',
-      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml);
+      confusionMatrixAnalysis.confusionMatrixMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageMetricsHtml + confusionMatrixAnalysis.confusionMatrixAverageDescriptionMetricsHtml);
     Utility.debuggingLog('Utility.generateEvaluationReportAnalyses(), finished generating {MODEL_EVALUATION} content');
     // ---- NOTE ---- return
     return {
@@ -2368,6 +2582,7 @@ export class Utility {
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
+      'confusionMatrixAverageDescriptionMetricsHtml': string;
     } {
     // -----------------------------------------------------------------------
     return Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTable(
@@ -2778,7 +2993,7 @@ export class Utility {
     return utteranceLabels;
   }
 
-  public static processUnknowLabelsInBluFileContent(bluFileContents: string): string {
+  public static processUnknownLabelsInBluFileContent(bluFileContents: string): string {
     const lines: string[] = bluFileContents.split('\n');
     for (let lineIndex: number = 1; lineIndex < lines.length; lineIndex++) {
       const lineComponents: string[] = lines[lineIndex].split('\t');
