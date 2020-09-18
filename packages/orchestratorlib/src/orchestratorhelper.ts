@@ -300,7 +300,7 @@ export class OrchestratorHelper {
     }
   }
 
-  static async parseBluFile(
+  static parseBluFile(
     bluFile: string,
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
@@ -335,11 +335,12 @@ export class OrchestratorHelper {
       utteranceEntityLabelDuplicateMap);
   }
 
-  static async parseTsvFile(
+  static parseTsvFile(
     tsvFile: string,
     hierarchicalLabel: string,
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+    Utility.debuggingLog(`OrchestratorHelper.parseTsvFile(), ready to read from '${tsvFile}'`);
     const lines: string[] = OrchestratorHelper.readFile(tsvFile).split('\n');
     Utility.debuggingLog(`OrchestratorHelper.parseTsvFile(), lines=${lines.length}`);
     if (lines.length === 0) {
@@ -358,27 +359,76 @@ export class OrchestratorHelper {
     if (!bluFormat && OrchestratorHelper.hasLabelUtteranceHeader(lines[0])) {
       lines.shift();
     }
-    lines.forEach((line: string) => {
-      const items: string[] = line.split('\t');
-      if (items.length < 2) {
-        return;
+    // eslint-disable-next-line no-console
+    Utility.debuggingLog(`processing #lines=${lines.length}`);
+    let numberLinesProcessed: number  = 0;
+    let numberLinesIgnored: number = 0;
+    lines.forEach((line: string, lineIndex: number) => {
+      if ((lineIndex % 10000) === 0) {
+        // eslint-disable-next-line no-console
+        Utility.debuggingLog(`processed lineIndex=${lineIndex}`);
       }
-      let labels: string = items[0] ? items[0] : '';
-      const utteranceIdx: number = (items.length === 3 && !bluFormat) ? 2 : 1;
-      let utterance: string = items[utteranceIdx] ? items[utteranceIdx] : '';
-      labels = labels.trim();
-      utterance = utterance.trim();
-      const labelArray: string[] = labels.split(',');
-      for (const label of labelArray) {
-        OrchestratorHelper.addNewLabelUtterance(
-          utterance,
-          label.trim(),
-          '',
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap
-        );
+      if (lineIndex >= 8630000) {
+        // eslint-disable-next-line no-console
+        Utility.debuggingLog(`processed lineIndex=${lineIndex}, line='${line}'`);
+      }
+      try {
+        const items: string[] = line.split('\t');
+        if (items && (items.length >= 2)) {
+          let labels: string = items[0] ? items[0] : '';
+          const utteranceIdx: number = (items.length === 3 && !bluFormat) ? 2 : 1;
+          let utterance: string = items[utteranceIdx] ? items[utteranceIdx] : '';
+          labels = labels.trim();
+          utterance = utterance.trim();
+          // ---- NOTE-FOR-TESTING ---- if (utterance === 'constructor') {
+          // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`ERROR processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
+          // ---- NOTE-FOR-TESTING ----   numberLinesIgnored++;
+          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % 10000) === 0) {
+          // ---- NOTE-FOR-TESTING ----     // eslint-disable-next-line no-console
+          // ---- NOTE-FOR-TESTING ----     Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+          // ---- NOTE-FOR-TESTING ----   }
+          // ---- NOTE-FOR-TESTING ----   return;
+          // ---- NOTE-FOR-TESTING ---- }
+          const labelArray: string[] = labels.split(',');
+          for (const label of labelArray) {
+            if (label) {
+              const labelTrimmed: string = label.trim();
+              OrchestratorHelper.addNewLabelUtterance(
+                utterance,
+                labelTrimmed,
+                '',
+                utteranceLabelsMap,
+                utteranceLabelDuplicateMap
+              );
+            }
+          }
+          numberLinesProcessed++;
+          if ((numberLinesProcessed % 10000) === 0) {
+            // eslint-disable-next-line no-console
+            Utility.debuggingLog(`processed numberLinesProcessed=${numberLinesProcessed}`);
+          }
+        } else {
+          Utility.debuggingLog(`ERROR processing, items.length < 2, lineIndex=${lineIndex}, line='${line}'`);
+          numberLinesIgnored++;
+          if ((numberLinesIgnored % 10000) === 0) {
+            // eslint-disable-next-line no-console
+            Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+          }
+        }
+      } catch (error) {
+        Utility.debuggingLog(`ERROR processing lineIndex=${lineIndex}, line='${line}', error=${error}`);
+        numberLinesIgnored++;
+        if ((numberLinesIgnored % 10000) === 0) {
+          // eslint-disable-next-line no-console
+          Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+        }
+        throw error;
       }
     });
+    Utility.debuggingLog(`processed #lines=${lines.length}`);
+    Utility.debuggingLog(`processed numberLinesProcessed=${numberLinesProcessed}`);
+    Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+    Utility.debuggingLog(`processed utteranceLabelsMap.length=${utteranceLabelsMap.length}`);
     return true;
   }
 
@@ -518,7 +568,8 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      return false;
+      Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEnitiesUtterances(), error=${error}`);
+      throw error;
     }
     return false;
   }
@@ -578,10 +629,11 @@ export class OrchestratorHelper {
             });
           }
         });
+        return true;
       }
-      return true;
     } catch (error) {
-      return false;
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
     }
     return false;
   }
@@ -618,7 +670,8 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      return false;
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentEntityScoresUtterances(), error=${error}`);
+      throw error;
     }
     return false;
   }
@@ -634,19 +687,29 @@ export class OrchestratorHelper {
     hierarchicalLabel: string,
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
-    const existingLabels: string[] = utteranceLabelsMap[utterance];
-    if (existingLabels) {
-      if (hierarchicalLabel && hierarchicalLabel.length > 0) {
-        if (!OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels)) {
-          Utility.insertStringPairToStringIdStringSetNativeMap(utterance, hierarchicalLabel, utteranceLabelDuplicateMap);
-        }
-      } else if (!OrchestratorHelper.addUniqueLabel(label, existingLabels)) {
-        Utility.insertStringPairToStringIdStringSetNativeMap(utterance, label, utteranceLabelDuplicateMap);
+    const isHierarchicalLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
+    let existingLabels: string[] = [];
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if (utteranceLabelsMap.hasOwnProperty(utterance)) {
+        existingLabels = utteranceLabelsMap[utterance];
       }
-    } else if (hierarchicalLabel && hierarchicalLabel.length > 0) {
-      utteranceLabelsMap[utterance] = [hierarchicalLabel];
-    } else {
-      utteranceLabelsMap[utterance] = [label];
+      if (!Utility.isEmptyStringArray(existingLabels)) {
+        if (isHierarchicalLabel) {
+          if (!OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels)) {
+            Utility.insertStringPairToStringIdStringSetNativeMap(utterance, hierarchicalLabel, utteranceLabelDuplicateMap);
+          }
+        } else if (!OrchestratorHelper.addUniqueLabel(label, existingLabels)) {
+          Utility.insertStringPairToStringIdStringSetNativeMap(utterance, label, utteranceLabelDuplicateMap);
+        }
+      } else if (isHierarchicalLabel) {
+        utteranceLabelsMap[utterance] = [hierarchicalLabel];
+      } else {
+        utteranceLabelsMap[utterance] = [label];
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtterance(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      throw error;
     }
   }
 
@@ -656,40 +719,59 @@ export class OrchestratorHelper {
     entityEntry: any,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
-    let existingEntityLabels: Label[] = utteranceEntityLabelsMap[utterance];
-    const entity: string = entityEntry.entity;
-    const startPos: number = Number(entityEntry.startPos);
-    const endPos: number = Number(entityEntry.endPos);
-    // const entityMention: string = entityEntry.text;
-    const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
-    if (existingEntityLabels) {
-      if (!OrchestratorHelper.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
+    let existingEntityLabels: Label[] = [];
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if (utteranceEntityLabelsMap.hasOwnProperty(utterance)) {
+        existingEntityLabels = utteranceEntityLabelsMap[utterance];
+      }
+      const entity: string = entityEntry.entity;
+      const startPos: number = Number(entityEntry.startPos);
+      const endPos: number = Number(entityEntry.endPos);
+      // const entityMention: string = entityEntry.text;
+      const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
+      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
+        existingEntityLabels = [entityLabel];
+        utteranceEntityLabelsMap[utterance] = existingEntityLabels;
+      } else if (!OrchestratorHelper.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
-    } else {
-      existingEntityLabels = [entityLabel];
-      utteranceEntityLabelsMap[utterance] = existingEntityLabels;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      throw error;
     }
   }
 
   static addUniqueLabel(newLabel: string, labels: string[]): boolean {
-    for (const label of labels) {
-      if (label === newLabel) {
-        return false;
+    try {
+      for (const label of labels) {
+        if (label === newLabel) {
+          return false;
+        }
       }
+      labels.push(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      throw error;
     }
-    labels.push(newLabel);
-    return true;
+    return false;
   }
 
   static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
-    for (const label of labels) {
-      if (label.equals(newLabel)) {
-        return false;
+    try {
+      for (const label of labels) {
+        if (label.equals(newLabel)) {
+          return false;
+        }
       }
+      labels.push(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      throw error;
     }
-    labels.push(newLabel);
-    return true;
+    return false;
   }
 
   static findLuFiles(srcId: string, idsToFind: string[]) {

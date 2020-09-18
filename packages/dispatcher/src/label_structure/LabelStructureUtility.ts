@@ -215,7 +215,7 @@ export class LabelStructureUtility {
         utterances.forEach((utterance: string) => {
             const utteranceGroundTruthLabels: string[] =
                 utteranceLabelsMapGroundTruth[utterance];
-            if (utterance in utteranceLabelScoresMapPrediction) {
+            if (utteranceLabelScoresMapPrediction.hasOwnProperty(utterance)) {
                 const utteranceIntentPredictionScores: ScoreIntent[] =
                     utteranceLabelScoresMapPrediction[utterance];
                 utteranceIntentPredictionScores.forEach((utteranceIntentPredictionScore: ScoreIntent) => {
@@ -313,7 +313,7 @@ export class LabelStructureUtility {
                     }
                 }
                 let labelScore: number = 0;
-                if (utterance in utteranceLabelScoresMapPrediction) {
+                if (utteranceLabelScoresMapPrediction.hasOwnProperty(utterance)) {
                     const utteranceIntentPredictionScores: ScoreIntent[] =
                         utteranceLabelScoresMapPrediction[utterance];
                     for (const utteranceIntentPredictionScore of utteranceIntentPredictionScores) {
@@ -352,7 +352,7 @@ export class LabelStructureUtility {
         utterances.forEach((utterance: string) => {
             const utteranceGroundTruthLabels: Label[] =
                 utteranceEntityLabelsMapGroundTruth[utterance];
-            if (utterance in utteranceEntityLabelScoresMapPrediction) {
+            if (utteranceEntityLabelScoresMapPrediction.hasOwnProperty(utterance)) {
                 const utteranceEntityPredictionScores: ScoreEntity[] =
                     utteranceEntityLabelScoresMapPrediction[utterance];
                 utteranceEntityPredictionScores.forEach((utteranceEntityPredictionScore: ScoreEntity) => {
@@ -610,22 +610,34 @@ export class LabelStructureUtility {
     }
 
     public static addUniqueLabel(newLabel: string, labels: string[]): boolean {
-        for (const label of labels) {
-            if (label === newLabel) {
-                return false;
+        try {
+            for (const label of labels) {
+                if (label === newLabel) {
+                    return false;
+                }
             }
+            labels.push(newLabel);
+            return true;
+        } catch (error) {
+            Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+            throw error;
         }
-        labels.push(newLabel);
-        return true;
+        return false;
     }
 
     public static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
-        for (const label of labels) {
-            if (label.equals(newLabel)) {
-                return false;
+        try {
+            for (const label of labels) {
+                if (label.equals(newLabel)) {
+                    return false;
+                }
             }
+            labels.push(newLabel);
+            return true;
+        } catch (error) {
+            Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+            throw error;
         }
-        labels.push(newLabel);
-        return true;
+        return false;
     }
 }

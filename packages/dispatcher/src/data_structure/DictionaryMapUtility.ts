@@ -242,7 +242,7 @@ export class DictionaryMapUtility {
         if (!stringIdStringSetDictionary) {
             stringIdStringSetDictionary = {};
         }
-        if (key in stringIdStringSetDictionary) {
+        if (stringIdStringSetDictionary.hasOwnProperty(key)) {
             const stringSet: Set<string> = stringIdStringSetDictionary[key];
             stringSet.add(value);
         } else {
@@ -259,7 +259,7 @@ export class DictionaryMapUtility {
         if (!numberIdStringSetDictionary) {
             numberIdStringSetDictionary = {};
         }
-        if (key in numberIdStringSetDictionary) {
+        if (numberIdStringSetDictionary.hasOwnProperty(key)) {
             const stringSet: Set<string> = numberIdStringSetDictionary[key];
             stringSet.add(value);
         } else {
@@ -277,7 +277,7 @@ export class DictionaryMapUtility {
         if (DictionaryMapUtility.isEmptyStringIdGenericSetDictionary<string>(stringIdStringSetDictionary)) {
             stringIdStringSetDictionary = {};
         }
-        if (key in stringIdStringSetDictionary) {
+        if (stringIdStringSetDictionary.hasOwnProperty(key)) {
             const stringSet: Set<string> = stringIdStringSetDictionary[key];
             stringSet.add(value);
         } else {
@@ -294,7 +294,7 @@ export class DictionaryMapUtility {
         if (DictionaryMapUtility.isEmptyNumberIdGenericSetDictionary<string>(numberIdStringSetDictionary)) {
             numberIdStringSetDictionary = {};
         }
-        if (key in numberIdStringSetDictionary) {
+        if (numberIdStringSetDictionary.hasOwnProperty(key)) {
             const stringSet: Set<string> = numberIdStringSetDictionary[key];
             stringSet.add(value);
         } else {
@@ -539,7 +539,7 @@ export class DictionaryMapUtility {
         key: string,
         stringIdNumberValueDictionary: IDictionaryStringIdGenericValue<number>,
         throwIfNotLegal: boolean = true): boolean {
-        if (key in stringIdNumberValueDictionary) {
+        if (stringIdNumberValueDictionary.hasOwnProperty(key)) {
             return true;
         } else {
             if (throwIfNotLegal) {
@@ -750,7 +750,7 @@ export class DictionaryMapUtility {
         }
         for (const key in stringIdGenericValueDictionaryFirst) {
             if (key) {
-                if (key in stringIdGenericValueDictionarySecond) {
+                if (stringIdGenericValueDictionarySecond.hasOwnProperty(key)) {
                     if (stringIdGenericValueDictionaryFirst[key] !== stringIdGenericValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(
@@ -772,7 +772,7 @@ export class DictionaryMapUtility {
         }
         for (const key in stringIdGenericValueDictionarySecond) {
             if (key) {
-                if (key in stringIdGenericValueDictionaryFirst) {
+                if (stringIdGenericValueDictionaryFirst.hasOwnProperty(key)) {
                     if (stringIdGenericValueDictionaryFirst[key] !== stringIdGenericValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(
@@ -827,7 +827,7 @@ export class DictionaryMapUtility {
         }
         for (const key in numberIdGenericValueDictionaryFirst) {
             if (key) {
-                if (key in numberIdGenericValueDictionarySecond) {
+                if (numberIdGenericValueDictionarySecond.hasOwnProperty(key)) {
                     if (numberIdGenericValueDictionaryFirst[key] !== numberIdGenericValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(
@@ -849,7 +849,7 @@ export class DictionaryMapUtility {
         }
         for (const key in numberIdGenericValueDictionarySecond) {
             if (key) {
-                if (key in numberIdGenericValueDictionaryFirst) {
+                if (numberIdGenericValueDictionaryFirst.hasOwnProperty(key)) {
                     if (numberIdGenericValueDictionaryFirst[key] !== numberIdGenericValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(
@@ -904,7 +904,7 @@ export class DictionaryMapUtility {
         }
         for (const key in stringIdNumberValueDictionaryFirst) {
             if (key) {
-                if (key in stringIdNumberValueDictionarySecond) {
+                if (stringIdNumberValueDictionarySecond.hasOwnProperty(key)) {
                     if (stringIdNumberValueDictionaryFirst[key] !== stringIdNumberValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(
@@ -926,7 +926,7 @@ export class DictionaryMapUtility {
         }
         for (const key in stringIdNumberValueDictionarySecond) {
             if (key) {
-                if (key in stringIdNumberValueDictionaryFirst) {
+                if (stringIdNumberValueDictionaryFirst.hasOwnProperty(key)) {
                     if (stringIdNumberValueDictionaryFirst[key] !== stringIdNumberValueDictionarySecond[key]) {
                         if (throwIfNotLegal) {
                             Utility.debuggingThrow(

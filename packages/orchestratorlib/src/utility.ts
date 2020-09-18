@@ -750,7 +750,8 @@ export class Utility {
     const spuriousPredictions: [string, Label[]][] = [];
     for (const predictionSetUtteranceLabels of Object.entries(predictionSetUtteranceLabelsMap)) {
       const utterance: string = predictionSetUtteranceLabels[0];
-      if (!(utterance in groundTruthSetUtteranceLabelsMap)) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!groundTruthSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
         spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
       }
     }
@@ -768,7 +769,8 @@ export class Utility {
       const utterance: string = groundTruthSetUtteranceLabels[0];
       const groundTruthSetLabels: Label[] = groundTruthSetUtteranceLabels[1];
       let predictionSetLabels: Label[] = [];
-      if (utterance in predictionSetUtteranceLabelsMap) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (predictionSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
@@ -1785,7 +1787,8 @@ export class Utility {
     const spuriousPredictions: [string, string[]][] = [];
     for (const predictionSetUtteranceLabels of Object.entries(predictionSetUtteranceLabelsMap)) {
       const utterance: string = predictionSetUtteranceLabels[0];
-      if (!(utterance in groundTruthSetUtteranceLabelsMap)) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (!groundTruthSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
         spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
       }
     }
@@ -1803,7 +1806,8 @@ export class Utility {
       const utterance: string = groundTruthSetUtteranceLabels[0];
       const groundTruthSetLabels: string[] = groundTruthSetUtteranceLabels[1];
       let predictionSetLabels: string[] = [];
-      if (utterance in predictionSetUtteranceLabelsMap) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (predictionSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
         predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
       }
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
@@ -3314,12 +3318,20 @@ export class Utility {
       [...anyKeyGenericSetMap].length > 0);
   }
 
+  public static isEmptyGenericArrays<T>(inputArrays: boolean[][]): boolean {
+    return !(inputArrays && inputArrays.length > 0);
+  }
+
   public static isEmptyNumberArrays(inputArrays: number[][]): boolean {
     return !(inputArrays && inputArrays.length > 0);
   }
 
   public static isEmptyStringArrays(inputArrays: string[][]): boolean {
     return !(inputArrays && inputArrays.length > 0);
+  }
+
+  public static isEmptyGenericArray<T>(inputArray: T[]): boolean {
+    return !(inputArray && inputArray.length > 0);
   }
 
   public static isEmptyNumberArray(inputArray: number[]): boolean {
@@ -3531,23 +3543,35 @@ export class Utility {
   }
 
   public static addUniqueLabel(newLabel: string, labels: string[]): boolean {
-    for (const label of labels) {
-      if (label === newLabel) {
-        return false;
+    try {
+      for (const label of labels) {
+        if (label === newLabel) {
+          return false;
+        }
       }
+      labels.push(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+      throw error;
     }
-    labels.push(newLabel);
-    return true;
+    return false;
   }
 
   public static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
-    for (const label of labels) {
-      if (label.equals(newLabel)) {
-        return false;
+    try {
+      for (const label of labels) {
+        if (label.equals(newLabel)) {
+          return false;
+        }
       }
+      labels.push(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error=${error}, newLabel=${newLabel}, labels=${labels}`);
+      throw error;
     }
-    labels.push(newLabel);
-    return true;
+    return false;
   }
 
   public static countMapValues(inputStringToStringArrayMap: { [id: string]: string[] }): number {

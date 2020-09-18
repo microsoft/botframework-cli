@@ -4,9 +4,11 @@
  */
 
 import * as path from 'path';
-import {Utility} from './utility';
+
+import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {Utility} from './utility';
 
 export class OrchestratorCreate {
   public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false) {
@@ -26,7 +28,13 @@ export class OrchestratorCreate {
     outputPath = path.resolve(outputPath);
 
     await LabelResolver.createAsync(nlrPath);
-    LabelResolver.addExamples((await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)));
+    const processedUtteranceLabelsMap: {
+      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+      await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
+    LabelResolver.addExamples(processedUtteranceLabelsMap);
 
     const snapshot: any = LabelResolver.createSnapshot();
 

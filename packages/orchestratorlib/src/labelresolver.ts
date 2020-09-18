@@ -126,6 +126,7 @@ export class LabelResolver {
       labelResolver = LabelResolver.LabelResolver;
     }
     const utteranceLabelsMap: { [id: string]: string[] } = utteranceIntentEntityLabels.utteranceLabelsMap;
+    let utteranceProcessedutteranceLabelsMap: number = 0;
     // eslint-disable-next-line guard-for-in
     for (const utterance in utteranceLabelsMap) {
       const labels: string[] = utteranceLabelsMap[utterance];
@@ -135,7 +136,10 @@ export class LabelResolver {
             const success: any = labelResolver.addExample({label: label, text: utterance});
             // eslint-disable-next-line max-depth
             if (success) {
-              Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance} }`);
+              // eslint-disable-next-line max-depth
+              if (Utility.toPrintDetailedDebuggingLogToConsole) {
+                Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance} }`);
+              }
             } else {
               Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }`);
             }
@@ -143,6 +147,10 @@ export class LabelResolver {
             Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
           }
         }
+      }
+      utteranceProcessedutteranceLabelsMap++;
+      if ((utteranceProcessedutteranceLabelsMap % 10000) === 0) {
+        Utility.debuggingLog(`LabelResolver.addExample(): Added utteranceProcessedutteranceLabelsMap=${utteranceProcessedutteranceLabelsMap}`);
       }
     }
     const utteranceEntityLabelsMap: { [id: string]: Label[] } = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
