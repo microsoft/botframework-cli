@@ -97,33 +97,33 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok(stringMap.c === 2);
     });
 
-    it("Test.0100 Utility.processUnknownLabelsInUtteranceLabelsMap()", function () {
+    it("Test.0100 Utility.processUnknownLabelsInUtteranceLabelsMap()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const utteranceLabelsMap: { [id: string]: string[] } = {};
+        const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utterance0: string = "hi";
         const labelArray0: string[] = ["greeting", "chitchat"];
         const labelSet0: Set<string> = new Set<string>(labelArray0);
-        utteranceLabelsMap[utterance0] = labelArray0;
+        utteranceLabelsMap.set(utterance0, labelSet0);
         utteranceLabelDuplicateMap.set(utterance0, labelSet0);
         const utterance1: string = "A";
         const labelArray1: string[] = ["greeting", "", "unknown", "none"];
         const labelSet1: Set<string> = new Set<string>(labelArray1);
-        utteranceLabelsMap[utterance1] = labelArray1;
+        utteranceLabelsMap.set(utterance1, labelSet1);
         utteranceLabelDuplicateMap.set(utterance1, labelSet1);
         const utterance2: string = "B";
         const labelArray2: string[] = ["", "unknown", "none"];
         const labelSet2: Set<string> = new Set<string>(labelArray2);
-        utteranceLabelsMap[utterance2] = labelArray2;
+        utteranceLabelsMap.set(utterance2, labelSet2);
         utteranceLabelDuplicateMap.set(utterance2, labelSet2);
         const utterance3: string = "C";
         const labelArray3: string[] = [];
         const labelSet3: Set<string> = new Set<string>(labelArray3);
-        utteranceLabelsMap[utterance3] = labelArray3;
+        utteranceLabelsMap.set(utterance3, labelSet3);
         utteranceLabelDuplicateMap.set(utterance3, labelSet3);
         const utteranceLabels: {
-          "utteranceLabelsMap": { [id: string]: string[] };
+          "utteranceLabelsMap": Map<string, Set<string>>;
           "utteranceLabelDuplicateMap": Map<string, Set<string>>; } = {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
@@ -137,13 +137,13 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-        assert.ok(utteranceLabelsMap.hi.length === 2);
-        assert.ok(utteranceLabelsMap.A.length === 1);
-        assert.ok(utteranceLabelsMap.A.indexOf("greeting") === 0);
-        assert.ok(utteranceLabelsMap.B.length === 1);
-        assert.ok(utteranceLabelsMap.B.indexOf(DictionaryMapUtility.UnknownLabel) === 0);
-        assert.ok(utteranceLabelsMap.C.length === 1);
-        assert.ok(utteranceLabelsMap.C.indexOf(DictionaryMapUtility.UnknownLabel) === 0);
+        assert.ok((utteranceLabelsMap.get("hi") as Set<string>).size === 2);
+        assert.ok((utteranceLabelsMap.get("A") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("A") as Set<string>).has("greeting"));
+        assert.ok((utteranceLabelsMap.get("B") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("B") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
+        assert.ok((utteranceLabelsMap.get("C") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
         assert.ok((utteranceLabelDuplicateMap.get("hi") as Set<string>).size === 2);
         assert.ok((utteranceLabelDuplicateMap.get("A") as Set<string>).size === 1);
         assert.ok((utteranceLabelDuplicateMap.get("A") as Set<string>).has("greeting"));
@@ -152,34 +152,34 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).size === 1);
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
     });
-    it("Test.0101 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()", function () {
+    it("Test.0101 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const utteranceLabelsMap: { [id: string]: string[] } = {};
+        const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utterance0: string = "hi";
         const labelArray0: string[] = ["greeting", "chitchat"];
         const labelSet0: Set<string> = new Set<string>(labelArray0);
-        utteranceLabelsMap[utterance0] = labelArray0;
+        utteranceLabelsMap.set(utterance0, labelSet0);
         utteranceLabelDuplicateMap.set(utterance0, labelSet0);
         const utterance1: string = "A";
         const labelArray1: string[] = ["greeting", "", "unknown", "none"];
         const labelSet1: Set<string> = new Set<string>(labelArray1);
-        utteranceLabelsMap[utterance1] = labelArray1;
+        utteranceLabelsMap.set(utterance1, labelSet1);
         utteranceLabelDuplicateMap.set(utterance1, labelSet1);
         const utterance2: string = "B";
         const labelArray2: string[] = ["", "unknown", "none"];
         const labelSet2: Set<string> = new Set<string>(labelArray2);
-        utteranceLabelsMap[utterance2] = labelArray2;
+        utteranceLabelsMap.set(utterance2, labelSet2);
         utteranceLabelDuplicateMap.set(utterance2, labelSet2);
         const utterance3: string = "C";
         const labelArray3: string[] = [];
         const labelSet3: Set<string> = new Set<string>(labelArray3);
-        utteranceLabelsMap[utterance3] = labelArray3;
+        utteranceLabelsMap.set(utterance3, labelSet3);
         utteranceLabelDuplicateMap.set(utterance3, labelSet3);
         const labelSet: Set<string> = new Set<string>(["greeting"]);
         const utteranceLabels: {
-          "utteranceLabelsMap": { [id: string]: string[] };
+          "utteranceLabelsMap": Map<string, Set<string>>;
           "utteranceLabelDuplicateMap": Map<string, Set<string>>; } = {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
@@ -194,14 +194,14 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
-        assert.ok(utteranceLabelsMap.hi.length === 1);
-        assert.ok(utteranceLabelsMap.hi.indexOf("greeting") === 0);
-        assert.ok(utteranceLabelsMap.A.length === 1);
-        assert.ok(utteranceLabelsMap.A.indexOf("greeting") === 0);
-        assert.ok(utteranceLabelsMap.B.length === 1);
-        assert.ok(utteranceLabelsMap.B.indexOf(DictionaryMapUtility.UnknownLabel) === 0);
-        assert.ok(utteranceLabelsMap.C.length === 1);
-        assert.ok(utteranceLabelsMap.C.indexOf(DictionaryMapUtility.UnknownLabel) === 0);
+        assert.ok((utteranceLabelsMap.get("hi") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("hi") as Set<string>).has("greeting"));
+        assert.ok((utteranceLabelsMap.get("A") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("A") as Set<string>).has("greeting"));
+        assert.ok((utteranceLabelsMap.get("B") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("B") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
+        assert.ok((utteranceLabelsMap.get("C") as Set<string>).size === 1);
+        assert.ok((utteranceLabelsMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
         assert.ok((utteranceLabelDuplicateMap.get("hi") as Set<string>).size === 1);
         assert.ok((utteranceLabelDuplicateMap.get("hi") as Set<string>).has("greeting"));
         assert.ok((utteranceLabelDuplicateMap.get("A") as Set<string>).size === 1);

@@ -62,11 +62,11 @@ export class AppSoftmaxRegressionSparse {
             featurizer.getIntentsUtterancesWeights();
         const labels: string[] =
             featurizer.getLabels();
-        const labelMap: { [id: string]: number } =
+        const labelMap: Map<string, number> =
             featurizer.getLabelMap();
         const features: string[] =
             featurizer.getFeatures();
-        const featureMap: { [id: string]: number } =
+        const featureMap: Map<string, number> =
             featurizer.getFeatureMap();
         // -------------------------------------------------------------------
         const numberFeatures: number = featurizer.getNumberFeatures(); // ==== featurizer.getNumberHashingFeatures();

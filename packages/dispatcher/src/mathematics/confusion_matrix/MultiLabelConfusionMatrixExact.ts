@@ -17,7 +17,7 @@ extends MultiLabelConfusionMatrixWithBinaryBase {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
     }
 

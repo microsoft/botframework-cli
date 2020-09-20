@@ -196,10 +196,10 @@ export function mainThresholdReporter(): void {
         `lineIndexToStart=${lineIndexToStart}`);
     // -----------------------------------------------------------------------
     let labels: string[] = [];
-    let labelMap: { [id: string]: number } = {};
+    let labelMap: Map<string, number> = new  Map<string, number>();
     if (!Utility.isEmptyString(labelFilename)) {
-        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number } } =
-            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(labelFilename);
+        const labelsAndLabelMap: { "stringArray": string[], "stringMap": Map<string, number> } =
+            DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArrayFile(labelFilename);
         labels = labelsAndLabelMap.stringArray;
         labelMap = labelsAndLabelMap.stringMap;
     }

@@ -587,30 +587,30 @@ export class BinaryConfusionMatrix {
         return this.getPositives();
     }
 
-    public getBasicMetrics(): { [id: string]: number } {
-        const metrics: { [id: string]: number } = {};
-        metrics.positives = this.getPositives();
-        metrics.negatives = this.getNegatives();
-        metrics.positiveRatio = this.getPositiveRatio();
-        metrics.negativeRatio = this.getNegativeRatio();
-        metrics.predictedPositives = this.getPredictedPositives();
-        metrics.predictedNegatives = this.getPredictedNegatives();
-        metrics.predictedPositiveRatio = this.getPredictedPositiveRatio();
-        metrics.predictedNegativeRatio = this.getPredictedNegativeRatio();
-        metrics.truePositives = this.getTruePositives();
-        metrics.truePositiveRatio = this.getTruePositiveRatio();
-        metrics.trueNegatives = this.getTrueNegatives();
-        metrics.trueNegativeRatio = this.getTrueNegativeRatio();
-        metrics.falsePositives = this.getFalsePositives();
-        metrics.falsePositiveRatio = this.getFalsePositiveRatio();
-        metrics.falseNegatives = this.getFalseNegatives();
-        metrics.falseNegativeRatio = this.getFalseNegativeRatio();
-        metrics.positiveNegativeRatio = this.getPositiveNegativeRatio();
-        metrics.negativePositiveRatio = this.getNegativePositiveRatio();
-        metrics.precision = this.getPrecision();
-        metrics.recall = this.getRecall();
-        metrics.f1Score = this.getF1Score();
-        metrics.support = this.getSupport();
+    public getBasicMetrics(): Map<string, number> {
+        const metrics: Map<string, number> = new  Map<string, number>();
+        metrics.set("positives", this.getPositives());
+        metrics.set("negatives", this.getNegatives());
+        metrics.set("positiveRatio", this.getPositiveRatio());
+        metrics.set("negativeRatio", this.getNegativeRatio());
+        metrics.set("predictedPositives", this.getPredictedPositives());
+        metrics.set("predictedNegatives", this.getPredictedNegatives());
+        metrics.set("predictedPositiveRatio", this.getPredictedPositiveRatio());
+        metrics.set("predictedNegativeRatio", this.getPredictedNegativeRatio());
+        metrics.set("truePositives", this.getTruePositives());
+        metrics.set("truePositiveRatio", this.getTruePositiveRatio());
+        metrics.set("trueNegatives", this.getTrueNegatives());
+        metrics.set("trueNegativeRatio", this.getTrueNegativeRatio());
+        metrics.set("falsePositives", this.getFalsePositives());
+        metrics.set("falsePositiveRatio", this.getFalsePositiveRatio());
+        metrics.set("falseNegatives", this.getFalseNegatives());
+        metrics.set("falseNegativeRatio", this.getFalseNegativeRatio());
+        metrics.set("positiveNegativeRatio", this.getPositiveNegativeRatio());
+        metrics.set("negativePositiveRatio", this.getNegativePositiveRatio());
+        metrics.set("precision", this.getPrecision());
+        metrics.set("recall", this.getRecall());
+        metrics.set("f1Score", this.getF1Score());
+        metrics.set("support", this.getSupport());
         return metrics;
     }
 
@@ -1245,8 +1245,8 @@ export class BinaryConfusionMatrix {
         beta: number = 1,
         A: number = 1,
         B: number = 1,
-        explicitMaxPositives: number = -1): { [id: string]: number } {
-        const metrics: { [id: string]: number } = {};
+        explicitMaxPositives: number = -1): Map<string, number> {
+        const metrics: Map<string, number> = new  Map<string, number>();
         const metricNames: string[] =
             this.getMetricNames();
         const metricValues: number[] =
@@ -1263,7 +1263,7 @@ export class BinaryConfusionMatrix {
                 B,
                 explicitMaxPositives);
         for (let i = 0; i < metricNames.length; i++) {
-            metrics[metricNames[i]] = metricValues[i];
+            metrics.set(metricNames[i], metricValues[i]);
         }
         return metrics;
     }

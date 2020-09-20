@@ -146,7 +146,7 @@ export function mainPredictor(): void {
         featurizerNullable as NgramSubwordFeaturizer;
     // -------------------------------------------------------------------
     const labels: string[] = featurizer.getLabels();
-    const labelMap: { [id: string]: number } = featurizer.getLabelMap();
+    const labelMap: Map<string, number> = featurizer.getLabelMap();
     // const numberLabels: number = featurizer.getNumberLabels();
     // const numberFeatures: number = featurizer.getNumberFeatures();
     // -----------------------------------------------------------------------

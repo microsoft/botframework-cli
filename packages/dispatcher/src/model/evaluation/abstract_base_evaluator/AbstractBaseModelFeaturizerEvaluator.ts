@@ -22,7 +22,7 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
     protected featurizerNullable: NgramSubwordFeaturizer|null = null;
 
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number } = {};
+    protected labelMap: Map<string, number> = new  Map<string, number>();
 
     constructor(
         modelFilename: string,
@@ -30,7 +30,7 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
         modelNullable: SoftmaxRegressionSparse|null,
         featurizerNullable: NgramSubwordFeaturizer|null,
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super();
         if (!Utility.isEmptyString(modelFilename)) {
             this.modelNullable = this.deserializeModel(modelFilename);
@@ -55,11 +55,11 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
         if (Utility.isEmptyStringArray(this.labels)) {
             this.labels = labels;
         }
-        if (DictionaryMapUtility.isEmptyStringIdGenericValueDictionary(this.labelMap)) {
+        if (DictionaryMapUtility.isEmptyStringKeyGenericValueMap(this.labelMap)) {
             this.labelMap = labelMap;
         }
         if ((!Utility.isEmptyStringArray(this.labels)) && (this.labelMap !== null)) {
-            DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(this.labels, this.labelMap);
+            DictionaryMapUtility.validateStringArrayAndStringKeyNumberValueMap(this.labels, this.labelMap);
         }
     }
 
@@ -100,8 +100,8 @@ export abstract class AbstractBaseModelFeaturizerEvaluator extends AbstractBaseE
         }
         return this.labels;
     }
-    public getLabelMap(): { [id: string]: number } {
-        if (DictionaryMapUtility.isEmptyStringIdGenericValueDictionary(this.labelMap)) {
+    public getLabelMap(): Map<string, number> {
+        if (DictionaryMapUtility.isEmptyStringKeyGenericValueMap(this.labelMap)) {
             Utility.debuggingThrow("this.labelMap is empty");
         }
         return this.labelMap;

@@ -37,7 +37,7 @@ export class UtilityLabelResolver {
     utteranceLabelsPairArray: [string, string[]][],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};},
+      'stringMap': Map<string, number>;},
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionScoreStructure[] {
     // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;

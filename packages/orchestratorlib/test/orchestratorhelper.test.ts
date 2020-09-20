@@ -25,7 +25,7 @@ describe('Test Suite - orchestratorhelper', () => {
     const utterance: string = 'hi';
     const label: string = 'greeting';
     const hierarchicalLabel: string = '';
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     OrchestratorHelper.addNewLabelUtterance(
       utterance,
@@ -35,8 +35,8 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelDuplicateMap);
     Utility.debuggingLog(
       `utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
-    assert.ok(Object.entries(utteranceLabelsMap).length === 1);
-    assert.ok(utteranceLabelsMap[utterance].length === 1);
+    assert.ok(utteranceLabelsMap.size === 1);
+    assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1);
   });
   it('Test.0001 OrchestratorHelper.addNewLabelUtterance() empty label', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -44,7 +44,7 @@ describe('Test Suite - orchestratorhelper', () => {
     const utterance: string = 'hi';
     const label: string = '';
     const hierarchicalLabel: string = '';
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     OrchestratorHelper.addNewLabelUtterance(
       utterance,
@@ -54,15 +54,15 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelDuplicateMap);
     Utility.debuggingLog(
       `utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
-    assert.ok(Object.entries(utteranceLabelsMap).length === 1);
-    assert.ok(utteranceLabelsMap[utterance].length === 1);
-    assert.ok(utteranceLabelsMap[utterance][0] === '');
+    assert.ok(utteranceLabelsMap.size === 1);
+    assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1);
+    assert.ok([...(utteranceLabelsMap.get(utterance) as Set<string>)][0] === '');
   });
 
   it('Test.0100 OrchestratorHelper.addNewEntityLabelUtterance()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-    const utteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     let utterance: string = 'the destination is Seattle';
     let entityLabel: Label = Label.newEntityLabel('location', 19, 7);
@@ -85,9 +85,10 @@ describe('Test Suite - orchestratorhelper', () => {
     });
     Utility.debuggingLog(
       `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+    let utteranceEntityLabelsMapSize: number = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Seattle');
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 1);
-    assert.ok(utteranceEntityLabelsMap[utterance].length === 1);
+    assert.ok(utteranceEntityLabelsMapSize === 1);
+    assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 1);
     assert.ok(utteranceEntityLabelDuplicateMap.size === 0);
     utterance = 'traveling from Paris to Berlin';
     entityLabel = Label.newEntityLabel('location', 15, 5);
@@ -108,10 +109,11 @@ describe('Test Suite - orchestratorhelper', () => {
     });
     Utility.debuggingLog(
       `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+    utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2);
-    assert.ok(utteranceEntityLabelsMap[utterance].length === 2);
+    assert.ok(utteranceEntityLabelsMapSize === 2);
+    assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 2);
     assert.ok(utteranceEntityLabelDuplicateMap.size === 0);
     utterance = 'traveling from Paris to Berlin';
     entityLabel = Label.newEntityLabel('location', 15, 5);
@@ -128,10 +130,11 @@ describe('Test Suite - orchestratorhelper', () => {
     });
     Utility.debuggingLog(
       `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+    utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2);
-    assert.ok(utteranceEntityLabelsMap[utterance].length === 2);
+    assert.ok(utteranceEntityLabelsMapSize === 2);
+    assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 2);
     // assert.ok(utteranceEntityLabelDuplicateMap.size === 1);
     let duplicateEntityLabels: Label[] = utteranceEntityLabelDuplicateMap.get(utterance) as Label[];
     assert.ok(duplicateEntityLabels.length === 2);
@@ -150,10 +153,11 @@ describe('Test Suite - orchestratorhelper', () => {
     });
     Utility.debuggingLog(
       `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+    utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2);
-    assert.ok(utteranceEntityLabelsMap[utterance].length === 2);
+    assert.ok(utteranceEntityLabelsMapSize === 2);
+    assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 2);
     // ---- NOTE-eslint-FAIL-TO-ACCEPT-THIS-assert ---- assert.ok(utteranceEntityLabelDuplicateMap.size === 1);
     duplicateEntityLabels = utteranceEntityLabelDuplicateMap.get(utterance) as Label[];
     assert.ok(duplicateEntityLabels.length === 2);
@@ -218,9 +222,9 @@ describe('Test Suite - orchestratorhelper', () => {
         ],
       },
     ];
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const utteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
@@ -231,22 +235,22 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceEntityLabelDuplicateMap);
     let utteranceLabelDuplicateMapSize: number = utteranceLabelDuplicateMap.size;
     let utteranceEntityLabelDuplicateMapSize: number = utteranceEntityLabelDuplicateMap.size;
-    assert.ok(Object.entries(utteranceLabelsMap).length === 2,
-      `Object.entries(utteranceLabelsMap).length=${Object.entries(utteranceLabelsMap).length}`);
+    assert.ok(utteranceLabelsMap.size === 2,
+      `utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     assert.ok(utteranceLabelDuplicateMapSize === 0,
       `utteranceLabelDuplicateMapSize=${utteranceLabelDuplicateMapSize}`);
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2,
-      `Object.entries(utteranceEntityLabelsMap).length=${Object.entries(utteranceEntityLabelsMap).length}`);
+    assert.ok(utteranceEntityLabelsMap.size === 2,
+      `utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     assert.ok(utteranceEntityLabelDuplicateMapSize === 0,
       `utteranceEntityLabelDuplicateMapSize=${utteranceEntityLabelDuplicateMapSize}`);
-    assert.ok(utteranceLabelsMap[utterance0].length === 1,
-      `utteranceLabelsMap[utterance0].length=${utteranceLabelsMap[utterance0].length}`);
-    assert.ok(utteranceLabelsMap[utterance1].length === 2,
-      `utteranceLabelsMap[utterance1].length=${utteranceLabelsMap[utterance1].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance0].length === 1,
-      `utteranceEntityLabelsMap[utterance0].length=${utteranceEntityLabelsMap[utterance0].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance1].length === 3,
-      `utteranceEntityLabelsMap[utterance1].length=${utteranceEntityLabelsMap[utterance1].length}`);
+    assert.ok((utteranceLabelsMap.get(utterance0) as Set<string>).size === 1,
+      `(utteranceLabelsMap.get(utterance0) as Set<string>).size=${(utteranceLabelsMap.get(utterance0) as Set<string>).size}`);
+    assert.ok((utteranceLabelsMap.get(utterance1) as Set<string>).size === 2,
+      `(utteranceLabelsMap.get(utterance1) as Set<string>).size=${(utteranceLabelsMap.get(utterance1) as Set<string>).size}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance0) as Label[]).length === 1,
+      `(utteranceEntityLabelsMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance0) as Label[]).length}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance1) as Label[]).length === 3,
+      `(utteranceEntityLabelsMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance1) as Label[]).length}`);
     OrchestratorHelper.getJsonIntentsEntitiesUtterances(
       jsonObjectArray,
       '',
@@ -256,22 +260,22 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceEntityLabelDuplicateMap);
     utteranceLabelDuplicateMapSize = utteranceLabelDuplicateMap.size;
     utteranceEntityLabelDuplicateMapSize = utteranceEntityLabelDuplicateMap.size;
-    assert.ok(Object.entries(utteranceLabelsMap).length === 2,
-      `Object.entries(utteranceLabelsMap).length=${Object.entries(utteranceLabelsMap).length}`);
+    assert.ok(utteranceLabelsMap.size === 2,
+      `utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     assert.ok(utteranceLabelDuplicateMapSize === 2,
       `utteranceLabelDuplicateMapSize=${utteranceLabelDuplicateMapSize}`);
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2,
-      `Object.entries(utteranceEntityLabelsMap).length=${Object.entries(utteranceEntityLabelsMap).length}`);
+    assert.ok(utteranceEntityLabelsMap.size === 2,
+      `utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     assert.ok(utteranceEntityLabelDuplicateMapSize === 2,
       `utteranceEntityLabelDuplicateMapSize=${utteranceEntityLabelDuplicateMapSize}`);
-    assert.ok(utteranceLabelsMap[utterance0].length === 1,
-      `utteranceLabelsMap[utterance0].length=${utteranceLabelsMap[utterance0].length}`);
-    assert.ok(utteranceLabelsMap[utterance1].length === 2,
-      `utteranceLabelsMap[utterance1].length=${utteranceLabelsMap[utterance1].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance0].length === 1,
-      `utteranceEntityLabelsMap[utterance0].length=${utteranceEntityLabelsMap[utterance0].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance1].length === 3,
-      `utteranceEntityLabelsMap[utterance1].length=${utteranceEntityLabelsMap[utterance1].length}`);
+    assert.ok((utteranceLabelsMap.get(utterance0) as Set<string>).size === 1,
+      `(utteranceLabelsMap.get(utterance0) as Set<string>).size=${(utteranceLabelsMap.get(utterance0) as Set<string>).size}`);
+    assert.ok((utteranceLabelsMap.get(utterance1) as Set<string>).size === 2,
+      `(utteranceLabelsMap.get(utterance1) as Set<string>).size=${(utteranceLabelsMap.get(utterance1) as Set<string>).size}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance0) as Label[]).length === 1,
+      `(utteranceEntityLabelsMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance0) as Label[]).length}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance1) as Label[]).length === 3,
+      `(utteranceEntityLabelsMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance1) as Label[]).length}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size === 1,
       `(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size=${(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance1) as Set<string>).size === 2,
@@ -289,22 +293,22 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceEntityLabelDuplicateMap);
     utteranceLabelDuplicateMapSize = utteranceLabelDuplicateMap.size;
     utteranceEntityLabelDuplicateMapSize = utteranceEntityLabelDuplicateMap.size;
-    assert.ok(Object.entries(utteranceLabelsMap).length === 2,
-      `Object.entries(utteranceLabelsMap).length=${Object.entries(utteranceLabelsMap).length}`);
+    assert.ok(utteranceLabelsMap.size === 2,
+      `utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     assert.ok(utteranceLabelDuplicateMapSize === 2,
       `utteranceLabelDuplicateMapSize=${utteranceLabelDuplicateMapSize}`);
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2,
-      `Object.entries(utteranceEntityLabelsMap).length=${Object.entries(utteranceEntityLabelsMap).length}`);
+    assert.ok(utteranceEntityLabelsMap.size === 2,
+      `utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     assert.ok(utteranceEntityLabelDuplicateMapSize === 2,
       `utteranceEntityLabelDuplicateMapSize=${utteranceEntityLabelDuplicateMapSize}`);
-    assert.ok(utteranceLabelsMap[utterance0].length === 1,
-      `utteranceLabelsMap[utterance0].length=${utteranceLabelsMap[utterance0].length}`);
-    assert.ok(utteranceLabelsMap[utterance1].length === 2,
-      `utteranceLabelsMap[utterance1].length=${utteranceLabelsMap[utterance1].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance0].length === 1,
-      `utteranceEntityLabelsMap[utterance0].length=${utteranceEntityLabelsMap[utterance0].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance1].length === 3,
-      `utteranceEntityLabelsMap[utterance1].length=${utteranceEntityLabelsMap[utterance1].length}`);
+    assert.ok((utteranceLabelsMap.get(utterance0) as Set<string>).size === 1,
+      `(utteranceLabelsMap.get(utterance0) as Set<string>).size=${(utteranceLabelsMap.get(utterance0) as Set<string>).size}`);
+    assert.ok((utteranceLabelsMap.get(utterance1) as Set<string>).size === 2,
+      `(utteranceLabelsMap.get(utterance1) as Set<string>).size=${(utteranceLabelsMap.get(utterance1) as Set<string>).size}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance0) as Label[]).length === 1,
+      `(utteranceEntityLabelsMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance0) as Label[]).length}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance1) as Label[]).length === 3,
+      `(utteranceEntityLabelsMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance1) as Label[]).length}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size === 1,
       `(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size=${(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance1) as Set<string>).size === 2,
@@ -322,22 +326,22 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceEntityLabelDuplicateMap);
     utteranceLabelDuplicateMapSize = utteranceLabelDuplicateMap.size;
     utteranceEntityLabelDuplicateMapSize = utteranceEntityLabelDuplicateMap.size;
-    assert.ok(Object.entries(utteranceLabelsMap).length === 2,
-      `Object.entries(utteranceLabelsMap).length=${Object.entries(utteranceLabelsMap).length}`);
+    assert.ok(utteranceLabelsMap.size === 2,
+      `utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     assert.ok(utteranceLabelDuplicateMapSize === 2,
       `utteranceLabelDuplicateMapSize=${utteranceLabelDuplicateMapSize}`);
-    assert.ok(Object.entries(utteranceEntityLabelsMap).length === 2,
-      `Object.entries(utteranceEntityLabelsMap).length=${Object.entries(utteranceEntityLabelsMap).length}`);
+    assert.ok(utteranceEntityLabelsMap.size === 2,
+      `utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     assert.ok(utteranceEntityLabelDuplicateMapSize === 2,
       `utteranceEntityLabelDuplicateMapSize=${utteranceEntityLabelDuplicateMapSize}`);
-    assert.ok(utteranceLabelsMap[utterance0].length === 1,
-      `utteranceLabelsMap[utterance0].length=${utteranceLabelsMap[utterance0].length}`);
-    assert.ok(utteranceLabelsMap[utterance1].length === 2,
-      `utteranceLabelsMap[utterance1].length=${utteranceLabelsMap[utterance1].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance0].length === 1,
-      `utteranceEntityLabelsMap[utterance0].length=${utteranceEntityLabelsMap[utterance0].length}`);
-    assert.ok(utteranceEntityLabelsMap[utterance1].length === 3,
-      `utteranceEntityLabelsMap[utterance1].length=${utteranceEntityLabelsMap[utterance1].length}`);
+    assert.ok((utteranceLabelsMap.get(utterance0) as Set<string>).size === 1,
+      `(utteranceLabelsMap.get(utterance0) as Set<string>).size=${(utteranceLabelsMap.get(utterance0) as Set<string>).size}`);
+    assert.ok((utteranceLabelsMap.get(utterance1) as Set<string>).size === 2,
+      `(utteranceLabelsMap.get(utterance1) as Set<string>).size=${(utteranceLabelsMap.get(utterance1) as Set<string>).size}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance0) as Label[]).length === 1,
+      `(utteranceEntityLabelsMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance0) as Label[]).length}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance1) as Label[]).length === 3,
+      `(utteranceEntityLabelsMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance1) as Label[]).length}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size === 1,
       `(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size=${(utteranceLabelDuplicateMap.get(utterance0) as Set<string>).size}`);
     assert.ok((utteranceLabelDuplicateMap.get(utterance1) as Set<string>).size === 2,
@@ -446,16 +450,16 @@ describe('Test Suite - orchestratorhelper', () => {
         ],
       },
     ];
-    const utteranceLabelScoresMap: { [id: string]: ScoreIntent[] } = {};
-    const utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] } = {};
+    const utteranceLabelScoresMap: Map<string, ScoreIntent[]> = new Map<string, ScoreIntent[]>();
+    const utteranceEntityLabelScoresMap: Map<string, ScoreEntity[]> = new Map<string, ScoreEntity[]>();
     OrchestratorHelper.getJsonIntentEntityScoresUtterances(
       jsonObjectArray,
       utteranceLabelScoresMap,
       utteranceEntityLabelScoresMap);
-    assert.ok(Object.entries(utteranceLabelScoresMap).length === 2,
-      `Object.entries(utteranceLabelScoresMap).length=${Object.entries(utteranceLabelScoresMap).length}`);
-    assert.ok(Object.entries(utteranceEntityLabelScoresMap).length === 2,
-      `Object.entries(utteranceEntityLabelScoresMap).length=${Object.entries(utteranceEntityLabelScoresMap).length}`);
+    assert.ok(utteranceLabelScoresMap.size === 2,
+      `utteranceLabelScoresMap.size=${utteranceLabelScoresMap.size}`);
+    assert.ok(utteranceEntityLabelScoresMap.size === 2,
+      `utteranceEntityLabelScoresMap.size=${utteranceEntityLabelScoresMap.size}`);
   });
 
   it('Test.0400 OrchestratorHelper.getOutputPath()', () => {
@@ -505,9 +509,9 @@ describe('Test Suite - orchestratorhelper', () => {
 
   it('Test.0500 OrchestratorHelper.getUtteranceLabelsMap()', async () => {
     const inputFile: string = './test/fixtures/adaptive/RootDialog.lu';
-    const result: any = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
-    assert.ok('Hey' in result, 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
-    assert.ok('Add item' in result, 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
-    assert.ok('delete to do go shopping' in result, 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
+    const result: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
+    assert.ok(result.has('Hey'), 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
+    assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
+    assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
   });
 });

@@ -116,13 +116,13 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const labelMap: { [id: string]: number } =
+        const labelMap: Map<string, number> =
             featurizer.getLabelMap();
         const numberLabels: number =
-            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap);
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(labelMap);
         Utility.debuggingLog(
             `numberHashingFeatures)=${numberLabels}`);
-        assert.ok(DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap) === 15,
+        assert.ok(DictionaryMapUtility.getStringKeyGenericValueMapLength(labelMap) === 15,
             `numberHashingFeatures=${numberLabels}`);
     });
     it("Test.0202 getFeatures()", function() {
@@ -144,13 +144,13 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             featurizerColumnarContentEmail;
-        const featureMap: { [id: string]: number } =
+        const featureMap: Map<string, number> =
             featurizer.getFeatureMap();
         const numberFeatures: number =
-            DictionaryMapUtility.getStringIdGenericValueDictionaryLength(featureMap);
+            DictionaryMapUtility.getStringKeyGenericValueMapLength(featureMap);
         Utility.debuggingLog(
             `numberHashingFeatures)=${numberFeatures}`);
-        assert.ok(DictionaryMapUtility.getStringIdGenericValueDictionaryLength(featureMap) === 5641,
+        assert.ok(DictionaryMapUtility.getStringKeyGenericValueMapLength(featureMap) === 5641,
             `numberHashingFeatures=${numberFeatures}`);
     });
     it("Test.0204 getHashingFeatureArrays()", function() {

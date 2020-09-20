@@ -50,7 +50,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
         modelNullable: SoftmaxRegressionSparse|null,
         featurizerNullable: NgramSubwordFeaturizer|null,
         labels: string[],
-        labelMap: { [id: string]: number },
+        labelMap: Map<string, number>,
         targetLabelBatchesToReport: string[][] = [],
         numberOfLabelsPerBatch: number = NumberOfLabelsPerBatchToReport,
         explicitTotal: number = -1,
@@ -306,7 +306,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                 }
             }
         }
-        const labelMap: { [id: string]: number } = this.getLabelMap();
+        const labelMap: Map<string, number> = this.getLabelMap();
         let metricNames: string[] = [];
         let metricNameMap: IDictionaryStringIdGenericValue<number> = {};
         const numberInstances: number = this.instanceGroudTruthLabelIds.length;
@@ -329,7 +329,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
             }> = [];
             for (const targetLabel of targetLabelsPerBatchToReport) {
                 const targetLabelIndex: number =
-                    labelMap[targetLabel];
+                    labelMap.get(targetLabel) as number;
                 if (targetLabelIndex === undefined) {
                     Utility.debuggingThrow(
                         `targetLabel|${targetLabel}| is not defined.`);
@@ -478,7 +478,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
                 predictedLabelColumnIndex,
                 revisedTextColumnIndex,
                 lineIndexToStart);
-        const labelMap: { [id: string]: number } =
+        const labelMap: Map<string, number> =
             this.getLabelMap();
         const numberInstances: number = scoreDataStructure.labels.length;
         for (let i = 0; i < numberInstances; i++) {
@@ -486,7 +486,7 @@ export class ThresholdReporter extends AbstractBaseModelFeaturizerEvaluator {
             const text: string = scoreDataStructure.texts[i];
             const identifier: string = scoreDataStructure.identifiers[i];
             const scoreArray: number[] = scoreDataStructure.scoreArrays[i];
-            const labelId: number = labelMap[label];
+            const labelId: number = labelMap.get(label) as number;
             const weight: number = scoreDataStructure.weights[i];
             this.addInstance(scoreArray, labelId, text, identifier, weight);
         }

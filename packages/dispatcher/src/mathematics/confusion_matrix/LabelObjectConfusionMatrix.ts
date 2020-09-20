@@ -19,7 +19,7 @@ implements ISingleLabelObjectConfusionMatrix {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
     }
 
@@ -29,15 +29,15 @@ implements ISingleLabelObjectConfusionMatrix {
         value: number = 1): void {
         this.validateLabelObject(groundTrueLabel);
         this.validateLabelObject(predictedLabel);
-        const groundTrueLabelId: number = this.labelMap[groundTrueLabel.name];
-        const predictedLabelId: number = this.labelMap[predictedLabel.name];
+        const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
+        const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
         this.addInstanceByLabelIndex(groundTrueLabelId, predictedLabelId, value);
     }
 
     public validateLabelObject(
         label: Label,
         throwIfNotLegal: boolean = true): boolean {
-        if (!(label.name in this.getLabelMap())) {
+        if (!this.getLabelMap().has(label.name)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
                     `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);

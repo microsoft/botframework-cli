@@ -59,22 +59,22 @@ export class OrchestratorAssess {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the ground-truth set, retrieve labels ----------
     const groundTruthFileProcessedUtteranceLabelsMap: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFileConfiguration, false);
-    const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } =
+    const groundTruthSetUtteranceLabelsMap: Map<string, Set<string>> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelDuplicateMap;
-    const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } =
+    const groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
@@ -91,44 +91,44 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   });
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for groundTruth set');
     const groundTruthSetLabels: string[] =
-      [...Object.values(groundTruthSetUtteranceLabelsMap)].reduce(
-        (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);
+      [...groundTruthSetUtteranceLabelsMap.values()].reduce(
+        (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     const groundTruthSetLabelSet: Set<string> =
       new Set<string>(groundTruthSetLabels);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetLabelSet)=${JSON.stringify(groundTruthSetLabelSet)}`);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetUtteranceLabelsMap)=${JSON.stringify(groundTruthSetUtteranceLabelsMap)}`);
     // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))}`);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set unique utterances=${Object.keys(groundTruthSetUtteranceLabelsMap).length}`);
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set unique utterances=${groundTruthSetUtteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set duplicate utterance/label pairs=${groundTruthSetUtteranceLabelDuplicateMap.size}`);
     const groundTruthSetEntityLabels: string[] =
-      [...Object.values(groundTruthSetUtteranceEntityLabelsMap)].reduce(
+      [...groundTruthSetUtteranceEntityLabelsMap.values()].reduce(
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
     const groundTruthSetEntityLabelSet: Set<string> =
       new Set<string>(groundTruthSetEntityLabels);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetEntityLabelSet)=${JSON.stringify(groundTruthSetEntityLabelSet)}`);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetUtteranceEntityLabelsMap)=${JSON.stringify(groundTruthSetUtteranceEntityLabelsMap)}`);
     // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap))}`);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set unique utterances=${Object.keys(groundTruthSetUtteranceEntityLabelsMap).length}`);
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set unique utterances=${groundTruthSetUtteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set duplicate utterance/label pairs=${groundTruthSetUtteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the prediction set, retrieve labels ------------
     const predictionFileProcessedUtteranceLabelsMap: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(predictionFileConfiguration, false);
-    const predictionSetUtteranceLabelsMap: { [id: string]: string[] } =
+    const predictionSetUtteranceLabelsMap: Map<string, Set<string>> =
       predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
       predictionFileProcessedUtteranceLabelsMap.utteranceLabelDuplicateMap;
-    const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } =
+    const predictionSetUtteranceEntityLabelsMap: Map<string, Label[]> =
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelsMap: { [id: string]: string[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
     // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
@@ -141,32 +141,31 @@ export class OrchestratorAssess {
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
-        utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap,
-      },
+        utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap},
       groundTruthSetLabelSet);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
     const predictionSetLabels: string[] =
-      [...Object.values(predictionSetUtteranceLabelsMap)].reduce(
-        (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);
+      [...predictionSetUtteranceLabelsMap.values()].reduce(
+        (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     const predictionSetLabelSet: Set<string> =
       new Set<string>(predictionSetLabels);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(predictionSetUtteranceLabelsMap)=${JSON.stringify(predictionSetUtteranceLabelsMap)}`);
     // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction-set duplicate utterance/label pairs=${predictionSetUtteranceLabelDuplicateMap.size}`);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set unique utterances=${Object.keys(predictionSetUtteranceLabelsMap).length}`);
-    // if (Object.entries(predictionSetUtteranceLabelsMap).length <= 0) {
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set unique utterances=${predictionSetUtteranceLabelsMap.size}`);
+    // if (predictionSetUtteranceLabelsMap.size <= 0) {
     //   Utility.debuggingThrow('there is no example, something wrong?');
     // }
     const predictionSetEntityLabels: string[] =
-      [...Object.values(predictionSetUtteranceEntityLabelsMap)].reduce(
+      [...predictionSetUtteranceEntityLabelsMap.values()].reduce(
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
     const predictionSetEntityLabelSet: Set<string> =
       new Set<string>(predictionSetEntityLabels);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(predictionSetUtteranceEntityLabelsMap)=${JSON.stringify(predictionSetUtteranceEntityLabelsMap)}`);
     // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap))}`);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set entity unique utterances=${Object.keys(predictionSetUtteranceEntityLabelsMap).length}`);
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set entity unique utterances=${predictionSetUtteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction-set entity duplicate utterance/label pairs=${predictionSetUtteranceEntityLabelDuplicateMap.size}`);
-    // if (Object.entries(predictionSetUtteranceEntityLabelsMap).length <= 0) {
+    // if (predictionSetUtteranceEntityLabelsMap.size <= 0) {
     //   Utility.debuggingThrow('there is no entity example, something wrong?');
     // }
     // -----------------------------------------------------------------------
@@ -177,14 +176,14 @@ export class OrchestratorAssess {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -195,14 +194,14 @@ export class OrchestratorAssess {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -270,14 +269,14 @@ export class OrchestratorAssess {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -288,14 +287,14 @@ export class OrchestratorAssess {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};

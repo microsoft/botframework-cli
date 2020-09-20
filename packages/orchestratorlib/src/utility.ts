@@ -33,6 +33,8 @@ export class Utility {
 
   public static toPrintDetailedDebuggingLogToConsole: boolean = false;
 
+  public static NumberOfInstancesPerStep: number = 10000;
+
   public static readonly DefaultAmbiguousClosenessParameter: number = 0.2;
 
   public static readonly DefaultLowConfidenceScoreThresholdParameter: number = 0.5;
@@ -61,8 +63,8 @@ export class Utility {
   public static readonly ColumnNameMicroFirstQuartile: string = Utility.getBolded('Micro-First-Quartile');
 
   public static readonly DescriptionMicroFirstQuartile: string = `
-  Average (or mean) is not a robust statistic (<a href="https://en.wikipedia.org/wiki/Robust_statistics">Robust Statistics</a>),
-  which can be easily influenced by outliers. Thus, we also compute robust quantile-based metrics in this report.
+  Average (or mean) is not a <a href="https://en.wikipedia.org/wiki/Robust_statistics">robust statistics</a> that
+  average can be easily influenced by outliers. Therefore, we also compute robust quantile-based metrics in this report.
   For every metric in this row, e.g., precision, the computing process collects the per-label precision
   metrics from the per-label binary confusion matrices, sorts them, and then expands each per-label precision by the
   number of label supports. It then finds the first quartile of the metric from the series of metrics.
@@ -184,12 +186,13 @@ export class Utility {
   This evaluation package supports multi-label instances and predictions.
   In another word, a test instance can be labeled and predicted with more than
   one labels. The above metrics so far are calculated "per instance label," i.e., an instance can contribute to
-  a positive prediction more than one times, thus the above metrics can encourage a model to predict more than one labels per test instances in
-  order to achieve better performance results.
-  To counter such behavior, metrics in this row are "per instance," i.e., an instance can only contribute to one positive prediction. 
+  multiple positive predictions on different labels, thus the above metrics can encourage a model to predict more than one labels per test instances
+  that may achieve better evaluation results.
+  To counter such a behavior, metrics in this row are "per instance," i.e., an instance can only contribute to one positive prediction. 
   The calcuating process does not rely on the per-label binary confusion matrices, but
-  build jsut one binary confusion matrix in which a true positive prediction must match the multi-label prediction
-  exactly with the ground-truth labels, otherwise it's a false positive. By the way, there is no negative prediction.
+  build just one binary confusion matrix in which a true positive prediction is an exact match between the prediction
+  and the ground-truth label sets, otherwise it's a false positive. By the way, there is no negative prediction, so false-nagative
+  and true-negative are both 0.
   `;
 
   public static readonly ColumnNameMultiLabelSubsetAggregate: string = Utility.getBolded('Multi-Label Subset Aggregate');
@@ -197,7 +200,7 @@ export class Utility {
   public static readonly DescriptionMultiLabelSubsetAggregate: string = `
   Similar to the previous row, but the metric computing process is less strict. A prediction can be a true positive
   as long as the predicted label set is a subset of the ground-truth set.
-  This subset approach makes sense as an action taking on a prediction can respond to one of the
+  This subset rule makes sense as an action taking on a prediction can respond to one of the
   correctly predicted labels and the action is still proper.
   Of course, this subset rule can discourage a model from predicting more than one labels (one is the safest strategy),
   even though a test instance might be labeled with a large ground-truth label set.
@@ -206,8 +209,8 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static processUtteranceMultiLabelTsv(
     lines: string[],
-    utteranceLabelsMap: { [id: string]: string[] },
-    utterancesLabelsPredictedMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utterancesLabelsPredictedMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceLabelDuplicatePredictedMap: Map<string, Set<string>>,
     utteranceIndex: number = 2,
@@ -256,9 +259,9 @@ export class Utility {
   public static addToMultiLabelUtteranceStructure(
     utterance: string,
     label: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
-    const existingLabels: string[] = utteranceLabelsMap[utterance];
+    const existingLabels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
     if (existingLabels) {
       if (!Utility.addIfNewLabel(label, existingLabels)) {
         Utility.insertStringPairToStringIdStringSetNativeMap(
@@ -267,17 +270,15 @@ export class Utility {
           utteranceLabelDuplicateMap);
       }
     } else {
-      utteranceLabelsMap[utterance] = [label];
+      utteranceLabelsMap.set(utterance, new Set<string>([label]));
     }
   }
 
-  public static addIfNewLabel(newLabel: string, labels: string[]): boolean {
-    for (const label of labels) {
-      if (label === newLabel) {
-        return false;
-      }
+  public static addIfNewLabel(newLabel: string, labels: Set<string>): boolean {
+    if (labels.has(newLabel)) {
+      return false;
     }
-    labels.push(newLabel);
+    labels.add(newLabel);
     return true;
   }
 
@@ -291,7 +292,7 @@ export class Utility {
         const inputLabelEntryIndex: number = Number(inputLabelEntry);
         const currentModelLabelArrayAndMap: {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};} =
+          'stringMap': Map<string, number>;} =
           Utility.buildStringIdNumberValueDictionaryFromStringArray(modelLabels);
         const modelLabelStringArray: string[] = currentModelLabelArrayAndMap.stringArray;
         // eslint-disable-next-line max-depth
@@ -312,22 +313,22 @@ export class Utility {
   public static generateAssessmentLabelObjectEvaluationReport(
     groundTruthSetLabels: string[],
     predictionSetEntityLabelSet: Set<string>,
-    groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] },
+    groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]>,
     groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]>,
-    predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] },
+    predictionSetUtteranceEntityLabelsMap: Map<string, Label[]>,
     predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]>): {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -338,14 +339,14 @@ export class Utility {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -379,14 +380,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -411,14 +412,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -492,8 +493,8 @@ export class Utility {
 
   public static generateAssessmentLabelObjectEvaluationReportSpuriousPredictions(
     evaluationSummary: string,
-    groundTruthSetUtteranceEntityLabelsMap: { [id: string]: Label[] },
-    predictionSetUtteranceEntityLabelsMap: { [id: string]: Label[] }): {
+    groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]>,
+    predictionSetUtteranceEntityLabelsMap: Map<string, Label[]>): {
       'evaluationSummary': string;
       'spuriousPredictions': [string, Label[]][];
     } {
@@ -519,7 +520,7 @@ export class Utility {
   public static generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(
     evaluationSummary: string,
     dataSetLabels: string[],
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     evaluationSummaryTagEntityLabelUtteranceStatistics: string,
     evaluationSummaryTagUtteranceDuplicates: string,
@@ -527,14 +528,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -545,7 +546,7 @@ export class Utility {
     // ---- NOTE ---- create a label-index map.
     const labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};} =
+      'stringMap': Map<string, number>;} =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
@@ -554,16 +555,16 @@ export class Utility {
     // ---- TODO ---- }
     // ---- NOTE ---- as the unknown threshold is greater than 0, the score function can make an UNKNOWN prediction.
     if (ensureUnknownLabelInLabelArrayAndMap) {
-      if (!(Utility.UnknownLabel in labelArrayAndMap.stringMap)) {
+      if (!(labelArrayAndMap.stringMap.has(Utility.UnknownLabel))) {
         labelArrayAndMap.stringArray.push(Utility.UnknownLabel);
-        labelArrayAndMap.stringMap[Utility.UnknownLabel] = labelArrayAndMap.stringArray.length - 1;
+        labelArrayAndMap.stringMap.set(Utility.UnknownLabel, labelArrayAndMap.stringArray.length - 1);
       }
     }
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
     // ---- NOTE ---- generate label statistics.
     const labelStatisticsAndHtmlTable: {
-      'labelUtterancesMap': { [id: string]: string[] };
+      'labelUtterancesMap': Map<string, Set<string>>;
       'labelUtterancesTotal': number;
       'labelStatistics': string[][];
       'labelStatisticsHtml': string; } = Utility.generateLabelStatisticsAndHtmlTable(
@@ -572,7 +573,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
-      'utteranceStatisticsMap': {[id: number]: number};
+      'utteranceStatisticsMap': Map<number, number>;
       'utteranceStatistics': [string, number][];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateUtteranceStatisticsAndHtmlTable(
@@ -585,7 +586,7 @@ export class Utility {
       evaluationSummaryTagEntityLabelUtteranceStatistics, labelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagEntityLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
-    const utterancesMultiLabelArrays: [string, string][] = Object.entries(utteranceEntityLabelsMap).filter(
+    const utterancesMultiLabelArrays: [string, string][] = [...utteranceEntityLabelsMap.entries()].filter(
       (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [x[0], x[1].map((x: Label) => x.toSimpleString()).join(',')]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
@@ -613,10 +614,10 @@ export class Utility {
       utteranceLabelDuplicateHtml};
   }
 
-  public static convertUtteranceEntityLabelsMap(utteranceEntityLabelsMap: { [id: string]: Label[] }): { [id: string]: string[] } {
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
-    for (const utteranceEntityLabels of Object.entries(utteranceEntityLabelsMap)) {
-      utteranceLabelsMap[utteranceEntityLabels[0]] = utteranceEntityLabels[1].map((x: Label) => x.name);
+  public static convertUtteranceEntityLabelsMap(utteranceEntityLabelsMap: Map<string, Label[]>): Map<string, Set<string>> {
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    for (const utteranceEntityLabels of utteranceEntityLabelsMap.entries()) {
+      utteranceLabelsMap.set(utteranceEntityLabels[0], new Set<string>(utteranceEntityLabels[1].map((x: Label) => x.name)));
     }
     return utteranceLabelsMap;
   }
@@ -627,7 +628,7 @@ export class Utility {
     predictionLabelStructureArray: PredictionLabelStructure[],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
         'predictingMisclassifiedUtterancesArrays': string[][];
@@ -714,7 +715,7 @@ export class Utility {
     predictionLabelStructureArray: PredictionLabelStructure[],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
       'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
@@ -745,13 +746,13 @@ export class Utility {
   }
 
   public static assessLabelObjectSpuriousPredictions(
-    groundTruthSetUtteranceLabelsMap: { [id: string]: Label[] },
-    predictionSetUtteranceLabelsMap: { [id: string]: Label[] }): [string, Label[]][] {
+    groundTruthSetUtteranceLabelsMap: Map<string, Label[]>,
+    predictionSetUtteranceLabelsMap: Map<string, Label[]>): [string, Label[]][] {
     const spuriousPredictions: [string, Label[]][] = [];
-    for (const predictionSetUtteranceLabels of Object.entries(predictionSetUtteranceLabelsMap)) {
+    for (const predictionSetUtteranceLabels of predictionSetUtteranceLabelsMap.entries()) {
       const utterance: string = predictionSetUtteranceLabels[0];
       // eslint-disable-next-line no-prototype-builtins
-      if (!groundTruthSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
+      if (!groundTruthSetUtteranceLabelsMap.has(utterance)) {
         spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
       }
     }
@@ -759,19 +760,19 @@ export class Utility {
   }
 
   public static assessLabelObjectPredictions(
-    groundTruthSetUtteranceLabelsMap: { [id: string]: Label[] },
-    predictionSetUtteranceLabelsMap: { [id: string]: Label[] },
+    groundTruthSetUtteranceLabelsMap: Map<string, Label[]>,
+    predictionSetUtteranceLabelsMap: Map<string, Label[]>,
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): PredictionLabelStructure[] {
+      'stringMap': Map<string, number>;}): PredictionLabelStructure[] {
     const predictionLabelStructureArray: PredictionLabelStructure[] = [];
-    for (const groundTruthSetUtteranceLabels of Object.entries(groundTruthSetUtteranceLabelsMap)) {
+    for (const groundTruthSetUtteranceLabels of groundTruthSetUtteranceLabelsMap.entries()) {
       const utterance: string = groundTruthSetUtteranceLabels[0];
       const groundTruthSetLabels: Label[] = groundTruthSetUtteranceLabels[1];
       let predictionSetLabels: Label[] = [];
       // eslint-disable-next-line no-prototype-builtins
-      if (predictionSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
-        predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
+      if (predictionSetUtteranceLabelsMap.has(utterance)) {
+        predictionSetLabels = predictionSetUtteranceLabelsMap.get(utterance) as Label[];
       }
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.map((x: Label) => x.toSimpleString()).join(',');
@@ -858,22 +859,22 @@ export class Utility {
   public static generateAssessmentEvaluationReport(
     groundTruthSetLabels: string[],
     predictionSetLabelSet: Set<string>,
-    groundTruthSetUtteranceLabelsMap: { [id: string]: string[] },
+    groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
     groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>>,
-    predictionSetUtteranceLabelsMap: { [id: string]: string[] },
+    predictionSetUtteranceLabelsMap: Map<string, Set<string>>,
     predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>>): {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -884,14 +885,14 @@ export class Utility {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -925,14 +926,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -957,14 +958,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -1038,16 +1039,16 @@ export class Utility {
 
   public static generateAssessmentMultiLabelIntentEvaluationReportSpuriousPredictions(
     evaluationSummary: string,
-    groundTruthSetUtteranceLabelsMap: { [id: string]: string[] },
-    predictionSetUtteranceLabelsMap: { [id: string]: string[] }): {
+    groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
+    predictionSetUtteranceLabelsMap: Map<string, Set<string>>): {
       'evaluationSummary': string;
       'spuriousPredictions': [string, string[]][];
     } {
     const spuriousPredictions: [string, string[]][] = Utility.assessMultiLabelIntentSpuriousPredictions(
       groundTruthSetUtteranceLabelsMap,
-      predictionSetUtteranceLabelsMap);
+      predictionSetUtteranceLabelsMap).map((x: [string, Set<string>]) => [x[0], [...x[1]]]);
     const spuriousPredictionArrays: [string, string][] = spuriousPredictions.map(
-      (spuriousPrediction: [string, string[]]) => [spuriousPrediction[0], spuriousPrediction[1].join(',')]);
+      (spuriousPrediction: [string, string[]]) => [spuriousPrediction[0], [...spuriousPrediction[1]].join(',')]);
     // ---- NOTE ---- generate spurious report.
     const spuriousPredictionHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Spurious utterance and label pairs',
@@ -1067,7 +1068,7 @@ export class Utility {
     predictionStructureArray: PredictionStructure[],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
         'predictingMisclassifiedUtterancesArrays': string[][];
@@ -1154,7 +1155,7 @@ export class Utility {
     predictionStructureArray: PredictionStructure[],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
       'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
@@ -1193,7 +1194,7 @@ export class Utility {
     multiLabelConfusionMatrixSubset: MultiLabelConfusionMatrixSubset,
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
       'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
@@ -1782,13 +1783,13 @@ export class Utility {
   }
 
   public static assessMultiLabelIntentSpuriousPredictions(
-    groundTruthSetUtteranceLabelsMap: { [id: string]: string[] },
-    predictionSetUtteranceLabelsMap: { [id: string]: string[] }): [string, string[]][] {
-    const spuriousPredictions: [string, string[]][] = [];
-    for (const predictionSetUtteranceLabels of Object.entries(predictionSetUtteranceLabelsMap)) {
+    groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
+    predictionSetUtteranceLabelsMap: Map<string, Set<string>>): [string, Set<string>][] {
+    const spuriousPredictions: [string, Set<string>][] = [];
+    for (const predictionSetUtteranceLabels of predictionSetUtteranceLabelsMap.entries()) {
       const utterance: string = predictionSetUtteranceLabels[0];
       // eslint-disable-next-line no-prototype-builtins
-      if (!groundTruthSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
+      if (!groundTruthSetUtteranceLabelsMap.has(utterance)) {
         spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
       }
     }
@@ -1796,19 +1797,19 @@ export class Utility {
   }
 
   public static assessMultiLabelIntentPredictions(
-    groundTruthSetUtteranceLabelsMap: { [id: string]: string[] },
-    predictionSetUtteranceLabelsMap: { [id: string]: string[] },
+    groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
+    predictionSetUtteranceLabelsMap: Map<string, Set<string>>,
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): PredictionStructure[] {
+      'stringMap': Map<string, number>;}): PredictionStructure[] {
     const predictionStructureArray: PredictionStructure[] = [];
-    for (const groundTruthSetUtteranceLabels of Object.entries(groundTruthSetUtteranceLabelsMap)) {
+    for (const groundTruthSetUtteranceLabels of groundTruthSetUtteranceLabelsMap.entries()) {
       const utterance: string = groundTruthSetUtteranceLabels[0];
-      const groundTruthSetLabels: string[] = groundTruthSetUtteranceLabels[1];
+      const groundTruthSetLabels: string[] = [...groundTruthSetUtteranceLabels[1]];
       let predictionSetLabels: string[] = [];
       // eslint-disable-next-line no-prototype-builtins
-      if (predictionSetUtteranceLabelsMap.hasOwnProperty(utterance)) {
-        predictionSetLabels = predictionSetUtteranceLabelsMap[utterance];
+      if (predictionSetUtteranceLabelsMap.has(utterance)) {
+        predictionSetLabels = [...(predictionSetUtteranceLabelsMap.get(utterance) as Set<string>)];
       }
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
       const groundTruthSetLabelsConcatenated: string = groundTruthSetLabels.join(',');
@@ -1839,14 +1840,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -1885,14 +1886,14 @@ export class Utility {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -1930,14 +1931,14 @@ export class Utility {
         evaluationSummary: '',
         labelArrayAndMap: {
           stringArray: [],
-          stringMap: {}},
+          stringMap: new Map<string, number>()},
         labelStatisticsAndHtmlTable: {
-          labelUtterancesMap: {},
+          labelUtterancesMap: new Map<string, Set<string>>(),
           labelUtterancesTotal: 0,
           labelStatistics: [],
           labelStatisticsHtml: ''},
         utteranceStatisticsAndHtmlTable: {
-          utteranceStatisticsMap: {},
+          utteranceStatisticsMap: new Map<number, number>(),
           utteranceStatistics: [],
           utteranceCount: 0,
           utteranceStatisticsHtml: ''},
@@ -1959,9 +1960,9 @@ export class Utility {
           scoringLowConfidenceUtterancesArraysHtml: '',
           scoringLowConfidenceUtterancesSimpleArrays: []},
         confusionMatrixAnalysis: {
-          confusionMatrix: new MultiLabelConfusionMatrix([], {}),
-          multiLabelConfusionMatrixExact: new MultiLabelConfusionMatrixExact([], {}),
-          multiLabelConfusionMatrixSubset: new MultiLabelConfusionMatrixSubset([], {}),
+          confusionMatrix: new MultiLabelConfusionMatrix([], new Map<string, number>()),
+          multiLabelConfusionMatrixExact: new MultiLabelConfusionMatrixExact([], new Map<string, number>()),
+          multiLabelConfusionMatrixSubset: new MultiLabelConfusionMatrixSubset([], new Map<string, number>()),
           predictingConfusionMatrixOutputLines: [],
           confusionMatrixMetricsHtml: '',
           confusionMatrixAverageMetricsHtml: '',
@@ -2024,11 +2025,11 @@ export class Utility {
       utteranceLabelsPairArray: [string, string[]][],
       labelArrayAndMap: {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};},
+        'stringMap': Map<string, number>;},
       multiLabelPredictionThreshold: number,
       unknownLabelPredictionThreshold: number) => PredictionScoreStructure[],
     dataSetLabels: string[],
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     ambiguousCloseness: number,
     lowConfidenceScoreThreshold: number,
@@ -2038,14 +2039,14 @@ export class Utility {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
@@ -2087,14 +2088,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -2112,7 +2113,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- collect utterance prediction and scores.
     Utility.debuggingLog('Utility.generateEvaluationReport(), ready to call scoringFunctionToPredictionScoreStructure()');
-    const utteranceLabelsPairArray: [string, string[]][] = Object.entries(utteranceLabelsMap);
+    const utteranceLabelsPairArray: [string, string[]][] = [...utteranceLabelsMap.entries()].map((x: [string, Set<string>]) => [x[0], [...x[1]]]);
     const predictionScoreStructureArray: PredictionScoreStructure[] =
       scoringFunctionToPredictionScoreStructure(
         utteranceLabelsPairArray,
@@ -2223,7 +2224,7 @@ export class Utility {
   public static generateEvaluationReportLabelUtteranceStatistics(
     evaluationSummary: string,
     dataSetLabels: string[],
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     evaluationSummaryTagIntentUtteranceStatistics: string,
     evaluationSummaryTagUtteranceDuplicates: string,
@@ -2231,14 +2232,14 @@ export class Utility {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -2249,7 +2250,7 @@ export class Utility {
     // ---- NOTE ---- create a label-index map.
     const labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};} =
+      'stringMap': Map<string, number>;} =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
@@ -2258,16 +2259,16 @@ export class Utility {
     // ---- TODO ---- }
     // ---- NOTE ---- as the unknown threshold is greater than 0, the score function can make an UNKNOWN prediction.
     if (ensureUnknownLabelInLabelArrayAndMap) {
-      if (!(Utility.UnknownLabel in labelArrayAndMap.stringMap)) {
+      if (!labelArrayAndMap.stringMap.has(Utility.UnknownLabel)) {
         labelArrayAndMap.stringArray.push(Utility.UnknownLabel);
-        labelArrayAndMap.stringMap[Utility.UnknownLabel] = labelArrayAndMap.stringArray.length - 1;
+        labelArrayAndMap.stringMap.set(Utility.UnknownLabel, labelArrayAndMap.stringArray.length - 1);
       }
     }
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), JSON.stringify(labelArrayAndMap.stringMap)=${JSON.stringify(labelArrayAndMap.stringMap)}`);
     // ---- NOTE ---- generate label statistics.
     const labelStatisticsAndHtmlTable: {
-      'labelUtterancesMap': { [id: string]: string[] };
+      'labelUtterancesMap': Map<string, Set<string>>;
       'labelUtterancesTotal': number;
       'labelStatistics': string[][];
       'labelStatisticsHtml': string; } = Utility.generateLabelStatisticsAndHtmlTable(
@@ -2276,7 +2277,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
-      'utteranceStatisticsMap': {[id: number]: number};
+      'utteranceStatisticsMap': Map<number, number>;
       'utteranceStatistics': [string, number][];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateUtteranceStatisticsAndHtmlTable(
@@ -2289,8 +2290,8 @@ export class Utility {
       evaluationSummaryTagIntentUtteranceStatistics, labelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagIntentUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
-    const utterancesMultiLabelArrays: [string, string][] = Object.entries(utteranceLabelsMap).filter(
-      (x: [string, string[]]) => x[1].length > 1).map((x: [string, string[]]) => [x[0], x[1].join(',')]);
+    const utterancesMultiLabelArrays: [string, string][] = [...utteranceLabelsMap.entries()].filter(
+      (x: [string, Set<string>]) => x[1].size > 1).map((x: [string, Set<string>]) => [x[0], [...x[1]].join(',')]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
       utterancesMultiLabelArrays,
@@ -2322,7 +2323,7 @@ export class Utility {
     evaluationSummary: string,
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};},
+      'stringMap': Map<string, number>;},
     predictionScoreStructureArray: PredictionScoreStructure[],
     ambiguousCloseness: number,
     lowConfidenceScoreThreshold: number,
@@ -2581,7 +2582,7 @@ export class Utility {
     predictionScoreStructureArray: PredictionScoreStructure[],
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
+      'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
       'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
@@ -2720,24 +2721,23 @@ export class Utility {
   }
 
   public static generateUtteranceStatisticsAndHtmlTable(
-    utteranceLabelsMap: { [id: string]: string[] }): {
-      'utteranceStatisticsMap': {[id: number]: number};
+    utteranceLabelsMap: Map<string, Set<string>>): {
+      'utteranceStatisticsMap': Map<number, number>;
       'utteranceStatistics': [string, number][];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } {
-    const utteranceStatisticsMap: {[id: number]: number} = Object.entries(utteranceLabelsMap).map(
-      (x: [string, string[]]) => [1, x[1].length]).reduce(
-      (accumulant: {[id: number]: number}, entry: number[]) => {
-        const count: number = entry[0];
-        const key: number = entry[1];
-        if (key in accumulant) {
-          accumulant[key] += count;
-        } else {
-          accumulant[key] = count;
-        }
-        return accumulant;
-      }, {});
-    const utteranceStatistics: [string, number][] = [...Object.entries(utteranceStatisticsMap)].sort(
+    const utteranceStatisticsMap: Map<number, number> = new Map<number, number>();
+    utteranceLabelsMap.forEach((value: Set<string>, _: string) => {
+      const labelsSize: number = value.size;
+      if (utteranceStatisticsMap.has(labelsSize)) {
+        utteranceStatisticsMap.set(labelsSize, (utteranceStatisticsMap.get(labelsSize) as number) + 1);
+      } else {
+        utteranceStatisticsMap.set(labelsSize, 1);
+      }
+    });
+    const utteranceStatistics: [string, number][] = [...utteranceStatisticsMap.entries()].map(
+      (entry: [number, number]) => [`${entry[0]}`, entry[1]]);
+    utteranceStatistics.sort(
       (n1: [string, number], n2: [string, number]) => {
         if (n1[1] > n2[1]) {
           return -1;
@@ -2758,21 +2758,21 @@ export class Utility {
   }
 
   public static generateLabelStatisticsAndHtmlTable(
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     labelArrayAndMap: {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};}): {
-        'labelUtterancesMap': { [id: string]: string[] };
+      'stringMap': Map<string, number>;}): {
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;
       } {
     // ---- NOTE ---- generate label statistics.
-    const labelUtterancesMap: { [id: string]: string[] } = Utility.reverseUniqueKeyedArray(utteranceLabelsMap);
-    const labelUtterancesTotal: number = Object.entries(labelUtterancesMap).reduce(
-      (accumulant: number, x: [string, string[]]) => accumulant + x[1].length, 0);
-    const labelStatistics: string[][] = Object.entries(labelUtterancesMap).sort(
-      (n1: [string, string[]], n2: [string, string[]]) => {
+    const labelUtterancesMap: Map<string, Set<string>> = Utility.reverseUniqueKeyedArray(utteranceLabelsMap);
+    const labelUtterancesTotal: number = [...labelUtterancesMap.entries()].reduce(
+      (accumulant: number, x: [string, Set<string>]) => accumulant + x[1].size, 0);
+    const labelStatistics: string[][] = [...labelUtterancesMap.entries()].sort(
+      (n1: [string, Set<string>], n2: [string, Set<string>]) => {
         if (n1[0] > n2[0]) {
           return 1;
         }
@@ -2781,7 +2781,13 @@ export class Utility {
         }
         return 0;
       }).map(
-      (x: [string, string[]], index: number) => [index.toString(), x[0], Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(), x[1].length.toString(), Utility.round(x[1].length / labelUtterancesTotal).toString()]);
+      (x: [string, Set<string>], index: number) => [
+        index.toString(),
+        x[0],
+        Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(),
+        x[1].size.toString(),
+        Utility.round(x[1].size / labelUtterancesTotal).toString(),
+      ]);
     labelStatistics.push(['Total', 'N/A', 'N/A', labelUtterancesTotal.toString(), 'N/A']);
     const labelStatisticsHtml: string = Utility.convertDataArraysToHtmlTable(
       'Label statistics',
@@ -2879,16 +2885,16 @@ export class Utility {
     return microConfusionMatrix;
   }
 
-  public static reverseUniqueKeyedArray(input: {[id: string]: string[]}): {[id: string]: string[]} {
-    const reversed: {[id: string]: string[]} = {};
-    for (const key in input) {
+  public static reverseUniqueKeyedArray(input: Map<string, Set<string>>): Map<string, Set<string>> {
+    const reversed: Map<string, Set<string>> = new Map<string, Set<string>>();
+    for (const key of input.keys()) {
       if (key) {
-        const keyedArray: string[] = input[key];
-        for (const keyedArrayElement of keyedArray) {
-          if (keyedArrayElement in reversed) {
-            reversed[keyedArrayElement].push(key);
+        const keyedSet: Set<string> = input.get(key) as Set<string>;
+        for (const keyedSetElement of keyedSet) {
+          if (reversed.has(keyedSetElement)) {
+            (reversed.get(keyedSetElement) as Set<string>).add(key);
           } else {
-            reversed[keyedArrayElement] = [key];
+            reversed.set(keyedSetElement, new Set<string>([key]));
           }
         }
       }
@@ -2898,50 +2904,61 @@ export class Utility {
 
   public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
     utteranceLabels: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>; },
     labelSet: Set<string>): {
-        'utteranceLabelsMap': { [id: string]: string[] };
+        'utteranceLabelsMap': Map<string, Set<string>>;
         'utteranceLabelDuplicateMap': Map<string, Set<string>>; } {
-    const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
+    const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
     const utteranceLabelDuplicateMap:  Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
     if (utteranceLabelsMap) {
-      for (const utteranceKey in utteranceLabelsMap) {
+      for (const utteranceKey of utteranceLabelsMap.keys()) {
         if (utteranceKey) {
-          const originalLabels: string[] = utteranceLabelsMap[utteranceKey];
-          const concreteLabels: string[] = originalLabels.filter(
-            (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
-          const hasConcreteLabel: boolean = concreteLabels.length > 0;
-          if (!hasConcreteLabel) {
-            utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-            utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
-            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
-            continue;
-          }
-          utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-          for (const label of concreteLabels) {
-            utteranceLabelsMap[utteranceKey].push(label);
+          try {
+            const utteranceLabelSet: Set<string> = utteranceLabelsMap.get(utteranceKey) as Set<string>;
+            // eslint-disable-next-line max-depth
+            if (!utteranceLabelSet) {
+              Utility.debuggingThrow(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+            }
+            const concreteLabels: string[] = [...utteranceLabelSet].filter(
+              (label: string) =>
+                !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
+            const hasConcreteLabel: boolean = concreteLabels.length > 0;
+            // eslint-disable-next-line max-depth
+            utteranceLabelSet.clear(); // ---- NOTE ---- clear the set!
+            // eslint-disable-next-line max-depth
+            if (hasConcreteLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of concreteLabels) {
+                utteranceLabelSet.add(label);
+              }
+            } else {
+              utteranceLabelSet.add(Utility.UnknownLabel);
+            }
+          } catch (error) {
+            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+            throw error;
           }
         }
       }
     }
     if (utteranceLabelDuplicateMap) {
-      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, utteranceKey: string) => {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
         const labelsArray: string[] = [...labelsSet];
         const concreteLabels: string[] = labelsArray.filter(
-          (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
+          (label: string) =>
+            !Utility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
         const hasConcreteLabel: boolean = concreteLabels.length > 0;
         // eslint-disable-next-line max-depth
+        labelsSet.clear(); // ---- NOTE ---- clear the set!
+        // eslint-disable-next-line max-depth
         if (hasConcreteLabel) {
-          labelsSet.clear(); // ---- NOTE ---- truncate the array!
           // eslint-disable-next-line max-depth
           for (const label of concreteLabels) {
             labelsSet.add(label);
           }
         } else {
-          labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
-          Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }
@@ -2950,49 +2967,59 @@ export class Utility {
 
   public static processUnknownLabelsInUtteranceLabelsMap(
     utteranceLabels: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>; }): {
-        'utteranceLabelsMap': { [id: string]: string[] };
+        'utteranceLabelsMap': Map<string, Set<string>>;
         'utteranceLabelDuplicateMap': Map<string, Set<string>>; } {
-    const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
+    const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
     const utteranceLabelDuplicateMap:  Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
     if (utteranceLabelsMap) {
-      for (const utteranceKey in utteranceLabelsMap) {
+      for (const utteranceKey of utteranceLabelsMap.keys()) {
         if (utteranceKey) {
-          const originalLabels: string[] = utteranceLabelsMap[utteranceKey];
-          const concreteLabels: string[] = originalLabels.filter(
-            (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()));
-          const hasConcreteLabel: boolean = concreteLabels.length > 0;
-          if (!hasConcreteLabel) {
-            utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-            utteranceLabelsMap[utteranceKey].push(Utility.UnknownLabel);
-            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), originalLabels=${originalLabels}, utteranceKey=${utteranceKey}`);
-            continue;
-          }
-          utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-          for (const label of concreteLabels) {
-            utteranceLabelsMap[utteranceKey].push(label);
+          try {
+            const utteranceLabelSet: Set<string> = utteranceLabelsMap.get(utteranceKey) as Set<string>;
+            // eslint-disable-next-line max-depth
+            if (!utteranceLabelSet) {
+              Utility.debuggingThrow(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+            }
+            const concreteLabels: string[] = [...utteranceLabelSet].filter(
+              (label: string) =>
+                !Utility.UnknownLabelSet.has(label.toUpperCase()));
+            const hasConcreteLabel: boolean = concreteLabels.length > 0;
+            // eslint-disable-next-line max-depth
+            utteranceLabelSet.clear(); // ---- NOTE ---- clear the set!
+            // eslint-disable-next-line max-depth
+            if (hasConcreteLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of concreteLabels) {
+                utteranceLabelSet.add(label);
+              }
+            } else {
+              utteranceLabelSet.add(Utility.UnknownLabel);
+            }
+          } catch (error) {
+            Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+            throw error;
           }
         }
       }
     }
     if (utteranceLabelDuplicateMap) {
-      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, utteranceKey: string) => {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
         const labelsArray: string[] = [...labelsSet];
         const concreteLabels: string[] = labelsArray.filter(
-          (label: string) => !Utility.UnknownLabelSet.has(label.toUpperCase()));
+          (label: string) =>
+            !Utility.UnknownLabelSet.has(label.toUpperCase()));
         const hasConcreteLabel: boolean = concreteLabels.length > 0;
+        labelsSet.clear(); // ---- NOTE ---- clear the set!
         // eslint-disable-next-line max-depth
         if (hasConcreteLabel) {
-          labelsSet.clear(); // ---- NOTE ---- truncate the array!
           // eslint-disable-next-line max-depth
           for (const label of concreteLabels) {
             labelsSet.add(label);
           }
         } else {
-          labelsSet.clear(); // ---- NOTE ---- truncate the array!
           labelsSet.add(Utility.UnknownLabel);
-          Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), labelsArray=${labelsArray}, utteranceKey=${utteranceKey}`);
         }
       });
     }
@@ -3359,7 +3386,7 @@ export class Utility {
 
   public static examplesToUtteranceLabelMaps(
     examples: any,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
     const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
     for (const example of exampleStructureArray) {
@@ -3397,7 +3424,7 @@ export class Utility {
 
   public static scoreResultsToArray(
     results: any,
-    labelIndexMap: {[id: string]: number},
+    labelIndexMap: Map<string, number>,
     digits: number = 10000): Result[] {
     const scoreResultArray: Result[] = [];
     for (const result of results) {
@@ -3414,7 +3441,7 @@ export class Utility {
           new Label(labeltype, label, new Span(labelspanoffset, labelspanlength)),
           score,
           closesttext);
-        const labelIndex: number = labelIndexMap[label];
+        const labelIndex: number = labelIndexMap.get(label) as number;
         if (labelIndex >= 0) {
           scoreResultArray[labelIndex] = scoreResult;
         }
@@ -3424,10 +3451,10 @@ export class Utility {
   }
 
   public static buildStringIdNumberValueDictionaryFromUniqueStringArray(
-    inputStringArray: string[]): {[id: string]: number} {
-    const stringMap: {[id: string]: number} = { };
+    inputStringArray: string[]): Map<string, number> {
+    const stringMap: Map<string, number> = new Map<string, number>();
     for (let index: number = 0; index < inputStringArray.length; index++) {
-      stringMap[inputStringArray[index]] = index;
+      stringMap.set(inputStringArray[index], index);
     }
     return stringMap;
   }
@@ -3435,11 +3462,11 @@ export class Utility {
   public static buildStringIdNumberValueDictionaryFromStringArray(
     inputStringArray: string[]): {
       'stringArray': string[];
-      'stringMap': {[id: string]: number};} {
+      'stringMap': Map<string, number>;} {
     const stringSet: Set<string> = new Set(inputStringArray);
-    let stringArray: string[] = [...stringSet.values()];
+    let stringArray: string[] = [...stringSet];
     stringArray = Utility.sortStringArray(stringArray);
-    const stringMap: {[id: string]: number} =
+    const stringMap: Map<string, number> =
       Utility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
     return {stringArray, stringMap};
   }
@@ -3447,16 +3474,16 @@ export class Utility {
   public static buildStringIdNumberValueDictionaryFromStringArrays(
     inputStringArrays: string[][]): {
       'stringArray': string[];
-      'stringMap': {[id: string]: number}; } {
+      'stringMap': Map<string, number>; } {
     const stringSet: Set<string> = new Set();
     for (const elementStringArray of inputStringArrays) {
       for (const elementString of elementStringArray) {
         stringSet.add(elementString);
       }
     }
-    let stringArray: string[] = [...stringSet.values()];
+    let stringArray: string[] = [...stringSet];
     stringArray = Utility.sortStringArray(stringArray);
-    const stringMap: {[id: string]: number} =
+    const stringMap: Map<string, number> =
       Utility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
     return {stringArray, stringMap};
   }
@@ -3477,10 +3504,10 @@ export class Utility {
   public static convertStringKeyGenericSetNativeMapToDictionary<T>(
     stringKeyGenericSetMap: Map<string, Set<T>>): { [id: string]: Set<T> } {
     const stringIdGenericSetDictionary: { [id: string]: Set<T> } = {};
-    for (const key in stringKeyGenericSetMap) {
+    for (const key of stringKeyGenericSetMap.keys()) {
       if (key) {
-        const value: Set<T> | undefined = stringKeyGenericSetMap.get(key);
-        stringIdGenericSetDictionary[key] = value as Set<T>;
+        const value: Set<T> = stringKeyGenericSetMap.get(key) as Set<T>;
+        stringIdGenericSetDictionary[key] = value;
       }
     }
     return stringIdGenericSetDictionary;
@@ -3489,10 +3516,10 @@ export class Utility {
   public static convertStringKeyGenericValueValueNativeMapToDictionary<T>(
     stringKeyGenericValueMap: Map<string, T>): { [id: string]: T } {
     const stringIdGenericValueDictionary: { [id: string]: T } = {};
-    for (const key in stringKeyGenericValueMap) {
+    for (const key of stringKeyGenericValueMap.keys()) {
       if (key) {
-        const value: T | undefined = stringKeyGenericValueMap.get(key);
-        stringIdGenericValueDictionary[key] = value as T;
+        const value: T = stringKeyGenericValueMap.get(key) as T;
+        stringIdGenericValueDictionary[key] = value;
       }
     }
     return stringIdGenericValueDictionary;
@@ -3533,7 +3560,7 @@ export class Utility {
         labelSet = [];
         stringKeyLabelSetMap.set(key, labelSet);
       }
-      Utility.addUniqueEntityLabel(value, labelSet);
+      Utility.addUniqueEntityLabelArray(value, labelSet);
     } else {
       const labelSet: Label[] = [];
       stringKeyLabelSetMap.set(key, labelSet);
@@ -3542,7 +3569,21 @@ export class Utility {
     return stringKeyLabelSetMap;
   }
 
-  public static addUniqueLabel(newLabel: string, labels: string[]): boolean {
+  public static addUniqueLabel(newLabel: string, labels: Set<string>): boolean {
+    try {
+      if (labels.has(newLabel)) {
+        return false;
+      }
+      labels.add(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      throw error;
+    }
+    return false;
+  }
+
+  public static addUniqueLabelToArray(newLabel: string, labels: string[]): boolean {
     try {
       for (const label of labels) {
         if (label === newLabel) {
@@ -3552,13 +3593,13 @@ export class Utility {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
       throw error;
     }
     return false;
   }
 
-  public static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
+  public static addUniqueEntityLabelArray(newLabel: Label, labels: Label[]): boolean {
     try {
       for (const label of labels) {
         if (label.equals(newLabel)) {
@@ -3568,15 +3609,15 @@ export class Utility {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error=${error}, newLabel=${newLabel}, labels=${labels}`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelArray(), error=${error}, newLabel=${newLabel}, labels=${labels}`);
       throw error;
     }
     return false;
   }
 
-  public static countMapValues(inputStringToStringArrayMap: { [id: string]: string[] }): number {
-    return Object.entries(inputStringToStringArrayMap).reduce(
-      (accumulant: number,  value: [string, string[]]) => accumulant + value[1].length, 0);
+  public static countMapValues(inputStringToStringArrayMap: Map<string, Set<string>>): number {
+    return [...inputStringToStringArrayMap.entries()].reduce(
+      (accumulant: number,  value: [string, Set<string>]) => accumulant + value[1].size, 0);
   }
 
   public static jsonStringifyInLine(
@@ -3684,7 +3725,20 @@ export class Utility {
     return entryname;
   }
 
-  public static carefullyAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
+  public static carefullyAccessStringMap(stringMap: Map<string, number>, key: string): number {
+    if (stringMap === undefined) {
+      Utility.debuggingThrow(
+        'stringMap === undefined');
+    }
+    if (!stringMap.has(key)) {
+      Utility.debuggingThrow(
+        `FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+    }
+    const value: number = stringMap.get(key) as number;
+    return value;
+  }
+
+  public static carefullyAccessStringDictionary(stringMap: {[id: string]: number}, key: string): number {
     if (stringMap === undefined) {
       Utility.debuggingThrow(
         'stringMap === undefined');

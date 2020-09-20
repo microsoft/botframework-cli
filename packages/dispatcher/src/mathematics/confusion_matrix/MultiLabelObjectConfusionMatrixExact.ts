@@ -19,7 +19,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
     }
 
@@ -37,7 +37,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
                     break;
                 }
             }
-            const predictedLabelId: number = this.labelMap[predictedLabel.name];
+            const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
             if (predictedIsInGroundTruth) {
                 this.getBinaryConfusionMatrices()[predictedLabelId].addToTruePositives(value, false);
             } else {
@@ -52,7 +52,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
                     break;
                 }
             }
-            const groundTrueLabelId: number = this.labelMap[groundTrueLabel.name];
+            const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
             if (!groundTruthIsInPredicted) {
                 this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);
             }

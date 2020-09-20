@@ -83,7 +83,7 @@ export class OrchestratorEvaluate {
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- retrieve examples, process the snapshot set, retrieve labels, and create a label-index map.
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {
@@ -129,14 +129,14 @@ export class OrchestratorEvaluate {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};

@@ -1171,8 +1171,8 @@ export class Utility {
 
     public static processUtteranceEntityTsv(
         lines: string[],
-        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> },
-        utterancesEntitiesPredictedMap: { [id: string]: Array<[string, number, number]> },
+        utterancesEntitiesMap: Map<string, Array<[string, number, number]>>,
+        utterancesEntitiesPredictedMap: Map<string, Array<[string, number, number]>>,
         utteranceIndex: number = 2,
         entitiesIndex: number = 0,
         entitiesPredictedIndex: number = 1): boolean {
@@ -1216,24 +1216,24 @@ export class Utility {
     public static addToEntitiesUtteranceStructure(
         utterance: string,
         entityEntry: string,
-        utterancesEntitiesMap: { [id: string]: Array<[string, number, number]> }) {
+        utterancesEntitiesMap: Map<string, Array<[string, number, number]>>) {
         const entityComponentArray: string[] = entityEntry.split(";");
         const entity: [string, number, number] = [
             entityComponentArray[0],
             +entityComponentArray[1],
             +entityComponentArray[1]];
-        let existingEntities: Array<[string, number, number]> = utterancesEntitiesMap[utterance];
-        if (!existingEntities) {
-            existingEntities = new Array<[string, number, number]>();
-            utterancesEntitiesMap[utterance] = existingEntities;
+        if (!utterancesEntitiesMap.has(utterance)) {
+            utterancesEntitiesMap.set(utterance, new Array<[string, number, number]>());
         }
+        const existingEntities: Array<[string, number, number]> =
+            utterancesEntitiesMap.get(utterance) as Array<[string, number, number]>;
         existingEntities.push(entity);
     }
 
     public static processUtteranceMultiLabelTsv(
         lines: string[],
-        utteranceLabelsMap: { [id: string]: string[] },
-        utterancesLabelsPredictedMap: { [id: string]: string[] },
+        utteranceLabelsMap: Map<string, Set<string>>,
+        utterancesLabelsPredictedMap: Map<string, Set<string>>,
         utteranceLabelDuplicateMap: Map<string, Set<string>>,
         utteranceLabelDuplicatePredictedMap: Map<string, Set<string>>,
         utteranceIndex: number = 2,
@@ -1281,9 +1281,9 @@ export class Utility {
     public static addToMultiLabelUtteranceStructure(
         utterance: string,
         label: string,
-        utteranceLabelsMap: { [id: string]: string[] },
+        utteranceLabelsMap: Map<string, Set<string>>,
         utteranceLabelDuplicateMap: Map<string, Set<string>>) {
-        const existingLabels: string[] = utteranceLabelsMap[utterance];
+        const existingLabels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
         if (existingLabels) {
             if (!Utility.addIfNewLabel(label, existingLabels)) {
                 DictionaryMapUtility.insertStringPairToStringIdStringSetNativeMap(
@@ -1292,10 +1292,17 @@ export class Utility {
                     utteranceLabelDuplicateMap);
             }
         } else {
-            utteranceLabelsMap[utterance] = [label];
+            utteranceLabelsMap.set(utterance, new Set<string>([label]));
         }
     }
-    public static addIfNewLabel(newLabel: string, labels: string[]): boolean {
+    public static addIfNewLabel(newLabel: string, labels: Set<string>): boolean {
+        if (labels.has(newLabel)) {
+            return false;
+        }
+        labels.add(newLabel);
+        return true;
+    }
+    public static addIfNewLabelToArray(newLabel: string, labels: string[]): boolean {
         for (const label of labels) {
             if (label === newLabel) {
                 return false;
@@ -1305,7 +1312,24 @@ export class Utility {
         return true;
     }
 
-    public static reverseUniqueKeyedArray(input: {[id: string]: string[]}): {[id: string]: string[]} {
+    public static reverseUniqueKeyedArrayInMap(input: Map<string, Set<string>>): Map<string, Set<string>> {
+        const reversed: Map<string, Set<string>> = new Map<string, Set<string>>();
+        for (const key of input.keys()) {
+            if (key) {
+                const keyedSet: Set<string> = input.get(key) as Set<string>;
+                for (const keyedSetElement of keyedSet) {
+                    if (reversed.has(keyedSetElement)) {
+                        (reversed.get(keyedSetElement) as Set<string>).add(key);
+                    } else {
+                        reversed.set(keyedSetElement, new Set<string>([key]));
+                    }
+                }
+            }
+        }
+        return reversed;
+    }
+
+    public static reverseUniqueKeyedArrayInDictionary(input: {[id: string]: string[]}): {[id: string]: string[]} {
         const reversed: {[id: string]: string[]} = {};
         for (const key in input) {
             if (key) {
@@ -2041,7 +2065,20 @@ export class Utility {
         return entryname;
     }
 
-    public static carefullyAccessStringMap(stringMap: {[id: string]: number}, key: string): number {
+    public static carefullyAccessStringMap(stringMap: Map<string, number>, key: string): number {
+        if (stringMap === undefined) {
+            Utility.debuggingThrow(
+                "stringMap === undefined");
+        }
+        if (!stringMap.has(key)) {
+            Utility.debuggingThrow(
+                `FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+        }
+        const value: number = stringMap.get(key) as number;
+        return value;
+    }
+
+    public static carefullyAccessStringDictionary(stringMap: {[id: string]: number}, key: string): number {
         if (stringMap === undefined) {
             Utility.debuggingThrow(
                 "stringMap === undefined");

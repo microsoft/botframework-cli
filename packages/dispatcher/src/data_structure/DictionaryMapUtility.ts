@@ -40,48 +40,52 @@ export class DictionaryMapUtility {
 
     public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
         utteranceLabels: {
-            "utteranceLabelsMap": { [id: string]: string[] };
+            "utteranceLabelsMap": Map<string, Set<string>>;
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; },
         labelSet: Set<string>): {
-            "utteranceLabelsMap": { [id: string]: string[] };
+            "utteranceLabelsMap": Map<string, Set<string>>;
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
-        const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
+        const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {
-            for (const utteranceKey in utteranceLabelsMap) {
+            for (const utteranceKey of utteranceLabelsMap.keys()) {
                 if (utteranceKey) {
-                    const concreteLabels: string[] = utteranceLabelsMap[utteranceKey].filter(
-                        (label: string) =>
-                        !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
-                    const hasConcreteLabel: boolean = concreteLabels.length > 0;
-                    if (!hasConcreteLabel) {
-                        utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-                        utteranceLabelsMap[utteranceKey].push(DictionaryMapUtility.UnknownLabel);
-                        continue;
-                    }
-                    utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-                    for (const label of concreteLabels) {
-                        utteranceLabelsMap[utteranceKey].push(label);
+                    try {
+                        const utteranceLabelSet: Set<string> = utteranceLabelsMap.get(utteranceKey) as Set<string>;
+                        const concreteLabels: string[] = [...utteranceLabelSet].filter(
+                            (label: string) =>
+                                !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
+                        const hasConcreteLabel: boolean = concreteLabels.length > 0;
+                        utteranceLabelSet.clear(); // ---- NOTE ---- clear the set!
+                        if (hasConcreteLabel) {
+                            for (const label of concreteLabels) {
+                                utteranceLabelSet.add(label);
+                            }
+                        } else {
+                            utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
+                        }
+                    } catch (error) {
+                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+                        throw error;
                     }
                 }
-          }
+            }
         }
         if (utteranceLabelDuplicateMap) {
             utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
                 const labelsArray: string[] = [...labelsSet];
                 const concreteLabels: string[] = labelsArray.filter(
                     (label: string) =>
-                    !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
+                        !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()) && labelSet.has(label));
                 const hasConcreteLabel: boolean = concreteLabels.length > 0;
+                labelsSet.clear(); // ---- NOTE ---- clear the set!
                 // eslint-disable-next-line max-depth
                 if (hasConcreteLabel) {
-                    labelsSet.clear(); // ---- NOTE ---- truncate the array!
                     // eslint-disable-next-line max-depth
                     for (const label of concreteLabels) {
                         labelsSet.add(label);
                     }
                 } else {
-                    labelsSet.clear(); // ---- NOTE ---- truncate the array!
                     labelsSet.add(DictionaryMapUtility.UnknownLabel);
                 }
             });
@@ -91,26 +95,32 @@ export class DictionaryMapUtility {
 
     public static processUnknownLabelsInUtteranceLabelsMap(
         utteranceLabels: {
-            "utteranceLabelsMap": { [id: string]: string[] };
+            "utteranceLabelsMap": Map<string, Set<string>>;
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; }): {
-                "utteranceLabelsMap": { [id: string]: string[] };
+                "utteranceLabelsMap": Map<string, Set<string>>;
                 "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
-        const utteranceLabelsMap: { [id: string]: string[] } = utteranceLabels.utteranceLabelsMap;
+        const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {
-            for (const utteranceKey in utteranceLabelsMap) {
+            for (const utteranceKey of utteranceLabelsMap.keys()) {
                 if (utteranceKey) {
-                    const concreteLabels: string[] = utteranceLabelsMap[utteranceKey].filter(
-                        (label: string) => !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()));
-                    const hasConcreteLabel: boolean = concreteLabels.length > 0;
-                    if (!hasConcreteLabel) {
-                        utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-                        utteranceLabelsMap[utteranceKey].push(DictionaryMapUtility.UnknownLabel);
-                        continue;
-                    }
-                    utteranceLabelsMap[utteranceKey].length = 0; // ---- NOTE ---- truncate the array!
-                    for (const label of concreteLabels) {
-                        utteranceLabelsMap[utteranceKey].push(label);
+                    try {
+                        const utteranceLabelSet: Set<string> = utteranceLabelsMap.get(utteranceKey) as Set<string>;
+                        const concreteLabels: string[] = [...utteranceLabelSet].filter(
+                            (label: string) =>
+                                !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()));
+                        const hasConcreteLabel: boolean = concreteLabels.length > 0;
+                        utteranceLabelSet.clear(); // ---- NOTE ---- clear the set!
+                        if (hasConcreteLabel) {
+                            for (const label of concreteLabels) {
+                                utteranceLabelSet.add(label);
+                            }
+                        } else {
+                            utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
+                        }
+                    } catch (error) {
+                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+                        throw error;
                     }
                 }
             }
@@ -119,17 +129,17 @@ export class DictionaryMapUtility {
             utteranceLabelDuplicateMap.forEach((labelsSet: Set<string>, _: string) => {
                 const labelsArray: string[] = [...labelsSet];
                 const concreteLabels: string[] = labelsArray.filter(
-                    (label: string) => !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()));
+                    (label: string) =>
+                        !DictionaryMapUtility.UnknownLabelSet.has(label.toUpperCase()));
                 const hasConcreteLabel: boolean = concreteLabels.length > 0;
+                labelsSet.clear(); // ---- NOTE ---- clear the set!
                 // eslint-disable-next-line max-depth
                 if (hasConcreteLabel) {
-                    labelsSet.clear(); // ---- NOTE ---- truncate the array!
                     // eslint-disable-next-line max-depth
                     for (const label of concreteLabels) {
                         labelsSet.add(label);
                     }
                 } else {
-                    labelsSet.clear(); // ---- NOTE ---- truncate the array!
                     labelsSet.add(DictionaryMapUtility.UnknownLabel);
                 }
             });
@@ -140,10 +150,10 @@ export class DictionaryMapUtility {
     public static convertStringKeyGenericSetNativeMapToDictionary<T>(
         stringKeyGenericSetMap: Map<string, Set<T>>): { [id: string]: Set<T> } {
         const stringIdGenericSetDictionary: { [id: string]: Set<T> } = {};
-        for (const key in stringKeyGenericSetMap) {
+        for (const key of stringKeyGenericSetMap.keys()) {
             if (key) {
-                const value: Set<T> | undefined = stringKeyGenericSetMap.get(key);
-                stringIdGenericSetDictionary[key] = value as Set<T>;
+                const value: Set<T> = stringKeyGenericSetMap.get(key) as Set<T>;
+                stringIdGenericSetDictionary[key] = value;
             }
         }
         return stringIdGenericSetDictionary;
@@ -151,10 +161,10 @@ export class DictionaryMapUtility {
     public static convertStringKeyGenericValueNativeMapToDictionary<T>(
         stringKeyGenericValueMap: Map<string, T>): { [id: string]: T } {
         const stringIdGenericValueDictionary: { [id: string]: T } = {};
-        for (const key in stringKeyGenericValueMap) {
+        for (const key of stringKeyGenericValueMap.keys()) {
             if (key) {
-                const value: T | undefined = stringKeyGenericValueMap.get(key);
-                stringIdGenericValueDictionary[key] = value as T;
+                const value: T = stringKeyGenericValueMap.get(key) as T;
+                stringIdGenericValueDictionary[key] = value;
             }
         }
         return stringIdGenericValueDictionary;
@@ -162,12 +172,12 @@ export class DictionaryMapUtility {
     public static convertNumberKeyGenericSetNativeMapToDictionary<T>(
         numberKeyGenericSetMap: Map<number, Set<T>>): { [id: number]: Set<T> } {
         const numberIdGenericSetDictionary: { [id: number]: Set<T> } = {};
-        for (const key in numberKeyGenericSetMap) {
+        for (const key of numberKeyGenericSetMap.keys()) {
             if (key) {
                 // ---- key is already a number, tslint is mistaken that it's a string
                 const keyInNumber: number = Number(key);
-                const value: Set<T> | undefined = numberKeyGenericSetMap.get(keyInNumber);
-                numberIdGenericSetDictionary[keyInNumber] = value as Set<T>;
+                const value: Set<T> = numberKeyGenericSetMap.get(keyInNumber) as Set<T>;
+                numberIdGenericSetDictionary[keyInNumber] = value;
             }
         }
         return numberIdGenericSetDictionary;
@@ -175,12 +185,12 @@ export class DictionaryMapUtility {
     public static convertNumberKeyGenericValueNativeMapToDictionary<T>(
         numberKeyGenericValueMap: Map<number, T>): { [id: number]: T } {
         const numberIdGenericValueDictionary: { [id: number]: T } = {};
-        for (const key in numberKeyGenericValueMap) {
+        for (const key of numberKeyGenericValueMap.keys()) {
             if (key) {
                 // ---- key is already a number, tslint is mistaken that it's a string
                 const keyInNumber: number = Number(key);
-                const value: T | undefined = numberKeyGenericValueMap.get(keyInNumber);
-                numberIdGenericValueDictionary[keyInNumber] = value as T;
+                const value: T = numberKeyGenericValueMap.get(keyInNumber) as T;
+                numberIdGenericValueDictionary[keyInNumber] = value;
             }
         }
         return numberIdGenericValueDictionary;
@@ -189,10 +199,10 @@ export class DictionaryMapUtility {
     public static convertStringKeyGenericSetMapToDictionary<T>(
         stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): IDictionaryStringIdGenericSet<T> {
         const stringIdGenericSetDictionary: IDictionaryStringIdGenericSet<T> = {};
-        for (const key in stringKeyGenericSetMap) {
+        for (const key of stringKeyGenericSetMap.keys()) {
             if (key) {
-                const value: Set<T> | undefined = stringKeyGenericSetMap.get(key);
-                stringIdGenericSetDictionary[key] = value as Set<T>;
+                const value: Set<T> = stringKeyGenericSetMap.get(key) as Set<T>;
+                stringIdGenericSetDictionary[key] = value;
             }
         }
         return stringIdGenericSetDictionary;
@@ -200,10 +210,10 @@ export class DictionaryMapUtility {
     public static convertStringKeyGenericValueMapToDictionary<T>(
         stringKeyGenericValueMap: TMapStringKeyGenericValue<T>): IDictionaryStringIdGenericValue<T> {
         const stringIdGenericValueDictionary: IDictionaryStringIdGenericValue<T> = {};
-        for (const key in stringKeyGenericValueMap) {
+        for (const key of stringKeyGenericValueMap.keys()) {
             if (key) {
-                const value: T | undefined = stringKeyGenericValueMap.get(key);
-                stringIdGenericValueDictionary[key] = value as T;
+                const value: T = stringKeyGenericValueMap.get(key) as T;
+                stringIdGenericValueDictionary[key] = value;
             }
         }
         return stringIdGenericValueDictionary;
@@ -211,12 +221,12 @@ export class DictionaryMapUtility {
     public static convertNumberKeyGenericSetMapToDictionary<T>(
         numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): IDictionaryNumberIdGenericSet<T> {
         const numberIdGenericSetDictionary: IDictionaryNumberIdGenericSet<T> = {};
-        for (const key in numberKeyGenericSetMap) {
+        for (const key of numberKeyGenericSetMap.keys()) {
             if (key) {
                 // ---- key is already a number, tslint is mistaken that it's a string
                 const keyInNumber: number = Number(key);
-                const value: Set<T> | undefined = numberKeyGenericSetMap.get(keyInNumber);
-                numberIdGenericSetDictionary[keyInNumber] = value as Set<T>;
+                const value: Set<T> = numberKeyGenericSetMap.get(keyInNumber) as Set<T>;
+                numberIdGenericSetDictionary[keyInNumber] = value;
             }
         }
         return numberIdGenericSetDictionary;
@@ -224,12 +234,12 @@ export class DictionaryMapUtility {
     public static convertNumberKeyGenericValueMapToDictionary<T>(
         numberKeyGenericValueMap: TMapNumberKeyGenericValue<T>): IDictionaryNumberIdGenericValue<T> {
         const numberIdGenericValueDictionary: IDictionaryNumberIdGenericValue<T> = {};
-        for (const key in numberKeyGenericValueMap) {
+        for (const key of numberKeyGenericValueMap.keys()) {
             if (key) {
                 // ---- key is already a number, tslint is mistaken that it's a string
                 const keyInNumber: number = Number(key);
-                const value: T | undefined = numberKeyGenericValueMap.get(keyInNumber);
-                numberIdGenericValueDictionary[keyInNumber] = value as T;
+                const value: T = numberKeyGenericValueMap.get(keyInNumber) as T;
+                numberIdGenericValueDictionary[keyInNumber] = value;
             }
         }
         return numberIdGenericValueDictionary;
@@ -313,7 +323,7 @@ export class DictionaryMapUtility {
             stringKeyStringSetMap = new Map<string, Set<string>>();
         }
         if (stringKeyStringSetMap.has(key)) {
-            let stringSet: Set<string> | undefined = stringKeyStringSetMap.get(key);
+            let stringSet: Set<string> = stringKeyStringSetMap.get(key) as Set<string>;
             if (!stringSet) {
                 stringSet = new Set<string>();
                 stringKeyStringSetMap.set(key, stringSet);
@@ -334,7 +344,7 @@ export class DictionaryMapUtility {
             numberKeyStringSetMap = new Map<number, Set<string>>();
         }
         if (numberKeyStringSetMap.has(key)) {
-            let stringSet: Set<string> | undefined = numberKeyStringSetMap.get(key);
+            let stringSet: Set<string> = numberKeyStringSetMap.get(key) as Set<string>;
             if (!stringSet) {
                 stringSet = new Set<string>();
                 numberKeyStringSetMap.set(key, stringSet);
@@ -356,7 +366,7 @@ export class DictionaryMapUtility {
             stringKeyStringSetMap = DictionaryMapUtility.newTMapStringKeyGenericSet<string>();
         }
         if (stringKeyStringSetMap.has(key)) {
-            let stringSet: Set<string> | undefined = stringKeyStringSetMap.get(key);
+            let stringSet: Set<string> = stringKeyStringSetMap.get(key) as Set<string>;
             if (!stringSet) {
                 stringSet = new Set<string>();
                 stringKeyStringSetMap.set(key, stringSet);
@@ -377,7 +387,7 @@ export class DictionaryMapUtility {
             numberKeyStringSetMap = DictionaryMapUtility.newTMapNumberKeyGenericSet<string>();
         }
         if (numberKeyStringSetMap.has(key)) {
-            let stringSet: Set<string> | undefined = numberKeyStringSetMap.get(key);
+            let stringSet: Set<string> = numberKeyStringSetMap.get(key) as Set<string>;
             if (!stringSet) {
                 stringSet = new Set<string>();
                 numberKeyStringSetMap.set(key, stringSet);
@@ -444,7 +454,7 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": IDictionaryStringIdGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
-        let stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = [...stringSet];
         stringArray = Utility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
@@ -460,7 +470,7 @@ export class DictionaryMapUtility {
                 stringSet.add(elementString);
             }
         }
-        let stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = [...stringSet];
         stringArray = Utility.sortStringArray(stringArray);
         const stringMap: IDictionaryStringIdGenericValue<number> =
             DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArray(stringArray);
@@ -604,7 +614,7 @@ export class DictionaryMapUtility {
             "stringArray": string[],
             "stringMap": TMapStringKeyGenericValue<number> } {
         const stringSet: Set<string> = new Set(inputStringArray);
-        let stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = [...stringSet];
         stringArray = Utility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
@@ -620,7 +630,7 @@ export class DictionaryMapUtility {
                 stringSet.add(elementString);
             }
         }
-        let stringArray: string[] = Array.from(stringSet.values());
+        let stringArray: string[] = [...stringSet];
         stringArray = Utility.sortStringArray(stringArray);
         const stringMap: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArray(stringArray);
@@ -653,31 +663,32 @@ export class DictionaryMapUtility {
             }
             return false;
         }
-        for (const key in stringKeyNumberValueMap) {
+        for (const key of stringKeyNumberValueMap.keys()) {
             if (key) {
-                // ---- side effect is to remove TSLint warning for
-                // ---- "in" statements must be filtered with an if statement.
-                const keyId: number|undefined = stringKeyNumberValueMap.get(key);
-                if (keyId) {
-                    if ((keyId < 0) || (keyId > stringArray.length)) {
-                        if (throwIfNotLegal) {
-                            throw new Error("(keyId < 0) || (keyId > stringArray.length)");
-                        }
-                        return false;
-                    }
-                    const keyRetrieved = stringArray[keyId];
-                    if (key !== keyRetrieved) {
-                        if (throwIfNotLegal) {
-                            throw new Error("key !== keyRetrieved");
-                        }
-                        return false;
-                    }
-                } else {
+                const keyId: number = stringKeyNumberValueMap.get(key) as number;
+                // ==== NOTE-keyId-can-be-0 ==== // ---- side effect is to remove TSLint warning for
+                // ==== NOTE-keyId-can-be-0 ==== // ---- "in" statements must be filtered with an if statement.
+                // ==== NOTE-keyId-can-be-0 ==== if (keyId) {
+                if ((keyId < 0) || (keyId > stringArray.length)) {
                     if (throwIfNotLegal) {
-                        throw new Error("keyId is undefined in stringKeyNumberValueMap");
+                        throw new Error("(keyId < 0) || (keyId > stringArray.length)");
                     }
                     return false;
                 }
+                const keyRetrieved = stringArray[keyId];
+                if (key !== keyRetrieved) {
+                    if (throwIfNotLegal) {
+                        throw new Error("key !== keyRetrieved");
+                    }
+                    return false;
+                }
+                // ==== NOTE-keyId-can-be-0 ==== } else {
+                // ==== NOTE-keyId-can-be-0 ====     if (throwIfNotLegal) {
+                // tslint:disable-next-line: max-line-length
+                // ==== NOTE-keyId-can-be-0 ====         throw new Error("keyId is undefined in stringKeyNumberValueMap");
+                // ==== NOTE-keyId-can-be-0 ====     }
+                // ==== NOTE-keyId-can-be-0 ====     return false;
+                // ==== NOTE-keyId-can-be-0 ==== }
             }
         }
         return true;
@@ -1134,7 +1145,7 @@ export class DictionaryMapUtility {
             }
             return false;
         }
-        for (const key in stringKeyNumberValueMapFirst) {
+        for (const key of stringKeyNumberValueMapFirst.keys()) {
             if (key) {
                 if (stringKeyNumberValueMapSecond.has(key)) {
                     if (stringKeyNumberValueMapFirst.get(key) !== stringKeyNumberValueMapSecond.get(key)) {
@@ -1156,7 +1167,7 @@ export class DictionaryMapUtility {
                 }
             }
         }
-        for (const key in stringKeyNumberValueMapSecond) {
+        for (const key of stringKeyNumberValueMapSecond.keys()) {
             if (key) {
                 if (stringKeyNumberValueMapFirst.has(key)) {
                     if (stringKeyNumberValueMapFirst.get(key) !== stringKeyNumberValueMapSecond.get(key)) {
@@ -1329,52 +1340,52 @@ export class DictionaryMapUtility {
     }
 
     public static getAnyKeyGenericSetMapLength<T>(map: TMapAnyKeyGenericSet<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getGenericKeyGenericSetMapLength<I, T>(map: TMapGenericKeyGenericSet<I, T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getNumberKeyGenericSetMapLength<T>(map: TMapNumberKeyGenericSet<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getStringKeyGenericSetMapLength<T>(map: TMapStringKeyGenericSet<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getAnyKeyGenericValueMapLength<T>(map: TMapAnyKeyGenericValue<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getGenericKeyGenericValueMapLength<I, T>(map: TMapGenericKeyGenericValue<I, T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getNumberKeyGenericValueMapLength<T>(map: TMapNumberKeyGenericValue<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getStringKeyGenericValueMapLength<T>(map: TMapStringKeyGenericValue<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getAnyKeyGenericArrayMapLength<T>(map: TMapAnyKeyGenericArray<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getGenericKeyGenericArrayMapLength<I, T>(map: TMapGenericKeyGenericArray<I, T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getNumberKeyGenericArrayMapLength<T>(map: TMapNumberKeyGenericArray<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getStringKeyGenericArrayMapLength<T>(map: TMapStringKeyGenericArray<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getAnyKeyGenericArraysMapLength<T>(map: TMapAnyKeyGenericArrays<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getGenericKeyGenericArraysMapLength<I, T>(map: TMapGenericKeyGenericArrays<I, T>): number {
-        return (Object.keys(map).length);
+        return map.size;
     }
     public static getNumberKeyGenericArraysMapLength<T>(map: TMapNumberKeyGenericArrays<T>): number {
-        return [...map].length;
+        return map.size;
     }
     public static getStringKeyGenericArraysMapLength<T>(map: TMapStringKeyGenericArrays<T>): number {
-        return [...map].length;
+        return map.size;
     }
 
     public static newTMapAnyKeyGenericSet<T>(): TMapAnyKeyGenericSet<T> {

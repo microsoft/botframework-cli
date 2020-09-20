@@ -16,7 +16,7 @@ implements IMultiLabelObjectConfusionMatrix {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
     }
 
@@ -44,7 +44,7 @@ implements IMultiLabelObjectConfusionMatrix {
     public validateLabelObject(
         label: Label,
         throwIfNotLegal: boolean = true): boolean {
-        if (!(label.name in this.getLabelMap())) {
+        if (!this.getLabelMap().has(label.name)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
                     `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);

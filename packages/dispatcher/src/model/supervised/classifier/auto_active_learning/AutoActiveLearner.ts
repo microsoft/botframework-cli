@@ -120,7 +120,7 @@ export class AutoActiveLearner {
 
     public learn(
         labels: string[],
-        labelMap: { [id: string]: number },
+        labelMap: Map<string, number>,
         numberLabels: number,
         numberFeatures: number,
         labelIndexArray: number[],

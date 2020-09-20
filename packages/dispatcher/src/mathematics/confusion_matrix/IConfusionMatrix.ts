@@ -11,8 +11,8 @@ export interface IConfusionMatrix {
 
     generateConfusionMatrixMetricStructure(quantileConfiguration: number): {
         "confusionMatrix": IConfusionMatrix,
-        "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-        "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+        "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+        "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
         "microQuantileMetrics": {
             "quantilesPrecisions": number[],
             "quantilesRecalls": number[],
@@ -117,7 +117,7 @@ export interface IConfusionMatrix {
 
     getNumberLabels(): number;
     getLabels(): string[];
-    getLabelMap(): { [id: string]: number };
+    getLabelMap(): Map<string, number>;
 
     getBinaryConfusionMatrices(): BinaryConfusionMatrix[];
 

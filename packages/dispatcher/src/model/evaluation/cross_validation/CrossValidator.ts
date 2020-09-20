@@ -34,7 +34,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
         CrossValidator.defaultNumberOfCrossValidationFolds;
 
     protected labelsCachedAfterCrossValidation: string[] = [];
-    protected labelMapCachedAfterCrossValidation: { [id: string]: number } = {};
+    protected labelMapCachedAfterCrossValidation: Map<string, number> = new  Map<string, number>();
     protected numberLabelsCachedAfterCrossValidation: number = -1;
     protected numberFeaturesCachedAfterCrossValidation: number = -1;
     protected intentsCachedAfterCrossValidation: string[] = [];
@@ -67,8 +67,8 @@ export class CrossValidator extends AbstractBaseEvaluator {
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = {
-            confusionMatrixCrossValidation: new ConfusionMatrix([], {}),
-            thresholdReporterCrossValidation: new ThresholdReporter("", "", null, null, [], {}),
+            confusionMatrixCrossValidation: new ConfusionMatrix([], new Map<string, number>()),
+            thresholdReporterCrossValidation: new ThresholdReporter("", "", null, null, [], new Map<string, number>()),
             predictionLabels: [],
             predictionLabelIndexes: [],
             instanceIndexes: [],
@@ -235,8 +235,8 @@ export class CrossValidator extends AbstractBaseEvaluator {
             this.crossValidationResultCachedAfterCrossValidation.confusionMatrixCrossValidation;
         const confusionMatrixMetricStructure: {
             "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
             "microQuantileMetrics": {
                 "quantilesPrecisions": number[],
                 "quantilesRecalls": number[],
@@ -403,7 +403,7 @@ export class CrossValidator extends AbstractBaseEvaluator {
 
     public crossValidate(
         labels: string[],
-        labelMap: { [id: string]: number },
+        labelMap: Map<string, number>,
         numberLabels: number,
         numberFeatures: number,
         intents: string[],

@@ -8,9 +8,6 @@ import { ArgumentParser } from "argparse";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 import { ConfusionMatrix } from "./ConfusionMatrix";
 
-import { IDictionaryStringIdGenericArrays } from "../../data_structure/IDictionaryStringIdGenericArrays";
-import { IDictionaryStringIdGenericValue } from "../../data_structure/IDictionaryStringIdGenericValue";
-
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
@@ -27,7 +24,7 @@ export function mainConfusionMatrixFunction(
     revisedTextColumnIndex: number,
     lineIndexToStart: number): {
         "labels": string[],
-        "labelMap": { [id: string]: number },
+        "labelMap": Map<string, number>,
         "binaryConfusionMatrices": BinaryConfusionMatrix[],
         "confusionMatrix": ConfusionMatrix } {
     // -----------------------------------------------------------------------
@@ -39,10 +36,10 @@ export function mainConfusionMatrixFunction(
     }
     // -----------------------------------------------------------------------
     let labels: string[] = [];
-    let labelMap: { [id: string]: number } = {};
+    let labelMap: Map<string, number> = new  Map<string, number>();
     if (!Utility.isEmptyString(labelFilename)) {
-        const labelsAndLabelMap: { "stringArray": string[], "stringMap": { [id: string]: number } } =
-            DictionaryMapUtility.buildStringIdNumberValueDictionaryFromUniqueStringArrayFile(labelFilename);
+        const labelsAndLabelMap: { "stringArray": string[], "stringMap": Map<string, number> } =
+            DictionaryMapUtility.buildStringKeyNumberValueMapFromUniqueStringArrayFile(labelFilename);
         labels = labelsAndLabelMap.stringArray;
         labelMap = labelsAndLabelMap.stringMap;
     }
@@ -318,7 +315,7 @@ export function mainConfusionMatrix(): void {
     // -----------------------------------------------------------------------
     const mainConfusionMatrixFunctionResult: {
         "labels": string[],
-        "labelMap": { [id: string]: number },
+        "labelMap": Map<string, number>,
         "confusionMatrix": ConfusionMatrix } = mainConfusionMatrixFunction(
         scoreFilename,
         labelFilename,
@@ -342,10 +339,10 @@ export function mainConfusionMatrix(): void {
 
 export function exampleFunctionConfusionMatrix(): void {
     const labels: string[] = [ "label0", "label1", "label2" ];
-    const labelMap: { [id: string]: number } = { };
-    labelMap.label0 = 0;
-    labelMap.label1 = 1;
-    labelMap.label2 = 2;
+    const labelMap: Map<string, number> = new Map<string, number>();
+    labelMap.set("label0", 0);
+    labelMap.set("label1", 1);
+    labelMap.set("label2", 2);
     const confusionMatrix = new ConfusionMatrix(labels, labelMap);
     confusionMatrix.addInstanceByLabel("label0", "label0");
     confusionMatrix.addInstanceByLabel("label0", "label1");

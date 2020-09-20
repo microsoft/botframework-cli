@@ -22,7 +22,7 @@ implements ISingleLabelConfusionMatrix {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
         this.reset();
     }
@@ -45,7 +45,7 @@ implements ISingleLabelConfusionMatrix {
 
     public addFrom(other: ConfusionMatrix): void {
         Utility.validateStringArrayPairEquality(this.labels, other.labels);
-        DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(this.labelMap, other.labelMap);
+        DictionaryMapUtility.validateStringKeyNumberValueMapPair(this.labelMap, other.labelMap);
         this.confusionMatrixTotal += other.confusionMatrixTotal;
         const numberLabels: number = this.getNumberLabels();
         for (let row: number = 0; row < numberLabels; row++) {
@@ -88,8 +88,8 @@ implements ISingleLabelConfusionMatrix {
         value: number = 1): void {
         this.validateLabel(groundTrueLabel);
         this.validateLabel(predictedLabel);
-        const groundTrueLabelId: number = this.labelMap[groundTrueLabel];
-        const predictedLabelId: number = this.labelMap[predictedLabel];
+        const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel) as number;
+        const predictedLabelId: number = this.labelMap.get(predictedLabel) as number;
         this.addInstanceByLabelIndex(groundTrueLabelId, predictedLabelId, value);
     }
 

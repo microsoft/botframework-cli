@@ -21,9 +21,9 @@ export class LabelStructureUtility {
     public static evaluateIntentUtterancePredictionScoresToBinaryConfusionMatrices(
         labelArrayAndMap: {
             "stringArray": string[],
-            "stringMap": {[id: string]: number}},
-        utteranceLabelsMapGroundTruth: { [id: string]: string[] },
-        utteranceLabelScoresMapPrediction: { [id: string]: ScoreIntent[] },
+            "stringMap": Map<string, number> },
+        utteranceLabelsMapGroundTruth: Map<string, Set<string>>,
+        utteranceLabelScoresMapPrediction: Map<string, ScoreIntent[]>,
         length: number):
         Map<string, Array<{
             "score": number,
@@ -111,9 +111,9 @@ export class LabelStructureUtility {
     public static evaluateEntityUtterancePredictionScoresToBinaryConfusionMatrices(
         labelArrayAndMap: {
             "stringArray": string[],
-            "stringMap": {[id: string]: number}},
-        utteranceEntityLabelsMapGroundTruth: { [id: string]: Label[] },
-        utteranceEntityLabelScoresMapPrediction: { [id: string]: ScoreEntity[] },
+            "stringMap": Map<string, number> },
+        utteranceEntityLabelsMapGroundTruth: Map<string, Label[]>,
+        utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[]>,
         length: number):
         Map<string, Array<{
             "score": number,
@@ -201,9 +201,9 @@ export class LabelStructureUtility {
     public static evaluateIntentUtterancePredictionScores(
         labelArrayAndMap: {
             "stringArray": string[],
-            "stringMap": {[id: string]: number}},
-        utteranceLabelsMapGroundTruth: { [id: string]: string[] },
-        utteranceLabelScoresMapPrediction: { [id: string]: ScoreIntent[] }):
+            "stringMap": Map<string, number> },
+        utteranceLabelsMapGroundTruth: Map<string, Set<string>>,
+        utteranceLabelScoresMapPrediction: Map<string, ScoreIntent[]>):
         Map<string, ScoreIntentUtterancePrediction[]> {
         const labelScoreIntentUtterancePredictionsMap: Map<string, ScoreIntentUtterancePrediction[]> =
             new Map<string, ScoreIntentUtterancePrediction[]>();
@@ -211,13 +211,13 @@ export class LabelStructureUtility {
             labelScoreIntentUtterancePredictionsMap.set(x, []);
         });
         const utterances: string[] =
-            Object.keys(utteranceLabelsMapGroundTruth);
+            [...utteranceLabelsMapGroundTruth.keys()];
         utterances.forEach((utterance: string) => {
-            const utteranceGroundTruthLabels: string[] =
-                utteranceLabelsMapGroundTruth[utterance];
-            if (utteranceLabelScoresMapPrediction.hasOwnProperty(utterance)) {
+            const utteranceGroundTruthLabels: Set<string> =
+                utteranceLabelsMapGroundTruth.get(utterance) as Set<string>;
+            if (utteranceLabelScoresMapPrediction.has(utterance)) {
                 const utteranceIntentPredictionScores: ScoreIntent[] =
-                    utteranceLabelScoresMapPrediction[utterance];
+                    utteranceLabelScoresMapPrediction.get(utterance) as ScoreIntent[];
                 utteranceIntentPredictionScores.forEach((utteranceIntentPredictionScore: ScoreIntent) => {
                     const utteranceIntentPredictionScoreLabel: string =
                         utteranceIntentPredictionScore.intent;
@@ -292,19 +292,19 @@ export class LabelStructureUtility {
     public static evaluateIntentUtterancePredictionScoresLabelOriented(
         labelArrayAndMap: {
             "stringArray": string[],
-            "stringMap": {[id: string]: number}},
-        utteranceLabelsMapGroundTruth: { [id: string]: string[] },
-        utteranceLabelScoresMapPrediction: { [id: string]: ScoreIntent[] }):
+            "stringMap": Map<string, number> },
+        utteranceLabelsMapGroundTruth: Map<string, Set<string>>,
+        utteranceLabelScoresMapPrediction: Map<string, ScoreIntent[]>):
         Map<string, ScoreIntentUtterancePrediction[]> {
         const labeScoreIntentUtterancePredictionsMap: Map<string, ScoreIntentUtterancePrediction[]> =
             new Map<string, ScoreIntentUtterancePrediction[]>();
         labelArrayAndMap.stringArray.forEach((label: string, index: number) => {
             const perLabeScoreIntentUtterancePredictions: ScoreIntentUtterancePrediction[] = [];
             labeScoreIntentUtterancePredictionsMap.set(label, perLabeScoreIntentUtterancePredictions);
-            const utterances: string[] = Object.keys(utteranceLabelsMapGroundTruth);
+            const utterances: string[] = [...utteranceLabelsMapGroundTruth.keys()];
             utterances.map((utterance: string) => {
-                const utteranceGroundTruthLabels: string[] =
-                    utteranceLabelsMapGroundTruth[utterance];
+                const utteranceGroundTruthLabels: Set<string> =
+                    utteranceLabelsMapGroundTruth.get(utterance) as Set<string>;
                 let isInGroundTruthPositive: boolean = false;
                 for (const utteranceGroundTruthLabel of utteranceGroundTruthLabels) {
                     if (utteranceGroundTruthLabel === label) {
@@ -313,9 +313,9 @@ export class LabelStructureUtility {
                     }
                 }
                 let labelScore: number = 0;
-                if (utteranceLabelScoresMapPrediction.hasOwnProperty(utterance)) {
+                if (utteranceLabelScoresMapPrediction.has(utterance)) {
                     const utteranceIntentPredictionScores: ScoreIntent[] =
-                        utteranceLabelScoresMapPrediction[utterance];
+                        utteranceLabelScoresMapPrediction.get(utterance) as ScoreIntent[];
                     for (const utteranceIntentPredictionScore of utteranceIntentPredictionScores) {
                         if (utteranceIntentPredictionScore.intent === label) {
                             labelScore = utteranceIntentPredictionScore.score;
@@ -338,9 +338,9 @@ export class LabelStructureUtility {
     public static evaluateEntityUtterancePredictionScores(
         labelArrayAndMap: {
             "stringArray": string[],
-            "stringMap": {[id: string]: number}},
-        utteranceEntityLabelsMapGroundTruth: { [id: string]: Label[] },
-        utteranceEntityLabelScoresMapPrediction: { [id: string]: ScoreEntity[] }):
+            "stringMap": Map<string, number> },
+        utteranceEntityLabelsMapGroundTruth: Map<string, Label[]>,
+        utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[]>):
         Map<string, ScoreEntityUtterancePrediction[]> {
         const labelScoreEntityUtterancePredictionsMap: Map<string, ScoreEntityUtterancePrediction[]> =
             new Map<string, ScoreEntityUtterancePrediction[]>();
@@ -348,13 +348,13 @@ export class LabelStructureUtility {
             labelScoreEntityUtterancePredictionsMap.set(x, []);
         });
         const utterances: string[] =
-            Object.keys(utteranceEntityLabelsMapGroundTruth);
+            [...utteranceEntityLabelsMapGroundTruth.keys()];
         utterances.forEach((utterance: string) => {
             const utteranceGroundTruthLabels: Label[] =
-                utteranceEntityLabelsMapGroundTruth[utterance];
-            if (utteranceEntityLabelScoresMapPrediction.hasOwnProperty(utterance)) {
+                utteranceEntityLabelsMapGroundTruth.get(utterance) as Label[];
+            if (utteranceEntityLabelScoresMapPrediction.has(utterance)) {
                 const utteranceEntityPredictionScores: ScoreEntity[] =
-                    utteranceEntityLabelScoresMapPrediction[utterance];
+                    utteranceEntityLabelScoresMapPrediction.get(utterance) as ScoreEntity[];
                 utteranceEntityPredictionScores.forEach((utteranceEntityPredictionScore: ScoreEntity) => {
                     const utteranceEntityPredictionScoreLabel: Label =
                         utteranceEntityPredictionScore.entity;
@@ -437,9 +437,9 @@ export class LabelStructureUtility {
     public static getJsonIntentsEntitiesUtterances(
         jsonObjectArray: any,
         hierarchicalLabel: string,
-        utteranceLabelsMap: { [id: string]: string[] },
+        utteranceLabelsMap: Map<string, Set<string>>,
         utteranceLabelDuplicateMap: Map<string, Set<string>>,
-        utteranceEntityLabelsMap: { [id: string]: Label[] },
+        utteranceEntityLabelsMap: Map<string, Label[]>,
         utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
         try {
             if (jsonObjectArray.length > 0) {
@@ -478,8 +478,8 @@ export class LabelStructureUtility {
     }
     public static getJsonIntentEntityScoresUtterances(
         jsonObjectArray: any,
-        utteranceLabelScoresMap: { [id: string]: ScoreIntent[] },
-        utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] }): boolean {
+        utteranceLabelScoresMap: Map<string, ScoreIntent[]>,
+        utteranceEntityLabelScoresMap: Map<string, ScoreEntity[]>): boolean {
         try {
             if (jsonObjectArray.length > 0) {
                 jsonObjectArray.forEach((jsonObject: any) => {
@@ -487,22 +487,22 @@ export class LabelStructureUtility {
                     // eslint-disable-next-line no-prototype-builtins
                     if (jsonObject.hasOwnProperty("intent_scores")) {
                         const intentScores: any[] = jsonObject.intent_scores;
-                        utteranceLabelScoresMap[utterance] = intentScores.map((intentScore: any) => {
+                        utteranceLabelScoresMap.set(utterance, intentScores.map((intentScore: any) => {
                             const intent: string = intentScore.intent;
                             const score: number = intentScore.score;
                             return ScoreIntent.newScoreIntent(intent, score);
-                        });
+                        }));
                     }
                     // eslint-disable-next-line no-prototype-builtins
                     if (jsonObject.hasOwnProperty("entity_scores")) {
                         const entityScores: any[] = jsonObject.entity_scores;
-                        utteranceEntityLabelScoresMap[utterance] = entityScores.map((entityScore: any) => {
+                        utteranceEntityLabelScoresMap.set(utterance, entityScores.map((entityScore: any) => {
                             const entity: string = entityScore.entity;
                             const startPos: number = entityScore.startPos;
                             const endPos: number = entityScore.endPos;
                             const score: number = entityScore.score;
                             return ScoreEntity.newScoreEntityByPosition(entity, score, startPos, endPos);
-                        });
+                        }));
                     }
                 });
                 return true;
@@ -548,7 +548,7 @@ export class LabelStructureUtility {
               labelSet = [];
               stringKeyLabelSetMap.set(key, labelSet);
             }
-            LabelStructureUtility.addUniqueEntityLabel(value, labelSet);
+            LabelStructureUtility.addUniqueEntityLabelToArray(value, labelSet);
         } else {
             const labelSet: Label[] = [];
             stringKeyLabelSetMap.set(key, labelSet);
@@ -561,10 +561,10 @@ export class LabelStructureUtility {
         utterance: string,
         label: string,
         hierarchicalLabel: string,
-        utteranceLabelsMap: { [id: string]: string[] },
+        utteranceLabelsMap: Map<string, Set<string>>,
         utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
-        const existingLabels: string[] = utteranceLabelsMap[utterance];
-        if (existingLabels) {
+        if (utteranceLabelsMap.has(utterance)) {
+            const existingLabels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
             if (hierarchicalLabel && hierarchicalLabel.length > 0) {
                 if (!LabelStructureUtility.addUniqueLabel(hierarchicalLabel, existingLabels)) {
                     LabelStructureUtility.insertStringPairToStringIdStringSetNativeMap(
@@ -579,25 +579,32 @@ export class LabelStructureUtility {
                     utteranceLabelDuplicateMap);
             }
         } else if (hierarchicalLabel && hierarchicalLabel.length > 0) {
-            utteranceLabelsMap[utterance] = [hierarchicalLabel];
+            const labelSet: Set<string> = new Set<string>();
+            labelSet.add(hierarchicalLabel);
+            utteranceLabelsMap.set(utterance, labelSet);
         } else {
-            utteranceLabelsMap[utterance] = [label];
+            const labelSet: Set<string> = new Set<string>();
+            labelSet.add(label);
+            utteranceLabelsMap.set(utterance, labelSet);
         }
     }
 
     public static addNewEntityLabelUtterance(
         utterance: string,
         entityEntry: any,
-        utteranceEntityLabelsMap: { [id: string]: Label[] },
+        utteranceEntityLabelsMap: Map<string, Label[]>,
         utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
-        let existingEntityLabels: Label[] = utteranceEntityLabelsMap[utterance];
+        let existingEntityLabels: Label[] = [];
+        if (utteranceEntityLabelsMap.has(utterance)) {
+            existingEntityLabels = utteranceEntityLabelsMap.get(utterance) as Label[];
+        }
         const entity: string = entityEntry.entity;
         const startPos: number = Number(entityEntry.startPos);
         const endPos: number = Number(entityEntry.endPos);
         // const entityMention: string = entityEntry.text;
         const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
         if (existingEntityLabels) {
-            if (!LabelStructureUtility.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
+            if (!LabelStructureUtility.addUniqueEntityLabelToArray(entityLabel, existingEntityLabels)) {
                 LabelStructureUtility.insertStringLabelPairToStringIdLabelSetNativeMap(
                     utterance,
                     entityLabel,
@@ -605,11 +612,25 @@ export class LabelStructureUtility {
             }
         } else {
             existingEntityLabels = [entityLabel];
-            utteranceEntityLabelsMap[utterance] = existingEntityLabels;
+            utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
         }
     }
 
-    public static addUniqueLabel(newLabel: string, labels: string[]): boolean {
+    public static addUniqueLabel(newLabel: string, labels: Set<string>): boolean {
+        try {
+            if (labels.has(newLabel)) {
+                return false;
+            }
+            labels.add(newLabel);
+            return true;
+        } catch (error) {
+            Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+            throw error;
+        }
+        return false;
+    }
+
+    public static addUniqueLabelToArray(newLabel: string, labels: string[]): boolean {
         try {
             for (const label of labels) {
                 if (label === newLabel) {
@@ -619,13 +640,13 @@ export class LabelStructureUtility {
             labels.push(newLabel);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+            Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
             throw error;
         }
         return false;
     }
 
-    public static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
+    public static addUniqueEntityLabelToArray(newLabel: Label, labels: Label[]): boolean {
         try {
             for (const label of labels) {
                 if (label.equals(newLabel)) {
@@ -635,7 +656,7 @@ export class LabelStructureUtility {
             labels.push(newLabel);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
+            Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
             throw error;
         }
         return false;

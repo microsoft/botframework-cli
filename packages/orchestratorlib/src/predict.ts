@@ -101,11 +101,11 @@ export class OrchestratorPredict {
 
   protected currentLabelArrayAndMap: {
     'stringArray': string[];
-    'stringMap': {[id: string]: number};} = {
+    'stringMap': Map<string, number>;} = {
       stringArray: [],
-      stringMap: {}};
+      stringMap: new Map<string, number>()};
 
-  protected currentUtteranceLabelsMap: { [id: string]: string[] } = {};
+  protected currentUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
   protected currentUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
@@ -114,14 +114,14 @@ export class OrchestratorPredict {
       'evaluationSummary': string;
       'labelArrayAndMap': {
         'stringArray': string[];
-        'stringMap': {[id: string]: number};};
+        'stringMap': Map<string, number>;};
       'labelStatisticsAndHtmlTable': {
-        'labelUtterancesMap': { [id: string]: string[] };
+        'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
-        'utteranceStatisticsMap': {[id: number]: number};
+        'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
@@ -437,7 +437,7 @@ export class OrchestratorPredict {
   }
 
   public commandLetS(): number {
-    this.currentUtteranceLabelsMap = {};
+    this.currentUtteranceLabelsMap = new Map<string, Set<string>>();
     this.currentUtteranceLabelDuplicateMap = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {
@@ -451,17 +451,17 @@ export class OrchestratorPredict {
       this.currentUtteranceLabelsMap,
       this.currentUtteranceLabelDuplicateMap);
     const labelStatisticsAndHtmlTable: {
-      'labelUtterancesMap': { [id: string]: string[] };
+      'labelUtterancesMap': Map<string, Set<string>>;
       'labelUtterancesTotal': number;
       'labelStatistics': string[][];
       'labelStatisticsHtml': string;
     } = Utility.generateLabelStatisticsAndHtmlTable(
       this.currentUtteranceLabelsMap,
       this.currentLabelArrayAndMap);
-    const labelUtteranceCount: { [id: string]: number } = {};
-    Object.entries(labelStatisticsAndHtmlTable.labelUtterancesMap).forEach(
-      (x: [string, string[]]) => {
-        labelUtteranceCount[x[0]] = x[1].length;
+    const labelUtteranceCount: Map<string, number> = new Map<string, number>();
+    labelStatisticsAndHtmlTable.labelUtterancesMap.forEach(
+      (value: Set<string>, key: string) => {
+        labelUtteranceCount.set(key, value.size);
       });
     console.log(`> Per-label #examples: ${Utility.jsonStringify(labelUtteranceCount)}`);
     console.log(`> Total #examples:${labelStatisticsAndHtmlTable.labelUtterancesTotal}`);
@@ -529,7 +529,7 @@ export class OrchestratorPredict {
   }
 
   public commandLetF(): number {
-    if (Object.keys(this.currentUtteranceLabelsMap).length <= 0) {
+    if (this.currentUtteranceLabelsMap.size <= 0) {
       console.log('ERROR: Please run \'s\' commandlet first scanning the model snapshot for querying');
       return -1;
     }
@@ -538,7 +538,7 @@ export class OrchestratorPredict {
       return -2;
     }
     if (this.currentUtterance in this.currentUtteranceLabelsMap) {
-      console.log(`> The "current" utterance '${this.currentUtterance}' is in the model and it's intent labels are '${this.currentUtteranceLabelsMap[this.currentUtterance]}'`);
+      console.log(`> The "current" utterance '${this.currentUtterance}' is in the model and it's intent labels are '${this.currentUtteranceLabelsMap.get(this.currentUtterance)}'`);
     } else {
       console.log(`> The "current" utterance '${this.currentUtterance}' is not in the model.`);
     }
@@ -561,7 +561,7 @@ export class OrchestratorPredict {
   public commandLetV(): number {
     // ---- NOTE ---- process the snapshot set.
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {

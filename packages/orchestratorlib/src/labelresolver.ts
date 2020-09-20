@@ -117,20 +117,30 @@ export class LabelResolver {
 
   public static addExamples(
     utteranceIntentEntityLabels: {
-      utteranceLabelsMap: { [id: string]: string[] };
+      utteranceLabelsMap: Map<string, Set<string>>;
       utteranceLabelDuplicateMap: Map<string, Set<string>>;
-      utteranceEntityLabelsMap: { [id: string]: Label[] };
+      utteranceEntityLabelsMap: Map<string, Label[]>;
       utteranceEntityLabelDuplicateMap: Map<string, Label[]>; },
     labelResolver: any = null) {
     if (labelResolver === null) {
       labelResolver = LabelResolver.LabelResolver;
     }
-    const utteranceLabelsMap: { [id: string]: string[] } = utteranceIntentEntityLabels.utteranceLabelsMap;
-    let utteranceProcessedutteranceLabelsMap: number = 0;
+    const utteranceLabelsMap: Map<string, Set<string>> = utteranceIntentEntityLabels.utteranceLabelsMap;
+    Utility.debuggingLog(`processed utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
     // eslint-disable-next-line guard-for-in
-    for (const utterance in utteranceLabelsMap) {
-      const labels: string[] = utteranceLabelsMap[utterance];
-      if (labels && (labels.length > 0)) {
+    for (const utterance of utteranceLabelsMap.keys()) {
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`processing utterance=${utterance}`);
+      }
+      const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`processing labels.size=${labels.size}`);
+      }
+      if (labels && (labels.size > 0)) {
         for (const label of labels) {
           try {
             const success: any = labelResolver.addExample({label: label, text: utterance});
@@ -148,15 +158,15 @@ export class LabelResolver {
           }
         }
       }
-      utteranceProcessedutteranceLabelsMap++;
-      if ((utteranceProcessedutteranceLabelsMap % 10000) === 0) {
-        Utility.debuggingLog(`LabelResolver.addExample(): Added utteranceProcessedutteranceLabelsMap=${utteranceProcessedutteranceLabelsMap}`);
+      numberUtterancesProcessedUtteranceLabelsMap++;
+      if ((numberUtterancesProcessedUtteranceLabelsMap % Utility.NumberOfInstancesPerStep) === 0) {
+        Utility.debuggingLog(`LabelResolver.addExample(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
       }
     }
-    const utteranceEntityLabelsMap: { [id: string]: Label[] } = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
+    const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
     // eslint-disable-next-line guard-for-in
     for (const utterance in utteranceEntityLabelsMap) {
-      const labels: Label[] = utteranceEntityLabelsMap[utterance];
+      const labels: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];
       if (labels && (labels.length > 0)) {
         for (const label of labels) {
           const entity: string = label.name;

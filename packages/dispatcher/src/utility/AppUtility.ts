@@ -58,11 +58,11 @@ export function exampleFunctionUtilityWithFilename(
     Utility.debuggingLog(`linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
     const labels: string[] = [ "label0", "label1", "label2" ];
-    const labelMap: { [id: string]: number } = {};
-    labelMap.label0 = 0;
-    labelMap.label1 = 1;
-    labelMap.label2 = 2;
-    DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(labels, labelMap);
+    const labelMap: Map<string, number> = new  Map<string, number>();
+    labelMap.set("label0", 0);
+    labelMap.set("label1", 1);
+    labelMap.set("label2", 2);
+    DictionaryMapUtility.validateStringArrayAndStringKeyNumberValueMap(labels, labelMap);
     // -----------------------------------------------------------------------
     const intentsUtterancesWeights: { "intents": string[], "texts": string[], "weights": number[] } =
         Utility.loadLabelTextColumnarFile(

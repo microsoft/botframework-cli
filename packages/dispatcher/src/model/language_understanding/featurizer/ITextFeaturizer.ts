@@ -8,9 +8,9 @@ export interface ITextFeaturizer {
     getIntentsUtterancesWeights(): { "intents": string[], "utterances": string[], "weights": number[] };
 
     getLabels(): string[];
-    getLabelMap(): { [id: string]: number };
+    getLabelMap(): Map<string, number>;
     getFeatures(): string[];
-    getFeatureMap(): { [id: string]: number };
+    getFeatureMap(): Map<string, number>;
     getHashingFeatureArrays(): Array<Set<string>>;
 
     getNumberHashingFeaturesSetting(): number;

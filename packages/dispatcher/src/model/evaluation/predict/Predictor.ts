@@ -30,7 +30,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
         MathematicsHelper.GetMathematicsHelperObject();
 
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number } = {};
+    protected labelMap: Map<string, number> = new  Map<string, number>();
 
     protected intents: string[] = [];
     protected utterances: string[] = [];
@@ -38,9 +38,9 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
     protected featureIndexArrays: number[][] = [];
 
     protected confusionMatrixPrediction: ConfusionMatrix =
-        new ConfusionMatrix([], {});
+        new ConfusionMatrix([], new Map<string, number>());
     protected thresholdReporterPrediction: ThresholdReporter =
-        new ThresholdReporter("", "", null, null, [], {});
+        new ThresholdReporter("", "", null, null, [], new Map<string, number>());
     protected predictionLabels: string[] = [];
     protected predictionLabelIndexes: number[] = [];
     protected instanceIndexes: number[] = [];
@@ -51,7 +51,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
     constructor(
         modelFilename: string,
         featurizerFilename: string) {
-        super(modelFilename, featurizerFilename, null, null, [], {});
+        super(modelFilename, featurizerFilename, null, null, [], new Map<string, number>());
         this.labels = this.getFeaturizer().getLabels();
         this.labelMap = this.getFeaturizer().getLabelMap();
         this.confusionMatrixPrediction =
@@ -174,8 +174,8 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             predictionResult.confusionMatrixPrediction;
         const confusionMatrixMetricStructure: {
             "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
             "microQuantileMetrics": {
                 "quantilesPrecisions": number[],
                 "quantilesRecalls": number[],
@@ -361,7 +361,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
             this.getFeaturizer();
         // -------------------------------------------------------------------
         const labels: string[] = this.getLabels();
-        const labelMap: { [id: string]: number } = this.getLabelMap();
+        const labelMap: Map<string, number> = this.getLabelMap();
         // const numberLabels: number = featurizer.getNumberLabels();
         // const numberFeatures: number = featurizer.getNumberFeatures();
         // -------------------------------------------------------------------
@@ -381,7 +381,7 @@ export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
                 Predictor.MathematicsHelperObject.getIndexOnFirstMaxEntry(prediction);
             const predictionLabelIndex: number =
                 argMax.indexMax;
-            let groundTruthLabelIndex: number = labelMap[intent];
+            let groundTruthLabelIndex: number = labelMap.get(intent) as number;
             if (!Utility.isEmptyString(intent)) {
                 if (!groundTruthLabelIndex) {
                     groundTruthLabelIndex = -1;

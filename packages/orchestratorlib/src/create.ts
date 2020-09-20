@@ -29,9 +29,9 @@ export class OrchestratorCreate {
 
     await LabelResolver.createAsync(nlrPath);
     const processedUtteranceLabelsMap: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
     LabelResolver.addExamples(processedUtteranceLabelsMap);

@@ -17,10 +17,10 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 function getTestingConfusionMatrix(): ConfusionMatrix {
     const labels: string[] = ["label0", "label1", "label2"];
-    const labelMap: { [id: string]: number } = {};
-    labelMap.label0 = 0;
-    labelMap.label1 = 1;
-    labelMap.label2 = 2;
+    const labelMap: Map<string, number> = new  Map<string, number>();
+    labelMap.set("label0", 0);
+    labelMap.set("label1", 1);
+    labelMap.set("label2", 2);
     const confusionMatrix: ConfusionMatrix = new ConfusionMatrix(labels, labelMap);
     confusionMatrix.addInstanceByLabel("label0", "label0");
     confusionMatrix.addInstanceByLabel("label0", "label1");
@@ -122,11 +122,11 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const confusionMatrix: ConfusionMatrix =  getTestingConfusionMatrix();
-        const labelMap: { [id: string]: number } =
+        const labelMap: Map<string, number> =
              confusionMatrix.getLabelMap();
-        assert.ok(DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap) === 3,
-            `DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap)=` +
-            `${DictionaryMapUtility.getStringIdGenericValueDictionaryLength(labelMap)}`);
+        assert.ok(DictionaryMapUtility.getStringKeyGenericValueMapLength(labelMap) === 3,
+            `DictionaryMapUtility.getStringKeyGenericValueMapLength(labelMap)=` +
+            `${DictionaryMapUtility.getStringKeyGenericValueMapLength(labelMap)}`);
     });
     it("Test.0203 getConfusionMatrixRows()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -410,8 +410,8 @@ describe("Test Suite - model/evaluation/confusion_matrix/confusion_matrix", () =
         const confusionMatrix: ConfusionMatrix = getTestingConfusionMatrix();
         const confusionMatrixMetricStructure: {
             "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
             "microQuantileMetrics": {
                 "quantilesPrecisions": number[],
                 "quantilesRecalls": number[],

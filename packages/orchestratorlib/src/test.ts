@@ -81,29 +81,29 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
     // ---- NOTE ---- process the snapshot set, retrieve labels
     let processedUtteranceLabelsMap: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(snapshotFile, false);
-    const snapshotSetUtterancesLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
+    const snapshotSetUtterancesLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
     // ---- NOTE-NO-NEED ---- const snapshotSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for snapshot set');
     const snapshotSetLabels: string[] =
-      [...Object.values(snapshotSetUtterancesLabelsMap)].reduce(
-        (accumulant: string[], entry: string[]) => accumulant.concat(entry), []);
+      [...snapshotSetUtterancesLabelsMap.values()].reduce(
+        (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     const snapshotSetLabelSet: Set<string> =
       new Set<string>(snapshotSetLabels);
     // ---- NOTE ---- process the testing set.
     processedUtteranceLabelsMap = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
-    const utteranceLabelsMap: { [id: string]: string[] } = processedUtteranceLabelsMap.utteranceLabelsMap;
+    const utteranceLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for testing set');
     // Utility.debuggingLog(`OrchestratorTest.runAsync(), JSON.stringify(utteranceLabelsMap)=${JSON.stringify(utteranceLabelsMap)}`);
     // ---- Utility.debuggingLog(`OrchestratorTest.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(utteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(utteranceLabelDuplicateMap))}`);
-    Utility.debuggingLog(`OrchestratorTest.runAsync(), number of unique utterances=${Object.keys(utteranceLabelsMap).length}`);
+    Utility.debuggingLog(`OrchestratorTest.runAsync(), number of unique utterances=${utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorTest.runAsync(), number of duplicate utterance/label pairs=${utteranceLabelDuplicateMap.size}`);
-    if (Object.entries(utteranceLabelsMap).length <= 0) {
+    if (utteranceLabelsMap.size <= 0) {
       Utility.debuggingThrow('there is no example, something wrong?');
     }
     // -----------------------------------------------------------------------
@@ -117,14 +117,14 @@ export class OrchestratorTest {
         'evaluationSummary': string;
         'labelArrayAndMap': {
           'stringArray': string[];
-          'stringMap': {[id: string]: number};};
+          'stringMap': Map<string, number>;};
         'labelStatisticsAndHtmlTable': {
-          'labelUtterancesMap': { [id: string]: string[] };
+          'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
           'labelStatistics': string[][];
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
-          'utteranceStatisticsMap': {[id: number]: number};
+          'utteranceStatisticsMap': Map<number, number>;
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};

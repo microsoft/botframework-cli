@@ -171,7 +171,7 @@ export function mainModelMetaDataProfileReporter(): void {
             null,
             null,
             [],
-            {});
+            new Map<string, number>());
     // -----------------------------------------------------------------------
     const evaluationDataArraysReportResult: {
         "outputEvaluationReportDataArrays": IDictionaryStringIdGenericArrays<string>,

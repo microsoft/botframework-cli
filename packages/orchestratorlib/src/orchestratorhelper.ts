@@ -53,16 +53,16 @@ export class OrchestratorHelper {
     fs.unlinkSync(filePath);
   }
 
-  public static createDteContent(utteranceLabelsMap: { [id: string]: string[] }) {
-    const labelUtteranceMap: { [label: string]: string} = {};
+  public static createDteContent(utteranceLabelsMap: Map<string, Set<string>>) {
+    const labelUtteranceMap: Map<string, string> = new Map<string, string>();
     // eslint-disable-next-line guard-for-in
-    for (const utterance in utteranceLabelsMap) {
-      const labels: string[] = utteranceLabelsMap[utterance];
+    for (const utterance of utteranceLabelsMap.keys()) {
+      const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
       labels.forEach((label: string) => {
         if (label in labelUtteranceMap) {
-          labelUtteranceMap[label] = labelUtteranceMap[label] + '|' + utterance;
+          labelUtteranceMap.set(label, labelUtteranceMap.get(label) + '|' + utterance);
         } else {
-          labelUtteranceMap[label] = utterance;
+          labelUtteranceMap.set(label, utterance);
         }
       });
     }
@@ -70,7 +70,7 @@ export class OrchestratorHelper {
     let tsvContent: string = '';
     // eslint-disable-next-line guard-for-in
     for (const label in labelUtteranceMap) {
-      const utterances: string = labelUtteranceMap[label];
+      const utterances: string = labelUtteranceMap.get(label) as string;
       const line: string = key + '\t' + label + '\t' + utterances + '\n';
       tsvContent += line;
       key += 1;
@@ -83,16 +83,16 @@ export class OrchestratorHelper {
     inputPathConfiguration: string,
     hierarchical: boolean = false,
     outputDteFormat: boolean = false)  {
-    const utteranceLabelsMap: { [id: string]: string[] } = (await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)).utteranceLabelsMap;
+    const utteranceLabelsMap: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)).utteranceLabelsMap;
     let tsvContent: string = '';
 
     if (outputDteFormat) {
       tsvContent = OrchestratorHelper.createDteContent(utteranceLabelsMap);
     } else {
       // eslint-disable-next-line guard-for-in
-      for (const utterance in utteranceLabelsMap) {
-        const labels: any = utteranceLabelsMap[utterance];
-        const line: string = labels.join() + '\t' + utterance + '\n';
+      for (const utterance of utteranceLabelsMap.keys()) {
+        const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
+        const line: string = [...labels].join() + '\t' + utterance + '\n';
         tsvContent += line;
       }
     }
@@ -107,13 +107,13 @@ export class OrchestratorHelper {
   public static async getUtteranceLabelsMap(
     filePathConfiguration: string,
     hierarchical: boolean = false): Promise<{
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
-    const utteranceLabelsMap: { [id: string]: string[] } = {};
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const utteranceEntityLabelsMap: { [id: string]: Label[] } = {};
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
     for (const filePathEntry of filePaths) {
@@ -241,9 +241,9 @@ export class OrchestratorHelper {
   static async processFile(
     filePath: string,
     fileName: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     hierarchical: boolean): Promise<void> {
     const ext: string = path.extname(filePath);
@@ -302,7 +302,7 @@ export class OrchestratorHelper {
 
   static parseBluFile(
     bluFile: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     const lines: string[] = OrchestratorHelper.readFile(bluFile).split('\n');
     if (lines.length === 0 || lines.length === 1) {
@@ -316,9 +316,9 @@ export class OrchestratorHelper {
   static async parseLuFile(
     luFile: string,
     hierarchicalLabel: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
     const fileContents: string = OrchestratorHelper.readFile(luFile);
     const luObject: any = {
@@ -338,7 +338,7 @@ export class OrchestratorHelper {
   static parseTsvFile(
     tsvFile: string,
     hierarchicalLabel: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     Utility.debuggingLog(`OrchestratorHelper.parseTsvFile(), ready to read from '${tsvFile}'`);
     const lines: string[] = OrchestratorHelper.readFile(tsvFile).split('\n');
@@ -353,27 +353,36 @@ export class OrchestratorHelper {
 
   static tryParseLabelUtteranceTsv(
     lines: string[],
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     bluFormat: boolean = false): boolean {
     if (!bluFormat && OrchestratorHelper.hasLabelUtteranceHeader(lines[0])) {
       lines.shift();
     }
-    // eslint-disable-next-line no-console
     Utility.debuggingLog(`processing #lines=${lines.length}`);
     let numberLinesProcessed: number  = 0;
     let numberLinesIgnored: number = 0;
     lines.forEach((line: string, lineIndex: number) => {
-      if ((lineIndex % 10000) === 0) {
+      if ((lineIndex % Utility.NumberOfInstancesPerStep) === 0) {
         // eslint-disable-next-line no-console
         Utility.debuggingLog(`processed lineIndex=${lineIndex}`);
       }
-      if (lineIndex >= 8630000) {
-        // eslint-disable-next-line no-console
-        Utility.debuggingLog(`processed lineIndex=${lineIndex}, line='${line}'`);
+      // ---- NOTE-FOR-TESTING ---- if (lineIndex >= 8630000) {
+      // ---- NOTE-FOR-TESTING ----   // eslint-disable-next-line no-console
+      // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`processed lineIndex=${lineIndex}, line='${line}'`);
+      // ---- NOTE-FOR-TESTING ---- }
+      const lineTrimmed: string = line.trim();
+      if (lineTrimmed.length <= 0) {
+        Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', lineTrimmed.length <= 0`);
+        numberLinesIgnored++;
+        if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
+          // eslint-disable-next-line no-console
+          Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+        }
+        return;
       }
       try {
-        const items: string[] = line.split('\t');
+        const items: string[] = lineTrimmed.split('\t');
         if (items && (items.length >= 2)) {
           let labels: string = items[0] ? items[0] : '';
           const utteranceIdx: number = (items.length === 3 && !bluFormat) ? 2 : 1;
@@ -381,9 +390,9 @@ export class OrchestratorHelper {
           labels = labels.trim();
           utterance = utterance.trim();
           // ---- NOTE-FOR-TESTING ---- if (utterance === 'constructor') {
-          // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`ERROR processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
+          // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`WARNING processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
           // ---- NOTE-FOR-TESTING ----   numberLinesIgnored++;
-          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % 10000) === 0) {
+          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
           // ---- NOTE-FOR-TESTING ----     // eslint-disable-next-line no-console
           // ---- NOTE-FOR-TESTING ----     Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
           // ---- NOTE-FOR-TESTING ----   }
@@ -403,22 +412,22 @@ export class OrchestratorHelper {
             }
           }
           numberLinesProcessed++;
-          if ((numberLinesProcessed % 10000) === 0) {
+          if ((numberLinesProcessed % Utility.NumberOfInstancesPerStep) === 0) {
             // eslint-disable-next-line no-console
             Utility.debuggingLog(`processed numberLinesProcessed=${numberLinesProcessed}`);
           }
         } else {
-          Utility.debuggingLog(`ERROR processing, items.length < 2, lineIndex=${lineIndex}, line='${line}'`);
+          Utility.debuggingLog(`WARNING processing, items.length < 2, lineIndex=${lineIndex}, line='${line}'`);
           numberLinesIgnored++;
-          if ((numberLinesIgnored % 10000) === 0) {
+          if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
             // eslint-disable-next-line no-console
             Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
           }
         }
       } catch (error) {
-        Utility.debuggingLog(`ERROR processing lineIndex=${lineIndex}, line='${line}', error=${error}`);
+        Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', error=${error}`);
         numberLinesIgnored++;
-        if ((numberLinesIgnored % 10000) === 0) {
+        if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
           // eslint-disable-next-line no-console
           Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
         }
@@ -428,14 +437,15 @@ export class OrchestratorHelper {
     Utility.debuggingLog(`processed #lines=${lines.length}`);
     Utility.debuggingLog(`processed numberLinesProcessed=${numberLinesProcessed}`);
     Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
-    Utility.debuggingLog(`processed utteranceLabelsMap.length=${utteranceLabelsMap.length}`);
+    Utility.debuggingLog(`processed utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`processed utteranceLabelDuplicateMap.size=${utteranceLabelDuplicateMap.size}`);
     return true;
   }
 
   static tryParseQnATsvFile(
     lines: string[],
     label: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>): boolean {
     if (!OrchestratorHelper.isQnATsvHeader(lines[0])) {
       return false;
@@ -470,7 +480,7 @@ export class OrchestratorHelper {
   static async parseQnaFile(
     qnaFile: string,
     label: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     const fileContents: string = OrchestratorHelper.readFile(qnaFile);
     const lines: string[] = fileContents.split('\n');
@@ -496,9 +506,9 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   static async iterateInputFolder(
     folderPath: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     hierarchical: boolean): Promise<void> {
     const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt'];
@@ -539,9 +549,9 @@ export class OrchestratorHelper {
   static getLuisIntentsEnitiesUtterances(
     luisObject: any,
     hierarchicalLabel: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
     try {
       // eslint-disable-next-line no-prototype-builtins
@@ -577,7 +587,7 @@ export class OrchestratorHelper {
   static getQnaQuestionsAsUtterances(
     qnaObject: any,
     label: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     qnaObject.kb.qnaList.forEach((e: any) => {
       const questions: string[] = e.questions;
@@ -597,9 +607,9 @@ export class OrchestratorHelper {
   static getJsonIntentsEntitiesUtterances(
     jsonObjectArray: any,
     hierarchicalLabel: string,
-    utteranceLabelsMap: { [id: string]: string[] },
+    utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    utteranceEntityLabelsMap: { [id: string]: Label[] },
+    utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
     try {
       if (jsonObjectArray.length > 0)  {
@@ -640,8 +650,8 @@ export class OrchestratorHelper {
 
   static getJsonIntentEntityScoresUtterances(
     jsonObjectArray: any,
-    utteranceLabelScoresMap: { [id: string]: ScoreIntent[] },
-    utteranceEntityLabelScoresMap: { [id: string]: ScoreEntity[] }): boolean {
+    utteranceLabelScoresMap: Map<string, ScoreIntent[]>,
+    utteranceEntityLabelScoresMap: Map<string, ScoreEntity[]>): boolean {
     try {
       if (jsonObjectArray.length > 0) {
         jsonObjectArray.forEach((jsonObject: any) => {
@@ -649,22 +659,22 @@ export class OrchestratorHelper {
           // eslint-disable-next-line no-prototype-builtins
           if (jsonObject.hasOwnProperty('intent_scores')) {
             const intentScores: any[] = jsonObject.intent_scores;
-            utteranceLabelScoresMap[utterance] = intentScores.map((intentScore: any) => {
+            utteranceLabelScoresMap.set(utterance, intentScores.map((intentScore: any) => {
               const intent: string = intentScore.intent;
               const score: number = intentScore.score;
               return ScoreIntent.newScoreIntent(intent, score);
-            });
+            }));
           }
           // eslint-disable-next-line no-prototype-builtins
           if (jsonObject.hasOwnProperty('entity_scores')) {
             const entityScores: any[] = jsonObject.entity_scores;
-            utteranceEntityLabelScoresMap[utterance] = entityScores.map((entityScore: any) => {
+            utteranceEntityLabelScoresMap.set(utterance, entityScores.map((entityScore: any) => {
               const entity: string = entityScore.entity;
               const startPos: number = entityScore.startPos;
               const endPos: number = entityScore.endPos;
               const score: number = entityScore.score;
               return ScoreEntity.newScoreEntityByPosition(entity, score, startPos, endPos);
-            });
+            }));
           }
         });
         return true;
@@ -685,6 +695,83 @@ export class OrchestratorHelper {
     utterance: string,
     label: string,
     hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
+    const isHierarchicalLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
+    let existingLabels: Set<string> = new Set<string>();
+    try {
+      if (utteranceLabelsMap.has(utterance)) {
+        existingLabels = utteranceLabelsMap.get(utterance) as Set<string>;
+      }
+      if (existingLabels.size > 0) {
+        if (isHierarchicalLabel) {
+          if (!OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels)) {
+            Utility.insertStringPairToStringIdStringSetNativeMap(utterance, hierarchicalLabel, utteranceLabelDuplicateMap);
+          }
+        } else if (!OrchestratorHelper.addUniqueLabel(label, existingLabels)) {
+          Utility.insertStringPairToStringIdStringSetNativeMap(utterance, label, utteranceLabelDuplicateMap);
+        }
+      } else if (isHierarchicalLabel) {
+        existingLabels.add(hierarchicalLabel);
+        utteranceLabelsMap.set(utterance, existingLabels);
+      } else {
+        existingLabels.add(label);
+        utteranceLabelsMap.set(utterance, existingLabels);
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtterance(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      throw error;
+    }
+  }
+
+  // eslint-disable-next-line max-params
+  static addNewEntityLabelUtterance(
+    utterance: string,
+    entityEntry: any,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
+    let existingEntityLabels: Label[] = [];
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if (utteranceEntityLabelsMap.has(utterance)) {
+        existingEntityLabels = utteranceEntityLabelsMap.get(utterance) as Label[];
+      }
+      const entity: string = entityEntry.entity;
+      const startPos: number = Number(entityEntry.startPos);
+      const endPos: number = Number(entityEntry.endPos);
+      // const entityMention: string = entityEntry.text;
+      const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
+      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
+        existingEntityLabels = [entityLabel];
+        utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
+      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityLabel, existingEntityLabels)) {
+        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      throw error;
+    }
+  }
+
+  static addUniqueLabel(newLabel: string, labels: Set<string>): boolean {
+    try {
+      if (labels.has(newLabel)) {
+        return false;
+      }
+      labels.add(newLabel);
+      return true;
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      throw error;
+    }
+    return false;
+  }
+
+  // eslint-disable-next-line max-params
+  static addNewLabelUtteranceToObejctDictionary(
+    utterance: string,
+    label: string,
+    hierarchicalLabel: string,
     utteranceLabelsMap: { [id: string]: string[] },
     utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
     const isHierarchicalLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
@@ -696,10 +783,10 @@ export class OrchestratorHelper {
       }
       if (!Utility.isEmptyStringArray(existingLabels)) {
         if (isHierarchicalLabel) {
-          if (!OrchestratorHelper.addUniqueLabel(hierarchicalLabel, existingLabels)) {
+          if (!OrchestratorHelper.addUniqueLabelToArray(hierarchicalLabel, existingLabels)) {
             Utility.insertStringPairToStringIdStringSetNativeMap(utterance, hierarchicalLabel, utteranceLabelDuplicateMap);
           }
-        } else if (!OrchestratorHelper.addUniqueLabel(label, existingLabels)) {
+        } else if (!OrchestratorHelper.addUniqueLabelToArray(label, existingLabels)) {
           Utility.insertStringPairToStringIdStringSetNativeMap(utterance, label, utteranceLabelDuplicateMap);
         }
       } else if (isHierarchicalLabel) {
@@ -708,13 +795,13 @@ export class OrchestratorHelper {
         utteranceLabelsMap[utterance] = [label];
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtterance(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObejctDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
       throw error;
     }
   }
 
   // eslint-disable-next-line max-params
-  static addNewEntityLabelUtterance(
+  static addNewEntityLabelUtteranceToObejctDictionary(
     utterance: string,
     entityEntry: any,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
@@ -733,16 +820,16 @@ export class OrchestratorHelper {
       if (Utility.isEmptyGenericArray(existingEntityLabels)) {
         existingEntityLabels = [entityLabel];
         utteranceEntityLabelsMap[utterance] = existingEntityLabels;
-      } else if (!OrchestratorHelper.addUniqueEntityLabel(entityLabel, existingEntityLabels)) {
+      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityLabel, existingEntityLabels)) {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObejctDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }
 
-  static addUniqueLabel(newLabel: string, labels: string[]): boolean {
+  static addUniqueLabelToArray(newLabel: string, labels: string[]): boolean {
     try {
       for (const label of labels) {
         if (label === newLabel) {
@@ -752,13 +839,13 @@ export class OrchestratorHelper {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
       throw error;
     }
     return false;
   }
 
-  static addUniqueEntityLabel(newLabel: Label, labels: Label[]): boolean {
+  static addUniqueEntityLabelArray(newLabel: Label, labels: Label[]): boolean {
     try {
       for (const label of labels) {
         if (label.equals(newLabel)) {
@@ -768,7 +855,7 @@ export class OrchestratorHelper {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelArray(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
       throw error;
     }
     return false;

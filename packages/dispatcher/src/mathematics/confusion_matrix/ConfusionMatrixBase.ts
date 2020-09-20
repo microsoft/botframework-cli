@@ -13,11 +13,11 @@ import { Utility } from "../../utility/Utility";
 export abstract class ConfusionMatrixBase implements IConfusionMatrix {
 
     protected labels: string[] = [];
-    protected labelMap: { [id: string]: number } = {};
+    protected labelMap: Map<string, number> = new  Map<string, number>();
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         this.resetLabelsAndMap(labels, labelMap);
     }
 
@@ -26,8 +26,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
     public generateConfusionMatrixMetricStructure(
         quantileConfiguration: number = 4): {
         "confusionMatrix": IConfusionMatrix,
-        "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-        "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+        "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+        "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
         "microQuantileMetrics": {
             "quantilesPrecisions": number[],
             "quantilesRecalls": number[],
@@ -132,16 +132,22 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         const confusionMatrix: IConfusionMatrix = this;
         const crossValidationBinaryConfusionMatrix: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
-        const labelMap: { [id: string]: number } =
+        const labelMap: Map<string, number> =
             confusionMatrix.getLabelMap();
-        const labelBinaryConfusionMatrixBasicMetricMap: { [id: string]: { [id: string]: number } } =
-            Object.entries(labelMap).reduce(
-                (accumulant: { [id: string]: { [id: string]: number } }, [id, value]) =>
-                ({...accumulant, [id]: crossValidationBinaryConfusionMatrix[value].getBasicMetrics()}), {});
-        const labelBinaryConfusionMatrixMap: { [id: string]: BinaryConfusionMatrix } =
-            Object.entries(labelMap).reduce(
-                (accumulant: { [id: string]: BinaryConfusionMatrix }, [id, value]) =>
-                ({...accumulant, [id]: crossValidationBinaryConfusionMatrix[value]}), {});
+        const labelBinaryConfusionMatrixBasicMetricMap: Map<string, Map<string, number>> =
+            new Map<string, Map<string, number>>();
+        labelMap.forEach((value: number, key: string) => {
+            labelBinaryConfusionMatrixBasicMetricMap.set(
+                key,
+                crossValidationBinaryConfusionMatrix[value].getBasicMetrics());
+        });
+        const labelBinaryConfusionMatrixMap: Map<string, BinaryConfusionMatrix> =
+            new Map<string, BinaryConfusionMatrix>();
+        labelMap.forEach((value: number, key: string) => {
+            labelBinaryConfusionMatrixMap.set(
+                key,
+                crossValidationBinaryConfusionMatrix[value]);
+        });
         const binaryConfusionMatrices: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
         const microQuantileMetrics: {
@@ -620,8 +626,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "total": summationWeightedSupportMacroAverage };
         const confusionMatrixMetricStructure: {
             "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
             "microQuantileMetrics": {
                 "quantilesPrecisions": number[],
                 "quantilesRecalls": number[],
@@ -745,7 +751,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
     public getLabels(): string[] {
         return this.labels;
     }
-    public getLabelMap(): { [id: string]: number } {
+    public getLabelMap(): Map<string, number> {
         return this.labelMap;
     }
 
@@ -1509,7 +1515,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
     public validateLabel(
         label: string,
         throwIfNotLegal: boolean = true): boolean {
-        if (!(label in this.getLabelMap())) {
+        if (!this.getLabelMap().has(label)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
                     `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);
@@ -1521,8 +1527,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
 
     protected resetLabelsAndMap(
         labels: string[],
-        labelMap: { [id: string]: number }): void {
-        DictionaryMapUtility.validateStringArrayAndStringIdNumberValueDictionary(labels, labelMap);
+        labelMap: Map<string, number>): void {
+        DictionaryMapUtility.validateStringArrayAndStringKeyNumberValueMap(labels, labelMap);
         this.labels = labels;
         this.labelMap = labelMap;
     }

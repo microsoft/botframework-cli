@@ -19,13 +19,13 @@ implements IMultiLabelConfusionMatrix {
 
     constructor(
         labels: string[],
-        labelMap: { [id: string]: number }) {
+        labelMap: Map<string, number>) {
         super(labels, labelMap);
     }
 
     public addFrom(other: MultiLabelConfusionMatrixBase): void {
         Utility.validateStringArrayPairEquality(this.labels, other.labels);
-        DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(this.labelMap, other.labelMap);
+        DictionaryMapUtility.validateStringKeyNumberValueMapPair(this.labelMap, other.labelMap);
         const numbergetBinaryConfusionMatrices: number = this.getBinaryConfusionMatrices().length;
         for (let l: number = 0; l < numbergetBinaryConfusionMatrices; l++) {
             this.binaryConfusionMatrices[l].addFrom(other.binaryConfusionMatrices[l]);
@@ -43,8 +43,8 @@ implements IMultiLabelConfusionMatrix {
         value: number = 1): void {
         this.validateLabels(groundTrueLabels);
         this.validateLabels(predictedLabels);
-        const groundTrueLabelIds: number[] = groundTrueLabels.map((x: string) => this.labelMap[x]);
-        const predictedLabelIds: number[] = predictedLabels.map((x: string) => this.labelMap[x]);
+        const groundTrueLabelIds: number[] = groundTrueLabels.map((x: string) => this.labelMap.get(x) as number);
+        const predictedLabelIds: number[] = predictedLabels.map((x: string) => this.labelMap.get(x) as number);
         this.addInstanceByLabelIndexes(groundTrueLabelIds, predictedLabelIds, value);
     }
 

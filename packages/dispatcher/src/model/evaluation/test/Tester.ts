@@ -48,8 +48,8 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = {
-            confusionMatrixTest: new ConfusionMatrix([], {}),
-            thresholdReporterTest: new ThresholdReporter("", "", null, null, [], {}),
+            confusionMatrixTest: new ConfusionMatrix([], new Map<string, number>()),
+            thresholdReporterTest: new ThresholdReporter("", "", null, null, [], new Map<string, number>()),
             predictionLabels: [],
             predictionLabelIndexes: [],
             instanceIndexes: [],
@@ -60,7 +60,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
     public constructor(
         modelFilename: string,
         featurizerFilename: string) {
-        super(modelFilename, featurizerFilename, null, null, [], {});
+        super(modelFilename, featurizerFilename, null, null, [], new Map<string, number>());
     }
 
     public getTestResult(): {
@@ -149,8 +149,8 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             this.testResultCachedAfterTest.confusionMatrixTest;
         const confusionMatrixMetricStructure: {
             "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": { [id: string]: { [id: string]: number } },
-            "labelBinaryConfusionMatrixMap": { [id: string]: BinaryConfusionMatrix },
+            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
+            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
             "microQuantileMetrics": {
                 "quantilesPrecisions": number[],
                 "quantilesRecalls": number[],
@@ -341,7 +341,7 @@ export class Tester extends AbstractBaseModelFeaturizerEvaluator {
             this.getFeaturizer();
         // -------------------------------------------------------------------
         const labels: string[] = this.getLabels();
-        const labelMap: { [id: string]: number } = this.getLabelMap();
+        const labelMap: Map<string, number> = this.getLabelMap();
         // const numberLabels: number = featurizer.getNumberLabels();
         // const numberFeatures: number = featurizer.getNumberFeatures();
         // -------------------------------------------------------------------

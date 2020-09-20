@@ -573,7 +573,7 @@ describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", ()
     it("Test.0500 getBasicMetrics()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        assert.ok(binaryConfusionMatrix.getBasicMetrics().support === 2,
+        assert.ok(binaryConfusionMatrix.getBasicMetrics().get("support") === 2,
             `binaryConfusionMatrix.getTotal()=${binaryConfusionMatrix.getTotal()}` +
             `binaryConfusionMatrix.getCell11()=${binaryConfusionMatrix.getCell11()}` +
             `binaryConfusionMatrix.getRow1()=${binaryConfusionMatrix.getRow1()}` +

@@ -80,9 +80,9 @@ export class OrchestratorBuild {
     const baseName: string = path.basename(luFile, '.lu');
     Utility.debuggingLog('Created label resolver');
     const result: {
-      'utteranceLabelsMap': { [id: string]: string[] };
+      'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': { [id: string]: Label[] };
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(luFile, false);
     Utility.debuggingLog(`Processed ${luFile}`);
     LabelResolver.addExamples(result, labelResolver);
