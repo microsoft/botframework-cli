@@ -29,7 +29,7 @@ export default class QnamakerBuild extends Command {
   `]
 
   static flags: any = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'qnamaker:build command help'}),
     in: flags.string({char: 'i', description: 'Source .qna file or folder'}),
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key'}),
     botName: flags.string({char: 'b', description: 'Bot name'}),
@@ -39,9 +39,9 @@ export default class QnamakerBuild extends Command {
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
     dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'})
   }

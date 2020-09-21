@@ -736,8 +736,8 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --out flag is provided, overwrites relevant dialog file
-  -h, --help                       show CLI help
+  -f, --force                      If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
   -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
@@ -749,14 +749,14 @@ OPTIONS
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
-  --deleteOldVersion               Delete old version of LUIS application after building new one.
+  --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
   --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
 
-  --log                            write out log messages to console
+  --log                            Writes out log messages to console
 
   --luConfig=luConfig              Path to config for lu build which can contain switches for arguments
 
@@ -769,7 +769,7 @@ OPTIONS
 
   --schema=schema                  Defines $schema for generated .dialog files
 
-  --isStaging                      Publish luis application to staging slot if set. Default to production slot
+  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
 EXAMPLE
 
@@ -813,21 +813,20 @@ USAGE
   $ bf luis:cross-train
 
 OPTIONS
-  -h, --help               luis:cross-train help
-  -i, --in=in              source lu and qna files folder
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               luis:cross-train command help
+  -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules
+  --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path
+  --rootDialog=rootDialog  Root dialog file path
 
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-
-  --log                    [default: false] Write out log messages to console
+  --log                    [default: false] Writes out log messages to console
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -1343,8 +1342,8 @@ USAGE
 
 OPTIONS
   -b, --botName=botName                  (required) Bot name
-  -f, --force                            If --out flag is provided, overwirtes relevant dialog file
-  -h, --help                             show CLI help
+  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                             qnamaker:build command help
   -i, --in=in                            Source .qna file or folder
 
   -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
@@ -1360,7 +1359,7 @@ OPTIONS
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
                                          Only valid if --out is set
 
-  --log                                  write out log messages to console
+  --log                                  [default: false] Writes out log messages to console
 
   --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
 
@@ -1371,10 +1370,6 @@ OPTIONS
                                          Defaults to current logged in user alias
                    
   --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
-  
-  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-
-  --log                                  [default: false] Write out log messages to console  
 
   --schema=schema                        Defines $schema for generated .dialog files
   
@@ -1416,21 +1411,20 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -h, --help               qnamaker:cross-train help
-  -i, --in=in              source lu and qna files folder
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               qnamaker:cross-train command help
+  -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules
+  --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path.
+  --rootDialog=rootDialog  Root dialog file path.
 
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-
-  --log                    [default: false] Write out log messages to console
+  --log                    [default: false] Writes out log messages to console
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_

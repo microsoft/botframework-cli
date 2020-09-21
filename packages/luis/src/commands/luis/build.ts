@@ -28,7 +28,7 @@ export default class LuisBuild extends Command {
   `]
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'luis:build command help'}),
     in: flags.string({char: 'i', description: 'Lu file or folder'}),
     authoringKey: flags.string({description: 'LUIS authoring key'}),
     botName: flags.string({description: 'Bot name'}),
@@ -38,13 +38,13 @@ export default class LuisBuild extends Command {
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
     dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
-    deleteOldVersion: flags.boolean({description: 'Delete old version of LUIS application after building new one.'}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    deleteOldVersion: flags.boolean({description: 'Deletes old version of LUIS application after building new one.'}),
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
-    isStaging: flags.boolean({description: 'Publish luis application to staging slot if set. Default to production slot', default: false})
+    isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false})
   }
 
   async run() {
