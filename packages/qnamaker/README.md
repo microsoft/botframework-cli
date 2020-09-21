@@ -126,7 +126,7 @@ OPTIONS
   -h, --help                             qnamaker:build command help
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
+  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified, knowledge base
                                          setting will be output to console
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key

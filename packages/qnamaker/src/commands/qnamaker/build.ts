@@ -34,7 +34,7 @@ export default class QnamakerBuild extends Command {
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key'}),
     botName: flags.string({char: 'b', description: 'Bot name'}),
     region: flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, knowledge base setting will be output to console'}),
+    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, knowledge base setting will be output to console'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),

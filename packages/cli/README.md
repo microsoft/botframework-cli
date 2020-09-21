@@ -740,7 +740,7 @@ OPTIONS
   -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
+  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified, application
                                    setting will be output to console
                                    
   --authoringKey=authoringKey      LUIS authoring key
@@ -774,7 +774,6 @@ OPTIONS
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
-  multiLanguage
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
@@ -1346,7 +1345,7 @@ OPTIONS
   -h, --help                             qnamaker:build command help
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
+  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified, knowledge base
                                          setting will be output to console
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
