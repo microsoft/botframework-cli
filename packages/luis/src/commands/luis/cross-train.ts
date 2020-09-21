@@ -18,7 +18,7 @@ export default class LuisCrossTrain extends Command {
     out: flags.string({char: 'o', description: 'Output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'Path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
-    rootDialog: flags.string({description: 'RootDialog file path. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'}),
+    rootDialog: flags.string({description: 'RootDialog file path'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     log: flags.boolean({description: 'Write out log messages to console', default: false})
   }

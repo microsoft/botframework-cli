@@ -127,7 +127,7 @@ OPTIONS
   -i, --in=in                            Source .qna file or folder
 
   -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
-                                         ids will be output to console
+                                         setting will be output to console
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
 
@@ -195,7 +195,7 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -h, --help               luis:cross-train help
+  -h, --help               qnamakedr:cross-train help
   -i, --in=in              source lu and qna files folder
 
   -o, --out=out            output folder name. If not specified, the cross trained files will be written to
@@ -205,8 +205,11 @@ OPTIONS
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path. If --config not specified,
-                           cross-trian will automatically construct the config from file system based on root dialog file
+  --rootDialog=rootDialog  rootDialog file path.
+
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                    [default: false] Write out log messages to console
 ```
 
 _See code: [src/commands/qnamaker/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_

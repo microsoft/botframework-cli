@@ -736,13 +736,13 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwrites relevant dialog file
+  -f, --force                      If --out flag is provided, overwrites relevant dialog file
   -h, --help                       show CLI help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
-                                   output
-
+  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
+                                   setting will be output to console
+                                   
   --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
@@ -751,11 +751,10 @@ OPTIONS
 
   --deleteOldVersion               Delete old version of LUIS application after building new one.
 
-  --dialog=dialog                  [default: multiLanguage] Write out .dialog files whose recognizer type
-                                   [multiLanguage|crosstrained] is specified by --dialog
+  --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
-                                   valid if --dialog is set
+                                   valid if --out is set
 
   --log                            write out log messages to console
 
@@ -766,9 +765,15 @@ OPTIONS
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
 
+  --endpoint                       Luis authoring endpoint for publishing
+
+  --schema=schema                  Defines $schema for generated .dialog files
+
+  --isStaging                      Publish luis application to staging slot if set. Default to production slot
+
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
   multiLanguage
 ```
 
@@ -814,14 +819,15 @@ OPTIONS
   -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules which is relative to folder specified by --in. If not
-                           specified, it will read default config.json from the folder specified by --in
+  --config=config          path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path which is relative to folder specified by --in. If --config not
-                           specified, cross-trian will automatically construct the config from file system based on root
-                           dialog file
+  --rootDialog=rootDialog  rootDialog file path
+
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                    [default: false] Write out log messages to console
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -1337,36 +1343,44 @@ USAGE
 
 OPTIONS
   -b, --botName=botName                  (required) Bot name
-  -f, --force                            If --dialog flag is provided, overwirtes relevant dialog file
+  -f, --force                            If --out flag is provided, overwirtes relevant dialog file
   -h, --help                             show CLI help
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output file or folder name. If not specified, current directory will be used as
-                                         output
+  -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
+                                         setting will be output to console
 
   -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
 
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
 
-  --dialog=dialog                        [default: multiLanguage] Write out .dialog files whose recognizer type
-                                         [multiLanguage|crosstrained] is specified by --dialog
+  --dialog=dialog                        [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
-                                         Only valid if --dialog is set
+                                         Only valid if --out is set
 
   --log                                  write out log messages to console
+
+  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
 
   --region=region                        [default: westus] Overrides public endpoint
                                          https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
 
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
+                   
+  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
+  
+  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
 
+  --log                                  [default: false] Write out log messages to console  
+
+  --schema=schema                        Defines $schema for generated .dialog files
+  
 EXAMPLE
 
-       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} 
-  --dialog
+       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
@@ -1402,20 +1416,21 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -h, --help               luis:cross-train help
+  -h, --help               qnamaker:cross-train help
   -i, --in=in              source lu and qna files folder
 
   -o, --out=out            output folder name. If not specified, the cross trained files will be wrote to cross-trained
                            folder under folder of current command
 
-  --config=config          path to config file of mapping rules which is relative to folder specified by --in. If not
-                           specified, it will read default config.json from the folder specified by --in
+  --config=config          path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path which is relative to folder specified by --in. If --config not
-                           specified, cross-trian will automatically construct the config from file system based on root
-                           dialog file
+  --rootDialog=rootDialog  rootDialog file path.
+
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+
+  --log                    [default: false] Write out log messages to console
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_

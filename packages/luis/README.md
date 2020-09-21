@@ -344,7 +344,7 @@ OPTIONS
   -i, --in=in                      Lu file or folder
 
   -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
-                                   ids will be output to console
+                                   setting will be output to console
                                    
   --authoringKey=authoringKey      LUIS authoring key
 
@@ -376,7 +376,7 @@ OPTIONS
 
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
   multiLanguage
 ```
 
@@ -426,8 +426,7 @@ OPTIONS
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  RootDialog file path. If --config not specified,
-                           cross-trian will automatically construct the config from file system based on root dialog file
+  --rootDialog=rootDialog  RootDialog file path
 
   -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
 

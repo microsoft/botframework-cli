@@ -25,7 +25,7 @@ export default class QnamakerBuild extends Command {
   static description = 'Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations'
 
   static examples = [`
-    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog
+    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
   `]
 
   static flags: any = {
@@ -34,7 +34,7 @@ export default class QnamakerBuild extends Command {
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key'}),
     botName: flags.string({char: 'b', description: 'Bot name'}),
     region: flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, knowledge base ids will be output to console'}),
+    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, knowledge base setting will be output to console'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
@@ -166,7 +166,7 @@ export default class QnamakerBuild extends Command {
         }
       } else {
         this.log('The published knowledge base setting:')
-        this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).qna)
+        this.log(JSON.stringify(JSON.parse(dialogContents[dialogContents.length - 1].content).qna, null, 4))
         this.log('\n')
         this.log('QnA knowledge base endpointKeys:')
         this.log(endpointKeys)
