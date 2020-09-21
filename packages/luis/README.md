@@ -339,12 +339,12 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --out flag is provided, overwrites relevant dialog file
-  -h, --help                       show CLI help
+  -f, --force                      If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog files. If not specified, application
-                                   ids will be output to console
+  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified, application
+                                   setting will be output to console
                                    
   --authoringKey=authoringKey      LUIS authoring key
 
@@ -352,14 +352,14 @@ OPTIONS
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
-  --deleteOldVersion               Delete old version of LUIS application after building new one.
+  --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
   --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
 
-  --log                            write out log messages to console
+  --log                            Writes out log messages to console
 
   --luConfig=luConfig              Path to config for lu build which can contain switches for arguments
 
@@ -372,12 +372,11 @@ OPTIONS
 
   --schema=schema                  Defines $schema for generated .dialog files
 
-  --isStaging                      Publish luis application to staging slot if set. Default to production slot
+  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog 
-  multiLanguage
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
 ```
 
 _See code: [src/commands/luis/build.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
@@ -416,7 +415,8 @@ USAGE
   $ bf luis:cross-train
 
 OPTIONS
-  -h, --help               Luis:cross-train help
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               Luis:cross-train command help
   -i, --in=in              Source lu and qna files folder
 
   -o, --out=out            Output folder name. If not specified, the cross trained files will be written to cross-trained
@@ -426,12 +426,9 @@ OPTIONS
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  RootDialog file path. If --config not specified,
-                           cross-trian will automatically construct the config from file system based on root dialog file
+  --rootDialog=rootDialog  Root dialog file path
 
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-
-  --log                    [default: false] Write out log messages to console
+  --log                    [default: false] Writes out log messages to console
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_

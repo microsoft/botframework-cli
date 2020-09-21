@@ -13,14 +13,14 @@ export default class LuisCrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'Luis:cross-train help'}),
+    help: flags.help({char: 'h', description: 'Luis:cross-train command help'}),
     in: flags.string({char: 'i', description: 'Source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'Output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'Path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
-    rootDialog: flags.string({description: 'RootDialog file path. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'}),
+    rootDialog: flags.string({description: 'Root dialog file path'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false})
+    log: flags.boolean({description: 'Writes out log messages to console', default: false})
   }
 
   async run() {
