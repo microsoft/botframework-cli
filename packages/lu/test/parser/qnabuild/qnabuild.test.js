@@ -4,8 +4,8 @@ const uuidv1 = require('uuid/v1')
 const path = require('path')
 const NEWLINE = require('os').EOL
 const Builder = require('../../../src/parser/qnabuild/builder').Builder
-const luObject = require('../../../src/parser/lu/lu')
-const luOptions = require('../../../src/parser/lu/luOptions')
+const qnaObject = require('../../../src/parser/lu/qna')
+const qnaOptions = require('../../../src/parser/lu/qnaOptions')
 const txtfile = require('../../../src/parser/lufile/read-text-file');
 
 const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/qna-import-resolver')
@@ -271,7 +271,7 @@ describe('builder: loadContents function can resolve import files with customize
           file.filePath = file.filePath.slice(0, file.filePath.length - 3) + "en-us.qna"
         }
 
-        luObjects.push(new luObject(txtfile.readSync(file.filePath), new luOptions(file.filePath, file.includeInCollate)))
+        luObjects.push(new qnaObject(txtfile.readSync(file.filePath), new qnaOptions(file.filePath, file.includeInCollate)))
       }
       return luObjects
     };
@@ -289,5 +289,39 @@ describe('builder: loadContents function can resolve import files with customize
     assert.equal(result.qnaContents.length, 1)
     assert.isTrue(result.qnaContents[0].content.includes(
       `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
+  })
+})
+
+describe('builder: build function can catch relative endpoint exception successfully', () => {
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``)],
+        undefined,
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'http:fsd'
+      )
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Only absolute URLs are supported. "http:fsd" is not an absolute qnamaker endpoint URL.`)
+    }
+  })
+
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``)],
+        undefined,
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'fsd'
+      )
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Only absolute URLs are supported. "fsd" is not an absolute qnamaker endpoint URL.`)
+    }
   })
 })

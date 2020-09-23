@@ -378,3 +378,37 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     }
   })
 })
+
+describe('builder: build function can catch relative endpoint exception successfully', () => {
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new luObject('# Greeting')],
+        undefined,
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'http:fsd'
+      )
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Only absolute URLs are supported. "http:fsd" is not an absolute LUIS endpoint URL.`)
+    }
+  })
+
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new luObject('# Greeting')],
+        undefined,
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'fsd'
+      )
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Only absolute URLs are supported. "fsd" is not an absolute LUIS endpoint URL.`)
+    }
+  })
+})

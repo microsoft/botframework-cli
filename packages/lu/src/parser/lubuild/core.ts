@@ -13,6 +13,7 @@ const exception = require('./../utils/exception')
 const Luis = require('./../luis/luis')
 
 const rateLimitErrorCode = 429
+const absoluteUrlPattern = /^https?:\/\//i
 
 export class LuBuildCore {
   private readonly client: any
@@ -26,6 +27,11 @@ export class LuBuildCore {
     this.endpoint = endpoint
     this.retryCount = retryCount
     this.retryDuration = retryDuration
+
+    // check endpoint is absolute or not
+    if (!absoluteUrlPattern.test(endpoint)) {
+      throw (new exception(retCode.errorCode.INVALID_URI, `Only absolute URLs are supported. "${endpoint}" is not an absolute LUIS endpoint URL.`))
+    }
 
     // new luis api client
     const creds = new CognitiveServicesCredentials(subscriptionKey)

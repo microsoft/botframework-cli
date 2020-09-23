@@ -8,10 +8,17 @@ const exception = require('./../utils/exception')
 const {ServiceBase} = require('./serviceBase')
 const NEWLINE = require('os').EOL
 
+const absoluteUrlPattern = /^https?:\/\//i
+
 export class QnaBuildCore {
   private readonly service: any
 
   constructor(subscriptionkey: string, endpoint: string) {
+    // check endpoint is absolute or not
+    if (!absoluteUrlPattern.test(endpoint)) {
+      throw (new exception(retCode.errorCode.INVALID_URI, `Only absolute URLs are supported. "${endpoint}" is not an absolute qnamaker endpoint URL.`))
+    }
+
     this.service = new ServiceBase(endpoint, subscriptionkey)
   }
 
