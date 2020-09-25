@@ -3,9 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import {Settings} from './settings'
-import * as path from 'path'
-
 export class Recognizer {
   versionId: string
   private readonly id: string

@@ -152,6 +152,8 @@ OPTIONS
   --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
   
   --schema=schema                        Defines $schema for generated .dialog files
+
+  --genSettingsOnly                [default: false]Indicates only write out settings to out folder. Only valid if --out is set
   
 EXAMPLE
 

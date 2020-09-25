@@ -309,7 +309,7 @@ export function getCultureFromPath(file: string): string | null {
   }
 }
 
-export function isAllFilesSectionEmpty(contents: Lu[]): boolean {
+export function isAllFilesSectionEmpty(contents: any[]): boolean {
   let isAllFilesSectionEmpty = true
   for (const content of contents) {
     let resource = luParser.parse(content.content)
