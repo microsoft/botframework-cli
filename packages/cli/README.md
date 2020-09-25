@@ -771,6 +771,7 @@ OPTIONS
 
   --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
+  --genSettingsOnly                [default: false]Indicates only write out settings to out folder. Only valid if --out is set
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}

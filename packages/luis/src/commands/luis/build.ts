@@ -12,10 +12,6 @@ const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('@microsoft/bf-lu').V2.LU
 const LUOptions = require('@microsoft/bf-lu/lib/parser/lu/luOptions')
-const Settings = require('@microsoft/bf-lu/lib/parser/lubuild/settings')
-const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/multi-language-recognizer')
-const Recognizer = require('@microsoft/bf-lu/lib/parser/lubuild/recognizer')
-const CrosstrainedRecognizer = require('@microsoft/bf-lu/lib/parser/lubuild/cross-trained-recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/lubuild/builder').Builder
 const recognizerType = require('@microsoft/bf-lu/lib/parser/utils/enums/recognizertypes')
 const utils = require('../../utils/index')
@@ -44,7 +40,8 @@ export default class LuisBuild extends Command {
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
-    isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false})
+    isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
+    genSettingsOnly: flags.boolean({description: 'Indicates only write out settings to out folder. Only valid if --out is set', default: false})
   }
 
   async run() {
@@ -72,7 +69,7 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
 
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging}
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging, genSettingsOnly}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -106,10 +103,6 @@ export default class LuisBuild extends Command {
       })
 
       let luContents: any[] = []
-      let recognizers = new Map<string, any>()
-      let multiRecognizers = new Map<string, any>()
-      let settings: any
-      let crosstrainedRecognizers = new Map<string, any>()
 
       if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
@@ -125,22 +118,14 @@ export default class LuisBuild extends Command {
 
         // load lu contents from lu files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, defaultCulture, suffix, region, schema)
-        luContents = loadedResources.luContents
-        recognizers = loadedResources.recognizers
-        multiRecognizers = loadedResources.multiRecognizers
-        settings = loadedResources.settings
-        crosstrainedRecognizers = loadedResources.crosstrainedRecognizers
+        luContents = await builder.loadContents(files, {
+          culture: defaultCulture
+        })
       } else {
         // load lu content from stdin and create default recognizer, multiRecognier and settings
         if (log) this.log('Load lu content from stdin\n')
         const content = new Content(flags.stdin, new LUOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
         luContents.push(content)
-        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), 'stdin.lu.dialog'), {}))
-        settings = new Settings(path.join(process.cwd(), `luis.settings.${suffix}.${region}.json`), {})
-        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings.get('stdin'), {})
-        recognizers.set(content.name, recognizer)
-        crosstrainedRecognizers.set('stdin', new CrosstrainedRecognizer(path.join(process.cwd(), 'stdin.lu.qna.dialog'), {}))
       }
 
       // update or create and then train and publish luis applications based on loaded resources
@@ -150,16 +135,48 @@ export default class LuisBuild extends Command {
       let keptVersionCount = 100
       if (deleteOldVersion) keptVersionCount = 1
 
-      const dialogContents = await builder.build(luContents, recognizers, authoringKey, endpoint, botName, suffix, fallbackLocale, keptVersionCount, isStaging, multiRecognizers, settings, crosstrainedRecognizers, dialog)
+      const settingsContent = await builder.build(luContents, authoringKey, botName, {
+        endpoint,
+        suffix,
+        region,
+        keptVersionCount,
+        isStaging,
+        schema
+      })
+
+      const dialogContents = await builder.generateDialogs(luContents, {
+        fallbackLocale,
+        schema,
+        dialog
+      })
 
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder, luConfig)
+        if (!genSettingsOnly) {
+          let writeDone = await builder.writeDialogAssets(dialogContents, {
+            force,
+            out: outputFolder,
+            luConfig
+          })
+
+          if (writeDone) {
+            this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+          } else {
+            this.log(`No changes to the .dialog files in ${outputFolder}\n`)
+          }
+        }
+
+        let writeDone = await builder.writeDialogAssets(settingsContent, {
+          force,
+          out: outputFolder,
+          luConfig
+        })
+
         if (writeDone) {
-          this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+          this.log(`Successfully wrote settings file to ${outputFolder}\n`)
         } else {
-          this.log(`No changes to the .dialog files in ${outputFolder}\n`)
+          this.log(`No changes to the settings file in ${outputFolder}\n`)
         }
       } else {
         this.log('The published application setting:')
