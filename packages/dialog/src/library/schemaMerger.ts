@@ -148,9 +148,12 @@ class Component {
             let root = ppath.dirname(this.path)
             for (let extension of extensions) {
                 patterns.push(ppath.join(root, `**/*${extension}`))
-                if (this.path.includes('package.json')) {
-                    patterns.push(`!${ppath.join(root, `node_modules/**/*${extension}`)}`)
-                }
+
+            }
+            if (this.path.endsWith('package.json')) {
+                patterns.push(`!${ppath.join(root, 'node_modules/**')}`)
+            } else if (this.path.endsWith('.csproj')) {
+                patterns.push(`!${ppath.join(root, 'bin/**')}`)
             }
         }
         return patterns
@@ -276,7 +279,7 @@ export default class SchemaMerger {
     public constructor(patterns: string[], output: string, imports: string | undefined, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
-        this.imports = imports ?? ppath.dirname(output)
+        this.imports = imports ?? ppath.dirname(this.output)
         this.verbose = verbose
         this.log = log
         this.warn = warn
@@ -604,10 +607,11 @@ export default class SchemaMerger {
             this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
                 if (!component.isRoot()) {
-                    let exported = ppath.join(ppath.dirname(component.path), 'exportedAssets')
+                    let exported = ppath.join(ppath.dirname(component.path), 'ExportedAssets')
                     if (await fs.pathExists(exported)) {
                         let imported = ppath.join(this.imports, 'ImportedAssets', component.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
+                        await fs.emptyDir(imported)
                         await fs.copy(exported, imported, {recursive: true})
                     }
                 }
