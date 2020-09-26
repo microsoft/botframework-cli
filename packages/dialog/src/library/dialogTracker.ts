@@ -202,14 +202,15 @@ export class DialogTracker {
                 if (!validation && validator.errors) {
                     for (let err of validator.errors) {
                         let path = err.dataPath
+                        debugger
                         if (path.startsWith(dialog.file)) {
                             path = path.substring(dialog.file.length)
                         }
-                        dialog.errors.push(new Error(`${path} ${err.message}`))
+                        dialog.errors.push(new Error(`${err.message}`))
                     }
                 }
             } else {
-                dialog.errors.push(new Error(`${dialog} does not have a $schema.`))
+                dialog.errors.push(new Error(`missing $schema.`))
             }
             walkJSON(dialog.body, '', (elt, path) => {
                 if (elt.$kind) {
@@ -245,7 +246,9 @@ export class DialogTracker {
 
     // Add dialog files that match patterns to tracker.
     async addDialogFiles(patterns: string[]): Promise<void> {
-        let filePaths = await glob(patterns)
+        console.log(patterns)
+        let filePaths = await glob(patterns.map(e => e.replace(/\\/g, '/')))
+        console.log(filePaths)
         for (let filePath of filePaths) {
             await this.addDialogFile(filePath)
         }

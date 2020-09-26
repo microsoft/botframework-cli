@@ -2,7 +2,11 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+TODO: 
+1) Finish fixing up error messages for verify and bringing back tests
+2) Add --schema switch to verify for default schema
+3) For merge add hash codes to .lg/.lu/.dialog and when copying check it.
+4) Make sure merge sorts for implements as well as definitions and oneof
 import { Command, flags } from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
 import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTracker';
@@ -49,10 +53,11 @@ export default class DialogVerify extends Command {
                     }
                 } else {
                     for (let error of dialog.errors) {
-                        this.consoleError(`${error.message.trim()}`, 'DLG001')
+                        this.consoleError(`${error.message}`, 'DLG001')
                     }
                 }
             }
+            this.currentFile = ''
 
             for (let defs of tracker.multipleDefinitions()) {
                 let def = (defs as Definition[])[0]
@@ -101,11 +106,11 @@ export default class DialogVerify extends Command {
 
     consoleWarn(msg: string, code: string): void {
         this.warnings++
-        this.warn(`${this.currentFile} - warning ${code || ''}: ${msg}`)
+        this.warn(`${this.currentFile ? `${this.currentFile} - ` : ''}Warning ${code || ''}: ${msg}`)
     }
 
     consoleError(msg: string, code: string): void {
         this.errors++
-        this.error(`${this.currentFile} - error ${code || ''}: ${msg}`)
+        this.error(`${this.currentFile ? `${this.currentFile} - ` : ''}Error ${code || ''}: ${msg}`)
     }
 }
