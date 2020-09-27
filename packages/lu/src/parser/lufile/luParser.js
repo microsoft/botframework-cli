@@ -19,6 +19,11 @@ const Range = require('./diagnostic').Range;
 const Position = require('./diagnostic').Position;
 const NEWLINE = require('os').EOL;
 
+const defaultConfig = {
+  enableModelDescription: true,
+  enableComments: true
+}
+
 class LUParser {
 
     /**
@@ -27,6 +32,8 @@ class LUParser {
      * @param {LUResource} luResource
      */
     static parseWithRef(text, luResource, config) {
+        config = config || {};
+        config = {...defaultConfig, ...config};
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
@@ -40,6 +47,8 @@ class LUParser {
      * @param {string} text
      */
     static parse(text, sectionEnabled, config) {
+        config = config || {};
+        config = {...defaultConfig, ...config};
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
@@ -49,12 +58,19 @@ class LUParser {
         return this.extractFileContent(fileContent, text, errors, sectionEnabled, config);
     }
 
-    static extractFileContent(fileContent, content, errors, sectionEnabled) {
+    static extractFileContent(fileContent, content, errors, sectionEnabled, config) {
         let sections = [];
         let modelInfoSections = [];
-
         /*
-        const comments = this.extractCommentDefinition(fileContent);
+        let comments = [];
+        try {
+          comments = this.extractCommentDefinition(fileContent);
+        } catch (err) {
+            errors.push(BuildDiagnostic({
+                message: `Error happened when parsing comments: ${err.message}`
+            }))
+        }
+
         if (comments.length > 0 && !config.enableComments) {
           const error = BuildDiagnostic({
             message: 'Do not support Comments. Please make sure enableComments is set to true.',
@@ -364,7 +380,7 @@ class LUParser {
     /**
      * @param {FileContext} fileContext
      */
-    /*
+
     static extractCommentDefinition(fileContext) {
       if (fileContext === undefined
           || fileContext === null) {
@@ -372,13 +388,13 @@ class LUParser {
       }
 
       let comments = fileContext.paragraph()
-          .map(x => x.commentDefinition())
+          .map(x => x.commentSection())
           .filter(x => x !== undefined && x !== null)
           .map(x => x.text);
 
       return comments;
   }
-*/
+
     /**
      * @param {any[]} sections
      */

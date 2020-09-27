@@ -158,7 +158,7 @@ const parseFileContentsModule = {
  */
 const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, locale, config) {
     fileContent = helpers.sanitizeNewLines(fileContent);
-    let luResource = luParser.parse(fileContent);
+    let luResource = luParser.parse(fileContent, config);
 
     if (luResource.Errors && luResource.Errors.length > 0) {
         if (log) {
@@ -641,7 +641,7 @@ const verifyNoCircularDependencyForFeatures = function(parsedContent) {
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleImportSection = async function (parsedContent, luResource) {
+const parseAndHandleImportSection = async function (parsedContent, luResource, config) {
     // handle reference
     let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
