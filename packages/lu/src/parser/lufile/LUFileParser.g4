@@ -16,7 +16,6 @@ paragraph
     | referenceSection
     | qnaSection
     | modelInfoSection
-    | commentDefinition
     ;
 
 // Treat EOF as newline to hanle file end gracefully
@@ -248,8 +247,4 @@ modelInfoSection
 
 modelInfoDefinition
     : WS* MODEL_INFO
-    ;
-
-commentDefinition
-    : COMMENT
     ;

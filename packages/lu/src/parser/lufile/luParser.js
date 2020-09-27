@@ -53,6 +53,7 @@ class LUParser {
         let sections = [];
         let modelInfoSections = [];
 
+        /*
         const comments = this.extractCommentDefinition(fileContent);
         if (comments.length > 0 && !config.enableComments) {
           const error = BuildDiagnostic({
@@ -60,7 +61,7 @@ class LUParser {
           });
           throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
-
+        */
         try {
             modelInfoSections = this.extractModelInfoSections(fileContent);
         } catch (err) {
@@ -363,6 +364,7 @@ class LUParser {
     /**
      * @param {FileContext} fileContext
      */
+    /*
     static extractCommentDefinition(fileContext) {
       if (fileContext === undefined
           || fileContext === null) {
@@ -376,7 +378,7 @@ class LUParser {
 
       return comments;
   }
-
+*/
     /**
      * @param {any[]} sections
      */

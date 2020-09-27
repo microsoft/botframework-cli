@@ -1,10 +1,11 @@
-// Generated from LUFileParser.g4 by ANTLR 4.7.1
+// Generated from LUFileParser.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 var LUFileParserListener = require('./LUFileParserListener').LUFileParserListener;
 var LUFileParserVisitor = require('./LUFileParserVisitor').LUFileParserVisitor;
 
 var grammarFileName = "LUFileParser.g4";
+
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003*\u028e\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t",
@@ -615,6 +616,7 @@ LUFileParser.RULE_modelInfoSection = 57;
 LUFileParser.RULE_modelInfoDefinition = 58;
 LUFileParser.RULE_commentDefinition = 59;
 
+
 function FileContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -708,6 +710,7 @@ LUFileParser.prototype.file = function() {
     }
     return localctx;
 };
+
 
 function ParagraphContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -874,6 +877,7 @@ LUFileParser.prototype.paragraph = function() {
     return localctx;
 };
 
+
 function NewlineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -974,6 +978,7 @@ LUFileParser.prototype.newline = function() {
     }
     return localctx;
 };
+
 
 function ErrorStringContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1084,6 +1089,7 @@ LUFileParser.prototype.errorString = function() {
     return localctx;
 };
 
+
 function NestedIntentSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1156,6 +1162,7 @@ LUFileParser.prototype.nestedIntentSection = function() {
     }
     return localctx;
 };
+
 
 function NestedIntentNameLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1262,6 +1269,7 @@ LUFileParser.prototype.nestedIntentNameLine = function() {
     }
     return localctx;
 };
+
 
 function NestedIntentNameContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1374,6 +1382,7 @@ LUFileParser.prototype.nestedIntentName = function() {
     return localctx;
 };
 
+
 function NameIdentifierContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1474,6 +1483,7 @@ LUFileParser.prototype.nameIdentifier = function() {
     return localctx;
 };
 
+
 function NestedIntentBodyDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1561,6 +1571,7 @@ LUFileParser.prototype.nestedIntentBodyDefinition = function() {
     }
     return localctx;
 };
+
 
 function SubIntentDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1658,6 +1669,7 @@ LUFileParser.prototype.subIntentDefinition = function() {
     return localctx;
 };
 
+
 function SimpleIntentSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -1724,6 +1736,7 @@ LUFileParser.prototype.simpleIntentSection = function() {
     }
     return localctx;
 };
+
 
 function IntentDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1803,6 +1816,7 @@ LUFileParser.prototype.intentDefinition = function() {
     }
     return localctx;
 };
+
 
 function IntentNameLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -1926,6 +1940,7 @@ LUFileParser.prototype.intentNameLine = function() {
     return localctx;
 };
 
+
 function IntentNameContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2037,6 +2052,7 @@ LUFileParser.prototype.intentName = function() {
     return localctx;
 };
 
+
 function IntentBodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2128,6 +2144,7 @@ LUFileParser.prototype.intentBody = function() {
     }
     return localctx;
 };
+
 
 function NormalIntentBodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2279,6 +2296,7 @@ LUFileParser.prototype.normalIntentBody = function() {
     return localctx;
 };
 
+
 function NormalIntentStringContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2425,6 +2443,7 @@ LUFileParser.prototype.normalIntentString = function() {
     return localctx;
 };
 
+
 function NewEntitySectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -2491,6 +2510,7 @@ LUFileParser.prototype.newEntitySection = function() {
     }
     return localctx;
 };
+
 
 function NewEntityDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2570,6 +2590,7 @@ LUFileParser.prototype.newEntityDefinition = function() {
     }
     return localctx;
 };
+
 
 function NewEntityListbodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2695,6 +2716,7 @@ LUFileParser.prototype.newEntityListbody = function() {
     }
     return localctx;
 };
+
 
 function NewEntityLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -2964,6 +2986,7 @@ LUFileParser.prototype.newEntityLine = function() {
     return localctx;
 };
 
+
 function NewCompositeDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3030,6 +3053,7 @@ LUFileParser.prototype.newCompositeDefinition = function() {
     }
     return localctx;
 };
+
 
 function NewRegexDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3098,6 +3122,7 @@ LUFileParser.prototype.newRegexDefinition = function() {
     return localctx;
 };
 
+
 function NewEntityTypeContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3164,6 +3189,7 @@ LUFileParser.prototype.newEntityType = function() {
     }
     return localctx;
 };
+
 
 function NewEntityRolesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3267,6 +3293,7 @@ LUFileParser.prototype.newEntityRoles = function() {
     return localctx;
 };
 
+
 function NewEntityUsesFeaturesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3362,6 +3389,7 @@ LUFileParser.prototype.newEntityUsesFeatures = function() {
     }
     return localctx;
 };
+
 
 function NewEntityRoleOrFeaturesContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3524,6 +3552,7 @@ LUFileParser.prototype.newEntityRoleOrFeatures = function() {
     return localctx;
 };
 
+
 function NewEntityNameContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3625,6 +3654,7 @@ LUFileParser.prototype.newEntityName = function() {
     }
     return localctx;
 };
+
 
 function NewEntityNameWithWSContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3728,6 +3758,7 @@ LUFileParser.prototype.newEntityNameWithWS = function() {
     return localctx;
 };
 
+
 function EntitySectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -3794,6 +3825,7 @@ LUFileParser.prototype.entitySection = function() {
     }
     return localctx;
 };
+
 
 function EntityDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -3873,6 +3905,7 @@ LUFileParser.prototype.entityDefinition = function() {
     }
     return localctx;
 };
+
 
 function EntityLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4000,6 +4033,7 @@ LUFileParser.prototype.entityLine = function() {
     return localctx;
 };
 
+
 function EntityNameContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4108,6 +4142,7 @@ LUFileParser.prototype.entityName = function() {
     }
     return localctx;
 };
+
 
 function EntityTypeContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4268,6 +4303,7 @@ LUFileParser.prototype.entityType = function() {
     return localctx;
 };
 
+
 function CompositeEntityIdentifierContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4335,6 +4371,7 @@ LUFileParser.prototype.compositeEntityIdentifier = function() {
     return localctx;
 };
 
+
 function RegexEntityIdentifierContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4401,6 +4438,7 @@ LUFileParser.prototype.regexEntityIdentifier = function() {
     }
     return localctx;
 };
+
 
 function EntityListBodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4526,6 +4564,7 @@ LUFileParser.prototype.entityListBody = function() {
     }
     return localctx;
 };
+
 
 function NormalItemStringContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4673,6 +4712,7 @@ LUFileParser.prototype.normalItemString = function() {
     return localctx;
 };
 
+
 function ImportSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4739,6 +4779,7 @@ LUFileParser.prototype.importSection = function() {
     }
     return localctx;
 };
+
 
 function ImportDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -4843,6 +4884,7 @@ LUFileParser.prototype.importDefinition = function() {
     return localctx;
 };
 
+
 function ReferenceSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -4909,6 +4951,7 @@ LUFileParser.prototype.referenceSection = function() {
     }
     return localctx;
 };
+
 
 function ReferenceDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -5013,6 +5056,7 @@ LUFileParser.prototype.referenceDefinition = function() {
     return localctx;
 };
 
+
 function QnaSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5079,6 +5123,7 @@ LUFileParser.prototype.qnaSection = function() {
     }
     return localctx;
 };
+
 
 function QnaDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -5195,6 +5240,7 @@ LUFileParser.prototype.qnaDefinition = function() {
     return localctx;
 };
 
+
 function QnaSourceInfoContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5285,6 +5331,7 @@ LUFileParser.prototype.qnaSourceInfo = function() {
     return localctx;
 };
 
+
 function QnaIdMarkContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5374,6 +5421,7 @@ LUFileParser.prototype.qnaIdMark = function() {
     }
     return localctx;
 };
+
 
 function QnaQuestionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -5471,6 +5519,7 @@ LUFileParser.prototype.qnaQuestion = function() {
     return localctx;
 };
 
+
 function QuestionTextContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5554,6 +5603,7 @@ LUFileParser.prototype.questionText = function() {
     }
     return localctx;
 };
+
 
 function MoreQuestionsBodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -5702,6 +5752,7 @@ LUFileParser.prototype.moreQuestionsBody = function() {
     return localctx;
 };
 
+
 function MoreQuestionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5814,6 +5865,7 @@ LUFileParser.prototype.moreQuestion = function() {
     return localctx;
 };
 
+
 function ErrorQuestionStringContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -5923,6 +5975,7 @@ LUFileParser.prototype.errorQuestionString = function() {
     return localctx;
 };
 
+
 function QnaAnswerBodyContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6022,6 +6075,7 @@ LUFileParser.prototype.qnaAnswerBody = function() {
     }
     return localctx;
 };
+
 
 function FilterSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -6164,6 +6218,7 @@ LUFileParser.prototype.filterSection = function() {
     return localctx;
 };
 
+
 function PromptSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6305,6 +6360,7 @@ LUFileParser.prototype.promptSection = function() {
     return localctx;
 };
 
+
 function FilterLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6433,6 +6489,7 @@ LUFileParser.prototype.filterLine = function() {
     return localctx;
 };
 
+
 function ErrorFilterLineContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6542,6 +6599,7 @@ LUFileParser.prototype.errorFilterLine = function() {
     return localctx;
 };
 
+
 function MultiLineAnswerContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6632,6 +6690,7 @@ LUFileParser.prototype.multiLineAnswer = function() {
     return localctx;
 };
 
+
 function ModelInfoSectionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
@@ -6698,6 +6757,7 @@ LUFileParser.prototype.modelInfoSection = function() {
     }
     return localctx;
 };
+
 
 function ModelInfoDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {
@@ -6788,6 +6848,7 @@ LUFileParser.prototype.modelInfoDefinition = function() {
     }
     return localctx;
 };
+
 
 function CommentDefinitionContext(parser, parent, invokingState) {
 	if(parent===undefined) {

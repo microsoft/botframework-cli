@@ -1,6 +1,7 @@
-// Generated from LUFileLexer.g4 by ANTLR 4.7.1
+// Generated from LUFileLexer.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
+
 
 
 var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
@@ -601,7 +602,6 @@ LUFileLexer.prototype.ruleNames = [ "A", "B", "C", "D", "E", "F", "G", "H",
                                     "QNA_TEXT" ];
 
 LUFileLexer.prototype.grammarFileName = "LUFileLexer.g4";
-
 
 
 exports.LUFileLexer = LUFileLexer;
