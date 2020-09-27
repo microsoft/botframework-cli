@@ -16,12 +16,11 @@ paragraph
     | referenceSection
     | qnaSection
     | modelInfoSection
-    | commentSection
     ;
 
 // Treat EOF as newline to hanle file end gracefully
-// It's possible that parser doesn't even have to handle NEWLINE,
-// but before the syntax is finalized, we still keep the NEWLINE in grammer
+// It's possible that parser doesn't even have to handle NEWLINE, 
+// but before the syntax is finalized, we still keep the NEWLINE in grammer 
 newline
     : WS* (NEWLINE | EOF)
     ;
@@ -137,7 +136,7 @@ entitySection
 entityDefinition
     : entityLine entityListBody?
     ;
-
+    
 entityLine
     : WS* DOLLAR entityName? COLON_MARK? entityType?
     ;
@@ -197,7 +196,7 @@ qnaSourceInfo
 qnaIdMark
     : WS* QNA_ID_MARK
     ;
-
+    
 qnaQuestion
     : WS* QNA questionText
     ;
@@ -248,8 +247,4 @@ modelInfoSection
 
 modelInfoDefinition
     : WS* MODEL_INFO
-    ;
-
-commentSection
-    : COMMENT
     ;

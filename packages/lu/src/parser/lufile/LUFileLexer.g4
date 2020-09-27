@@ -54,7 +54,7 @@ MODEL_INFO
   ;
 
 COMMENT
-  : WS* '>' ~('\r'|'\n')*
+  : WS* '>' ~('\r'|'\n')* -> skip
   ;
 
 QNA
@@ -99,11 +99,11 @@ MULTI_LINE_TEXT
 PROMPT_MARK
   : '**' P R O M P T S ':**'
   ;
-
+  
 INVALID_TOKEN_DEFAULT_MODE
   : .
   ;
-
+  
 mode NEW_ENTITY_MODE;
 
 WS_IN_NEW_ENTITY
@@ -155,7 +155,7 @@ NEW_ENTITY_IDENTIFIER_WITH_WS
   ;
 
 mode INTENT_NAME_MODE;
-
+  
 WS_IN_NAME
   : WS -> type(WS)
   ;

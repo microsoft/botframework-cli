@@ -189,7 +189,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     let featuresToProcess = parseAndHandleEntityV2(parsedContent, luResource, log, locale, config);
 
     // parse entity section
-    parseAndHandleEntitySection(parsedContent, luResource, log, locale);
+    parseAndHandleEntitySection(parsedContent, luResource, log, locale, config);
 
     // parse simple intent section
     await parseAndHandleSimpleIntentSection(parsedContent, luResource);
@@ -198,13 +198,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     await parseAndHandleQnaSection(parsedContent, luResource);
 
     if (featuresToProcess && featuresToProcess.length > 0) {
-        if (!config.enableFeatures) {
-          const error = BuildDiagnostic({
-            message: 'Do not support Features. Please make sure enableFeatures is set to true.'
-          });
-          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-        }
-        parseFeatureSections(parsedContent, featuresToProcess);
+        parseFeatureSections(parsedContent, featuresToProcess, config);
     }
 
     validateNDepthEntities(parsedContent.LUISJsonStructure.entities, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles, parsedContent.LUISJsonStructure.intents);
@@ -467,7 +461,13 @@ const addFeatures = function(tgtItem, feature, featureType, range, featureProper
  * @param {Object} parsedContent
  * @param {Object} featuresToProcess
  */
-const parseFeatureSections = function(parsedContent, featuresToProcess) {
+const parseFeatureSections = function(parsedContent, featuresToProcess, config) {
+    if (!config.enableFeatures) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Features. Please make sure enableFeatures is set to true.',
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
     // We are only interested in extracting features and setting things up here.
     (featuresToProcess || []).forEach(section => {
         if (section.Type === INTENTTYPE) {
@@ -1259,13 +1259,6 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                         addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
                         break;
                     case EntityTypeEnum.COMPOSITE:
-                      if (!config.enableCompositeEntities) {
-                        const error = BuildDiagnostic({
-                          message: 'Do not support Composite entity. Please make sure enableCompositeEntities is set to true.',
-                          range: entity.Range
-                        });
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                      }
                         let candidateChildren = [];
                         if (entity.CompositeDefinition) {
                             entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
@@ -1275,63 +1268,28 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                                 line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
                             })
                         }
-                        handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.Range, false, entity.Type !== undefined);
+                        handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.Range, false, entity.Type !== undefined, config);
                         break;
                     case EntityTypeEnum.LIST:
-                        if (!config.enableListEntities) {
-                          const error = BuildDiagnostic({
-                            message: 'Do not support List entity. Please make sure enableListEntities is set to true.',
-                            range: entity.Range
-                          });
-                          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
                         handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.Range);
                         break;
                     case EntityTypeEnum.PATTERNANY:
-                        if (!config.enablePattern) {
-                          const error = BuildDiagnostic({
-                            message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
-                            range: entity.Range
-                          });
-                          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
-                        handlePatternAny(parsedContent, entityName, entityRoles, entity.Range);
+                        handlePatternAny(parsedContent, entityName, entityRoles, entity.Range, config);
                         break;
                     case EntityTypeEnum.PREBUILT:
-                        if (!config.enablePrebuiltEntities) {
-                          const error = BuildDiagnostic({
-                            message: 'Do not support Prebuilt entity. Please make sure enablePrebuiltEntities is set to true.',
-                            range: entity.Range
-                          });
-                          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
-                        handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.Range);
+                        handlePrebuiltEntity(parsedContent, 'prebuilt', entityName, entityRoles, locale, log, entity.Range, config);
                         break;
                     case EntityTypeEnum.REGEX:
-                        if (!config.enableRegexEntities) {
-                          const error = BuildDiagnostic({
-                            message: 'Do not support Regex entity. Please make sure enableRegexEntities is set to true.',
-                            range: entity.Range
-                          });
-                          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
                         if (entity.ListBody[0]) {
-                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.Range);
+                            handleRegExEntity(parsedContent, entityName, entity.ListBody[0].trim().substr(1).trim(), entityRoles, entity.Range, config);
                         } else {
-                            handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.Range);
+                            handleRegExEntity(parsedContent, entityName, entity.RegexDefinition, entityRoles, entity.Range, config);
                         }
                         break;
                     case EntityTypeEnum.ML:
                         break;
                     case EntityTypeEnum.PHRASELIST:
-                        if (!config.enablePhraseLists) {
-                          const error = BuildDiagnostic({
-                            message: 'Do not support Phrase Lists. Please make sure enablePhraseLists is set to true.',
-                            range: entity.Range
-                          });
-                          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-                        }
-                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.Range);
+                        handlePhraseList(parsedContent, entityName, entity.Type, entityRoles, entity.ListBody.map(item => item.trim().substr(1).trim()), entity.Range, config);
                     default:
                         //Unknown entity type
                         break;
@@ -1475,8 +1433,15 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, r
  * @param {String} entityName entity name
  * @param {String} entityRoles collection of entity roles
  */
-const handlePatternAny = function(parsedContent, entityName, entityRoles) {
-     // check if this patternAny entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
+const handlePatternAny = function(parsedContent, entityName, entityRoles, range, config) {
+    if (!config.enablePattern) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
+      // check if this patternAny entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
      try {
         let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'Pattern.Any');
         if (rolesImport.length !== 0) {
@@ -1538,7 +1503,14 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
  * @param {String []} entityRoles Array of roles
  * @param {String []} valuesList Array of individual lines to be processed and added to phrase list.
  */
-const handlePhraseList = function(parsedContent, entityName, entityType, entityRoles, valuesList, range) {
+const handlePhraseList = function(parsedContent, entityName, entityType, entityRoles, valuesList, range, config) {
+    if (!config.enablePhraseLists) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Phrase Lists. Please make sure enablePhraseLists is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
     let isPLEnabledForAllModels = undefined;
     let isPLEnabled = undefined;
     if (entityRoles.length !== 0) {
@@ -1619,7 +1591,15 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
  * @param {Boolean} log boolean to indicate if errors should be sent to stdout
  * @param {String} range range
  */
-const handlePrebuiltEntity = function(parsedContent, entityName, entityType, entityRoles, locale, log, range) {
+const handlePrebuiltEntity = function(parsedContent, entityName, entityType, entityRoles, locale, log, range, config) {
+    if (!config.enablePrebuiltEntities) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Prebuilt entity. Please make sure enablePrebuiltEntities is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
+
     locale = locale ? locale.toLowerCase() : 'en-us';
     // check if this pre-built entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
@@ -1676,7 +1656,15 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
  * @param {Boolean} inlineChildRequired boolean to indicate if children definition must be defined inline.
  * @param {Boolean} isEntityTypeDefinition Type definition is included
  */
-const handleComposite = function(parsedContent, entityName, entityType, entityRoles, range, inlineChildRequired, isEntityTypeDefinition) {
+const handleComposite = function(parsedContent, entityName, entityType, entityRoles, range, inlineChildRequired, isEntityTypeDefinition, config) {
+    if (!config.enableCompositeEntities) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Composite entity. Please make sure enableCompositeEntities is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
+
     // remove simple entity definitions for composites but carry forward roles.
     // Find this entity if it exists in the simple entity collection
     let simpleEntityExists = (parsedContent.LUISJsonStructure.entities || []).find(item => item.name == entityName);
@@ -1740,7 +1728,14 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
  * @param {String []} entityRoles collection of roles found
  * @param {String} range range
  */
-const handleClosedList = function (parsedContent, entityName, listLines, entityRoles, range) {
+const handleClosedList = function (parsedContent, entityName, listLines, entityRoles, range, config) {
+    if (!config.enableListEntities) {
+      const error = BuildDiagnostic({
+        message: 'Do not support List entity. Please make sure enableListEntities is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
     // check if this list entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
         let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'List');
@@ -1815,7 +1810,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
  * @param {string} locale LUIS locale code
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleEntitySection = function (parsedContent, luResource, log, locale) {
+const parseAndHandleEntitySection = function (parsedContent, luResource, log, locale, config) {
     // handle entity
     let entities = luResource.Sections.filter(s => s.SectionType === SectionType.ENTITYSECTION);
     if (entities && entities.length > 0) {
@@ -1837,7 +1832,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
             // add this entity to appropriate place
             // is this a builtin type?
             if (builtInTypes.consolidatedList.includes(entityType)) {
-                handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.Range);
+                handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.Range, config);
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist
                 addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entityName, entityRoles);
@@ -1902,12 +1897,12 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                 if (entityType.toLowerCase().includes('interchangeable')) {
                     entityName += '(interchangeable)';
                 }
-                handlePhraseList(parsedContent, entityName, entityType, entityRoles, entity.SynonymsOrPhraseList, entity.Range);
+                handlePhraseList(parsedContent, entityName, entityType, entityRoles, entity.SynonymsOrPhraseList, entity.Range, config);
             } else if (entityType.startsWith('[')) {
-                handleComposite(parsedContent, entityName, entityType, entityRoles, entity.Range, true, true);
+                handleComposite(parsedContent, entityName, entityType, entityRoles, entity.Range, true, true, config);
             } else if (entityType.startsWith('/')) {
                 if (entityType.endsWith('/')) {
-                    handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.Range);
+                    handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.Range, config);
                 } else {
                     let errorMsg = `RegEx entity: ${regExEntity.name} is missing trailing '/'. Regex patterns need to be enclosed in forward slashes. e.g. /[0-9]/`;
                     let error = BuildDiagnostic({
@@ -1931,7 +1926,14 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
  * @param {String []} entityRoles array of entity roles found
  * @param {String} range range
  */
-const handleRegExEntity = function(parsedContent, entityName, entityType, entityRoles, range) {
+const handleRegExEntity = function(parsedContent, entityName, entityType, entityRoles, range, config) {
+    if (!config.enableRegexEntities) {
+      const error = BuildDiagnostic({
+        message: 'Do not support Regex entity. Please make sure enableRegexEntities is set to true.',
+        range: range
+      });
+      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    }
     // check if this regex entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
         let rolesImport = VerifyAndUpdateSimpleEntityCollection(parsedContent, entityName, 'RegEx');

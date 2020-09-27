@@ -1,4 +1,4 @@
-// Generated from LUFileParser.g4 by ANTLR 4.8
+// Generated from ../LUFileParser.g4 by ANTLR 4.8
 // jshint ignore: start
 var antlr4 = require('antlr4/index');
 
@@ -539,15 +539,6 @@ LUFileParserListener.prototype.enterModelInfoDefinition = function(ctx) {
 
 // Exit a parse tree produced by LUFileParser#modelInfoDefinition.
 LUFileParserListener.prototype.exitModelInfoDefinition = function(ctx) {
-};
-
-
-// Enter a parse tree produced by LUFileParser#commentSection.
-LUFileParserListener.prototype.enterCommentSection = function(ctx) {
-};
-
-// Exit a parse tree produced by LUFileParser#commentSection.
-LUFileParserListener.prototype.exitCommentSection = function(ctx) {
 };
 
 
