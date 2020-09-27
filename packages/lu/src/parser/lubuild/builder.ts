@@ -219,7 +219,7 @@ export class Builder {
 
         // concurrently handle applications
         await Promise.all(subLuContents.map(async content => {
-          if (!filesSectionEmptyStatus(content.path)) {
+          if (!filesSectionEmptyStatus.get(content.path)) {
             // init current application object from lu content
             let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
 
