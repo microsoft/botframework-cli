@@ -31,7 +31,7 @@ export class Builder {
     this.handler = handler
   }
 
-  async loadContents(files: string[], options: any) {
+  async loadContents(files: string[], options: any = {}) {
     let culture = options.culture || "en-us"
     let importResolver = options.importResolver
 
@@ -96,7 +96,7 @@ export class Builder {
     return luContents
   }
 
-  async generateDialogs(luContents: any[], options: any) {
+  async generateDialogs(luContents: any[], options: any = {}) {
     let fallbackLocale = options.fallbackLocale || 'en-us'
     let schema = options.schema
     let dialog = options.dialog
@@ -118,7 +118,7 @@ export class Builder {
       }
 
       // content is not empty
-      if (!fileHelper.isAllFilesSectionEmpty([content])) {
+      if (!fileHelper.isFileSectionEmpty(content)) {
         // update crosstrainedRecognizer if not empty
         let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
         if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
@@ -163,7 +163,7 @@ export class Builder {
     luContents: any[],
     authoringKey: string,
     botName: string,
-    options: any) {
+    options: any = {}) {
     // set luis api call endpoint
     let endpoint = options.endpoint || "https://westus.api.cognitive.microsoft.com"
     
@@ -203,7 +203,8 @@ export class Builder {
     let clonedLuContents = [...luContents]
 
     // filter if all lu contents are emtty
-    let isAllLuEmpty = fileHelper.isAllFilesSectionEmpty(clonedLuContents)
+    const filesSectionEmptyStatus = fileHelper.filesSectionEmptyStatus(clonedLuContents)
+    let isAllLuEmpty = [...filesSectionEmptyStatus.values()].every((isEmpty) => isEmpty)
 
     if (!isAllLuEmpty) {
       const luBuildCore = new LuBuildCore(authoringKey, endpoint, retryCount, retryDuration)
@@ -218,7 +219,7 @@ export class Builder {
 
         // concurrently handle applications
         await Promise.all(subLuContents.map(async content => {
-          if (!fileHelper.isAllFilesSectionEmpty([content])) {
+          if (!filesSectionEmptyStatus(content.path)) {
             // init current application object from lu content
             let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
 
@@ -277,7 +278,7 @@ export class Builder {
     return settingsContent
   }
 
-  async writeDialogAssets(contents: any[], options: any) {
+  async writeDialogAssets(contents: any[], options: any = {}) {
     let force = options.force || false
     let out = options.out
     let luConfig = options.luConfig

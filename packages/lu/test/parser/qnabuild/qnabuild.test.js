@@ -294,7 +294,9 @@ describe('builder: build function can catch relative endpoint exception successf
     const builder = new Builder(() => { })
     try {
       await builder.build(
-        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))], {
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))],
+        "f8c64e2a-1111-3a09-8f78-39d7adc76ec5",
+        "test", {
           endpoint: 'http:fsd'
         }
       )
@@ -309,7 +311,9 @@ describe('builder: build function can catch relative endpoint exception successf
     const builder = new Builder(() => { })
     try {
       await builder.build(
-        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))], {
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))],
+        "f8c64e2a-1111-3a09-8f78-39d7adc76ec5",
+        "test", {
           endpoint: 'fsd'
         }
       )

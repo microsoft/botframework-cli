@@ -28,7 +28,7 @@ export class Builder {
     this.handler = handler
   }
 
-  async loadContents(files: string[], options: any) {
+  async loadContents(files: string[], options: any = {}) {
     let culture = options.culture
     let importResolver = options.importResolver
 
@@ -79,7 +79,7 @@ export class Builder {
     return qnaContents
   }
 
-  generateDialogs(qnaContents: any[], options: any) {
+  generateDialogs(qnaContents: any[], options: any = {}) {
     let fallbackLocale = options.fallbackLocale || 'en-us'
     let schema = options.schema
     let dialog = options.dialog
@@ -101,7 +101,7 @@ export class Builder {
       }
 
       // content is not empty
-      if (!fileHelper.isAllFilesSectionEmpty([content])) {
+      if (!fileHelper.isFileSectionEmpty(content)) {
         // update crosstrainedRecognizer if not empty
         let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
         if (!crosstrainedRecognizer.recognizers.includes(content.id + '.qna')) {
@@ -144,7 +144,7 @@ export class Builder {
     qnaContents: any[],
     subscriptionkey: string,
     botName: string,
-    options: any) {
+    options: any = {}) {
     // set qnamaker api call endpoint
     let endpoint = options.endpoint || "https://westus.api.cognitive.microsoft.com/qnamaker/v4.0"
 
@@ -165,7 +165,8 @@ export class Builder {
 
 
     // filter if all qna contents are emtty
-    let isAllQnAEmpty = fileHelper.isAllFilesSectionEmpty(qnaContents)
+    const filesSectionEmptyStatus = fileHelper.filesSectionEmptyStatus(qnaContents)
+    let isAllQnAEmpty = [...filesSectionEmptyStatus.values()].every((isEmpty) => isEmpty)
 
     if (!isAllQnAEmpty) {
       // merge contents of same locale
@@ -181,10 +182,9 @@ export class Builder {
       let mergedContents: any[] = []
       for (const [culture, contents] of contentsPerLocale) {
         let result = await qnaBuilderVerbose.build(contents, true)
-        let mergedContent = result.parseToQnAContent()
         mergedContents.push({
-          qnamakerObject: result,
-          qnamakerContent: new Content(mergedContent, new qnaOptions('', true, culture, ''))
+          qnamakerObject: JSON.parse(JSON.stringify(result)),
+          qnamakerContent: new Content(result.parseToQnAContent(), new qnaOptions('', true, culture, ''))
         })
       }
 
@@ -201,7 +201,7 @@ export class Builder {
         // concurrently handle applications
         await Promise.all(subContents.map(async content => {
           let qnamakerContent = content.qnamakerContent
-          if (!fileHelper.isAllFilesSectionEmpty([qnamakerContent])) {
+          if (!fileHelper.isFileSectionEmpty(qnamakerContent)) {
             let currentQna = content.qnamakerObject
             
             // set kb name
@@ -259,16 +259,22 @@ export class Builder {
 
       let settings: any
       for (const content of qnaContents) {
+        // skip empty content
+        if (filesSectionEmptyStatus.get(content.path)) continue
+        
         // init settings asset
         if (settings === undefined) {
-          const settingsPath = path.join(path.dirname(content.path), `luis.settings.${suffix}.${region}.json`)
+          const settingsPath = path.join(path.dirname(content.path), `qnamaker.settings.${suffix}.${region}.json`)
           settings = new Settings(settingsPath, {})
         }
 
-        let kbInfo = settingsPerCulture.get(content.language)
-        settings.qna[content.name.split('.').join('_').replace(/-/g, '_')] = kbInfo.kbid
-        settings.qna.hostname = kbInfo.hostName
+        if (settingsPerCulture.has(content.language)) {
+          let kbInfo = settingsPerCulture.get(content.language)
+          settings.qna[content.name.split('.').join('_').replace(/-/g, '_')] = kbInfo.kbId
+          settings.qna.hostname = kbInfo.hostName
+        }
       }
+      
 
       // write dialog assets
       settingsAssets.push(settings)
@@ -353,7 +359,7 @@ export class Builder {
     return kbToLuContent
   }
 
-  async writeDialogAssets(contents: any[], options: any) {
+  async writeDialogAssets(contents: any[], options: any = {}) {
     let force = options.force || false
     let out = options.out
     let writeDone = false

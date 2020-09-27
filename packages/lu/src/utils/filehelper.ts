@@ -309,15 +309,27 @@ export function getCultureFromPath(file: string): string | null {
   }
 }
 
-export function isAllFilesSectionEmpty(contents: any[]): boolean {
-  let isAllFilesSectionEmpty = true
+export function isFileSectionEmpty(content: any): boolean {
+  if (content === undefined) return true
+
+  let resource = luParser.parse(content.content)
+  if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
+    return false
+  }
+
+  return true
+}
+
+export function filesSectionEmptyStatus(contents: any[]) {
+  const filesSectionEmptyStatus = new Map<string, boolean>()
   for (const content of contents) {
     let resource = luParser.parse(content.content)
     if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
-      isAllFilesSectionEmpty = false
-      break
+      filesSectionEmptyStatus.set(content.path, false)
+    } else {
+      filesSectionEmptyStatus.set(content.path, true)
     }
   }
 
-  return isAllFilesSectionEmpty
+  return filesSectionEmptyStatus
 }
