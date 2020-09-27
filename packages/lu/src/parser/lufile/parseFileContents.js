@@ -1271,7 +1271,7 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.Range, false, entity.Type !== undefined, config);
                         break;
                     case EntityTypeEnum.LIST:
-                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.Range);
+                        handleClosedList(parsedContent, entityName, entity.ListBody.map(item => item.trim()), entityRoles, entity.Range, config);
                         break;
                     case EntityTypeEnum.PATTERNANY:
                         handlePatternAny(parsedContent, entityName, entityRoles, entity.Range, config);
