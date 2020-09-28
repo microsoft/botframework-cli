@@ -19,5 +19,8 @@ echo.
 echo *** root-package
 call node %ds% dialog:merge npm/node_modules/root-package/package.json -o oracles/root-package --verbose
 
+echo *** promptOnly
+call node %ds% dialog:merge schemas/prompt.schema schemas/basePrompt.schema -o oracles/promptOnly.schema --verbose
+
 rem remove copied assets
-rd /s /q oracles\generated
+rd /s /q oracles\ImportedAssets

@@ -23,6 +23,19 @@
       }
     }
   },
+  "Microsoft.OnCondition": {
+    "form": {
+      "hidden": [
+        "actions"
+      ],
+      "label": "Handle a condition",
+      "order": [
+        "condition",
+        "*"
+      ],
+      "subtitle": "Condition"
+    }
+  },
   "Microsoft.OnIntent": {
     "form": {
       "hidden": [
@@ -36,19 +49,6 @@
         "*"
       ],
       "subtitle": "Intent recognized"
-    }
-  },
-  "Microsoft.OnCondition": {
-    "form": {
-      "hidden": [
-        "actions"
-      ],
-      "label": "Handle a condition",
-      "order": [
-        "condition",
-        "*"
-      ],
-      "subtitle": "Condition"
     }
   },
   "nuget3.component1": {

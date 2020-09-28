@@ -2,27 +2,28 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-TODO: 
+/* TODO:
 1) Finish fixing up error messages for verify and bringing back tests
 2) Add --schema switch to verify for default schema
-3) For merge add hash codes to .lg/.lu/.dialog and when copying check it.
-4) Make sure merge sorts for implements as well as definitions and oneof
-import { Command, flags } from '@microsoft/bf-cli-command';
+3) For merge add hash codes to .lg/.lu/.dialog and when copying check it. */
+
+import {Command, flags} from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
-import { Definition, DialogTracker, SchemaTracker } from '../../library/dialogTracker';
+import {Definition, DialogTracker, SchemaTracker} from '../../library/dialogTracker';
 
 export default class DialogVerify extends Command {
     static description = 'Verify .dialog files match their app.schema.'
-    
+
     static args = [
-        { name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .dialog files.' },
+        {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .dialog files.'}
     ]
 
     static strict = false
 
     static flags: flags.Input<any> = {
-        help: flags.help({ char: 'h' }),
-        verbose: flags.boolean({ char: 'v', description: 'Show verbose output', default: false }),
+        help: flags.help({char: 'h'}),
+        schema: flags.string({char: 's', description: 'Default schema to use if no $schema in dialog file.'}),
+        verbose: flags.boolean({char: 'v', description: 'Show verbose output', default: false}),
     }
 
     private currentFile = ''
@@ -31,11 +32,11 @@ export default class DialogVerify extends Command {
     private warnings = 0
 
     async run() {
-        const { argv, flags } = this.parse(DialogVerify)
-        await this.execute(argv, flags.verbose)
+        const {argv, flags} = this.parse(DialogVerify)
+        await this.execute(argv, flags.verbose, flags.schema)
     }
 
-    async execute(dialogFiles: string[], verbose?: boolean): Promise<void> {
+    async execute(dialogFiles: string[], verbose?: boolean, schemaPath?: string): Promise<void> {
         const schema = new SchemaTracker()
         const tracker = new DialogTracker(schema)
 
@@ -89,9 +90,11 @@ export default class DialogVerify extends Command {
             }
 
             this.log(`${this.files} files processed.`)
-            this.error(`${this.warnings} found.`)
+            if (this.warnings > 0) {
+                this.warn(`Warnings: ${this.warnings} found.`)
+            }
             if (this.errors > 0) {
-                this.error(`Error: ${this.errors} found.`)
+                this.error(`Errors: ${this.errors} found.`)
             }
         }
     }

@@ -3,44 +3,23 @@
   "$kind": "root",
   "prompt": {
     "$kind": "prompt",
-    "$copy": "myPromptCopy"
+    "prompt": "Hello"
   },
-  "condition": "true",
   "property": "foo.blah",
   "recognizers": [
-    {
-      "$kind": "Recognizer",
-      "$copy": "#inlineRecognizer",
-      "req": "forward ref"
-    },
+    "inlineRecognizer",
     {
       "$kind": "Recognizer",
       "$id": "inlineRecognizer",
       "req": "inline id"
     },
-    {
-      "$kind": "Recognizer",
-      "$copy": "externalRecognizer",
-      "req": "external whole file reference"
-    },
-    {
-      "$kind": "Recognizer",
-      "$copy": "missingRecognizer",
-      "$comment": "reference does not exist"
-    },
+    "externalRecognizer",
+    "missingRecognizer",
     {
       "$kind": "Recognizer",
       "$comment": "type error because missing $copy/$req"
     },
-    {
-      "$copy": "externalRecognizer",
-      "$comment": "missing $kind"
-    },
-    {
-      "$kind": "Recognizer",
-      "$copy": "typeMismatch",
-      "req": "this type does not match ref type"
-    },
+    "typeMismatch",
     {
       "$kind": "Recognizer",
       "$id": "multiplyDefined",
@@ -51,10 +30,6 @@
       "$id": "multiplyDefined",
       "req": "multiply defined in this file"
     },
-    {
-      "$kind":"Recognizer",
-      "$copy": "#inlineRecognizer",
-      "$comment": "after reference"
-    }
+    "inlineRecognizer"
   ]
 }

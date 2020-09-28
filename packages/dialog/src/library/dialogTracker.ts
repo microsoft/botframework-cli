@@ -163,6 +163,9 @@ export class DialogTracker {
     // Tracker for information about schemas.
     schema: st.SchemaTracker
 
+    // Default $schema
+    schemaPath: string
+
     /**
      * Map from id to the definition.
      * If there are more than one, then it is multiply defined.
@@ -179,8 +182,9 @@ export class DialogTracker {
     // Top-level cogs in tracker.
     dialogs: Dialog[]
 
-    constructor(schema: st.SchemaTracker, root?: string) {
+    constructor(schema: st.SchemaTracker, root?: string, schemaPath?: string) {
         this.schema = schema
+        this.schemaPath = schemaPath || ''
         this.root = root || process.cwd()
         this.idToDef = new Map<string, Definition[]>()
         this.typeToDef = new Map<string, Definition[]>()
@@ -191,8 +195,10 @@ export class DialogTracker {
     // Add a new Dialog file to the tracker.
     async addDialog(dialog: Dialog): Promise<void> {
         try {
-            const schemaFile = dialog.body.$schema
-            if (schemaFile) {
+            const schemaFile = dialog.body.$schema || this.schemaPath
+            if (dialog.body.$schema && this.schemaPath && dialog.body.$schema !== this.schemaPath) {
+                dialog.errors.push(new Error(`${dialog.body.$schema} does not match default schema ${this.schemaPath}`))
+            } else if (schemaFile) {
                 let schemaPath = schemaFile
                 if (schemaPath.indexOf(':') < 2) {
                     schemaPath = path.resolve(path.dirname(dialog.file), schemaFile)
@@ -202,11 +208,11 @@ export class DialogTracker {
                 if (!validation && validator.errors) {
                     for (let err of validator.errors) {
                         let path = err.dataPath
-                        debugger
                         if (path.startsWith(dialog.file)) {
                             path = path.substring(dialog.file.length)
                         }
-                        dialog.errors.push(new Error(`${err.message}`))
+                        // debugger
+                        dialog.errors.push(new Error(`${path} ${err.message}`))
                     }
                 }
             } else {
@@ -246,9 +252,7 @@ export class DialogTracker {
 
     // Add dialog files that match patterns to tracker.
     async addDialogFiles(patterns: string[]): Promise<void> {
-        console.log(patterns)
         let filePaths = await glob(patterns.map(e => e.replace(/\\/g, '/')))
-        console.log(filePaths)
         for (let filePath of filePaths) {
             await this.addDialogFile(filePath)
         }

@@ -1,5 +1,0 @@
-{
-    "$schema": "../oracles/app.schema",
-    "$kind": "prompt",
-    "$copy": "myPrompt"
-}
