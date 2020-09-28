@@ -86,13 +86,10 @@ class LUParser {
             }))
         }
 
-        if (modelInfoSections && modelInfoSections.length > 0) {
-          if (!config.enableModelDescription) {
-            const error = BuildDiagnostic({
-              message: 'Do not support Model Description. Please make sure enableModelDescription is set to true.',
-            });
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-          }
+        if (modelInfoSections && modelInfoSections.length > 0 && !config.enableModelDescription) {
+          errors.push(BuildDiagnostic({
+            message: `Do not support Model Description. Please make sure enableModelDescription is set to true.`
+          }))
         }
         modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
         sections = sections.concat(modelInfoSections);

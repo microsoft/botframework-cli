@@ -158,7 +158,7 @@ const parseFileContentsModule = {
  */
 const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, locale, config) {
     fileContent = helpers.sanitizeNewLines(fileContent);
-    let luResource = luParser.parse(fileContent, config);
+    let luResource = luParser.parse(fileContent, undefined, config);
 
     if (luResource.Errors && luResource.Errors.length > 0) {
         if (log) {
@@ -192,7 +192,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     parseAndHandleEntitySection(parsedContent, luResource, log, locale, config);
 
     // parse simple intent section
-    await parseAndHandleSimpleIntentSection(parsedContent, luResource);
+    await parseAndHandleSimpleIntentSection(parsedContent, luResource, config);
 
     // parse qna section
     await parseAndHandleQnaSection(parsedContent, luResource);
@@ -647,8 +647,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
     if (luImports && luImports.length > 0) {
         if (!config.enableExternalReferences) {
           const error = BuildDiagnostic({
-            message: 'Do not support External References. Please make sure enableExternalReferences is set to true.',
-            range: luImport.Range
+            message: 'Do not support External References. Please make sure enableExternalReferences is set to true.'
           });
           throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
@@ -801,7 +800,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleSimpleIntentSection = async function (parsedContent, luResource) {
+const parseAndHandleSimpleIntentSection = async function (parsedContent, luResource, config) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     let hashTable = {}
@@ -843,6 +842,13 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                     let entitiesFound = utteranceAndEntities.entities;
                     let havePatternAnyEntity = entitiesFound.find(item => item.type == LUISObjNameEnum.PATTERNANYENTITY);
                     if (havePatternAnyEntity !== undefined) {
+                      if (!config.enablePattern) {
+                        const error = BuildDiagnostic({
+                          message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
+                          range: utteranceAndEntities.range
+                        });
+                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                      }
                         utterance = handleAtForPattern(utterance, entitiesFound, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles);
                         let mixedEntity = entitiesFound.filter(item => item.type != LUISObjNameEnum.PATTERNANYENTITY);
                         if (mixedEntity.length !== 0) {

@@ -6,7 +6,6 @@ const chai = require('chai');
 const assert = chai.assert;
 const parseFile = require('../../../src/parser/lufile/parseFileContents').parseFile;
 const retCode = require('../../../src/parser/utils/enums/CLI-errors').errorCode;
-const collate = require('../../../src/parser/qna/qnamaker/kbCollate').collate
 
 describe('ML entity config', () => {
     it('Throws when ML entity is disable', function(done){
@@ -14,7 +13,7 @@ describe('ML entity config', () => {
       parseFile(fileContent, false, null, {enableMLEntities: false})
           .then(res => done('Test fail! did not throw when expected'))
           .catch(err => {
-              assert.equal(err.errCode, retCode.INVALID_INPUT);
+              assert.include(err.text, 'Do not support ML entity');
               done()
           })
   });
@@ -32,7 +31,7 @@ describe('list entity config', () => {
     parseFile(fileContent, false, null, {enableListEntities: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support List entity');
             done()
         })
   });
@@ -64,7 +63,7 @@ describe('composite entity config', () => {
     parseFile(fileContent, false, null, {enableCompositeEntities: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Composite entity');
             done()
         })
   });
@@ -81,7 +80,7 @@ describe('prebuilt entity config', () => {
     parseFile(fileContent, false, null, {enablePrebuiltEntities: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Prebuilt entity');
             done()
         })
   });
@@ -93,7 +92,7 @@ describe('regex entity config', () => {
     parseFile(fileContent, false, null, {enableRegexEntities: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Regex entity');
             done()
         })
   });
@@ -110,7 +109,7 @@ describe('Phrase Lists config', () => {
     parseFile(fileContent, false, null, {enablePhraseLists: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Phrase Lists');
             done()
         })
   });
@@ -124,7 +123,7 @@ describe('user features config', () => {
     parseFile(fileContent, false, null, {enableFeatures: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Features');
             done()
         })
   });
@@ -138,7 +137,7 @@ describe('Model Description config', () => {
     parseFile(fileContent, false, null, {enableModelDescription: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Model Description.');
             done()
         })
   });
@@ -150,33 +149,32 @@ describe('External References config', () => {
     parseFile(fileContent, false, null, {enableExternalReferences: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support External References');
             done()
         })
   });
 });
 
 describe('Pattern config', () => {
-  it('Throws when pattern is disable', function(done){
-    let fileContent = `# addAlarm
-    - create an alarm for 7AM
-    - create an alarm for {datetimeV2}
-
-    $PREBUILT:datetimeV2
-
-    # Menu
-    - I want {foodType=sandwich}
-    - can you get me some {foodType}
-    - please get me a {drinkType}
-    - get me some {drinkType}
-
-    $drinkType:soda=
-    - pop
-    - fountain drink`;
+  it('Throws when pattern is disable in utterance', function(done){
+    let fileContent = `# addToDo
+    - add {item} to my shopping list
+    - pls add {item} to my list`;
     parseFile(fileContent, false, null, {enablePattern: false})
         .then(res => done('Test fail! did not throw when expected'))
         .catch(err => {
-            assert.equal(err.errCode, retCode.INVALID_INPUT);
+            assert.include(err.text, 'Do not support Pattern.');
+            done()
+        })
+  });
+
+  it('Throws when pattern is disable', function(done){
+    let fileContent = `> # Pattern.Any entities
+    @ patternany alarmTime`;
+    parseFile(fileContent, false, null, {enablePattern: false})
+        .then(res => done('Test fail! did not throw when expected'))
+        .catch(err => {
+            assert.include(err.text, 'Do not support Pattern.');
             done()
         })
   });
