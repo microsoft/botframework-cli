@@ -21,7 +21,7 @@ const NEWLINE = require('os').EOL;
 
 const defaultConfig = {
   enableModelDescription: true,
-  enableComments: true
+  enableComments: true // Temporarily enabled by default, cannot be configured
 }
 
 class LUParser {
@@ -61,23 +61,7 @@ class LUParser {
     static extractFileContent(fileContent, content, errors, sectionEnabled, config) {
         let sections = [];
         let modelInfoSections = [];
-        /*
-        let comments = [];
-        try {
-          comments = this.extractCommentDefinition(fileContent);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing comments: ${err.message}`
-            }))
-        }
 
-        if (comments.length > 0 && !config.enableComments) {
-          const error = BuildDiagnostic({
-            message: 'Do not support Comments. Please make sure enableComments is set to true.',
-          });
-          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-        }
-        */
         try {
             modelInfoSections = this.extractModelInfoSections(fileContent);
         } catch (err) {
@@ -373,24 +357,6 @@ class LUParser {
 
         return modelInfoSectionList;
     }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-
-    static extractCommentDefinition(fileContext) {
-      if (fileContext === undefined
-          || fileContext === null) {
-              return [];
-      }
-
-      let comments = fileContext.paragraph()
-          .map(x => x.commentSection())
-          .filter(x => x !== undefined && x !== null)
-          .map(x => x.text);
-
-      return comments;
-  }
 
     /**
      * @param {any[]} sections
