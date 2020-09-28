@@ -174,29 +174,29 @@ describe('luis:cross training tests among lu and qna contents', () => {
       id: 'dia5.qna'
     })
 
-    let crossTrainConfig = {
-      rootIds: [
-        'main.lu',
-        'main.fr-fr.lu'
-      ],
-      triggerRules: {
-        'main.lu': {
+    const configObject = {
+      'main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': 'dia1.lu',
           'dia2_trigger': 'dia2.lu'
-        },
-        'dia2.lu': {
-          'dia3_trigger': 'dia3.lu',
-          'dia4_trigger': 'dia4.lu'
-        },
-        'main.fr-fr.lu': {
-          'dia1_trigger': 'dia1.fr-fr.lu'
         }
       },
-      intentName: '_Interruption',
-      verbose: true
+      'dia2.lu': {
+        'triggers': {
+          'dia3_trigger': 'dia3.lu',
+          'dia4_trigger': 'dia4.lu'
+        }
+      },
+      'main.fr-fr.lu': {
+        'rootDialog': true,
+        'triggers': {
+          'dia1_trigger': 'dia1.fr-fr.lu'
+        }
+      }
     }
 
-    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
@@ -320,17 +320,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        './main/main.lu'
-      ],
-      triggerRules: {
-        './main/main.lu': {
+      './main/main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': './dia1/dia1.lu',
           'dia2_trigger': './dia2/dia2.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
@@ -376,17 +372,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        './main/main.lu'
-      ],
-      triggerRules: {
-        './main/main.lu': {
+      './main/main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': ['./dia1/dia1.lu', './dia2/dia2.lu'],
           'dia2_trigger': './dia3/dia3.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
@@ -437,17 +429,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        './main/main.lu'
-      ],
-      triggerRules: {
-        './main/main.lu': {
+      './main/main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': './dia1/dia1.lu',
           'dia2_trigger': './dia2/dia2.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
@@ -501,19 +489,15 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        './main/main.lu'
-      ],
-      triggerRules: {
-        './main/main.lu': {
+      './main/main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': './dia1/dia1.lu',
           'dia2_trigger': './dia2/dia2.lu',
           'dia3_trigger': '',
           '': './dia3/dia3.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
@@ -567,19 +551,15 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        './main/main.lu'
-      ],
-      triggerRules: {
-        './main/main.lu': {
+      './main/main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': './dia1/dia1.lu',
           'dia2_trigger': './dia1/dia1.lu',
           'dia3_trigger': './dia2/dia2.lu',
           '': './dia2/dia2.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, [], crossTrainConfig)
@@ -654,17 +634,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        'main.lu'
-      ],
-      triggerRules: {
-        'main.lu': {
+      'main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': 'dia1.lu',
           'dia2_trigger': 'dia2.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
@@ -744,12 +720,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       id: 'dia1.qna'}
     )
 
-    let crossTrainConfig = {
-      rootIds: [],
-      triggerRules: {},
-      intentName: '_Interruption',
-      verbose: true
-    }
+    let crossTrainConfig = {}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
     const luResult = trainedResult.luResult
@@ -824,17 +795,13 @@ describe('luis:cross training tests among lu and qna contents', () => {
     )
 
     let crossTrainConfig = {
-      rootIds: [
-        'main.lu'
-      ],
-      triggerRules: {
-        'main.lu': {
+      'main.lu': {
+        'rootDialog': true,
+        'triggers': {
           'dia1_trigger': 'dia1.lu',
           'dia2_trigger': 'dia2.lu'
         }
-      },
-      intentName: '_Interruption',
-      verbose: true
+      }
     }
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
@@ -887,12 +854,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       id: 'dia1.qna'}
     )
 
-    let crossTrainConfig = {
-      rootIds: [],
-      triggerRules: {},
-      intentName: '_Interruption',
-      verbose: true
-    }
+    let crossTrainConfig = {}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
     const luResult = trainedResult.luResult
@@ -965,16 +927,12 @@ describe('luis:cross training tests among lu and qna contents', () => {
     }
     )
 
-    let crossTrainConfig = {
-      rootIds: [path.join(rootDir, "main.en-us.lu")],
-      triggerRules: {},
-      intentName: '_Interruption',
-      verbose: true
-    }
+    let crossTrainConfig = {}
+    crossTrainConfig[path.join(rootDir, "main.en-us.lu")] = {}
+    crossTrainConfig[path.join(rootDir, "main.en-us.lu")].rootDialog = true
+    crossTrainConfig[path.join(rootDir, "main.en-us.lu")].triggers = {'dia1_trigger': path.join(rootDir, "dia1.en-us.lu")}
 
-    crossTrainConfig.triggerRules[path.join(rootDir, "main.en-us.lu")] = { 'dia1_trigger': path.join(rootDir, "dia1.en-us.lu") }
-
-    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, importResolver)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, {importResolver})
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 

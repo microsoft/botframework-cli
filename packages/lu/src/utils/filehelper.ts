@@ -220,17 +220,15 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
   return parsedObjects
 }
 
-export function getConfigObject(configContent: any, intentName: string, verbose: boolean) {
+export function getConfigObject(configObject: any, configId: string, intentName: string, verbose: boolean) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(configContent.id)
-  const luConfigContent = configContent.content
-  if (luConfigContent && luConfigContent !== '') {
+  const configFileDir = configId && configId !== '' ? path.dirname(configId) : undefined
+  if (configObject) {
     try {
-      const luConfigObj = JSON.parse(luConfigContent)
-      for (const rootluFilePath of Object.keys(luConfigObj)) {
-        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-        const triggerObj = luConfigObj[rootluFilePath]
+      for (const rootluFilePath of Object.keys(configObject)) {
+        const rootLuFileFullPath = configFileDir ? path.resolve(configFileDir, rootluFilePath) : rootluFilePath
+        const triggerObj = configObject[rootluFilePath]
         for (const triggerObjKey of Object.keys(triggerObj)) {
           if (triggerObjKey === 'rootDialog') {
             if (triggerObj[triggerObjKey]) {
@@ -241,7 +239,7 @@ export function getConfigObject(configContent: any, intentName: string, verbose:
             for (const triggerKey of Object.keys(triggers)) {
               const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
               for (const destLuFile of destLuFiles) {
-                const destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
+                const destLuFileFullPath = configFileDir && destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
                 if (rootLuFileFullPath in finalLuConfigObj) {
                   const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
                   if (finalIntentToDestLuFiles[triggerKey]) {
@@ -264,18 +262,14 @@ export function getConfigObject(configContent: any, intentName: string, verbose:
     }
   }
 
-  if (rootLuFiles.length > 0) {
-    let crossTrainConfig = {
-      rootIds: rootLuFiles,
-      triggerRules: finalLuConfigObj,
-      intentName,
-      verbose
-    }
-
-    return crossTrainConfig
-  } else {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  let crossTrainConfig = {
+    rootIds: rootLuFiles,
+    triggerRules: finalLuConfigObj,
+    intentName,
+    verbose
   }
+
+  return crossTrainConfig
 }
 
 export function parseJSON(input: string, appType: string) {

@@ -27,13 +27,21 @@ module.exports = {
    * Do cross training among lu files
    * @param {any[]} luContents the lu content array whose element includes path and content
    * @param {any[]} qnaContents the qna content array whose element includes path and content
-   * @param {any} crossTrainConfig cross train json config
-   * @param {any} importResolver import Resolver when resolving import files
+   * @param {any} configObject cross train config json object
+   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
-  crossTrain: async function (luContents, qnaContents, crossTrainConfig, importResolver) {
+  crossTrain: async function (luContents, qnaContents, configObject, options = {}) {
     try {
+      const importResolver = options.importResolver
+
+      const crossTrainConfig = fileHelper.getConfigObject(
+        configObject,
+        options.configId,
+        options.intentName || '_Interruption',
+        options.verbose || true)
+
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
