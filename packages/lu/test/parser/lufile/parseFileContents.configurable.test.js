@@ -18,9 +18,20 @@ describe('ML entity config', () => {
           })
     });
 
-    it('Throws when ML entity is disable in utterance', function(done){
+    it('Throws when ML entity is disable in utterance(1)', function(done){
       let fileContent = `# AskForUserName
       - {userName=Jack}`;
+      parseFile(fileContent, false, null, {enableMLEntities: false})
+          .then(res => done('Test fail! did not throw when expected'))
+          .catch(err => {
+              assert.include(err.text, 'Do not support ML entity');
+              done()
+          })
+    });
+
+    it('Throws when ML entity is disable in utterance(2)', function(done){
+      let fileContent = `# AskForUserName
+      - {@userName=Jack}`;
       parseFile(fileContent, false, null, {enableMLEntities: false})
           .then(res => done('Test fail! did not throw when expected'))
           .catch(err => {
