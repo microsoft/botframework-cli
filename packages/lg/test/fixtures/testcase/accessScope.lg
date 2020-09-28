@@ -1,0 +1,19 @@
+#welcomeUser(age)
+- hi ${user.name} at ${age}
+- hello ${user.name} at ${age}
+
+# AddItemReadBack
+[Activity
+    Text = ${HelpPrefix()}, I have added "**${dialog.itemTitle}**" to your **${dialog.listType}** list. You have **${count(user.lists[dialog.listType])}** items in your ${dialog.listType} list.
+    ${WelcomeActions()}
+]
+
+# HelpPrefix
+- Sure
+- You bet
+- Absolutely
+
+# WelcomeActions
+[Activity
+    SuggestedActions = Add item | View lists | Remove item | Profile | Cancel | Help
+]

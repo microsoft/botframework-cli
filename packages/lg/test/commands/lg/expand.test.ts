@@ -93,3 +93,53 @@ describe('lg:expand lg template', async () => {
     await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, '4.testinput.expand.lg'))
   })
 })
+
+describe('lg:expand lg template with scope', async () => {
+  after(async function () {
+    await fs.remove(generatedFolder)
+  })
+
+  before(async function () {
+    await fs.remove(generatedFolder)
+    await fs.mkdirp(generatedFolder)
+  })
+
+  const inputFileName = 'accessScope.lg'
+  let outputFileName = 'accessScope.expand.lg'
+
+  let testInputTemplate = 'welcomeUser'
+  // test access nested path
+  test
+  .command(['lg:expand',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, inputFileName),
+    '--out',
+    generatedFolder,
+    '--template',
+    testInputTemplate,
+    '--testInput',
+    path.join(__dirname, testcaseFolderPath, 'data.json'),
+    '-r',
+    '-f'])
+  .it('', async () => {
+    await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, 'accessScope.testinput.expand.lg'))
+  })
+
+  testInputTemplate = 'AddItemReadBack'
+  // test multiple nested path access
+  test
+  .command(['lg:expand',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, inputFileName),
+    '--out',
+    generatedFolder,
+    '--template',
+    testInputTemplate,
+    '--testInput',
+    path.join(__dirname, testcaseFolderPath, 'data.json'),
+    '-r',
+    '-f'])
+  .it('', async () => {
+    await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, 'accessScope2.testinput.expand.lg'))
+  })
+})
