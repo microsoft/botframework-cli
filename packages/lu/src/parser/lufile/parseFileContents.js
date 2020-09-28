@@ -948,6 +948,13 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
                             let regexExists = (parsedContent.LUISJsonStructure.regex_entities || []).find(item => item.name == entity.entity);
                             let patternAnyExists = (parsedContent.LUISJsonStructure.patternAnyEntities || []).find(item => item.name == entity.entity);
                             if (compositeExists === undefined && listExists === undefined && prebuiltExists === undefined && regexExists === undefined && patternAnyExists === undefined) {
+                                if (!config.enableMLEntities) {
+                                  const error = BuildDiagnostic({
+                                    message: 'Do not support ML entity. Please make sure enableMLEntities is set to true.',
+                                    range: utteranceAndEntities.range
+                                });
+                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                              }
                                 if (entity.role && entity.role !== '') {
                                     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entity.entity, [entity.role.trim()]);
                                 } else {
