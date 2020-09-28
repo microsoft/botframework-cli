@@ -354,7 +354,7 @@ OPTIONS
 
   --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
-  --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
+  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
@@ -374,7 +374,6 @@ OPTIONS
 
   --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
-  --genSettingsOnly                [default: false]Indicates only write out settings to out folder. Only valid if --out is set
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}

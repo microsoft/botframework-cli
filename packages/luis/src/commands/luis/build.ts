@@ -33,7 +33,7 @@ export default class LuisBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
+    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
     deleteOldVersion: flags.boolean({description: 'Deletes old version of LUIS application after building new one.'}),
@@ -41,7 +41,6 @@ export default class LuisBuild extends Command {
     endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
     isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
-    genSettingsOnly: flags.boolean({description: 'Indicates only write out settings to out folder. Only valid if --out is set', default: false})
   }
 
   async run() {
@@ -69,7 +68,7 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
 
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging, genSettingsOnly}
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -144,16 +143,16 @@ export default class LuisBuild extends Command {
         schema
       })
 
-      const dialogContents = await builder.generateDialogs(luContents, {
-        fallbackLocale,
-        schema,
-        dialog
-      })
-
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        if (!genSettingsOnly) {
+        if (dialog) {
+          const dialogContents = await builder.generateDialogs(luContents, {
+            fallbackLocale,
+            schema,
+            dialog
+          })
+
           let writeDone = await builder.writeDialogAssets(dialogContents, {
             force,
             out: outputFolder,
@@ -176,11 +175,11 @@ export default class LuisBuild extends Command {
         if (writeDone) {
           this.log(`Successfully wrote settings file to ${outputFolder}\n`)
         } else {
-          this.log(`No changes to the settings file in ${outputFolder}\n`)
+          this.log(`No changes to settings file in ${outputFolder}\n`)
         }
       } else {
         this.log('The published application setting:')
-        this.log(JSON.stringify(JSON.parse(dialogContents[dialogContents.length - 1].content).luis, null, 4))
+        this.log(JSON.stringify(JSON.parse(settingsContent[0].content).luis, null, 4))
       }
     } catch (error) {
       if (error instanceof exception) {

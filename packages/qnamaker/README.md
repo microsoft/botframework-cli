@@ -134,7 +134,7 @@ OPTIONS
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
 
-  --dialog=dialog                        [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
+  --dialog=dialog                        Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
 
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
                                          Only valid if --out is set
@@ -152,8 +152,6 @@ OPTIONS
   --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
   
   --schema=schema                        Defines $schema for generated .dialog files
-
-  --genSettingsOnly                [default: false]Indicates only write out settings to out folder. Only valid if --out is set
   
 EXAMPLE
 

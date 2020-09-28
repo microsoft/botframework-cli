@@ -98,8 +98,8 @@ export class Builder {
 
   async generateDialogs(luContents: any[], options: any = {}) {
     let fallbackLocale = options.fallbackLocale || 'en-us'
+    let dialog = options.dialog || recognizerType.MULTILANGUAGE
     let schema = options.schema
-    let dialog = options.dialog
 
     let assets: any[] = []
 

@@ -219,7 +219,7 @@ describe('qnamaker:build not update knowledge if no changes', () => {
     })
 })
 
-describe('qnamaker:build write dialog assets successfully if --dialog set to multiLanguage', () => {
+describe('qnamaker:build write dialog and settings assets successfully if --dialog set to multiLanguage', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -260,8 +260,8 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
 
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--dialog', 'multiLanguage', '--log', '--suffix', 'development'])
+    .it('should write dialog and settings assets successfully when --dialog set to multiLanguage', async ctx => {
       expect(ctx.stdout).to.contain('yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy')
       expect(ctx.stdout).to.contain('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
       
@@ -271,7 +271,7 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to mul
     })
 })
 
-describe('qnamaker:build write dialog assets successfully if --dialog set to crosstrained', () => {
+describe('qnamaker:build write dialog and settings assets successfully if --dialog set to crosstrained', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -313,7 +313,7 @@ describe('qnamaker:build write dialog assets successfully if --dialog set to cro
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to crosstrained', async ctx => {
+    .it('should write dialog and settings assets successfully when --dialog set to crosstrained', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.lu.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.lu.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.true
@@ -356,7 +356,7 @@ describe('qnamaker:build write crosstrained recognizer asset successfully if qna
     })
 })
 
-describe('qnamaker:build write dialog assets successfully with multi locales', () => {
+describe('qnamaker:build write dialog and settings assets successfully with multi locales', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -422,7 +422,7 @@ describe('qnamaker:build write dialog assets successfully with multi locales', (
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/multi-locales/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully with multi locales', async ctx => {
+    .it('should write dialog and settings assets successfully with multi locales', async ctx => {
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/multi-locales/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/Foo.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.en-us.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/Foo.qna.dialog', './../../fixtures/testcases/qnabuild/multi-locales/dialogs/Foo.qna.dialog')).to.be.true
@@ -717,7 +717,7 @@ describe('qnamaker:build create a new knowledge base successfully with endpoint 
     })
 })
 
-describe('qnamaker:build write dialog assets successfully if schema is specified', () => {
+describe('qnamaker:build write dialog and settings assets successfully if schema is specified', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -759,7 +759,7 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
-    .it('should write dialog assets successfully if schema is specified', async ctx => {      
+    .it('should write dialog and settings assets successfully if schema is specified', async ctx => {      
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.en-us.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs-with-schema/sandwich2.qna.dialog')).to.be.true
@@ -767,7 +767,7 @@ describe('qnamaker:build write dialog assets successfully if schema is specified
     })
 })
 
-describe('qnamaker:build write dialog assets successfully when empty files exist', () => {
+describe('qnamaker:build write dialog and settings assets successfully when empty files exist', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -829,7 +829,7 @@ describe('qnamaker:build write dialog assets successfully when empty files exist
   test
     .stdout()
     .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/empty-file/qnafiles', '--subscriptionKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when empty files exist', async ctx => {
+    .it('should write dialog and settings assets successfully when empty files exist', async ctx => {
       expect(ctx.stdout).to.contain('empty.qna loaded')
       expect(ctx.stdout).to.contain('non-empty.qna loaded')
       expect(ctx.stdout).to.contain('empty.zh-cn.qna loaded')
@@ -848,7 +848,7 @@ describe('qnamaker:build write dialog assets successfully when empty files exist
     })
 })
 
-describe('qnamaker:build write settings assets only successfully if --genSettingsOnly set', () => {
+describe('qnamaker:build write settings assets only successfully if --dialog is not set', () => {
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
 
@@ -889,8 +889,8 @@ describe('qnamaker:build write settings assets only successfully if --genSetting
 
   test
     .stdout()
-    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--genSettingsOnly'])
-    .it('should write settings assets only successfully if --genSettingsOnly set', async ctx => {      
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich2.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write settings assets only successfully if --dialog is not set', async ctx => {      
       expect(await compareFiles('./../../../results/qnamaker.settings.development.westus.json', './../../fixtures/testcases/qnabuild/sandwich/config/qnamaker.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich2.en-us.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.en-us.qna.dialog')).to.be.false
       expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.false

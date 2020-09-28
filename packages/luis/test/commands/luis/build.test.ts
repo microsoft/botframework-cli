@@ -342,8 +342,8 @@ describe('luis:build write dialog and settings assets successfully if --dialog s
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to multiLanguage', async ctx => {
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--dialog', 'multiLanguage', '--log', '--suffix', 'development'])
+    .it('should write dialog and settings assets successfully when --dialog set to multiLanguage', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.en-us.lu.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.true
@@ -382,7 +382,7 @@ describe('luis:build write dialog and settings assets successfully if --dialog s
   test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when --dialog set to crosstrained', async ctx => {
+    .it('should write dialog and settings assets successfully when --dialog set to crosstrained', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.qna.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.true
@@ -525,7 +525,7 @@ describe('luis:build create multiple applications successfully when input is a f
   test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/foo/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'multiLanguage', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should create multiple applications and write dialog assets successfully when input is a folder', async ctx => {
+    .it('should create multiple applications and write dialog and settings assets successfully when input is a folder', async ctx => {
       expect(ctx.stdout).to.contain('foo.fr-fr.lu loaded')
       expect(ctx.stdout).to.contain('foo.lu loaded')
       expect(ctx.stdout).to.contain('foo.zh-cn.lu loaded')
@@ -906,7 +906,7 @@ describe('luis:build write dialog and settings assets successfully if schema is 
   test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development', '--dialog', 'crosstrained', '--schema', 'https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema'])
-    .it('should write dialog assets successfully if schema is specified', async ctx => {
+    .it('should write dialog and settings assets successfully if schema is specified', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.en-us.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.en-us.lu.dialog')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs-with-schema/sandwich.lu.dialog')).to.be.true
@@ -964,7 +964,7 @@ describe('luis:build write dialog and settings assets successfully when empty fi
   test
     .stdout()
     .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/empty-file/lufiles', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development'])
-    .it('should write dialog assets successfully when empty files exist', async ctx => {
+    .it('should write dialog and settings assets successfully when empty files exist', async ctx => {
       expect(ctx.stdout).to.contain('empty.lu loaded')
       expect(ctx.stdout).to.contain('non-empty.lu loaded')
 
@@ -984,7 +984,7 @@ describe('luis:build write dialog and settings assets successfully when empty fi
     })
 })
 
-describe('luis:build write settings assets only successfully if --genSettingsOnly set', () => {
+describe('luis:build write settings assets only successfully if --dialog is not set', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(async function () {
     await fs.ensureDir(path.join(__dirname, './../../../results/'))
@@ -1015,8 +1015,8 @@ describe('luis:build write settings assets only successfully if --genSettingsOnl
 
   test
     .stdout()
-    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--dialog', 'crosstrained', '--out', './results', '--log', '--suffix', 'development', '--genSettingsOnly'])
-    .it('should write settings assets only successfully if --genSettingsOnly set', async ctx => {
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--out', './results', '--log', '--suffix', 'development'])
+    .it('should write settings assets only successfully if --dialog is not set', async ctx => {
       expect(await compareFiles('./../../../results/luis.settings.development.westus.json', './../../fixtures/testcases/lubuild/sandwich/config/luis.settings.development.westus.json')).to.be.true
       expect(await compareFiles('./../../../results/sandwich.lu.qna.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.qna.dialog')).to.be.false
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.false

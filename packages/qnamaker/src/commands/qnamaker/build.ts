@@ -34,13 +34,12 @@ export default class QnamakerBuild extends Command {
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
+    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
-    genSettingsOnly: flags.boolean({description: 'Indicates only write out settings to out folder. Only valid if --out is set', default: false})
   }
 
   async run() {
@@ -68,7 +67,7 @@ export default class QnamakerBuild extends Command {
       // Flags override userConfig
       let qnamakerBuildFlags = Object.keys(QnamakerBuild.flags)
 
-      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, endpoint, schema, genSettingsOnly}
+      let {inVal, subscriptionKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, log, endpoint, schema}
         = await processFlags(flags, qnamakerBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -135,12 +134,6 @@ export default class QnamakerBuild extends Command {
         region
       })
 
-      const dialogContents = await builder.generateDialogs(qnaContents, {
-        fallbackLocale,
-        schema,
-        dialog
-      })
-
       // get endpointKeys
       const endpointKeysInfo = await builder.getEndpointKeys(subscriptionKey, endpoint)
       const endpointKeys: any = {
@@ -151,7 +144,13 @@ export default class QnamakerBuild extends Command {
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        if (!genSettingsOnly) {
+        if (dialog) {
+          const dialogContents = await builder.generateDialogs(qnaContents, {
+            fallbackLocale,
+            schema,
+            dialog
+          })
+
           let writeDone = await builder.writeDialogAssets(dialogContents, {
             force,
             out: outputFolder
