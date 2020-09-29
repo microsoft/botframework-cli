@@ -17,3 +17,6 @@
 [Activity
     SuggestedActions = Add item | View lists | Remove item | Profile | Cancel | Help
 ]
+
+#GetIndex
+- ${user.lists.reminder[1]}

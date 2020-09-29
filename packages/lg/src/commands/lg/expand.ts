@@ -141,7 +141,8 @@ export default class ExpandCommand extends Command {
       }
 
       const expectedVariables = lg.analyzeTemplate(templateName).Variables
-      variablesValue = this.getVariableValues(testInput, expectedVariables, userInputValues)
+      const variableObjFromFile = this.getVariableObject(testInput)
+      variablesValue = this.getVariableValues(variableObjFromFile, expectedVariables, userInputValues)
       for (const variableValue of variablesValue) {
         if (variableValue[1] === undefined) {
           if (interactive) {
@@ -206,8 +207,26 @@ export default class ExpandCommand extends Command {
     return result
   }
 
-  private getVariableValues(testinput: string, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
+  private getVariableValues(variablesObj: any, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
     const result: Map<string, any> = new Map<string, any>()
+
+    if (expectedVariables !== undefined) {
+      for (const variable of expectedVariables) {
+        const deepFindResult = lodash.get(variablesObj, variable)
+        if (variablesObj !== undefined && deepFindResult !== undefined) {
+          result.set(variable, deepFindResult)
+        } else if (userInputValues !== undefined && userInputValues.has(variable)) {
+          result.set(variable, userInputValues.get(variable))
+        } else {
+          result.set(variable, undefined)
+        }
+      }
+    }
+
+    return result
+  }
+
+  private getVariableObject(testinput: string): any {
     let variablesObj: any
     if (testinput !== undefined) {
       let filePath: string = testinput
@@ -229,20 +248,7 @@ export default class ExpandCommand extends Command {
       variablesObj = JSON.parse(fileContent)
     }
 
-    if (expectedVariables !== undefined) {
-      for (const variable of expectedVariables) {
-        const deepFindResult = this.deepFind(variablesObj, variable)
-        if (variablesObj !== undefined && deepFindResult !== undefined) {
-          result.set(variable, deepFindResult)
-        } else if (userInputValues !== undefined && userInputValues.has(variable)) {
-          result.set(variable, userInputValues.get(variable))
-        } else {
-          result.set(variable, undefined)
-        }
-      }
-    }
-
-    return result
+    return variablesObj
   }
 
   private deepFind(obj: any, path: string): any {

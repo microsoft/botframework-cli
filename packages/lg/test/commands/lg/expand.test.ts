@@ -142,4 +142,22 @@ describe('lg:expand lg template with scope', async () => {
   .it('', async () => {
     await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, 'accessScope2.testinput.expand.lg'))
   })
+
+  testInputTemplate = 'GetIndex'
+  // test multiple nested path access
+  test
+  .command(['lg:expand',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, inputFileName),
+    '--out',
+    generatedFolder,
+    '--template',
+    testInputTemplate,
+    '--testInput',
+    path.join(__dirname, testcaseFolderPath, 'data.json'),
+    '-r',
+    '-f'])
+  .it('', async () => {
+    await TestUtil.compareFiles(path.join(generatedFolderPath, outputFileName), path.join(verifiedFolderPath, 'accessScope3.testinput.expand.lg'))
+  })
 })

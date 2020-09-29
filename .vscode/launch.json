@@ -352,10 +352,10 @@
                 "lg:expand",
                 "--in",
                 "accessScope.lg",
-                "--out",
-                "accessScope.out.lg",
+                "--testInput",
+                "data.json",
                 "--template",
-                "AddItemReadBack"
+                "GetIndex"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/packages/lg/test/fixtures/testcase"
