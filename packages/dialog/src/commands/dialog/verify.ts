@@ -2,10 +2,6 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-/* TODO:
-1) Finish fixing up error messages for verify and bringing back tests
-2) Add --schema switch to verify for default schema
-3) For merge add hash codes to .lg/.lu/.dialog and when copying check it. */
 
 import {Command, flags} from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
@@ -38,7 +34,7 @@ export default class DialogVerify extends Command {
 
     async execute(dialogFiles: string[], verbose?: boolean, schemaPath?: string): Promise<void> {
         const schema = new SchemaTracker()
-        const tracker = new DialogTracker(schema)
+        const tracker = new DialogTracker(schema, undefined, schemaPath)
 
         await tracker.addDialogFiles(dialogFiles)
 
@@ -72,8 +68,10 @@ export default class DialogVerify extends Command {
                 this.consoleError(`Missing definition for ${def} ${def.usedByString()}`, 'DLG003')
             }
 
-            for (let def of tracker.missingTypes) {
-                this.consoleError(`Missing $kind for ${def}`, 'DLG004')
+            for (let def of tracker.typeMismatches()) {
+                for (let use of def.typeMismatches()) {
+                    this.consoleError(`Type mismatch ${def} does not match ${use}`, 'DLG004')
+                }
             }
 
             for (let def of tracker.unusedIDs()) {

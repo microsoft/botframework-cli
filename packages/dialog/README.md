@@ -74,8 +74,9 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .dialog files.
 
 OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose  Show verbose output
+  -h, --help           show CLI help
+  -s, --schema=schema  Default schema to use if no $schema in dialog file.
+  -v, --verbose        Show verbose output
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/verify.ts)_

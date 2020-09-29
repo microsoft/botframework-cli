@@ -1,10 +1,11 @@
 {
-  "$schema": "../oracles/app.schema",
+  "$schema": "../../oracles/app.schema",
   "$kind": "root",
   "prompt": {
     "$kind": "prompt",
     "prompt": "Hello"
   },
+  "condition": true,
   "property": "foo.blah",
   "recognizers": [
     "inlineRecognizer",
@@ -17,9 +18,9 @@
     "missingRecognizer",
     {
       "$kind": "Recognizer",
-      "$comment": "type error because missing $copy/$req"
+      "$comment": "Missing required req"
     },
-    "typeMismatch",
+    "myPrompt",
     {
       "$kind": "Recognizer",
       "$id": "multiplyDefined",
