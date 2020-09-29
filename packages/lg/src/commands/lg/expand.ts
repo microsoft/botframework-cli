@@ -231,9 +231,9 @@ export default class ExpandCommand extends Command {
 
     if (expectedVariables !== undefined) {
       for (const variable of expectedVariables) {
-        const deepFindResult = lodash.get(variablesObj, variable)
-        if (variablesObj !== undefined && deepFindResult !== undefined) {
-          result.set(variable, deepFindResult)
+        const evalPathResult = lodash.get(variablesObj, variable)
+        if (variablesObj !== undefined && evalPathResult !== undefined) {
+          result.set(variable, evalPathResult)
         } else if (userInputValues !== undefined && userInputValues.has(variable)) {
           result.set(variable, userInputValues.get(variable))
         } else {
