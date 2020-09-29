@@ -123,6 +123,7 @@ export class Helper {
       headers: {
         'Content-Type': 'application/json',
         'Ocp-Apim-Subscription-Key': translateOption.subscriptionKey,
+        'Ocp-Apim-Subscription-Region': translateOption.region,
         'X-ClientTraceId': Helper.get_guid(),
       },
     }
@@ -181,10 +182,16 @@ export class TranslateOption {
    */
   public src_lang: string
 
-  constructor(subscriptionKey: string, to_lang: string, src_lang: string) {
+  /**
+   * the ubscription region.
+  */
+  public region: string
+
+  constructor(subscriptionKey: string, to_lang: string, src_lang: string, region: string) {
     this.subscriptionKey = subscriptionKey
     this.to_lang = to_lang
     this.src_lang = src_lang
+    this.region = region
   }
 }
 
