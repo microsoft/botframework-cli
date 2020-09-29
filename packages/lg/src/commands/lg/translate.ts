@@ -40,6 +40,7 @@ export default class TranslateCommand extends Command {
     srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
     translate_comments: flags.boolean({description: 'Machine translate all comments found in .lg file'}),
     translate_link_text: flags.boolean({description: 'Machine translate link description in .lg file'}),
+    region: flags.string({description: 'The sub region.', required: true}),
     help: flags.help({char: 'h', description: 'lg:translate help'}),
   }
 
@@ -68,7 +69,7 @@ export default class TranslateCommand extends Command {
     for (const toLang of toLangs) {
       const tgt_lang = toLang.trim()
       if (tgt_lang !== '') {
-        const translateOption = new TranslateOption(flags.translatekey, toLang, src_lang)
+        const translateOption = new TranslateOption(flags.translatekey, toLang, src_lang, flags.region)
         const result = await this.translateLGFileToSpecificLang(filePath, translateOption, translateParts)
         const outputFilePath = this.getOutputFile(filePath, tgt_lang, flags.out)
         if (!outputFilePath) {
