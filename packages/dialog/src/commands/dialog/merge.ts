@@ -4,7 +4,7 @@
  */
 
 import {Command, flags} from '@microsoft/bf-cli-command'
-import SchemaMerger from '../../library/schemaMerger'
+import { SchemaMerger } from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
     static description = 'Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an ExportedAssets directory it is copied to ImportedAssets/<package> in the --imports directory.'
@@ -16,6 +16,7 @@ export default class DialogMerge extends Command {
     static strict = false
 
     static flags: flags.Input<any> = {
+        checkOnly: flags.boolean({char: 'c', description: 'Check and do not write files.', default: false}),
         debug: flags.boolean({char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
         extension: flags.string({description: 'Extension to include as a resource for C#.', required: false, multiple: true, default: ['.dialog', '.lg', '.lu', '.schema', '.qna', '.uischema']}),
         help: flags.help({char: 'h'}),
@@ -33,7 +34,7 @@ export default class DialogMerge extends Command {
 
     async run() {
         const {argv, flags} = this.parse(DialogMerge)
-        let merger = new SchemaMerger(argv, flags.output, flags.imports, flags.verbose, this.log, this.warn, this.error, flags.extension, flags.schema, flags.debug, flags.nugetRoot)
+        let merger = new SchemaMerger(argv, flags.output, flags.imports, flags.checkOnly, flags.verbose, this.log, this.warn, this.error, flags.extension, flags.schema, flags.debug, flags.nugetRoot)
         await merger.merge()
     }
 }

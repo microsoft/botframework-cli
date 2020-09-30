@@ -10,7 +10,7 @@ import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
-import SchemaMerger from '../../../src/library/schemaMerger'
+import * as merger from '../../../src/library/schemaMerger'
 let srcDir = ppath.resolve('test/commands/dialog/')
 let tempDir = ppath.join(os.tmpdir(), 'test.out')
 
@@ -24,22 +24,23 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
     return count
 }
 
-async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string): Promise<[boolean, string[]]> {
+async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string): Promise<[merger.Imports | undefined, string[]]> {
     let lines: string[] = []
     let logger = msg => {
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns,
+    let mergeClass = new merger.SchemaMerger(patterns,
         output ? ppath.join(tempDir, output) : '',
-        undefined,        
+        undefined, 
+        false,       
         verbose || false,
         logger, logger, logger,
         undefined, 
         schemaPath ? ppath.join(tempDir, schemaPath) : undefined, 
         false,
         ppath.join(srcDir, 'nuget'))
-    let merged = await merger.merge()
+    let merged = await mergeClass.merge()
     return [merged, lines]
 }
 
@@ -255,7 +256,7 @@ describe('dialog:merge', async () => {
     })
 
     it('csproj -schema', async () => {
-        console.log('\nStart csproj')
+        console.log('\nStart csproj -schema')
         let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', false)
         assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
         assert(merged, 'Could not merge')
