@@ -21,13 +21,13 @@ const fetch = require('node-fetch');
 const qnaFile = require('./../qna/qnamaker/qnaFiles');
 const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
-const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
-const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
+const {BuildDiagnostic, DiagnosticSeverity} = require('./diagnostic');
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
 const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
 const qnaContext = require('../qna/qnamaker/qnaContext');
 const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
-const { config } = require('process');
+const LUResource = require('./luResource');
+
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
     featureToModel: 'modelName',
@@ -90,6 +90,64 @@ const parseFileContentsModule = {
         await parseLuAndQnaWithAntlr(parsedContent, fileContent.toString(), log, locale, config);
 
         return parsedContent;
+    },
+    /**
+     * Validate resource based on config.
+     * @param {LUResource} resource Parsed lu or qna resource
+     * @param {any} config Features config
+     * @returns {any[]} Diagnostic errors returned
+     */
+    validateResource: async function (resource, config) {
+        config = config || {};
+        config = {...defaultConfig, ...config};
+
+        if (resource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR)).length > 0) {
+            return []
+        }
+
+        let errors = []
+
+        try {
+            let parsedContent = new parserObj();
+
+            // parse model info section
+            let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, resource, false, config);
+
+            // parse reference section
+            parseAndHandleImportSection(parsedContent, resource, config);
+
+            // parse nested intent section
+            parseAndHandleNestedIntentSection(resource, enableMergeIntents);
+
+            GetEntitySectionsFromSimpleIntentSections(resource);
+
+            // parse entity definition v2 section
+            let featuresToProcess = parseAndHandleEntityV2(parsedContent, resource, false, undefined, config);
+
+            // parse entity section
+            parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
+
+            // parse entity section
+            parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
+
+            // parse simple intent section
+            parseAndHandleSimpleIntentSection(parsedContent, resource, config)
+
+            if (featuresToProcess && featuresToProcess.length > 0) {
+                parseFeatureSections(parsedContent, featuresToProcess, config);
+            }
+
+        } catch(e) {
+            if (e instanceof exception) {
+                errors.push(...e.diagnostics)
+            } else {
+                errors.push(BuildDiagnostic({
+                    message: e.message
+                }))
+            }
+        }
+
+        return errors
     },
     /**
      * Helper function to add an item to collection if it does not exist
@@ -175,7 +233,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     }
 
     // parse model info section
-    let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, luResource, log);
+    let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, luResource, log, config);
 
     // parse reference section
     await parseAndHandleImportSection(parsedContent, luResource, config);
@@ -2042,13 +2100,21 @@ const parseAndHandleQnaSection = async function (parsedContent, luResource) {
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
  * @param {LUResouce} luResource resources extracted from lu file content
  * @param {boolean} log indicates if we need verbose logging.
+ * @param {any} config config to indicate which features are enabled
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleModelInfoSection = function (parsedContent, luResource, log) {
+const parseAndHandleModelInfoSection = function (parsedContent, luResource, log, config) {
     // handle model info
     let enableMergeIntents = true;
     let modelInfos = luResource.Sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
     if (modelInfos && modelInfos.length > 0) {
+        if (!config.enableModelDescription) {
+            const error = BuildDiagnostic({
+                message: `Do not support Model Description. Please make sure enableModelDescription is set to true.`
+            })
+            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+        }
+
         for (const modelInfo of modelInfos) {
             let line = modelInfo.ModelInfo
             let kvPair = line.split(/@(app|kb|intent|entity|enableSections|enableMergeIntents|patternAnyEntity|parser).(.*)=/g).map(item => item.trim());
