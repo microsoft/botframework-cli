@@ -18,7 +18,7 @@ export default class DialogMerge extends Command {
     static flags: flags.Input<any> = {
         checkOnly: flags.boolean({char: 'c', description: 'Check and do not write files.', default: false}),
         debug: flags.boolean({char: 'd', description: 'Generate debug files.', hidden: true, default: false}),
-        extension: flags.string({description: 'Extension to include as a resource for C#.', required: false, multiple: true, default: ['.dialog', '.lg', '.lu', '.schema', '.qna', '.uischema']}),
+        extension: flags.string({description: 'Extension to include as a resource.', required: false, multiple: true, default: ['.dialog', '.lg', '.lu', '.schema', '.qna', '.uischema']}),
         help: flags.help({char: 'h'}),
         nugetRoot: flags.string({description: 'Nuget root directory for debugging.', hidden: true}),
         imports: flags.string({description: 'Output path for imported assets.  Defaults to the directory of --out with an ImportedAssets directory.', required: false}),

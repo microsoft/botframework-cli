@@ -236,7 +236,7 @@ export interface Imports {
     /**
      * Files to delete because they are no longer in the original components.
      */
-    deleted: String[],
+    deleted: string[],
 
     /**
      * Files where a component has a new definition and the old imported definition has been changed.
@@ -308,7 +308,7 @@ export class SchemaMerger {
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
      * @param patterns Glob patterns for the .csproj or packge.json files to combine.
-     * @param output The output file to create or empty string to use default.
+     * @param output The output schema file to create or empty string to use default.
      * @param imports The output directory for imports.
      * @param checkOnly Check only--do not write files.
      * @param verbose True to show files as processed.
@@ -316,7 +316,7 @@ export class SchemaMerger {
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param extensions Extensions to analyze for loader.
-     * @param schema Path to merged .schema is doin
+     * @param schema Path to merged .schema to only merge .uischema.
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
@@ -674,7 +674,7 @@ export class SchemaMerger {
                                 this.vlog(`Copy ${path} to ${destination}`)
                             } else {
                                 imports.conflicts.push(info)
-                                this.warn(`Copy conflicting ${path} to ${destination}`)
+                                this.warn(`Warning copied conflicting ${path} to ${destination}`)
                             }
                             try {
                                 info.definition = await hash.addHash(path)
@@ -683,7 +683,6 @@ export class SchemaMerger {
                                     await fs.writeFile(destination, info.definition)
                                 }
                             } catch (e) {
-                                debugger
                                 this.mergingError(e)
                             }
                         }
@@ -695,8 +694,8 @@ export class SchemaMerger {
                                     imports.deleted.push(path)
                                     this.vlog(`Delete ${path}`)
                                 } else {
-                                    imports.conflicts.push({definition: '', path: path})
-                                    this.warn(`Delete modified ${path}`)
+                                    imports.conflicts.push({definition: '', path})
+                                    this.warn(`Warning deleted modified ${path}`)
                                 }
                                 if (!this.checkOnly) {
                                     await fs.remove(path)

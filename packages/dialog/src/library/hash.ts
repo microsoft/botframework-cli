@@ -39,8 +39,8 @@ export function computeJSONHash(json: any): string {
 
 const CommentHashExtensions = ['.lg', '.lu', '.qna']
 const JSONHashExtensions = ['.dialog']
-const HashPattern = /\r?\n> Import: ([a-zA-Z0-9]+)/
-const ReplaceHashPattern = /\r?\n> Import: ([a-zA-Z0-9]+)/g
+const HashPattern = /\r?\n> Imported: ([a-zA-Z0-9]+)/
+const ReplaceHashPattern = /\r?\n> Imported: ([a-zA-Z0-9]+)/g
 
 /**
  * Add approriate hash to file contents if a known file type and return it.
@@ -57,8 +57,8 @@ export async function addHash(path: string): Promise<string> {
         val += `${os.EOL}> Imported: ${computeHash(val)}`
     } else if (JSONHashExtensions.includes(ext)) {
         let json = JSON.parse(val)
-        delete json.$Import
-        json.$Import = computeJSONHash(json)
+        delete json.$Imported
+        json.$Imported = computeJSONHash(json)
         val = stringify(json)
     }
     return val
