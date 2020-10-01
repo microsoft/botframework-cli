@@ -107,7 +107,7 @@ describe('Phrase Lists config', () => {
     - you are`;
     let luresource = luparser.parse(fileContent);
     let errors = validateResource(luresource, { enablePhraseLists: false })
-    assert.include(errors[0].Message, 'Do not support Phrase entity')
+    assert.include(errors[0].Message, 'Do not support Phrase Lists')
   });
 });
 
@@ -123,7 +123,7 @@ describe('user features config', () => {
 });
 
 describe('Model Description config', () => {
-  it('Throws when model description is disable', function (done) {
+  it('Throws when model description is disable', function () {
     let fileContent = `> !# @app.name = all
 
     # AskForUserName`;
@@ -134,7 +134,7 @@ describe('Model Description config', () => {
 });
 
 describe('External References config', () => {
-  it('Throws when external references is disable', function (done) {
+  it('Throws when external references is disable', function () {
     let fileContent = `[all LU files](../**)`;
     let luresource = luparser.parse(fileContent);
     let errors = validateResource(luresource, { enableExternalReferences: false })
@@ -143,7 +143,7 @@ describe('External References config', () => {
 });
 
 describe('Pattern config', () => {
-  it('Throws when pattern is disable in utterance', function (done) {
+  it('Throws when pattern is disable in utterance', function () {
     let fileContent = `# addToDo
     - add {item} to my shopping list
     - pls add {item} to my list`;
@@ -152,7 +152,7 @@ describe('Pattern config', () => {
     assert.include(errors[0].Message, 'Do not support Pattern')
   });
 
-  it('Throws when pattern is disable', function (done) {
+  it('Throws when pattern is disable', function () {
     let fileContent = `> # Pattern.Any entities
     @ patternany alarmTime`;
     let luresource = luparser.parse(fileContent);

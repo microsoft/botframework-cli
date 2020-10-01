@@ -97,7 +97,7 @@ const parseFileContentsModule = {
      * @param {any} config Features config
      * @returns {any[]} Diagnostic errors returned
      */
-    validateResource: async function (resource, config) {
+    validateResource: function (resource, config) {
         config = config || {};
         config = {...defaultConfig, ...config};
 
@@ -113,8 +113,8 @@ const parseFileContentsModule = {
             // parse model info section
             let enableMergeIntents = parseAndHandleModelInfoSection(parsedContent, resource, false, config);
 
-            // parse reference section
-            parseAndHandleImportSection(parsedContent, resource, config);
+            // validate reference section
+            validateImportSection(resource, config);
 
             // parse nested intent section
             parseAndHandleNestedIntentSection(resource, enableMergeIntents);
@@ -130,7 +130,7 @@ const parseFileContentsModule = {
             // parse entity section
             parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
 
-            // parse simple intent section
+            // validate simple intent section
             parseAndHandleSimpleIntentSection(parsedContent, resource, config)
 
             if (featuresToProcess && featuresToProcess.length > 0) {
@@ -250,7 +250,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
     parseAndHandleEntitySection(parsedContent, luResource, log, locale, config);
 
     // parse simple intent section
-    await parseAndHandleSimpleIntentSection(parsedContent, luResource, config);
+    parseAndHandleSimpleIntentSection(parsedContent, luResource, config);
 
     // parse qna section
     await parseAndHandleQnaSection(parsedContent, luResource);
@@ -774,6 +774,23 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
     }
 }
 /**
+ * Reference parser code to parse reference section.
+ * @param {LUResouce} luResource resources extracted from lu file content
+ * @throws {exception} Throws on errors. exception object includes errCode and text.
+ */
+const validateImportSection = function (luResource, config) {
+    // handle reference
+    let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
+    if (luImports && luImports.length > 0) {
+        if (!config.enableExternalReferences) {
+          const error = BuildDiagnostic({
+            message: 'Do not support External References. Please make sure enableExternalReferences is set to true.'
+          });
+          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+        }
+    }
+}
+/**
  * Helper function to handle @ reference in patterns
  * @param {String} utterance
  * @param {String []} entitiesFound
@@ -858,7 +875,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
  * @param {LUResouce} luResource resources extracted from lu file content
  * @throws {exception} Throws on errors. exception object includes errCode and text.
  */
-const parseAndHandleSimpleIntentSection = async function (parsedContent, luResource, config) {
+const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, config) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
     let hashTable = {}
@@ -891,7 +908,7 @@ const parseAndHandleSimpleIntentSection = async function (parsedContent, luResou
 
                         utterance = `${utterance.slice(0, index)}(${reference.Path})`
                     }
-                    let parsedLinkUriInUtterance = await helpers.parseLinkURI(utterance);
+                    let parsedLinkUriInUtterance = helpers.parseLinkURISync(utterance);
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
