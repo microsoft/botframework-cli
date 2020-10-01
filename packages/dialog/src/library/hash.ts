@@ -88,6 +88,8 @@ export async function isUnchanged(path: string): Promise<boolean> {
             let hash = computeJSONHash(json)
             result = oldHash === hash
         }
+    } else {
+        result = true
     }
     return result
 }
