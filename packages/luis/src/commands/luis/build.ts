@@ -121,7 +121,7 @@ export default class LuisBuild extends Command {
         }
 
         // de-dupe the files list
-        files = [...new Set(files)]
+        files = Array.from(new Set(files))
 
         // load lu contents from lu files
         // load existing recognizers, multiRecogniers and settings or create default ones
