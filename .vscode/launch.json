@@ -34,7 +34,7 @@
                 "999999",
                 "--colors",
                 "-g",
-                ".*"
+                "dialog:merge.*"
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "outputCapture": "std",
@@ -163,6 +163,26 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Adaptive Sample 08 project",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/dialog/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/dialog/lib/**"
+            ],
+            "args": [
+                "dialog:merge",
+                "*.csproj",
+                "--verbose",
+                "-o",
+                "${env:TEMP}/app.schema",
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/../botbuilder-samples/samples/csharp_dotnetcore/adaptive-dialog/08.todo-bot-luis-qnamaker"
         },
         {
             "type": "node",

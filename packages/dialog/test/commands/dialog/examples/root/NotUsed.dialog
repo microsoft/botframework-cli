@@ -1,5 +1,5 @@
 {
-    "$schema": "../schemas/app.schema",
+    "$schema": "../../oracles/app.schema",
     "$kind": "Recognizer",
     "req": "val"
 }

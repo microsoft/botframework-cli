@@ -1,0 +1,36 @@
+{
+  "$schema": "../../oracles/app.schema",
+  "$kind": "root",
+  "prompt": {
+    "$kind": "prompt",
+    "prompt": "Hello"
+  },
+  "condition": true,
+  "property": "foo.blah",
+  "recognizers": [
+    "inlineRecognizer",
+    {
+      "$kind": "Recognizer",
+      "$id": "inlineRecognizer",
+      "req": "inline id"
+    },
+    "externalRecognizer",
+    "missingRecognizer",
+    {
+      "$kind": "Recognizer",
+      "$comment": "Missing required req"
+    },
+    "myPrompt",
+    {
+      "$kind": "Recognizer",
+      "$id": "multiplyDefined",
+      "req": "multiply defined in this file"
+    },
+    {
+      "$kind": "Recognizer",
+      "$id": "multiplyDefined",
+      "req": "multiply defined in this file"
+    },
+    "inlineRecognizer"
+  ]
+}
