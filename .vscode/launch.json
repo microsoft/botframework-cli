@@ -357,6 +357,28 @@
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "LG Expand Test",
+            "preLaunchTask": "${defaultBuildTask}",
+            "program": "${workspaceFolder}/packages/lg/bin/run",
+            "outputCapture": "std",
+            "outFiles": [
+                "./packages/lg/lib/**"
+            ],
+            "args": [
+                "lg:expand",
+                "--in",
+                "accessScope.lg",
+                "--testInput",
+                "data.json",
+                "--template",
+                "GetIndex"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "cwd": "${workspaceFolder}/packages/lg/test/fixtures/testcase"
         }
     ]
 }
