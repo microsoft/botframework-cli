@@ -239,6 +239,11 @@ export interface Imports {
     deleted: string[],
 
     /**
+     * Files that were unchanged.
+     */
+    unchanged: string[],
+
+    /**
      * Files where a component has a new definition and the old imported definition has been changed.
      */
     conflicts: Import[]
@@ -653,7 +658,7 @@ export class SchemaMerger {
 
     // Copy all exported assets into imported assets
     private async copyAssets(): Promise<Imports | undefined> {
-        let imports: Imports | undefined = this.failed ? undefined : {added: [], deleted: [], conflicts: []}
+        let imports: Imports | undefined = this.failed ? undefined : {added: [], deleted: [], unchanged: [], conflicts: []}
         if (imports && !this.schemaPath && this.components.length > 0) {
             this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
@@ -667,22 +672,35 @@ export class SchemaMerger {
                         // Copy all exported files
                         for (let path of await glob(forwardSlashes(ppath.join(exported, '**')))) {
                             let destination = ppath.join(imported, ppath.relative(exported, path))
-                            let info: Import = {definition: '', path: destination}
                             used.add(forwardSlashes(destination))
-                            if (!await fs.pathExists(destination) || await hash.isUnchanged(destination)) {
-                                imports.added.push(info)
-                                this.vlog(`Copy ${path} to ${destination}`)
-                            } else {
-                                imports.conflicts.push(info)
-                                this.warn(`Warning copied conflicting ${path} to ${destination}`)
-                            }
+                            let msg = `Copy ${path} to ${destination}`
                             try {
-                                info.definition = await hash.addHash(path)
-                                if (!this.checkOnly) {
+                                let copy = true
+                                let info: Import = {definition: await hash.addHash(path), path: destination}
+                                let {unchanged, embeddedHash} = await hash.isUnchanged(destination)
+                                if (hash.embeddedHash(path, info.definition) === embeddedHash) {
+                                    // Import is based on last export
+                                    this.vlog(`Unchanged ${destination}`)
+                                    imports.unchanged.push(destination)
+                                    copy = false
+                                } else if (unchanged) {
+                                    // Destination has not changed, but export has
+                                    this.vlog(msg)
+                                    imports.added.push(info)
+                                } else {
+                                    // Destination and export have changed
+                                    this.warn(`Warning copied conflicting ${path} to ${destination}`)
+                                    imports.conflicts.push(info)
+                                }
+                                msg = ''
+                                if (copy && !this.checkOnly) {
                                     await fs.ensureDir(ppath.dirname(destination))
                                     await fs.writeFile(destination, info.definition)
                                 }
                             } catch (e) {
+                                if (msg) {
+                                    this.log(msg)
+                                }
                                 this.mergingError(e)
                             }
                         }
@@ -690,7 +708,8 @@ export class SchemaMerger {
                         // Delete removed files
                         for (let path of await glob(forwardSlashes(ppath.join(imported, '**')))) {
                             if (!used.has(path)) {
-                                if (await hash.isUnchanged(path)) {
+                                let {unchanged} = await hash.isUnchanged(path)
+                                if (unchanged) {
                                     imports.deleted.push(path)
                                     this.vlog(`Delete ${path}`)
                                 } else {

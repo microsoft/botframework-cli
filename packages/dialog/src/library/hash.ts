@@ -67,27 +67,50 @@ export async function addHash(path: string): Promise<string> {
 /**
  * Check to see if the contents of a file have changed since hash was computed.
  * @param path Path to file to check.
+ * @returns Returns unchanged and hash code.
  */
-export async function isUnchanged(path: string): Promise<boolean> {
-    let result = false
-    let ext = ppath.extname(path)
-    let file = await fs.readFile(path, 'utf8')
-    if (CommentHashExtensions.includes(ext)) {
-        let match = file.match(HashPattern)
-        if (match) {
-            let oldHash = match[1]
-            file = file.replace(HashPattern, '')
-            let hash = computeHash(file)
-            result = oldHash === hash
-        }
-    } else if (JSONHashExtensions.includes(ext)) {
-        let json = JSON.parse(file)
-        let oldHash = json.$Imported
-        if (oldHash) {
-            delete json.$Imported
-            let hash = computeJSONHash(json)
-            result = oldHash === hash
+export async function isUnchanged(path: string): Promise<{unchanged: boolean, embeddedHash: string}> {
+    let result = {unchanged: true, embeddedHash: ''}
+    if (await fs.pathExists(path)) {
+        let ext = ppath.extname(path)
+        let file = await fs.readFile(path, 'utf8')
+        if (CommentHashExtensions.includes(ext)) {
+            let match = file.match(HashPattern)
+            if (match) {
+                file = file.replace(HashPattern, '')
+                result.embeddedHash = match[1]
+                result.unchanged = computeHash(file) === result.embeddedHash
+            }
+        } else if (JSONHashExtensions.includes(ext)) {
+            let json = JSON.parse(file)
+            let oldHash = json.$Imported
+            if (oldHash) {
+                result.embeddedHash = oldHash
+                delete json.$Imported
+                result.unchanged = computeJSONHash(json) === result.embeddedHash
+            }
         }
     }
     return result
+}
+
+/**
+ * Return the hash code embeded in a string.
+ * @param path Path to source of value.
+ * @param val Value as a string.
+ * @returns Embedded hash code or undefined.
+ */
+export function embeddedHash(path: string, val: string): string | undefined {
+    let hash: string | undefined
+    let ext = ppath.extname(path)
+    if (CommentHashExtensions.includes(ext)) {
+        let match = val.match(HashPattern)
+        if (match) {
+            hash = match[1]
+        }
+    } else if (JSONHashExtensions.includes(ext)) {
+        let json = JSON.parse(val)
+        hash = json.$Imported
+    }
+    return hash
 }
