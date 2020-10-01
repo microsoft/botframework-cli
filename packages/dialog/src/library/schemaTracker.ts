@@ -1,12 +1,11 @@
-#!/usr/bin/env node
-
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
 
-import * as ajv from 'ajv';
-import * as parser from '@apidevtools/json-schema-ref-parser'
+import ajv from 'ajv';
+import parser from '@apidevtools/json-schema-ref-parser'
+
 let getUri: any = require('get-uri')
 
 // Get JSON from a URI.
