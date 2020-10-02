@@ -303,7 +303,7 @@ OPTIONS
   -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator build command help
   -i, --in=in        Path to lu file or folder with lu files.
-  -m, --model=model  Path to Orchestrator model.
+  -m, --model=model  Path to Orchestrator model directory.
   -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
   --dialog           Generate multi language or cross train Orchestrator recognizers.
 
@@ -312,7 +312,7 @@ EXAMPLE
        $ bf orchestrator:build 
        $ bf orchestrator:build --in ./path/to/lufile/or/folder/
        $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
 ```
 
 _See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
@@ -333,7 +333,7 @@ OPTIONS
   -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
                      to current working directory.
 
-  -m, --model=model  Path to Orchestrator model.
+  -m, --model=model  Path to Orchestrator model directory.
 
   -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
                      directory.
@@ -345,7 +345,7 @@ EXAMPLE
        $ bf orchestrator:create 
        $ bf orchestrator:create --in ./path/to/file/
        $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model
+       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
 ```
 
 _See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/create.ts)_

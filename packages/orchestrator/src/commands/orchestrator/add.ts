@@ -15,11 +15,11 @@ export default class OrchestratorAdd extends Command {
     $ bf orchestrator:add 
     $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/
     $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/
-    $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model`]
+    $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory`]
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
-    model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
+    model: flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
     out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
     prefix: flags.string({char: 'p', description: 'Prefix to be added label in snapshot.'}),
     snapshot: flags.string({char: 's', description: 'Existing orchestrator snapshot to append to.'}),
