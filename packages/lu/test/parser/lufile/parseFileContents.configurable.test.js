@@ -160,3 +160,26 @@ describe('Pattern config', () => {
     assert.include(errors[0].Message, 'Do not support Pattern')
   });
 });
+
+describe('ValidateResource don\'t change resource in memory', () => {
+  it('ValidateResource don\'t change resource in memory', function () {
+    let fileContent = `> !# @enableSections = true
+ 
+    # CheckTodo
+    ## CheckUnreadTodo
+    - check my unread todo
+    - show my unread todos
+     
+    @ simple todoTitle
+     
+    ## CheckDeletedTodo
+    - check my deleted todo
+    - show my deleted todos
+     
+    @ simple todoSubject`;
+    let luresource = luparser.parse(fileContent);
+    let errors = validateResource(luresource);
+    assert.equal(errors.length, 0);
+    assert.equal(luresource.Sections.length, 2);
+  });
+});

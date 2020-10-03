@@ -93,14 +93,15 @@ const parseFileContentsModule = {
     },
     /**
      * Validate resource based on config.
-     * @param {LUResource} resource Parsed lu or qna resource
+     * @param {LUResource} originalResource Original parsed lu or qna resource
      * @param {any} config Features config
      * @returns {any[]} Diagnostic errors returned
      */
-    validateResource: function (resource, config) {
+    validateResource: function (originalResource, config) {
         config = config || {};
         config = {...defaultConfig, ...config};
 
+        let resource = JSON.parse(JSON.stringify(originalResource));
         if (resource.Errors.filter(error => (error && error.Severity && error.Severity === DiagnosticSeverity.ERROR)).length > 0) {
             return []
         }
