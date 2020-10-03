@@ -46,11 +46,12 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
 
 OPTIONS
+  -c, --checkOnly        Check and do not write files.
   -h, --help             show CLI help
   -o, --output=output    Output path and filename for merged .schema and .uischema.  Defaults to first project name.
   -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
   -v, --verbose          Show verbose logging of files as they are processed.
-  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource.
 
   --imports=imports      Output path for imported assets.  Defaults to the directory of --out with an ImportedAssets
                          directory.
@@ -74,8 +75,9 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .dialog files.
 
 OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose  Show verbose output
+  -h, --help           show CLI help
+  -s, --schema=schema  Default schema to use if no $schema in dialog file.
+  -v, --verbose        Show verbose output
 ```
 
 _See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/verify.ts)_
