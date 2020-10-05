@@ -51,7 +51,8 @@ export class UtilityLabelResolver {
         }
         const labels: string[] = utteranceLabels[1];
         const labelsIndexes: number[] = labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
-        const labelsConcatenated: string = labels.join(',');
+        const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(labels);
+        const labelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('label', labels);
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), before calling score(), utterance=${utterance}`);
         }
@@ -90,7 +91,8 @@ export class UtilityLabelResolver {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedIndexes)=${JSON.stringify(labelsPredictedIndexes)}`);
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredicted)=${JSON.stringify(labelsPredicted)}`);
         }
-        const labelsPredictedConcatenated: string = labelsPredicted.join(',');
+        const labelsPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(labelsPredicted);
+        const labelsPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('label', labelsPredicted);
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedConcatenated)="${JSON.stringify(labelsPredictedConcatenated)}"`);
         }
@@ -123,9 +125,11 @@ export class UtilityLabelResolver {
           labelsPredictedEvaluation,
           labels,
           labelsConcatenated,
+          labelsConcatenatedToHtmlTable,
           labelsIndexes,
           labelsPredicted,
           labelsPredictedConcatenated,
+          labelsPredictedConcatenatedToHtmlTable,
           labelsPredictedScore,
           labelsPredictedIndexes,
           labelsPredictedClosestText,

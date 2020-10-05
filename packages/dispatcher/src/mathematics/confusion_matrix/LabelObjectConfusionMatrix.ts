@@ -40,7 +40,7 @@ implements ISingleLabelObjectConfusionMatrix {
         if (!this.getLabelMap().has(label.name)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);
+                    `label=${label}, not int the label map=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.getLabelMap())}`);
             }
             return false;
         }

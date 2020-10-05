@@ -65,7 +65,7 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
                         throw error;
                     }
                 }
@@ -119,7 +119,7 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
                         throw error;
                     }
                 }
@@ -147,6 +147,91 @@ export class DictionaryMapUtility {
         return utteranceLabels;
     }
 
+    public static jsonStringifyStringKeyGenericSetNativeMapArrayValue<T>(
+        stringKeyGenericSetMap: Map<string, Set<T>>): string {
+        return Utility.jsonStringify(
+            DictionaryMapUtility.convertStringKeyGenericSetNativeMapToDictionaryArrayValue(
+                stringKeyGenericSetMap));
+    }
+    public static jsonStringifyStringKeyGenericSetNativeMap<T>(
+        stringKeyGenericSetMap: Map<string, Set<T>>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertStringKeyGenericSetNativeMapToDictionary(
+                    stringKeyGenericSetMap));
+    }
+    public static jsonStringifyStringKeyGenericValueNativeMap<T>(
+        stringKeyGenericValueMap: Map<string, T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertStringKeyGenericValueNativeMapToDictionary(
+                    stringKeyGenericValueMap));
+    }
+    public static jsonStringifyNumberKeyGenericSetNativeMapArrayValue<T>(
+        numberKeyGenericSetMap: Map<number, Set<T>>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericSetNativeMapToDictionaryArrayValue(
+                    numberKeyGenericSetMap));
+    }
+    public static jsonStringifyNumberKeyGenericSetNativeMap<T>(
+        numberKeyGenericSetMap: Map<number, Set<T>>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericSetNativeMapToDictionary(
+                    numberKeyGenericSetMap));
+    }
+    public static jsonStringifyNumberKeyGenericValueNativeMap<T>(
+        numberKeyGenericValueMap: Map<number, T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericValueNativeMapToDictionary(
+                    numberKeyGenericValueMap));
+    }
+
+    public static jsonStringifyStringKeyGenericSetMapArrayValue<T>(
+        stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertStringKeyGenericSetMapToDictionaryArrayValue(
+                    stringKeyGenericSetMap));
+    }
+    public static jsonStringifyStringKeyGenericSetMap<T>(
+        stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertStringKeyGenericSetMapToDictionary(
+                    stringKeyGenericSetMap));
+    }
+    public static jsonStringifyStringKeyGenericValueMap<T>(
+        stringKeyGenericValueMap: TMapStringKeyGenericValue<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertStringKeyGenericValueMapToDictionary(
+                    stringKeyGenericValueMap));
+    }
+    public static jsonStringifyNumberKeyGenericSetMapArrayValue<T>(
+        numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericSetMapToDictionaryArrayValue(
+                    numberKeyGenericSetMap));
+    }
+    public static jsonStringifyNumberKeyGenericSetMap<T>(
+        numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericSetMapToDictionary(
+                    numberKeyGenericSetMap));
+    }
+    public static jsonStringifyNumberKeyGenericValueMap<T>(
+        numberKeyGenericValueMap: TMapNumberKeyGenericValue<T>): string {
+            return Utility.jsonStringify(
+                DictionaryMapUtility.convertNumberKeyGenericValueMapToDictionary(
+                    numberKeyGenericValueMap));
+    }
+
+    public static convertStringKeyGenericSetNativeMapToDictionaryArrayValue<T>(
+        stringKeyGenericSetMap: Map<string, Set<T>>): { [id: string]: T[] } {
+        const stringIdGenericSetDictionaryArrayValue: { [id: string]: T[] } = {};
+        for (const key of stringKeyGenericSetMap.keys()) {
+            if (key) {
+                const value: Set<T> = stringKeyGenericSetMap.get(key) as Set<T>;
+                stringIdGenericSetDictionaryArrayValue[key] = [...value];
+            }
+        }
+        return stringIdGenericSetDictionaryArrayValue;
+    }
     public static convertStringKeyGenericSetNativeMapToDictionary<T>(
         stringKeyGenericSetMap: Map<string, Set<T>>): { [id: string]: Set<T> } {
         const stringIdGenericSetDictionary: { [id: string]: Set<T> } = {};
@@ -168,6 +253,19 @@ export class DictionaryMapUtility {
             }
         }
         return stringIdGenericValueDictionary;
+    }
+    public static convertNumberKeyGenericSetNativeMapToDictionaryArrayValue<T>(
+        numberKeyGenericSetMap: Map<number, Set<T>>): { [id: number]: T[] } {
+        const numberIdGenericSetDictionaryArrayValue: { [id: number]: T[] } = {};
+        for (const key of numberKeyGenericSetMap.keys()) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: Set<T> = numberKeyGenericSetMap.get(keyInNumber) as Set<T>;
+                numberIdGenericSetDictionaryArrayValue[keyInNumber] = [...value];
+            }
+        }
+        return numberIdGenericSetDictionaryArrayValue;
     }
     public static convertNumberKeyGenericSetNativeMapToDictionary<T>(
         numberKeyGenericSetMap: Map<number, Set<T>>): { [id: number]: Set<T> } {
@@ -196,6 +294,17 @@ export class DictionaryMapUtility {
         return numberIdGenericValueDictionary;
     }
 
+    public static convertStringKeyGenericSetMapToDictionaryArrayValue<T>(
+        stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): IDictionaryStringIdGenericArray<T> {
+        const stringIdGenericSetDictionaryArrayValue: IDictionaryStringIdGenericArray<T> = {};
+        for (const key of stringKeyGenericSetMap.keys()) {
+            if (key) {
+                const value: Set<T> = stringKeyGenericSetMap.get(key) as Set<T>;
+                stringIdGenericSetDictionaryArrayValue[key] = [...value];
+            }
+        }
+        return stringIdGenericSetDictionaryArrayValue;
+    }
     public static convertStringKeyGenericSetMapToDictionary<T>(
         stringKeyGenericSetMap: TMapStringKeyGenericSet<T>): IDictionaryStringIdGenericSet<T> {
         const stringIdGenericSetDictionary: IDictionaryStringIdGenericSet<T> = {};
@@ -217,6 +326,19 @@ export class DictionaryMapUtility {
             }
         }
         return stringIdGenericValueDictionary;
+    }
+    public static convertNumberKeyGenericSetMapToDictionaryArrayValue<T>(
+        numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): IDictionaryNumberIdGenericArray<T> {
+        const numberIdGenericSetDictionaryArrayValue: IDictionaryNumberIdGenericArray<T> = {};
+        for (const key of numberKeyGenericSetMap.keys()) {
+            if (key) {
+                // ---- key is already a number, tslint is mistaken that it's a string
+                const keyInNumber: number = Number(key);
+                const value: Set<T> = numberKeyGenericSetMap.get(keyInNumber) as Set<T>;
+                numberIdGenericSetDictionaryArrayValue[keyInNumber] = [...value];
+            }
+        }
+        return numberIdGenericSetDictionaryArrayValue;
     }
     public static convertNumberKeyGenericSetMapToDictionary<T>(
         numberKeyGenericSetMap: TMapNumberKeyGenericSet<T>): IDictionaryNumberIdGenericSet<T> {

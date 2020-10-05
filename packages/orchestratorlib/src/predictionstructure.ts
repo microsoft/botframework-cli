@@ -16,17 +16,21 @@ export class PredictionStructure {
     // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     labels: string[],
     labelsConcatenated: string,
+    labelsConcatenatedToHtmlTable: string,
     labelsIndexes: number[],
     labelsPredicted: string[],
     labelsPredictedConcatenated: string,
+    labelsPredictedConcatenatedToHtmlTable: string,
     labelsPredictedIndexes: number[]) {
     this.utterance = utterance;
     this.labelsPredictedEvaluation = labelsPredictedEvaluation;
     this.labels = labels;
     this.labelsConcatenated = labelsConcatenated;
+    this.labelsConcatenatedToHtmlTable = labelsConcatenatedToHtmlTable;
     this.labelsIndexes = labelsIndexes;
     this.labelsPredicted = labelsPredicted;
     this.labelsPredictedConcatenated = labelsPredictedConcatenated;
+    this.labelsPredictedConcatenatedToHtmlTable = labelsPredictedConcatenatedToHtmlTable;
     this.labelsPredictedIndexes = labelsPredictedIndexes;
   }
 
@@ -39,9 +43,11 @@ export class PredictionStructure {
     // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     'labels': string[];
     'labelsConcatenated': string;
+    'labelsConcatenatedToHtmlTable': string;
     'labelsIndexes': number[];
     'labelsPredicted': string[];
     'labelsPredictedConcatenated': string;
+    'labelsPredictedConcatenatedToHtmlTable': string;
     'labelsPredictedIndexes': number[]; } {
     return {
       utterance: this.utterance,
@@ -52,9 +58,11 @@ export class PredictionStructure {
       // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       labels: this.labels,
       labelsConcatenated: this.labelsConcatenated,
+      labelsConcatenatedToHtmlTable: this.labelsConcatenatedToHtmlTable,
       labelsIndexes: this.labelsIndexes,
       labelsPredicted: this.labelsPredicted,
       labelsPredictedConcatenated: this.labelsPredictedConcatenated,
+      labelsPredictedConcatenatedToHtmlTable: this.labelsPredictedConcatenatedToHtmlTable,
       labelsPredictedIndexes: this.labelsPredictedIndexes,
     };
   }
@@ -81,11 +89,15 @@ export class PredictionStructure {
 
   public labelsConcatenated: string;
 
+  public labelsConcatenatedToHtmlTable: string;
+
   public labelsIndexes: number[];
 
   public labelsPredicted: string[];
 
   public labelsPredictedConcatenated: string;
+
+  public labelsPredictedConcatenatedToHtmlTable: string;
 
   public labelsPredictedIndexes: number[];
 }

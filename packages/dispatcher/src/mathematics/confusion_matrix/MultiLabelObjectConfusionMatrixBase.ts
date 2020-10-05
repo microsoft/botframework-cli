@@ -8,6 +8,8 @@ import { MultiLabelConfusionMatrixBase } from "./MultiLabelConfusionMatrixBase";
 
 import { Label } from "../../label_structure/Label";
 
+import {DictionaryMapUtility} from "../../data_structure/DictionaryMapUtility";
+
 import { Utility } from "../../utility/Utility";
 
 export abstract class MultiLabelObjectConfusionMatrixBase
@@ -47,7 +49,7 @@ implements IMultiLabelObjectConfusionMatrix {
         if (!this.getLabelMap().has(label.name)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);
+                    `label=${label}, not int the label map=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.getLabelMap())}`);
             }
             return false;
         }

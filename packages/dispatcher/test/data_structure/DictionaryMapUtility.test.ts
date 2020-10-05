@@ -128,15 +128,15 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
         Utility.debuggingLog(
-          `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
+          `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
-          `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+          `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
         DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMap(
           utteranceLabels);
         Utility.debuggingLog(
-          `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
+          `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
-          `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+          `utteranceLabelDuplicateMap-A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
         assert.ok((utteranceLabelsMap.get("hi") as Set<string>).size === 2);
         assert.ok((utteranceLabelsMap.get("A") as Set<string>).size === 1);
         assert.ok((utteranceLabelsMap.get("A") as Set<string>).has("greeting"));
@@ -184,16 +184,16 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
         Utility.debuggingLog(
-          `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
+          `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
-          `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+          `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
         DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
           utteranceLabels,
           labelSet);
         Utility.debuggingLog(
-          `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
+          `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
-          `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+          `utteranceLabelDuplicateMap-A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
         assert.ok((utteranceLabelsMap.get("hi") as Set<string>).size === 1);
         assert.ok((utteranceLabelsMap.get("hi") as Set<string>).has("greeting"));
         assert.ok((utteranceLabelsMap.get("A") as Set<string>).size === 1);

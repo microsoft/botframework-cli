@@ -21,7 +21,7 @@ export default class OrchestratorNlrGet extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorNlrGet);
     const output: string = flags.out || __dirname;
-    const versionId: any = flags.versionId;
+    const nlrId: any = flags.versionId;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
@@ -29,14 +29,14 @@ export default class OrchestratorNlrGet extends Command {
       OrchestratorSettings.init(__dirname, output, '', __dirname);
       await Orchestrator.nlrGetAsync(
         OrchestratorSettings.ModelPath,
-        versionId,
+        nlrId,
         (message: any) => {
           if (flags.verbose) {
             this.log(message);
           }
         },
         () => {
-          this.log(`Model ${versionId} downloaded to ${output}`);
+          this.log(`Model ${nlrId} downloaded to ${output}`);
         });
     } catch (error) {
       throw (new CLIError(error));

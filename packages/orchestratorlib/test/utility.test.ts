@@ -7,6 +7,12 @@ import assert = require('assert');
 
 import {} from 'mocha';
 
+import * as path from 'path';
+
+import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+
+import {OrchestratorNlr} from '../src/nlr';
+import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 
 export class UnitTestHelper {
@@ -20,6 +26,29 @@ export class UnitTestHelper {
 
   public static getDefaultUnitTestCleanUpFlag(): boolean {
     return true;
+  }
+
+  public static async downloadModelFileForTest(
+    nlrId: string,
+    nlrPath: string,
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onTest: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    if (!Utility.exists(nlrPath)) {
+      const nlrVersions: string = OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json'));
+      const nlrModels: any = JSON.parse(nlrVersions);
+      const modelInfo: any = nlrModels.models[nlrId];
+      if (!modelInfo) {
+        throw new Error(`Model info for model ${nlrId} not found`);
+      }
+      const modelUrl: string = modelInfo.modelUri;
+      Utility.debuggingLog('Ready to call OrchestratorNlr.getModelAsync()');
+      await OrchestratorNlr.getModelAsync(
+        nlrPath,
+        modelUrl,
+        onProgress,
+        onTest);
+    }
+    Utility.debuggingLog('Finished calling downloadModelFile()');
   }
 }
 
@@ -75,15 +104,15 @@ describe('Test Suite - utility', () => {
         utteranceLabelsMap,
         utteranceLabelDuplicateMap};
     Utility.debuggingLog(
-      `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
-      `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+      `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
     Utility.processUnknownLabelsInUtteranceLabelsMap(
       utteranceLabels);
     Utility.debuggingLog(
-      `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
-      `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+      `utteranceLabelDuplicateMap-A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
     assert.ok((utteranceLabelsMap.get('hi') as Set<string>).size === 2);
     assert.ok((utteranceLabelsMap.get('A') as Set<string>).size === 1);
     assert.ok((utteranceLabelsMap.get('A') as Set<string>).has('greeting'));
@@ -131,16 +160,16 @@ describe('Test Suite - utility', () => {
         utteranceLabelsMap,
         utteranceLabelDuplicateMap};
     Utility.debuggingLog(
-      `utteranceLabelsMap-B=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
-      `utteranceLabelDuplicateMap-B=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+      `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       utteranceLabels,
       labelSet);
     Utility.debuggingLog(
-      `utteranceLabelsMap=A=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
-      `utteranceLabelDuplicateMap-A=${Utility.jsonStringify(utteranceLabelDuplicateMap)}`);
+      `utteranceLabelDuplicateMap-A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
     assert.ok((utteranceLabelsMap.get('hi') as Set<string>).size === 1);
     assert.ok((utteranceLabelsMap.get('hi') as Set<string>).has('greeting'));
     assert.ok((utteranceLabelsMap.get('A') as Set<string>).size === 1);

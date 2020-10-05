@@ -8,6 +8,9 @@ import {OrchestratorNlr} from '../src/nlr';
 import * as path from 'path';
 const sinon: any = require('sinon');
 
+import {Utility} from '../src/utility';
+import {UnitTestHelper} from './utility.test';
+
 describe('OrchestratorNlrTests', () => {
   let nlrVersions: string;
   beforeEach(() => {
@@ -19,7 +22,10 @@ describe('OrchestratorNlrTests', () => {
     sinon.restore();
   });
 
-  it('listAsync', async () => {
+  it('listAsync', async function () {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrVersionsJson: string = await OrchestratorNlr.listAsync();
+    Utility.debuggingLog(`nlrVersionsJson=${nlrVersionsJson}`);
   });
 });

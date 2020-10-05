@@ -7,7 +7,7 @@ import * as path from 'path';
 
 import * as readline from 'readline';
 
-import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {DictionaryMapUtility, IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
@@ -432,7 +432,8 @@ export class OrchestratorPredict {
     console.log(`> Orchestrator configuration:    ${labelResolverConfig}`);
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     this.currentLabelArrayAndMap = Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
-    console.log(`> Current label-index map: ${Utility.jsonStringify(this.currentLabelArrayAndMap.stringMap)}`);
+    const currentLabelStringMap: Map<string, number> = this.currentLabelArrayAndMap.stringMap;
+    console.log(`> Current label-index map: ${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(currentLabelStringMap)}`);
     return 0;
   }
 
@@ -445,6 +446,8 @@ export class OrchestratorPredict {
       return -1;
     }
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
+    // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labels.length=${labels.length}`);
+    // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labels=${labels}`);
     this.currentLabelArrayAndMap = Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
     Utility.examplesToUtteranceLabelMaps(
       examples,
@@ -463,7 +466,12 @@ export class OrchestratorPredict {
       (value: Set<string>, key: string) => {
         labelUtteranceCount.set(key, value.size);
       });
-    console.log(`> Per-label #examples: ${Utility.jsonStringify(labelUtteranceCount)}`);
+    const labelUtteranceCountDictionary: { [id: string]: number } = DictionaryMapUtility.convertStringKeyGenericValueNativeMapToDictionary(
+      labelUtteranceCount);
+    // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labelUtteranceCount=${labelUtteranceCount}`);
+    // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), [...labelUtteranceCount]=${[...labelUtteranceCount]}`);
+    // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labelUtteranceCountDictionary=${labelUtteranceCountDictionary}`);
+    console.log(`> Per-label #examples: ${Utility.jsonStringify(labelUtteranceCountDictionary)}`);
     console.log(`> Total #examples:${labelStatisticsAndHtmlTable.labelUtterancesTotal}`);
     return 0;
   }

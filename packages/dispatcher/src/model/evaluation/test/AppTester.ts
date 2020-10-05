@@ -180,7 +180,8 @@ export async function mainTester(): Promise<void> {
     const featurizer: NgramSubwordFeaturizer =
         tester.getFeaturizer();
     // Utility.debuggingLog(
-    //     `featurizer.getLabelMap()=${Utility.jsonStringify(featurizer.getLabelMap())}`);
+    // tslint:disable-next-line: max-line-length
+    //     `featurizer.getLabelMap()=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(featurizer.getLabelMap())}`);
     // -----------------------------------------------------------------------
     let intentsUtterancesWeights: {
         "intents": string[],

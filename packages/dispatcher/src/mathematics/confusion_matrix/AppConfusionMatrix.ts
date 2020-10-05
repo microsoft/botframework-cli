@@ -100,7 +100,7 @@ export function mainConfusionMatrixFunction(
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     Utility.debuggingLog(
-        Utility.jsonStringify(confusionMatrix.getLabelMap()));
+        DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(confusionMatrix.getLabelMap()));
     Utility.debuggingLog(
         "rows=" + confusionMatrix.getConfusionMatrixRows());
     Utility.debuggingLog(
@@ -356,7 +356,7 @@ export function exampleFunctionConfusionMatrix(): void {
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     Utility.debuggingLog(
-        Utility.jsonStringify(confusionMatrix.getLabelMap()));
+        DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(confusionMatrix.getLabelMap()));
     Utility.debuggingLog(
         "rows=" + confusionMatrix.getConfusionMatrixRows());
     Utility.debuggingLog(

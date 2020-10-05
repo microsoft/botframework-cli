@@ -18,9 +18,11 @@ export class PredictionScoreStructure extends PredictionStructure {
     // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     labels: string[],
     labelsConcatenated: string,
+    labelsConcatenatedToHtmlTable: string,
     labelsIndexes: number[],
     labelsPredicted: string[],
     labelsPredictedConcatenated: string,
+    labelsPredictedConcatenatedToHtmlTable: string,
     labelsPredictedScore: number,
     labelsPredictedIndexes: number[],
     labelsPredictedClosestText: string[],
@@ -33,9 +35,11 @@ export class PredictionScoreStructure extends PredictionStructure {
       labelsPredictedEvaluation,
       labels,
       labelsConcatenated,
+      labelsConcatenatedToHtmlTable,
       labelsIndexes,
       labelsPredicted,
       labelsPredictedConcatenated,
+      labelsPredictedConcatenatedToHtmlTable,
       labelsPredictedIndexes);
     this.labelsPredictedScore = labelsPredictedScore;
     this.labelsPredictedClosestText = labelsPredictedClosestText;
@@ -54,9 +58,11 @@ export class PredictionScoreStructure extends PredictionStructure {
     // ---- NOTE ---- PredictionType.TrueNegative(8):TN
     'labels': string[];
     'labelsConcatenated': string;
+    'labelsConcatenatedToHtmlTable': string;
     'labelsIndexes': number[];
     'labelsPredicted': string[];
     'labelsPredictedConcatenated': string;
+    'labelsPredictedConcatenatedToHtmlTable': string;
     'labelsPredictedScore': number;
     'labelsPredictedIndexes': number[];
     'labelsPredictedClosestText': string[];
@@ -73,9 +79,11 @@ export class PredictionScoreStructure extends PredictionStructure {
       // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       labels: this.labels,
       labelsConcatenated: this.labelsConcatenated,
+      labelsConcatenatedToHtmlTable: this.labelsConcatenatedToHtmlTable,
       labelsIndexes: this.labelsIndexes,
       labelsPredicted: this.labelsPredicted,
       labelsPredictedConcatenated: this.labelsPredictedConcatenated,
+      labelsPredictedConcatenatedToHtmlTable: this.labelsPredictedConcatenatedToHtmlTable,
       labelsPredictedScore: this.labelsPredictedScore,
       labelsPredictedIndexes: this.labelsPredictedIndexes,
       labelsPredictedClosestText: this.labelsPredictedClosestText,

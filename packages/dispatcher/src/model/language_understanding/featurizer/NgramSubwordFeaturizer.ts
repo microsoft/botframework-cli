@@ -108,7 +108,7 @@ export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
         }
         if (labelId < 0) {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.labelMap)}`);
             }
         }
         return labelId;
@@ -270,7 +270,7 @@ export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
             labelArray[labelId] = true;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.labelMap)}`);
             }
         }
         return labelArray;
@@ -294,7 +294,7 @@ export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
             labelArray[labelId] = 1;
         } else {
             if (throwIfNonExistentLabel) {
-                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${Utility.jsonStringify(this.labelMap)}`);
+                Utility.debuggingThrow(`label=${label} does not exist in this.labelMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.labelMap)}`);
             }
         }
         return labelArray;

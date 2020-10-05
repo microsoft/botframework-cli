@@ -7,6 +7,8 @@ import assert = require('assert');
 
 import {} from 'mocha';
 
+import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+
 // import {LabelType} from '../src/labeltype';
 import {Label} from '../src/label';
 // import {Span} from '../src/span';
@@ -34,7 +36,7 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
     Utility.debuggingLog(
-      `utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     assert.ok(utteranceLabelsMap.size === 1);
     assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1);
   });
@@ -53,7 +55,7 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
     Utility.debuggingLog(
-      `utteranceLabelsMap=${Utility.jsonStringify(utteranceLabelsMap)}`);
+      `utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     assert.ok(utteranceLabelsMap.size === 1);
     assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1);
     assert.ok([...(utteranceLabelsMap.get(utterance) as Set<string>)][0] === '');

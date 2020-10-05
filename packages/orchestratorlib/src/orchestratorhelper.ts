@@ -325,7 +325,10 @@ export class OrchestratorHelper {
       content: fileContents,
       id: luFile,
     };
+    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseLuFile()');
+    // Utility.debuggingLog(`BEFORE calling OrchestratorHelper.parseLuFile(), fileContents=${fileContents}`);
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    Utility.debuggingLog('AFTER calling OrchestratorHelper.parseLuFile()');
     OrchestratorHelper.getLuisIntentsEnitiesUtterances(
       luisObject,
       hierarchicalLabel,
@@ -363,7 +366,7 @@ export class OrchestratorHelper {
     let numberLinesProcessed: number  = 0;
     let numberLinesIgnored: number = 0;
     lines.forEach((line: string, lineIndex: number) => {
-      if ((lineIndex % Utility.NumberOfInstancesPerStep) === 0) {
+      if ((lineIndex % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
         // eslint-disable-next-line no-console
         Utility.debuggingLog(`processed lineIndex=${lineIndex}`);
       }
@@ -375,7 +378,7 @@ export class OrchestratorHelper {
       if (lineTrimmed.length <= 0) {
         Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', lineTrimmed.length <= 0`);
         numberLinesIgnored++;
-        if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
+        if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
           // eslint-disable-next-line no-console
           Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
         }
@@ -392,7 +395,7 @@ export class OrchestratorHelper {
           // ---- NOTE-FOR-TESTING ---- if (utterance === 'constructor') {
           // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`WARNING processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
           // ---- NOTE-FOR-TESTING ----   numberLinesIgnored++;
-          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
+          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
           // ---- NOTE-FOR-TESTING ----     // eslint-disable-next-line no-console
           // ---- NOTE-FOR-TESTING ----     Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
           // ---- NOTE-FOR-TESTING ----   }
@@ -412,14 +415,14 @@ export class OrchestratorHelper {
             }
           }
           numberLinesProcessed++;
-          if ((numberLinesProcessed % Utility.NumberOfInstancesPerStep) === 0) {
+          if ((numberLinesProcessed % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
             // eslint-disable-next-line no-console
             Utility.debuggingLog(`processed numberLinesProcessed=${numberLinesProcessed}`);
           }
         } else {
           Utility.debuggingLog(`WARNING processing, items.length < 2, lineIndex=${lineIndex}, line='${line}'`);
           numberLinesIgnored++;
-          if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
+          if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
             // eslint-disable-next-line no-console
             Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
           }
@@ -427,7 +430,7 @@ export class OrchestratorHelper {
       } catch (error) {
         Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', error=${error}`);
         numberLinesIgnored++;
-        if ((numberLinesIgnored % Utility.NumberOfInstancesPerStep) === 0) {
+        if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
           // eslint-disable-next-line no-console
           Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
         }
@@ -495,7 +498,9 @@ export class OrchestratorHelper {
       }
     });
 
-    const qnaObject: any = await QnaMakerBuilder.fromContent(newlines.join('\n'));
+    // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
+    const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
+    const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
     if (qnaObject) {
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utteranceLabelsMap, utteranceLabelDuplicateMap);
     } else {
@@ -588,13 +593,19 @@ export class OrchestratorHelper {
     qnaObject: any,
     label: string,
     utteranceLabelsMap: Map<string, Set<string>>,
-    utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+    utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
+    // Utility.debuggingLog(`OrchestratorHelper.getQnaQuestionsAsUtterances() called, qnaObject=${Utility.jsonStringify(qnaObject)}`);
+    const isNotEmptyLabel: boolean = !Utility.isEmptyString(label);
     qnaObject.kb.qnaList.forEach((e: any) => {
+      let answer: string = Utility.cleanStringOnSpaceCommas(e.answer);
+      if (isNotEmptyLabel) {
+        answer = label;
+      }
       const questions: string[] = e.questions;
       questions.forEach((q: string) => {
         OrchestratorHelper.addNewLabelUtterance(
           q.trim(),
-          label,
+          answer,
           '',
           utteranceLabelsMap,
           utteranceLabelDuplicateMap

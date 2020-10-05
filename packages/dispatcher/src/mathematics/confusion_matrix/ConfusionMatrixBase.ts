@@ -1518,7 +1518,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         if (!this.getLabelMap().has(label)) {
             if (throwIfNotLegal) {
                 Utility.debuggingThrow(
-                    `label=${label}, not int the label map=${Utility.jsonStringify(this.getLabelMap())}`);
+                    `label=${label}, not int the label map=${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(this.getLabelMap())}`);
             }
             return false;
         }

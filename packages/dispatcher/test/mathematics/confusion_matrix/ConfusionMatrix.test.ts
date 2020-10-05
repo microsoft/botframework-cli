@@ -34,7 +34,7 @@ function getTestingConfusionMatrix(): ConfusionMatrix {
     Utility.debuggingLog(
         "labels=" + confusionMatrix.getLabels());
     Utility.debuggingLog(
-        Utility.jsonStringify(confusionMatrix.getLabelMap()));
+        "labelMap=" + DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(confusionMatrix.getLabelMap()));
     Utility.debuggingLog(
         "rows=" + confusionMatrix.getConfusionMatrixRows());
     Utility.debuggingLog(

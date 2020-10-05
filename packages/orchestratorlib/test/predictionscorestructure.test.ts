@@ -27,9 +27,11 @@ describe('Test Suite - scorestructure', () => {
     // ---- NOTE ---- PredictionType.TrueNegative(8):FN
     const labels: string[] = ['label'];
     const labelsConcatenated: string = 'label';
+    const labelsConcatenatedToHtmlTable: string = '<p><strong>Label</strong></p><table class="table"><tr><td>Label</td></tr></table>';
     const labelsIndexes: number[] = [0];
     const labelsPredicted: string[] = ['label'];
     const labelsPredictedConcatenated: string = 'label';
+    const labelsPredictedConcatenatedToHtmlTable: string = '<p><strong>Label</strong></p><table class="table"><tr><td>Label</td></tr></table>';
     const labelsPredictedScore: number = 0.99;
     const labelsPredictedIndexes: number[] = [0];
     const labelsPredictedClosestText: string[] = ['utterance'];
@@ -42,9 +44,11 @@ describe('Test Suite - scorestructure', () => {
       labelsPredictedEvaluation,
       labels,
       labelsConcatenated,
+      labelsConcatenatedToHtmlTable,
       labelsIndexes,
       labelsPredicted,
       labelsPredictedConcatenated,
+      labelsPredictedConcatenatedToHtmlTable,
       labelsPredictedScore,
       labelsPredictedIndexes,
       labelsPredictedClosestText,
@@ -62,9 +66,11 @@ describe('Test Suite - scorestructure', () => {
       // ---- NOTE ---- PredictionType.TrueNegative(8):TN
       'labels': string[];
       'labelsConcatenated': string;
+      'labelsConcatenatedToHtmlTable': string;
       'labelsIndexes': number[];
       'labelsPredicted': string[];
       'labelsPredictedConcatenated': string;
+      'labelsPredictedConcatenatedToHtmlTable': string;
       'labelsPredictedScore': number;
       'labelsPredictedIndexes': number[];
       'labelsPredictedClosestText': string[];

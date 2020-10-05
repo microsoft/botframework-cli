@@ -10,7 +10,7 @@ const Zip: any = require('node-7z-forall');
 const fetch: any = require('node-fetch');
 
 export class OrchestratorNlr {
-  public static async getAsync(nlrPath: string, versionId: string, onProgress: any = OrchestratorNlr.defaultHandler, onFinish: any = OrchestratorNlr.defaultHandler) {
+  public static async getAsync(nlrPath: string, nlrId: string, onProgress: any = OrchestratorNlr.defaultHandler, onFinish: any = OrchestratorNlr.defaultHandler) {
     try {
       if (nlrPath) {
         nlrPath = path.resolve(nlrPath);
@@ -20,7 +20,7 @@ export class OrchestratorNlr {
         throw new Error('Please provide path to Orchestrator model');
       }
 
-      Utility.debuggingLog(`Version id: ${versionId}`);
+      Utility.debuggingLog(`Version id: ${nlrId}`);
       Utility.debuggingLog(`Nlr path: ${nlrPath}`);
 
       const versions: any = await OrchestratorNlr.getNlrVersionsAsync();
@@ -29,35 +29,57 @@ export class OrchestratorNlr {
         throw new Error('Failed getting nlr_versions.json');
       }
 
-      const modelInfo: any = versions.models[versionId];
+      const modelInfo: any = versions.models[nlrId];
       if (!modelInfo) {
-        throw new Error(`Model info for version ${versionId} not found`);
+        throw new Error(`Model info for model ${nlrId} not found`);
       }
 
-      const url: string = modelInfo.modelUri;
-      const fileName: string = url.substring(url.lastIndexOf('/') + 1);
-      const res: any = await fetch(url);
+      const modelUrl: string = modelInfo.modelUri;
+      await OrchestratorNlr.getModelAsync(nlrPath, modelUrl, onProgress, onFinish);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public static async getModelAsync(
+    nlrPath: string,
+    modelUrl: string,
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    try {
+      const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
+      const res: any = await fetch(modelUrl);
+      fs.mkdirSync(nlrPath, {recursive: true});
       const modelZipPath: string = path.join(nlrPath, fileName);
       const fileStream: any = fs.createWriteStream(modelZipPath);
       res.body.pipe(fileStream);
       res.body.on('error', () => {
-        throw new Error(`Failed downloading model version ${versionId}`);
+        throw new Error(`Failed downloading model file: ${modelUrl}`);
       });
       fileStream.on('finish', () => {
-        onProgress('Model downloaded...');
-        Utility.debuggingLog(`Finished downloading model version ${versionId}`);
+        if (onProgress) {
+          onProgress('Model downloaded...');
+        }
+        Utility.debuggingLog(`Finished downloading model file: ${modelUrl} to ${modelZipPath}`);
         const seven: any = new Zip();
-        onProgress('Extracting...');
+        if (onProgress) {
+          onProgress('Extracting...');
+        }
         seven.extractFull(modelZipPath, nlrPath).then(() => {
-          onProgress('Cleaning up...');
-          Utility.debuggingLog(`Finished extracting model version ${versionId}`);
+          if (onProgress) {
+            onProgress('Cleaning up...');
+          }
+          Utility.debuggingLog(`Finished extracting model file: ${modelUrl} and extracted to ${nlrPath}`);
           fs.unlinkSync(modelZipPath);
           Utility.debuggingLog(`Cleaned up .7z file: ${modelZipPath}`);
-          onFinish();
+          if (onFinish) {
+            onFinish('From OrchestratorNlr.getModelAsync() calling onFinish()');
+          }
+          Utility.debuggingLog('Finished calling OrchestratorNlr.getModelAsync()');
         });
       });
     } catch (error) {
-      throw new Error(error);
+      throw error;
     }
   }
 
@@ -71,7 +93,7 @@ export class OrchestratorNlr {
     return JSON.stringify(json, null, 2);
   }
 
-  private static defaultHandler(status: string) {
+  public static defaultHandler(status: string) {
     Utility.debuggingLog(status);
   }
 

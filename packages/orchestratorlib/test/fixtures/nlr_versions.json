@@ -1,16 +1,28 @@
 {
   "version": "0.1",
   "models": {
-    "1.0.0-pretrained.20200729.microsoft.dte.en.onnx" : {
-      "releaseDate": "07/29/2020",
-      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/1.0.0-pretrained.20200729.microsoft.dte.en.onnx.7z",
-      "description": "Bot Framework SDK release 4.10 - English Onnx NLR",
+    "pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx": {
+      "releaseDate": "09/24/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx.7z",
+      "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer Roberta per-token NLR",
       "minSDKVersion": "4.10.0"
     },
-		"1.0.0-pretrained.20200729.microsoft.dte.en.pytorch" : {
-      "releaseDate": "07/29/2020",
-      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/pytorch/1.0.0-pretrained.20200729.microsoft.dte.en.pytorch.7z",
-      "description": "Bot Framework SDK release 4.10 - English Python NLR",
+    "pretrained.20200924.microsoft.dte.00.03.en.onnx": {
+      "releaseDate": "09/24/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.7z",
+      "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 3-layer BERT per-token NLR",
+      "minSDKVersion": "4.10.0"
+    },
+    "pretrained.20200924.microsoft.dte.00.06.en.onnx": {
+      "releaseDate": "09/24/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.06.en.onnx.7z",
+      "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 6-layer BERT per-token NLR",
+      "minSDKVersion": "4.10.0"
+    },
+    "pretrained.20200924.microsoft.dte.00.12.en.onnx": {
+      "releaseDate": "09/24/2020",
+      "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.en.onnx.7z",
+      "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer BERT per-token NLR",
       "minSDKVersion": "4.10.0"
     }
   }

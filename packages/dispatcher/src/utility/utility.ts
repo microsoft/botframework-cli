@@ -2072,7 +2072,7 @@ export class Utility {
         }
         if (!stringMap.has(key)) {
             Utility.debuggingThrow(
-                `FAIL to use a key ${key} to access a stringMap ${Utility.jsonStringify(stringMap)}`);
+                `FAIL to use a key ${key} to access a stringMap ${DictionaryMapUtility.jsonStringifyStringKeyGenericValueNativeMap(stringMap)}`);
         }
         const value: number = stringMap.get(key) as number;
         return value;
@@ -2441,6 +2441,18 @@ export class Utility {
             anArray.push(element);
         }
         return anArray;
+    }
+
+    public static cleanStringOnTabs(input: string, replacement: string = " "): string {
+        return input.replace(/[\t]+/gm, replacement);
+    }
+
+    public static cleanStringOnSpaces(input: string, replacement: string = " "): string {
+        return input.replace(/[\r\n\t]+/gm, replacement);
+    }
+
+    public static cleanStringOnSpaceCommas(input: string, replacement: string = " "): string {
+        return input.replace(/[\r\n\t,]+/gm, replacement);
     }
 
     public static splitByPunctuation(
