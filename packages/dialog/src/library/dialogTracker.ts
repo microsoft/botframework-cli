@@ -10,7 +10,7 @@ import * as st from './schemaTracker';
 import glob from 'globby';
 import parser from '@apidevtools/json-schema-ref-parser'
 
-let clone = require('clone');
+let clone = require('clone')
 
 // Top-level dialog definition that would be found in a file.
 export class Dialog {
