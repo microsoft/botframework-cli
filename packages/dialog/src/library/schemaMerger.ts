@@ -3,16 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from 'ajv'
 import * as fs from 'fs-extra'
-import * as glob from 'globby'
 import * as hash from './hash'
-import * as os from 'os'
-import * as parser from '@apidevtools/json-schema-ref-parser'
-import * as ppath from 'path'
-import {JsonPointer as ptr} from 'json-ptr'
 import * as nuget from '@snyk/nuget-semver'
+import * as os from 'os'
+import * as ppath from 'path'
 import * as xp from 'xml2js'
+import Validator from 'ajv'
+import glob from 'globby'
+import parser from '@apidevtools/json-schema-ref-parser'
+import {JsonPointer as ptr} from 'json-ptr'
+
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')

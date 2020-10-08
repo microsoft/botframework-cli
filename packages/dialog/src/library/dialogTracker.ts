@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
@@ -7,10 +5,10 @@
 
 export * from './schemaTracker';
 import * as fs from 'fs-extra';
-import * as glob from 'globby';
-import * as parser from '@apidevtools/json-schema-ref-parser'
 import * as path from 'path';
 import * as st from './schemaTracker';
+import glob from 'globby';
+import parser from '@apidevtools/json-schema-ref-parser'
 
 let clone = require('clone')
 

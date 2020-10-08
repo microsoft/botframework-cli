@@ -1,9 +1,8 @@
+import sinon from 'sinon'
+import uuidv1 from 'uuid/v1'
 import {expect, test} from '@oclif/test'
-const sinon = require('sinon')
-const uuidv1 = require('uuid/v1')
+
 const utils = require('../../../../src/utils/index')
-const fs = require('fs-extra')
-import * as rimraf from 'rimraf'
 
 describe('luis:train:run', () => {
 
