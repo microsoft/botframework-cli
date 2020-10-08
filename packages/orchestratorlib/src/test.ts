@@ -12,6 +12,7 @@ import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {PredictionScoreStructure}  from './predictionscorestructure';
 
 import {Label} from './label';
+import {LabelType} from './labeltype';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
@@ -79,22 +80,29 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
     await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    // ---- NOTE-TO-REMOVE ---- // ---- NOTE ---- process the snapshot set, retrieve labels
+    // ---- NOTE-TO-REMOVE ---- let processedUtteranceLabelsMap: {
+    // ---- NOTE-TO-REMOVE ----   'utteranceLabelsMap': Map<string, Set<string>>;
+    // ---- NOTE-TO-REMOVE ----   'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+    // ---- NOTE-TO-REMOVE ----   'utteranceEntityLabelsMap': Map<string, Label[]>;
+    // ---- NOTE-TO-REMOVE ----   'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(snapshotFile, false);
+    // ---- NOTE-TO-REMOVE ---- const snapshotSetUtterancesLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
+    // ---- NOTE-TO-REMOVE ---- // ---- NOTE-NO-NEED ---- const snapshotSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
+    // ---- NOTE-TO-REMOVE ---- Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for snapshot set');
+    // ---- NOTE-TO-REMOVE ---- const snapshotSetLabels: string[] =
+    // ---- NOTE-TO-REMOVE ----   [...snapshotSetUtterancesLabelsMap.values()].reduce(
+    // ---- NOTE-TO-REMOVE ----     (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     // ---- NOTE ---- process the snapshot set, retrieve labels
-    let processedUtteranceLabelsMap: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(snapshotFile, false);
-    const snapshotSetUtterancesLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
-    // ---- NOTE-NO-NEED ---- const snapshotSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
-    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for snapshot set');
     const snapshotSetLabels: string[] =
-      [...snapshotSetUtterancesLabelsMap.values()].reduce(
-        (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
+      LabelResolver.getLabels(LabelType.Intent);
     const snapshotSetLabelSet: Set<string> =
       new Set<string>(snapshotSetLabels);
     // ---- NOTE ---- process the testing set.
-    processedUtteranceLabelsMap = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
+    const processedUtteranceLabelsMap: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
     const utteranceLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;

@@ -8,25 +8,82 @@
 import {} from 'mocha';
 
 import * as path from 'path';
+import * as fs from 'fs';
 
 import {OrchestratorNlr} from '../src/nlr';
-// import {OrchestratorTest} from '../src/test';
+import {OrchestratorTest} from '../src/test';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - test', () => {
-  it('Test.0000 OrchestratorTest.runAsync()', async function () {
-    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+  it('Test.0000 OrchestratorTest.runAsync()', async function (): Promise<void> {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
     const nlrPath: string = path.resolve('model_dte_roberta_for_test_command');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       nlrPath,
-      OrchestratorNlr.defaultHandler,
-      () => {
-        Utility.debuggingLog('Test.0000 OrchestratorTest.runAsync()');
+      OrchestratorNlr.defaultHandlerAsync,
+      async (message: string): Promise<void> => {
+        Utility.debuggingLog('Triggering Test.0000 OrchestratorTest.runAsync() - ');
+        Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
+        const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
+        const testPath: string = './resources/data/Columnar/EmailTest.txt';
+        const outputPath: string = './resources/data/Columnar/OrchestratorTest_Email_roberta';
+        const ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
+        const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
+        const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
+        const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
+        const testingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetScoresOutputFilename);
+        const testingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetGroundTruthJsonContentOutputFilename);
+        const testingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetPredictionJsonContentOutputFilename);
+        const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
+        const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
+        await OrchestratorTest.runAsync(
+          inputPath,
+          testPath,
+          outputPath,
+          nlrPath,
+          ambiguousClosenessParameter,
+          lowConfidenceScoreThresholdParameter,
+          multiLabelPredictionThresholdParameter,
+          unknownLabelPredictionThresholdParameter);
+        // ---- NOTE ---- clean up after unit tests.
+        const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
+        if (toCleanUpAfterUnitTest) {
+          try {
+            Utility.deleteFile(testingSetScoresOutputFilename);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output score file="${testingSetScoresOutputFilename}", error=${error}`);
+          }
+          try {
+            Utility.deleteFile(testingSetGroundTruthJsonContentOutputFilename);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output ground-truth json file="${testingSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+          }
+          try {
+            Utility.deleteFile(testingSetPredictionJsonContentOutputFilename);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output prediction json file="${testingSetPredictionJsonContentOutputFilename}", error=${error}`);
+          }
+          try {
+            Utility.deleteFile(testingSetSummaryHtmlOutputFilename);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output summary file="${testingSetSummaryHtmlOutputFilename}", error=${error}`);
+          }
+          try {
+            Utility.deleteFile(testingSetLabelsOutputFilename);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output labels file="${testingSetLabelsOutputFilename}", error=${error}`);
+          }
+          try {
+            fs.rmdirSync(outputPath);
+          } catch (error) {
+            Utility.debuggingLog(`Test.0000 OrchestratorTest, FAILED deleting output folder=${outputPath}, error=${error}`);
+          }
+        }
+        Utility.debuggingLog(`THE END - OrchestratorTest.runAsync(), onFinish message=${message}`);
       });
-    Utility.debuggingLog('THE END - OrchestratorTest.runAsync()');
   });
 });

@@ -5,22 +5,22 @@
 
 // import assert = require('assert');
 
+import {} from 'mocha';
+
 import * as path from 'path';
 import * as fs from 'fs';
-
-import {} from 'mocha';
 
 import {OrchestratorEvaluate} from '../src/evaluate';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
-describe('Test Suite - evaluate', () => {
-  it('Test.0000 OrchestratorEvaluate.runAsync()', async function () {
+describe('Test Suite - the "evaluate" command', () => {
+  it('Test.0000 OrchestratorEvaluate.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
-    const inputPath: string = './resources/data/Columnar/Email.blu';
-    const outputPath: string = './resources/data/Columnar/OrchestratorEvaluate_Email';
+    const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
+    const outputPath: string = './resources/data/Columnar/OrchestratorEvaluate_Email_roberta';
     const nlrPath: string = '';
     const ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
