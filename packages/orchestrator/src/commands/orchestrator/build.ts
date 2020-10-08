@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
+import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings} from '../../utils/settings';
 
 export default class OrchestratorBuild extends Command {
@@ -27,17 +27,19 @@ export default class OrchestratorBuild extends Command {
     const input: string = flags.in ? path.resolve(flags.in) : '';
     const output: string = path.resolve(flags.out || __dirname);
     const isDialog: boolean = flags.dialog;
+    let luConfig: any = null;
     let luConfigPath: string = flags.luconfig;
 
     if (luConfigPath && luConfigPath.length > 0) {
       luConfigPath = path.resolve(luConfigPath);
+      luConfig = JSON.parse(OrchestratorHelper.readFile(luConfigPath));
     }
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
       OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
-      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output, isDialog, luConfigPath);
+      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output, isDialog, luConfig);
     } catch (error) {
       throw (new CLIError(error));
     }

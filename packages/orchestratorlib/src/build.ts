@@ -4,8 +4,6 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
-
 import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -16,101 +14,115 @@ export class OrchestratorBuild {
 
   public static IsDialog: boolean;
 
-  public static LuConfigFile: string;
-
-  public static OutputPath: string;
+  public static LuContents: any[];
 
   // eslint-disable-next-line max-params
-  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string, isDialog: boolean = false, luConfigFile: string = '') {
+  public static async runAsync(
+    nlrPath: string,
+    inputs: any[],
+    isDialog: boolean = false,
+    luConfig: any = null) {
     try {
       if (!nlrPath || nlrPath.length === 0) {
         throw new Error('Please provide path to Orchestrator model');
       }
 
-      if (!inputPath || inputPath.length === 0) {
-        if (!luConfigFile || luConfigFile.length === 0) {
-          throw new Error('Please set either --in or --luconfig');
+      let hasLuConfig: boolean = false;
+      if (!inputs || inputs.length === 0) {
+        if (!luConfig || !luConfig.models || luConfig.models.length === 0) {
+          throw new Error('Please provide lu input');
+        } else {
+          hasLuConfig = true;
         }
       }
 
-      if (!outputPath || outputPath.length === 0) {
-        throw new Error('Please provide output path');
-      }
-
       nlrPath = path.resolve(nlrPath);
+      /*
       outputPath = path.resolve(outputPath);
 
       if (!OrchestratorHelper.isDirectory(outputPath)) {
         outputPath = path.dirname(outputPath);
       }
+      */
 
       const orchestrator: any = await LabelResolver.loadNlrAsync(nlrPath);
       Utility.debuggingLog('Loaded nlr');
 
-      OrchestratorBuild.IsDialog = isDialog;
-      OrchestratorBuild.LuConfigFile = luConfigFile;
       OrchestratorBuild.Orchestrator = orchestrator;
-      OrchestratorBuild.OutputPath = outputPath;
+      OrchestratorBuild.LuContents = inputs;
+      OrchestratorBuild.IsDialog = isDialog;
       const bluPaths: any = {};
-      if (Utility.isEmptyString(inputPath)) {
-        await OrchestratorBuild.processConfigFile(luConfigFile, isDialog, bluPaths);
-      } else if (OrchestratorHelper.isDirectory(inputPath)) {
-        await OrchestratorBuild.iterateInputFolder(inputPath, isDialog, bluPaths);
+      if (hasLuConfig) {
+        await OrchestratorBuild.processLuConfig(luConfig, bluPaths);
       } else {
-        await OrchestratorBuild.processLuFile(inputPath, isDialog, bluPaths);
+        await OrchestratorBuild.processInput(inputs, bluPaths);
       }
+/*
       if (Object.getOwnPropertyNames(bluPaths).length !== 0) {
-        OrchestratorHelper.writeSettingsFile(nlrPath, bluPaths, OrchestratorBuild.OutputPath);
+        OrchestratorHelper.writeSettingsFile(nlrPath, bluPaths, outputPath);
       }
+      */
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  private static async processConfigFile(configFile: string, isDialog: boolean, bluPaths: any) {
-    const configContent: any = JSON.parse(OrchestratorHelper.readFile(configFile));
-    for (const file of (configContent.models || [])) {
+  private static async processLuConfig(luConfig: any, bluPaths: any) {
+    for (const file of (luConfig.models || [])) {
+      const luObject: any = {
+        content: OrchestratorHelper.readFile(file),
+        id: file,
+      };
       // eslint-disable-next-line no-await-in-loop
-      await OrchestratorBuild.processLuFile(path.resolve(file), isDialog, bluPaths);
+      return await OrchestratorBuild.processInput(luObject, bluPaths);
     }
   }
 
-  private static async processLuFile(luFile: string, isDialog: boolean, bluPaths: any) {
+  private static async processInput(luObsjects: any[], bluPaths: any) {
+    const retPayload: any[] = [];
+    for (const luObject of (luObsjects || [])) {
+      // eslint-disable-next-line no-await-in-loop
+      const retVal = await OrchestratorBuild.processLuContent(luObject, bluPaths,retPayload);
+      retPayload.push(retVal);
+    }
+    return retPayload;
+  }
+
+  private static async processLuContent(luObject: any, bluPaths: any, retPayload: any[]) {
     const labelResolver: any = LabelResolver.createLabelResolver();
-    const baseName: string = path.basename(luFile, '.lu');
+    const baseName: string = luObject.id;
     Utility.debuggingLog('Created label resolver');
+
     const result: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(luFile, false);
-    Utility.debuggingLog(`Processed ${luFile}`);
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
+        utteranceLabelsMap: new Map<string, Set<string>>(),
+        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+        utteranceEntityLabelsMap: new Map<string, Label[]>(),
+        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+
+    OrchestratorHelper.parseLuContent(
+      luObject.id,
+      luObject.content,
+      '',
+      result.utteranceLabelsMap,
+      result.utteranceLabelDuplicateMap,
+      result.utteranceEntityLabelsMap,
+      result.utteranceEntityLabelDuplicateMap);
+
+    Utility.debuggingLog(`Processed ${luObject.id}`);
     LabelResolver.addExamples(result, labelResolver);
     const snapshot: any = labelResolver.createSnapshot();
+    /*
     const snapshotFile: any = path.join(OrchestratorBuild.OutputPath, baseName + '.blu');
     OrchestratorHelper.writeToFile(snapshotFile, snapshot);
     Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
-    const entities: any = await OrchestratorHelper.getEntitiesInLu(luFile);
-    const settingsKeyForBlu: string|undefined = OrchestratorHelper.writeDialogFiles(OrchestratorBuild.OutputPath, isDialog, baseName, entities);
-    if (settingsKeyForBlu !== undefined) bluPaths[baseName] = snapshotFile;
-  }
-
-  private static async iterateInputFolder(inputPath: string, isDialog: boolean, bluPaths: any) {
-    const items: string[] = fs.readdirSync(inputPath);
-    for (const item of items) {
-      const currentItemPath: string = path.join(inputPath, item);
-      const isDirectory: boolean = fs.lstatSync(currentItemPath).isDirectory();
-
-      if (isDirectory) {
-        // eslint-disable-next-line no-await-in-loop
-        await OrchestratorBuild.iterateInputFolder(currentItemPath, isDialog, bluPaths);
-      } else {
-        const ext: string = path.extname(item);
-        if (ext === '.lu') {
-          // eslint-disable-next-line no-await-in-loop
-          await OrchestratorBuild.processLuFile(currentItemPath, isDialog, bluPaths);
-        }
-      }
-    }
+    */
+    const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+    const recognizer: any = OrchestratorHelper.getDialogFilesContent(OrchestratorBuild.IsDialog, baseName, entities);
+    if (recognizer !== undefined) bluPaths[baseName] = snapshot;
+    return { id: baseName, snapshot: snapshot, recognizer: recognizer };
   }
 }

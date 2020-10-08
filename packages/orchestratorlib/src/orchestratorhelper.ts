@@ -164,7 +164,7 @@ export class OrchestratorHelper {
     return retValue;
   }
 
-  public static writeDialogFiles(out: string, isDialog: boolean, baseName: string, recognizers: any = []) {
+  public static getDialogFilesContent(isDialog: boolean, baseName: string, recognizers: any = []) {
     if (!isDialog) return undefined;
     const recoContent: {
       '$kind': string;
@@ -178,8 +178,6 @@ export class OrchestratorHelper {
       entityRecognizers: recognizers,
     };
 
-    const recoFileName: string = path.join(out, `${baseName}.lu.dialog`);
-    this.writeToFile(recoFileName, JSON.stringify(recoContent, null, 2));
     const multiRecoContent: any = {
       $kind: 'Microsoft.MultiLanguageRecognizer',
       recognizers: {
@@ -188,9 +186,7 @@ export class OrchestratorHelper {
       },
     };
 
-    const multiRecoFileName: string = path.join(out, `${baseName}.en-us.lu.dialog`);
-    this.writeToFile(multiRecoFileName, JSON.stringify(multiRecoContent, null, 2));
-    return baseName;
+    return { orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent };
   }
 
   public static writeSettingsFile(nlrpath: string, settings: any, out: string) {
@@ -211,12 +207,7 @@ export class OrchestratorHelper {
     this.writeToFile(contentFileName, JSON.stringify(content, null, 2));
   }
 
-  public static async getEntitiesInLu(input: string): Promise<any> {
-    const fileContents: string = OrchestratorHelper.readFile(input);
-    const luObject: any = {
-      content: fileContents,
-      id: input,
-    };
+  public static async getEntitiesInLu(luObject: any): Promise<any> {
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);
   }
@@ -320,15 +311,31 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
-    const fileContents: string = OrchestratorHelper.readFile(luFile);
+
+    OrchestratorHelper.parseLuContent(
+      luFile,
+      OrchestratorHelper.readFile(luFile),
+      hierarchicalLabel,
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+  }
+
+  // eslint-disable-next-line max-params
+  static async parseLuContent(
+    luFile: string,
+    luContent: string,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
     const luObject: any = {
-      content: fileContents,
+      content: luContent,
       id: luFile,
     };
-    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseLuFile()');
-    // Utility.debuggingLog(`BEFORE calling OrchestratorHelper.parseLuFile(), fileContents=${fileContents}`);
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
-    Utility.debuggingLog('AFTER calling OrchestratorHelper.parseLuFile()');
     OrchestratorHelper.getLuisIntentsEnitiesUtterances(
       luisObject,
       hierarchicalLabel,
@@ -892,6 +899,30 @@ export class OrchestratorHelper {
         throw new Error(`Content not found for ${resourceToFind}.`);
       }
     });
+    return retPayload;
+  }
+
+  public static async getLuInputsEx(inputPath: string, retPayload: any[]) {
+    if (OrchestratorHelper.isDirectory(inputPath)) {
+      const items: string[] = fs.readdirSync(inputPath);
+      for (const item of items) {
+        const currentItemPath: string = path.join(inputPath, item);
+        OrchestratorHelper.getLuInputsEx(currentItemPath, retPayload);
+      }
+    } else {
+      const ext: string = path.extname(inputPath);
+      if (ext === '.lu') {
+        retPayload.push({
+          content: OrchestratorHelper.readFile(inputPath),
+          id: path.basename(inputPath),
+        });
+      }
+    }
+  }
+
+  public static getLuInputs(inputPath: string) {
+    const retPayload: any[] = [];
+    OrchestratorHelper.getLuInputsEx(inputPath, retPayload)
     return retPayload;
   }
 }
