@@ -48,7 +48,11 @@ export class Orchestrator {
     await OrchestratorFineTune.runAsync(nlrPath, inputPath, outputPath);
   }
 
-  public static async nlrGetAsync(nlrPath: string, nlrId: string, onProgress: any = null, onFinish: any = null): Promise<void> {
+  public static async nlrGetAsync(
+    nlrPath: string,
+    nlrId: string,
+    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
+    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
     await OrchestratorNlr.getAsync(nlrPath, nlrId, onProgress, onFinish);
   }
 

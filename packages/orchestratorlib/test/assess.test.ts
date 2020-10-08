@@ -14,8 +14,8 @@ import {OrchestratorAssess} from '../src/assess';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
-describe('Test Suite - assess', () => {
-  it('Test.0000 OrchestratorAssess.runAsync()', async function () {
+describe('Test Suite - the "assess" command', () => {
+  it('Test.0000 OrchestratorAssess.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
@@ -62,7 +62,7 @@ describe('Test Suite - assess', () => {
     Utility.debuggingLog('THE END - Test.0000 OrchestratorAssess.runAsync()');
   });
 
-  it('Test.0001 OrchestratorAssess.runAsync()', async function () {
+  it('Test.0001 OrchestratorAssess.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);

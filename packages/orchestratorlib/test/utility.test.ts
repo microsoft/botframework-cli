@@ -31,8 +31,8 @@ export class UnitTestHelper {
   public static async downloadModelFileForTest(
     nlrId: string,
     nlrPath: string,
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onTest: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
+    onTest: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
     if (!Utility.exists(nlrPath)) {
       const nlrVersions: string = OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json'));
       const nlrModels: any = JSON.parse(nlrVersions);

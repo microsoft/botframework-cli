@@ -96,8 +96,14 @@ export class LabelResolver {
   }
 
   public static getLabels(labelType: LabelType, labelResolver: any = null) {
+    Utility.debuggingLog('CALLING LabelResolver.getLabels()');
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
-    return labelResolver.getLabels(labelType);
+    Utility.debuggingLog('LabelResolver.getLabels(), after calling LabelResolver.ensureLabelResolver()');
+    Utility.debuggingLog(`LabelResolver.getLabels(), labelResolver=${labelResolver}`);
+    const labels: any = labelResolver.getLabels(labelType);
+    Utility.debuggingLog(`LabelResolver.getLabels(), labels=${labels}`);
+    Utility.debuggingLog('LEAVING LabelResolver.getLabels()');
+    return labels;
   }
 
   public static score(utterance: string, labelType: LabelType, labelResolver: any = null) {
@@ -132,7 +138,7 @@ export class LabelResolver {
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
     let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
-    Utility.debuggingLog('REAY to call labelResolver.addExample() on utteranceLabelsMap utterances and labels');
+    Utility.debuggingLog('READY to call labelResolver.addExample() on utteranceLabelsMap utterances and labels');
     // ---- Utility.toPrintDetailedDebuggingLogToConsole = true; // ---- NOTE ---- disable after detailed tracing is done.
     // eslint-disable-next-line guard-for-in
     for (const utterance of utteranceLabelsMap.keys()) {
@@ -167,7 +173,7 @@ export class LabelResolver {
       }
     }
     const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
-    Utility.debuggingLog('REAY to call labelResolver.addExample() on utteranceEntityLabelsMap utterances and labels');
+    Utility.debuggingLog('READY to call labelResolver.addExample() on utteranceEntityLabelsMap utterances and labels');
     // eslint-disable-next-line guard-for-in
     for (const utterance in utteranceEntityLabelsMap) {
       const labels: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];

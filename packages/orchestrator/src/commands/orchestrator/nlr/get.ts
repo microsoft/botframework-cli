@@ -30,13 +30,13 @@ export default class OrchestratorNlrGet extends Command {
       await Orchestrator.nlrGetAsync(
         OrchestratorSettings.ModelPath,
         nlrId,
-        (message: any) => {
+        async (message: any): Promise<void> => {
           if (flags.verbose) {
             this.log(message);
           }
         },
-        () => {
-          this.log(`Model ${nlrId} downloaded to ${output}`);
+        async (message: any): Promise<void> => {
+          this.log(`Model ${nlrId} downloaded to ${output} with message: ${message}`);
         });
     } catch (error) {
       throw (new CLIError(error));

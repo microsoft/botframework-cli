@@ -10,7 +10,11 @@ const Zip: any = require('node-7z-forall');
 const fetch: any = require('node-fetch');
 
 export class OrchestratorNlr {
-  public static async getAsync(nlrPath: string, nlrId: string, onProgress: any = OrchestratorNlr.defaultHandler, onFinish: any = OrchestratorNlr.defaultHandler) {
+  public static async getAsync(
+    nlrPath: string,
+    nlrId: string,
+    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
+    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
     try {
       if (nlrPath) {
         nlrPath = path.resolve(nlrPath);
@@ -24,7 +28,7 @@ export class OrchestratorNlr {
       Utility.debuggingLog(`Nlr path: ${nlrPath}`);
 
       const versions: any = await OrchestratorNlr.getNlrVersionsAsync();
-      onProgress('Downloading model...');
+      await onProgress('Downloading model...');
       if (!versions) {
         throw new Error('Failed getting nlr_versions.json');
       }
@@ -44,8 +48,8 @@ export class OrchestratorNlr {
   public static async getModelAsync(
     nlrPath: string,
     modelUrl: string,
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
+    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
     try {
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const res: any = await fetch(modelUrl);
@@ -56,24 +60,24 @@ export class OrchestratorNlr {
       res.body.on('error', () => {
         throw new Error(`Failed downloading model file: ${modelUrl}`);
       });
-      fileStream.on('finish', () => {
+      fileStream.on('finish', async () => {
         if (onProgress) {
-          onProgress('Model downloaded...');
+          await onProgress('Model downloaded...');
         }
         Utility.debuggingLog(`Finished downloading model file: ${modelUrl} to ${modelZipPath}`);
         const seven: any = new Zip();
         if (onProgress) {
-          onProgress('Extracting...');
+          await onProgress('Extracting...');
         }
-        seven.extractFull(modelZipPath, nlrPath).then(() => {
+        seven.extractFull(modelZipPath, nlrPath).then(() => async () => {
           if (onProgress) {
-            onProgress('Cleaning up...');
+            await onProgress('Cleaning up...');
           }
           Utility.debuggingLog(`Finished extracting model file: ${modelUrl} and extracted to ${nlrPath}`);
           fs.unlinkSync(modelZipPath);
           Utility.debuggingLog(`Cleaned up .7z file: ${modelZipPath}`);
           if (onFinish) {
-            onFinish('From OrchestratorNlr.getModelAsync() calling onFinish()');
+            await onFinish('From OrchestratorNlr.getModelAsync() calling onFinish()');
           }
           Utility.debuggingLog('Finished calling OrchestratorNlr.getModelAsync()');
         });
@@ -93,7 +97,11 @@ export class OrchestratorNlr {
     return JSON.stringify(json, null, 2);
   }
 
-  public static defaultHandler(status: string) {
+  public static defaultHandler(status: string): void {
+    Utility.debuggingLog(status);
+  }
+
+  public static async defaultHandlerAsync(status: string): Promise<void> {
     Utility.debuggingLog(status);
   }
 
