@@ -1,16 +1,16 @@
 @microsoft/bf-orchestrator-cli
 ======================
 
-This package should be consumed through @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
+This package is a plugin for @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
 
-Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch).   Create and evaluate Orchestrator model used to arbitrate across multiple bot modules such as LUIS models, QnA knowledge bases and others.
+Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch). Create and evaluate Orchestrator model used to arbitrate across multiple bot modules such as LUIS models, QnA knowledge bases and others.
 
 ## Prerequisite
 
-- [Node.js](https://nodejs.org/) version 10 or higher
+- [Node.js](https://nodejs.org/) version 12 or higher
 - @microsoft/botframework-cli
 ```
 $ npm install -g @microsoft/botframework-cli
@@ -32,10 +32,16 @@ brew install icu4c
 ```
 
 ## Installation
-To install:
+To install the bf-orchestrator-cli plugin:
 
 ```
 bf plugins:install @microsoft/bf-orchestrator-cli@beta
+```
+
+To uninstall the bf-orchestrator-cli plugin, a step for upgrading the plugin:
+
+```
+bf plugins:unstall @microsoft/bf-orchestrator-cli@beta
 ```
 
 # Commands
@@ -68,7 +74,9 @@ _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botf
 
 ## `bf orchestrator:assess`
 
-Create an evaluation report on assessing predictions against ground-truth instances.
+Create an evaluation report on assessing prediction against ground-truth instances.
+This command can execute an independent assessment of a prediction set against a ground-truth set,
+it does not require a NLR model that other Orchestrator commands may need.
 
 ```
 USAGE
@@ -146,6 +154,7 @@ INPUT
   The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TSV or a JSON array format.
   The TSV file format only supports intent labels and it must have 2 columns, 'labels' and 'utterance',
   sepatated by a TAB. The 'labels' column can contains multiple labels delimited by camma.
+
   For entitiy labels, a user can choose LU, LUIS, or a JSON array format
   that each entry contains a labeled utterance following the schema and example shown below.
   In the array, each JSON entry has a "text" attribute for an utterance. The utterance can have an array pf
@@ -194,7 +203,7 @@ REPORT
 
   In the Metrics section, the Orchestrator "assess" command first generates a series of per-label
   binary confusion matrices.
-  Each confusion matrix is comprised of 4 cells: true positive (TP), false positive (FP), true negative (TN),
+  Each binary confusion matrix is comprised of 4 cells: true positive (TP), false positive (FP), true negative (TN),
   and false negative (FN). Using these 4 cells, Orchestrator can compute several other confusion
   matrix metrics, including precision, recall, F1, accuracy, and support, etc.
   Please reference https://en.wikipedia.org/wiki/Confusion_matrix for details.
@@ -212,19 +221,24 @@ REPORT
   Entity - the "assess" command iterates through one ground-truth utterance at a time
         and compare its ground-truth entity array and prediction entity array.
         If an entity mention exists in both array, then it's a TP for the entity label's confusion matrix.
+        An entity mention is comprised of the entity name (label), start position in the utterance, and the length
+        of the entity mention. An entity mention is considered a match to another only if these three components
+        are exactly the same.
         FP and FN logic is similar to those for intent. However, there is no TN for evaluating entity mentions
-        as there are too many possible entity mention candidates for an utterance, while there is only one or a small
-        number of intent labels for an utterance. It is still possible to define a custom TN logic, such as
-        an entity label is a TN if it does not exist in an utterance's ground-truth or prediction label arrays.
-        However as some important metrics such as precision, recall, and their combination, F1, do not rely on TN,
-        so it's really necessary to calculate TN for evaluating entity predictions.
+        as there can be too many possible entity mention candidates for an utterance when consider the start-position
+        and entity length.
+        On the other hand, number of intent labels for an utterance is usually one or a small number.
+        It is still possible to define a custom TN logic, such as
+        an entity label is a TN if it does not exist in an utterance's ground-truth or prediction label arrays at all.
+        However as some important metrics such as precision, recall, and their combination (F1) do not rely on TN,
+        so that it's really not necessary to collect TN for evaluating entity predictions.
 
-  By the way, sometimes an erroneous prediction file may contain some labeled utterances not in the ground-truth
+  By the way, sometimes an erroneous prediction file can contain some labeled utterances not in the ground-truth
   file. These utterances are called spurious, and they will be listed under the "Prediction Duplicates" tab
   in an evaluation report called "Spurious utterance and label pairs."
 
   Once the serial of per-label binary confusion matrices are built, there are plenty of
-  per-label metrics, which can then be consolidated using several averaging schemes.
+  per-label metrics, which can then be aggregated using several diverse averaging schemes.
   An evaluation report's "Metrics" tab contains several of them:
 
   0) Micro-Average - Orchestrator is essentially a multi-class ML learner and model, so evaluation can also be expressed
