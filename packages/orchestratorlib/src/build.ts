@@ -86,7 +86,7 @@ export class OrchestratorBuild {
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(luFile, false);
     Utility.debuggingLog(`Processed ${luFile}`);
     LabelResolver.addExamples(result, labelResolver);
-    const snapshot: any = labelResolver.createSnapshot();
+    const snapshot: any = LabelResolver.createSnapshot();
     const snapshotFile: any = path.join(OrchestratorBuild.OutputPath, baseName + '.blu');
     OrchestratorHelper.writeToFile(snapshotFile, snapshot);
     Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);

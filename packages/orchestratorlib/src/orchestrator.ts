@@ -51,8 +51,8 @@ export class Orchestrator {
   public static async nlrGetAsync(
     nlrPath: string,
     nlrId: string,
-    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
-    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
     await OrchestratorNlr.getAsync(nlrPath, nlrId, onProgress, onFinish);
   }
 

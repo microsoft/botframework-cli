@@ -24,6 +24,7 @@ export class LabelResolver {
     //   throw new Error('Please provide path to Orchestrator model');
     // }
     Utility.debuggingLog('LabelResolver.loadNlrAsync(): Creating Orchestrator..');
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): nlrPath=${nlrPath}`);
     LabelResolver.Orchestrator = new oc.Orchestrator();
 
     if (nlrPath) {
@@ -35,6 +36,7 @@ export class LabelResolver {
       throw new Error('Failed calling LabelResolver.Orchestrator.load()!');
     }
 
+    Utility.debuggingLog('LabelResolver.loadNlrAsync(): Leaving..');
     return LabelResolver.Orchestrator;
   }
 

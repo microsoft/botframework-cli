@@ -72,7 +72,7 @@ export class OrchestratorEvaluate {
     const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
     // ---- NOTE ---- create a labelResolver object with a snapshot
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
+    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
     // ---- NOTE ---- retrieve labels
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
@@ -93,7 +93,6 @@ export class OrchestratorEvaluate {
     Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), examples.length=${examples.length}`);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      const examples: any = labelResolver.getExamples();
       const example: any = examples[0];
       const example_text: string = example.text;
       const labels: any = example.labels;

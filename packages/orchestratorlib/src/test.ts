@@ -80,19 +80,7 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
     await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
-    // ---- NOTE-TO-REMOVE ---- // ---- NOTE ---- process the snapshot set, retrieve labels
-    // ---- NOTE-TO-REMOVE ---- let processedUtteranceLabelsMap: {
-    // ---- NOTE-TO-REMOVE ----   'utteranceLabelsMap': Map<string, Set<string>>;
-    // ---- NOTE-TO-REMOVE ----   'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-    // ---- NOTE-TO-REMOVE ----   'utteranceEntityLabelsMap': Map<string, Label[]>;
-    // ---- NOTE-TO-REMOVE ----   'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(snapshotFile, false);
-    // ---- NOTE-TO-REMOVE ---- const snapshotSetUtterancesLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
-    // ---- NOTE-TO-REMOVE ---- // ---- NOTE-NO-NEED ---- const snapshotSetUtterancesDuplicateLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
-    // ---- NOTE-TO-REMOVE ---- Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for snapshot set');
-    // ---- NOTE-TO-REMOVE ---- const snapshotSetLabels: string[] =
-    // ---- NOTE-TO-REMOVE ----   [...snapshotSetUtterancesLabelsMap.values()].reduce(
-    // ---- NOTE-TO-REMOVE ----     (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
-    // ---- NOTE ---- process the snapshot set, retrieve labels
+    // ---- NOTE ---- retrieve labels
     const snapshotSetLabels: string[] =
       LabelResolver.getLabels(LabelType.Intent);
     const snapshotSetLabelSet: Set<string> =

@@ -3037,7 +3037,7 @@ export class Utility {
     return utteranceLabels;
   }
 
-  public static processUnknownLabelsInBluFileContent(bluFileContents: string): string {
+  public static processUnknownLabelsInTsvBluFileContent(bluFileContents: string): string {
     const lines: string[] = bluFileContents.split('\n');
     for (let lineIndex: number = 1; lineIndex < lines.length; lineIndex++) {
       const lineComponents: string[] = lines[lineIndex].split('\t');

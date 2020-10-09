@@ -6,6 +6,8 @@
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
+require('fast-text-encoding');
+
 import {LabelType} from './labeltype';
 import {Label} from './label';
 import {Span} from './span';
@@ -36,7 +38,15 @@ export class OrchestratorHelper {
   }
 
   public static readBluSnapshotFile(filePath: string): string {
-    return Utility.processUnknownLabelsInBluFileContent(ReadText.readSync(filePath));
+    return ReadText.readSync(filePath);
+    // ---- NOTE
+    // the code below was trying to normalize unknown labels in a BLU file,
+    // but the unknown labels should have been processed during ingesting
+    // an input file (LU, QnA, TSV, etc.) and before creating a BLU file,
+    // so there is really no need to process unknown labels in a BLU file
+    // anymore. The line below is thus deprecated especially now the BLU
+    // file can be a JSON, so the statement below does not applu anyway.
+    // ---- return Utility.processUnknownLabelsInTsvBluFileContent(ReadText.readSync(filePath));
   }
 
   public static readFile(filePath: string): string {
@@ -291,7 +301,7 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap);
     } else if (ext === '.blu') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      OrchestratorHelper.parseBluFile(
+      OrchestratorHelper.parseTsvBluFile(
         filePath,
         utteranceLabelsMap,
         utteranceLabelDuplicateMap);
@@ -300,7 +310,7 @@ export class OrchestratorHelper {
     }
   }
 
-  static parseBluFile(
+  static parseTsvBluFile(
     bluFile: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
