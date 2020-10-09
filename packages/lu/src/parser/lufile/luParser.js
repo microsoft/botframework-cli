@@ -19,47 +19,64 @@ const Range = require('./diagnostic').Range;
 const Position = require('./diagnostic').Position;
 const NEWLINE = require('os').EOL;
 
+const defaultConfig = {
+  enableModelDescription: true,
+  enableComments: true // Temporarily enabled by default, cannot be configured
+}
+
 class LUParser {
 
     /**
-     * 
-     * @param {string} text 
-     * @param {LUResource} luResource 
+     *
+     * @param {string} text
+     * @param {LUResource} luResource
      */
-    static parseWithRef(text, luResource) {
+    static parseWithRef(text, luResource, config) {
+        config = config || {};
+        config = {...defaultConfig, ...config};
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
 
         const sectionEnabled = luResource ? this.isSectionEnabled(luResource.Sections) : undefined;
 
-        return this.parse(text, sectionEnabled);
+        return this.parse(text, sectionEnabled, config);
     }
 
     /**
      * @param {string} text
      */
-    static parse(text, sectionEnabled) {
+    static parse(text, sectionEnabled, config) {
+        config = config || {};
+        config = {...defaultConfig, ...config};
         if (text === undefined || text === '') {
             return new LUResource([], '', []);
         }
 
         let {fileContent, errors} = this.getFileContent(text);
 
-        return this.extractFileContent(fileContent, text, errors, sectionEnabled);
+        return this.extractFileContent(fileContent, text, errors, sectionEnabled, config);
     }
 
-    static extractFileContent(fileContent, content, errors, sectionEnabled) {
+    static extractFileContent(fileContent, content, errors, sectionEnabled, config) {
         let sections = [];
+        let modelInfoSections = [];
+
         try {
-            let modelInfoSections = this.extractModelInfoSections(fileContent);
-            modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(modelInfoSections);
+            modelInfoSections = this.extractModelInfoSections(fileContent);
         } catch (err) {
             errors.push(BuildDiagnostic({
                 message: `Error happened when parsing model information: ${err.message}`
             }))
         }
+
+        if (modelInfoSections && modelInfoSections.length > 0 && !config.enableModelDescription) {
+          errors.push(BuildDiagnostic({
+            message: `Do not support Model Description. Please make sure enableModelDescription is set to true.`
+          }))
+        }
+        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
+        sections = sections.concat(modelInfoSections);
 
         try {
             let isSectionEnabled = sectionEnabled === undefined ?  this.isSectionEnabled(sections) : sectionEnabled;
@@ -73,12 +90,12 @@ class LUParser {
                     let emptyIntentSection = new SimpleIntentSection();
                     emptyIntentSection.Name = section.Name;
                     emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
-                    
+
                     // get the end character index
                     // this is default value
                     // it will be reset in function extractSectionBody()
                     let endCharacter = section.Name.length + 2;
-                   
+
                     const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
                     emptyIntentSection.Range = range;
                     let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
@@ -177,7 +194,7 @@ class LUParser {
         if (text === undefined
             || text === ''
             || text === null) {
-            
+
             return undefined;
         }
 
@@ -191,13 +208,13 @@ class LUParser {
         parser.addErrorListener(listener);
         parser.buildParseTrees = true;
         const fileContent = parser.file();
-        
+
         return { fileContent, errors };
     }
 
     /**
      * @param {FileContext} fileContext
-     * @param {string} content 
+     * @param {string} content
      */
     static extractNestedIntentSections(fileContext, content) {
         if (fileContext === undefined
@@ -215,8 +232,8 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
-     * @param {string} content 
+     * @param {FileContext} fileContext
+     * @param {string} content
      */
     static extractSimpleIntentSections(fileContext, content) {
         if (fileContext === undefined
@@ -234,7 +251,7 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractEntitiesSections(fileContext) {
         if (fileContext === undefined
@@ -252,7 +269,7 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractNewEntitiesSections(fileContext) {
         if (fileContext === undefined
@@ -263,14 +280,14 @@ class LUParser {
         let newEntitySections = fileContext.paragraph()
             .map(x => x.newEntitySection())
             .filter(x => x && x.newEntityDefinition());
-        
+
         let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
 
         return newEntitySectionList;
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractImportSections(fileContext) {
         if (fileContext === undefined
@@ -288,7 +305,7 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractReferenceSections(fileContext) {
         if (fileContext === undefined
@@ -306,7 +323,7 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractQnaSections(fileContext) {
         if (fileContext === undefined
@@ -324,7 +341,7 @@ class LUParser {
     }
 
     /**
-     * @param {FileContext} fileContext 
+     * @param {FileContext} fileContext
      */
     static extractModelInfoSections(fileContext) {
         if (fileContext === undefined
@@ -342,7 +359,7 @@ class LUParser {
     }
 
     /**
-     * @param {any[]} sections 
+     * @param {any[]} sections
      */
     static reconstractIntentSections(sections) {
         let newSections = []
@@ -363,7 +380,7 @@ class LUParser {
                     simpleIntentSections[simpleIntentSections.length - 1].Errors.push(...sections[index + 1].Errors)
                     index++
 
-                    while (index + 1 < sections.length 
+                    while (index + 1 < sections.length
                         && (sections[index + 1].SectionType === SectionType.ENTITYSECTION
                         || sections[index + 1].SectionType === SectionType.NEWENTITYSECTION
                         || (sections[index + 1].SectionType === SectionType.SIMPLEINTENTSECTION && sections[index + 1].IntentNameLine.includes('##')))) {

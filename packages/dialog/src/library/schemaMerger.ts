@@ -3,15 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from 'ajv'
 import * as fs from 'fs-extra'
-import * as glob from 'globby'
-import * as os from 'os'
-import * as parser from '@apidevtools/json-schema-ref-parser'
-import * as ppath from 'path'
-import {JsonPointer as ptr} from 'json-ptr'
+import * as hash from './hash'
 import * as nuget from '@snyk/nuget-semver'
+import * as os from 'os'
+import * as ppath from 'path'
 import * as xp from 'xml2js'
+import Validator from 'ajv'
+import glob from 'globby'
+import parser from '@apidevtools/json-schema-ref-parser'
+import {JsonPointer as ptr} from 'json-ptr'
+
 let allof: any = require('json-schema-merge-allof')
 let clone: any = require('clone')
 let getUri: any = require('get-uri')
@@ -56,6 +58,11 @@ function normalize(path: string): string {
         path = path.replace(/\//g, ppath.sep)
     }
     return ppath.normalize(path)
+}
+
+// Replace backslash with forward slash for glob
+function forwardSlashes(input: string): string {
+    return input.replace(/\\/g, '/')
 }
 
 // Deep merge of JSON objects
@@ -148,9 +155,12 @@ class Component {
             let root = ppath.dirname(this.path)
             for (let extension of extensions) {
                 patterns.push(ppath.join(root, `**/*${extension}`))
-                if (this.path.includes('package.json')) {
-                    patterns.push(`!${ppath.join(root, `node_modules/**/*${extension}`)}`)
-                }
+
+            }
+            if (this.path.endsWith('package.json')) {
+                patterns.push(`!${ppath.join(root, 'node_modules/**')}`)
+            } else if (this.path.endsWith('.csproj')) {
+                patterns.push(`!${ppath.join(root, 'bin/**')}`)
             }
         }
         return patterns
@@ -200,13 +210,55 @@ interface PathComponent {
 }
 
 /**
+ * Interface for imported assets to be copied.
+ */
+export interface Import {
+    /**
+     * New definition for file as utf-8.  
+     * For .lg/.lu/.qna is a string and for .dialog a serialized JSON object.
+     */
+    definition: string,
+
+    /**
+     * Output path for writing file.
+     */
+    path: string
+}
+
+/**
+ * Interface describing changes made to import components.
+ */
+export interface Imports {
+    /**
+     * Files to add because they are new or the old file has not changed since last imported.
+     */
+    added: Import[],
+
+    /**
+     * Files to delete because they are no longer in the original components.
+     */
+    deleted: string[],
+
+    /**
+     * Files that were unchanged.
+     */
+    unchanged: string[],
+
+    /**
+     * Files where a component has a new definition and the old imported definition has been changed.
+     */
+    conflicts: Import[]
+}
+
+/**
  * This class will find and merge component .schema files into a validated custom schema.
  */
-export default class SchemaMerger {
+export class SchemaMerger {
     // Input parameters
     private readonly patterns: string[]
     private output: string
     private readonly imports: string
+    private readonly checkOnly: boolean
     private readonly verbose: boolean
     private readonly log: any
     private readonly warn: any
@@ -262,21 +314,23 @@ export default class SchemaMerger {
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
      * @param patterns Glob patterns for the .csproj or packge.json files to combine.
-     * @param output The output file to create or empty string to use default.
+     * @param output The output schema file to create or empty string to use default.
      * @param imports The output directory for imports.
+     * @param checkOnly Check only--do not write files.
      * @param verbose True to show files as processed.
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param extensions Extensions to analyze for loader.
-     * @param schema Path to merged .schema is doin
+     * @param schema Path to merged .schema to only merge .uischema.
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, imports: string | undefined, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
+    public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
-        this.imports = imports ?? ppath.dirname(output)
+        this.imports = imports ?? ppath.dirname(this.output)
+        this.checkOnly = checkOnly
         this.verbose = verbose
         this.log = log
         this.warn = warn
@@ -290,25 +344,26 @@ export default class SchemaMerger {
     /** 
      * Verify and merge component .schema and .uischema together into a single .schema and .uischema.
      * Also ensures that for C# all declarative assets are output to <project>/Generated/<component>.
-     * Returns true if successful.
+     * Returns import changes if successful otherwise u.
      */
-    public async merge(): Promise<boolean> {
+    public async merge(): Promise<Imports | undefined> {
+        let imports: Imports | undefined
         try {
             this.log('Finding component files')
-            await this.expandPackages(await glob(this.patterns.map(p => p.replace(/\\/g, '/'))))
+            await this.expandPackages(await glob(this.patterns.map(forwardSlashes)))
             await this.analyze()
             let schema = await this.mergeSchemas()
             this.log('')
             await this.mergeUISchemas(schema)
             this.log('')
-            await this.copyAssets()
+            imports = await this.copyAssets()
         } catch (e) {
             this.mergingError(e)
         }
         if (this.failed) {
             this.error('*** Could not merge components ***')
         }
-        return !this.failed
+        return imports
     }
 
     // Push a child on the current parent and make it the new parent
@@ -489,8 +544,10 @@ export default class SchemaMerger {
                 let end = process.hrtime.bigint()
                 let elapsed = Number(end - start) / 1000000000
                 this.vlog(`Expanding all $ref took ${elapsed} seconds`)
-                this.log(`Writing ${this.currentFile}`)
-                await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
+                if (!this.checkOnly) {
+                    this.log(`Writing ${this.currentFile}`)
+                    await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
+                }
             }
         }
         return fullSchema
@@ -578,8 +635,10 @@ export default class SchemaMerger {
                         uischema[key] = result[locale][key]
                     }
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
-                    this.log(`Writing ${this.currentFile}`)
-                    await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
+                    if (!this.checkOnly) {
+                        this.log(`Writing ${this.currentFile}`)
+                        await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
+                    }
                 }
             }
         }
@@ -599,20 +658,75 @@ export default class SchemaMerger {
     }
 
     // Copy all exported assets into imported assets
-    private async copyAssets(): Promise<void> {
-        if (!this.failed && !this.schemaPath && this.components.length > 0) {
+    private async copyAssets(): Promise<Imports | undefined> {
+        let imports: Imports | undefined = this.failed ? undefined : {added: [], deleted: [], unchanged: [], conflicts: []}
+        if (imports && !this.schemaPath && this.components.length > 0) {
             this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
                 if (!component.isRoot()) {
-                    let exported = ppath.join(ppath.dirname(component.path), 'exportedAssets')
+                    let exported = ppath.join(ppath.dirname(component.path), 'ExportedAssets')
                     if (await fs.pathExists(exported)) {
+                        let used = new Set<string>()
                         let imported = ppath.join(this.imports, 'ImportedAssets', component.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
-                        await fs.copy(exported, imported, {recursive: true})
+
+                        // Copy all exported files
+                        for (let path of await glob(forwardSlashes(ppath.join(exported, '**')))) {
+                            let destination = ppath.join(imported, ppath.relative(exported, path))
+                            used.add(forwardSlashes(destination))
+                            let msg = `Copy ${path} to ${destination}`
+                            try {
+                                let copy = true
+                                let info: Import = {definition: await hash.addHash(path), path: destination}
+                                let {unchanged, embeddedHash} = await hash.isUnchanged(destination)
+                                if (hash.embeddedHash(path, info.definition) === embeddedHash) {
+                                    // Import is based on last export
+                                    this.vlog(`Unchanged ${destination}`)
+                                    imports.unchanged.push(destination)
+                                    copy = false
+                                } else if (unchanged) {
+                                    // Destination has not changed, but export has
+                                    this.vlog(msg)
+                                    imports.added.push(info)
+                                } else {
+                                    // Destination and export have changed
+                                    this.warn(`Warning copied conflicting ${path} to ${destination}`)
+                                    imports.conflicts.push(info)
+                                }
+                                msg = ''
+                                if (copy && !this.checkOnly) {
+                                    await fs.ensureDir(ppath.dirname(destination))
+                                    await fs.writeFile(destination, info.definition)
+                                }
+                            } catch (e) {
+                                if (msg) {
+                                    this.log(msg)
+                                }
+                                this.mergingError(e)
+                            }
+                        }
+
+                        // Delete removed files
+                        for (let path of await glob(forwardSlashes(ppath.join(imported, '**')))) {
+                            if (!used.has(path)) {
+                                let {unchanged} = await hash.isUnchanged(path)
+                                if (unchanged) {
+                                    imports.deleted.push(path)
+                                    this.vlog(`Delete ${path}`)
+                                } else {
+                                    imports.conflicts.push({definition: '', path})
+                                    this.warn(`Warning deleted modified ${path}`)
+                                }
+                                if (!this.checkOnly) {
+                                    await fs.remove(path)
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
+        return imports
     }
 
     // Given schema properties object and ui schema properties object, check to ensure 
@@ -690,7 +804,7 @@ export default class SchemaMerger {
     // Convert file relative ref to absolute ref
     private toAbsoluteRef(ref: string, base: string): string {
         if (ref.startsWith('.')) {
-            ref = `file:///${ppath.resolve(ppath.dirname(base), ref).replace(/\\/g, '/')}`
+            ref = forwardSlashes(`file:///${ppath.resolve(ppath.dirname(base), ref)}`)
         }
         return ref
     }
@@ -945,7 +1059,7 @@ export default class SchemaMerger {
     private async expandPackages(paths: string[]): Promise<void> {
         await this.buildComponentTree(paths)
         for (let component of this.components) {
-            let patterns = component.patterns(this.extensions).map(e => e.replace(/\\/g, '/'))
+            let patterns = component.patterns(this.extensions).map(forwardSlashes)
             for (let path of await glob(patterns)) {
                 let ext = ppath.extname(path)
                 let map = this.files.get(ext)
@@ -1573,6 +1687,7 @@ export default class SchemaMerger {
                 return false
             })
         }
+        this.currentKind = ''
     }
 
     // Check to see if a kind is an interface.

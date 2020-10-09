@@ -10,7 +10,7 @@ import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
-import SchemaMerger from '../../../src/library/schemaMerger'
+import * as merger from '../../../src/library/schemaMerger'
 let srcDir = ppath.resolve('test/commands/dialog/')
 let tempDir = ppath.join(os.tmpdir(), 'test.out')
 
@@ -24,22 +24,24 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
     return count
 }
 
-async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string): Promise<[boolean, string[]]> {
+async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string, checkOnly?: boolean): Promise<[merger.Imports | undefined, string[]]> {
     let lines: string[] = []
     let logger = msg => {
         console.log(msg)
         lines.push(msg)
     }
-    let merger = new SchemaMerger(patterns,
-        output ? ppath.join(tempDir, output) : '',
-        undefined,        
+    let outputDir = output ? ppath.join(tempDir, output) : ''
+    let mergeClass = new merger.SchemaMerger(patterns,
+        outputDir,
+        undefined,
+        checkOnly == undefined ? false : checkOnly,
         verbose || false,
         logger, logger, logger,
-        undefined, 
-        schemaPath ? ppath.join(tempDir, schemaPath) : undefined, 
+        undefined,
+        schemaPath ? ppath.join(tempDir, schemaPath) : undefined,
         false,
         ppath.join(srcDir, 'nuget'))
-    let merged = await merger.merge()
+    let merged = await mergeClass.merge()
     return [merged, lines]
 }
 
@@ -78,6 +80,12 @@ async function compareToOracle(name: string, oraclePath?: string): Promise<objec
             `${ppath.resolve(generatedPath)} does not match oracle ${ppath.resolve(oraclePath)}`)
     }
     return generated
+}
+
+async function modifyFile(path: string, pattern: RegExp, replacement: string) {
+    let contents = await fs.readFile(path, 'utf-8')
+    contents = contents.replace(pattern, replacement)
+    await fs.writeFile(path, contents)
 }
 
 describe('dialog:merge', async () => {
@@ -166,11 +174,11 @@ describe('dialog:merge', async () => {
         let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', true)
         assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
         assert(merged, 'Could not merge')
-        assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project1')
+        assert(countMatches(/Following.*project3/, lines) === 1, 'Did not follow project3')
         assert(countMatches(/Following nuget.*nuget3.*1.0.0/, lines) === 1, 'Did not follow nuget3')
         assert(countMatches(/Parsing.*nuget3.component1.schema/, lines) === 1, 'Missing nuget3.component1.schema')
         assert(countMatches(/Copying/i, lines) === 2, 'Wrong number of copies')
-        assert(countMatches(/Copying.*nuget3/i, lines) === 1, 'Did not copy nuget3')
+        assert(countMatches(/Copy /i, lines) === 6, 'Did not copy resources')
         assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'nuget3', 'stuff', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
@@ -214,6 +222,89 @@ describe('dialog:merge', async () => {
         await compareToOracle('project5.en-us.uischema')
     })
 
+    it('csproj-schema', async () => {
+        console.log('\nStart csproj-schema')
+        let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', false)
+        assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
+        assert(merged, 'Could not merge')
+        let [merged2, lines2] = await merge(['projects/project3/project3.csproj'], 'project3-schema.schema', true, 'project3.schema')
+        assert(countMatches(/error|warning/i, lines2) === 0, 'Should not have got errors')
+        assert(countMatches(/using merged schema/i, lines2) === 1, 'Should use merged schema')
+        assert(merged2, 'Could not merge')
+        await compareToOracle('project3-schema.en-us.uischema', 'project3.en-us.uischema')
+    })
+
+    it('csproj-import', async () => {
+        console.log('\nStart csproj-import')
+        let project = ppath.join(tempDir, 'project3.csproj')
+        await fs.emptyDir(tempDir)
+        await fs.copyFile('projects/project3/project3.csproj', project)
+
+        // First import
+        console.log('\nFirst import')
+        let [merged, lines] = await merge([project], 'project3.schema', false)
+        assert(merged, 'Could not merge')
+        assert(countMatches(/error|warning/i, lines) === 0, 'Error merging schemas')
+        assert(merged?.added.length === 6, 'Wrong number added')
+        assert(merged?.deleted.length === 0, 'Wrong number deleted')
+        assert(merged?.unchanged.length === 0, 'Wrong number unchanged')
+        assert(merged?.conflicts.length === 0, 'No conflicts on initial copy')
+
+        // Second import with no changes
+        console.log('\nSecond import without changes')
+        let [merged2, lines2] = await merge([project], 'project3.schema', false)
+        assert(merged2, 'Could not merge 2nd')
+        assert(countMatches(/error|warning/i, lines2) === 0, 'Error merging schemas 2nd')
+        assert(merged2?.added.length === 1, 'Wrong number added 2nd')
+        assert(merged2?.deleted.length === 0, 'Wrong number deleted 2nd')
+        assert(merged2?.unchanged.length === 5, 'Wrong number unchanged 2nd')
+        assert(merged2?.conflicts.length === 0, 'No conflicts on 2nd')
+
+        // Third import with changes but check only
+        console.log('\nThird import with check-only changes')
+        let luPath = ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.lu')
+        let jpgPath = ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.jpg')
+        let deletedPath = ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3-deleted.dialog')
+        await modifyFile(project, /1.0.0/, '1.0.1')
+        await modifyFile(luPath, /intent/, 'intent modified')
+        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.lg'), /template/, 'template modified')
+        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3.qna'), /question/, 'question modified')
+        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3.dialog'), /dialog/, 'dialog modified')
+        await modifyFile(jpgPath, /picture/, 'picture modified')
+        let [merged3, lines3] = await merge([project], 'project3.schema', true, undefined, true)
+        assert(merged3, 'Could not merge 3rd')
+        assert(countMatches(/error/i, lines3) === 0, 'Error merging schemas 3rd')
+        assert(countMatches(/warning/i, lines3) === 3, 'Wrong number of warnings 3rd')
+        assert(merged3?.added.length === 1, 'Wrong number added 3rd')
+        assert(merged3?.deleted.length === 1, 'Wrong number deleted 3rd')
+        assert(merged3?.unchanged.length === 1, 'Wrong number unchanged 3rd')
+        assert(merged3?.conflicts.length === 3, 'Wrong number of conflicts on 3rd')
+        assert(countMatches('modified', lines3) === 0, 'Missed deletion change 3rd')
+        assert(countMatches('conflicting', lines3) === 3, 'Missed conflicts 3rd')
+        assert((await fs.readFile(luPath, 'utf8')).includes('modified'), 'Wrote file in check-only')
+        assert((await fs.readFile(jpgPath, 'utf8')).includes('modified'), 'Wrote file in check-only')
+        assert(await fs.pathExists(deletedPath), 'Deleted file in check-only')
+
+        // Fourth import with changes
+        console.log('\nFourth import with changes')
+        await modifyFile(deletedPath, /dialog/, 'dialog modified')
+        let [merged4, lines4] = await merge([project], 'project3.schema', true, undefined, false)
+        assert(merged4, 'Could not merge 4th')
+        assert(countMatches(/error/i, lines4) === 0, 'Error merging schemas 4th')
+        assert(countMatches(/warning/i, lines4) === 4, 'Wrong number of warnings 4th')
+        assert(merged4?.added.length === 1, 'Wrong number added 4th')
+        assert(merged4?.deleted.length === 0, 'Wrong number deleted 4th')
+        assert(merged4?.unchanged.length === 1, 'Wrong number unchanged 4th')
+        assert(merged4?.conflicts.length === 4, 'Wrong number of conflicts on 4th')
+        assert(countMatches('modified', lines4) === 1, 'Missed deletion change 4th')
+        assert(countMatches('conflicting', lines4) === 3, 'Missed conflicts 4th')
+        assert(countMatches('Unchanged', lines4) === 1, 'Missed unchanged 4th')
+        assert(countMatches('deleted', lines4) === 1, 'Missed delete 4th')
+        assert((await fs.readFile(luPath, 'utf8')).includes('changed'), 'Did not write file')
+        assert((await fs.readFile(jpgPath, 'utf8')).includes('changed'), 'Wrote file in check-only')
+        assert(!await fs.pathExists(deletedPath), 'Did not delete file')
+    })
+
     it('package.json', async () => {
         console.log('\nStart package.json')
         let [merged, lines] = await merge(['npm/node_modules/root-package/package.json'], 'root-package.schema', true)
@@ -252,18 +343,6 @@ describe('dialog:merge', async () => {
         } finally {
             process.chdir(cwd)
         }
-    })
-
-    it('csproj -schema', async () => {
-        console.log('\nStart csproj')
-        let [merged, lines] = await merge(['projects/project3/project3.csproj'], 'project3.schema', false)
-        assert(countMatches(/error|warning/i, lines) === 0, 'Should not have got errors')
-        assert(merged, 'Could not merge')
-        let [merged2, lines2] = await merge(['projects/project3/project3.csproj'], 'project3-schema.schema', true, 'project3.schema')
-        assert(countMatches(/error|warning/i, lines2) === 0, 'Should not have got errors')
-        assert(countMatches(/using merged schema/i, lines2) === 1, 'Should use merged schema')
-        assert(merged2, 'Could not merge')
-        await compareToOracle('project3-schema.en-us.uischema', 'project3.en-us.uischema')
     })
 })
 

@@ -1,3 +1,14 @@
 {
-    "time":"morning"
+    "time":"morning",
+    "user": {
+        "name": "cosmic",
+        "lists": {
+            "reminder": ["car washing", "laundry", "cooking"]
+        }
+    },
+    "age": 18,
+    "dialog": {
+        "itemTitle": "Sunday ToDo",
+        "listType": "reminder"
+    }
 }
