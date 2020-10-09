@@ -34,6 +34,7 @@ export class Builder {
   async loadContents(files: string[], options: any = {}) {
     let culture = options.culture || "en-us"
     let importResolver = options.importResolver
+    let log = options.log || false
 
     // lu contents that will be returned
     let luContents: Array<any> = []
@@ -67,7 +68,7 @@ export class Builder {
       }
 
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture, importResolver)
+        result = await LuisBuilderVerbose.build(luFiles, log, fileCulture, importResolver)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } catch (err) {

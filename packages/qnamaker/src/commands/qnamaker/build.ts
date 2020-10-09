@@ -117,7 +117,8 @@ export default class QnamakerBuild extends Command {
         // load qna contents from qna files
         // load existing recognizers, multiRecogniers and settings or create default ones
         qnaContents = await builder.loadContents(files, {
-          culture: defaultCulture
+          culture: defaultCulture,
+          log: log
         })
       } else {
         // load qna content from stdin and create default recognizer, multiRecognier and settings

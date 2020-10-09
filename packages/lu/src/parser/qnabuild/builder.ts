@@ -31,6 +31,7 @@ export class Builder {
   async loadContents(files: string[], options: any = {}) {
     let culture = options.culture
     let importResolver = options.importResolver
+    let log = options.log || false
 
     let qnaContents: any[] = []
     
@@ -61,7 +62,7 @@ export class Builder {
       }
 
       try {
-        let result = await qnaBuilderVerbose.build(qnaFiles, true, importResolver)
+        let result = await qnaBuilderVerbose.build(qnaFiles, log, importResolver)
         fileContent = result.parseToQnAContent()
       } catch (err) {
         if (err.source) {
