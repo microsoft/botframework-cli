@@ -318,6 +318,7 @@ export class OrchestratorHelper {
       id: luFile,
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+
     OrchestratorHelper.getLuisIntentsEnitiesUtterances(
       luisObject,
       hierarchicalLabel,
@@ -896,7 +897,7 @@ export class OrchestratorHelper {
       if (ext === '.lu') {
         retPayload.push({
           content: OrchestratorHelper.readFile(inputPath),
-          id: path.basename(inputPath),
+          id: path.basename(inputPath, '.lu'),
         });
       }
     }
