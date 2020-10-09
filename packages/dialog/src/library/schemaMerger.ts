@@ -664,10 +664,10 @@ export class SchemaMerger {
             this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
                 if (!component.isRoot()) {
-                    let exported = ppath.join(ppath.dirname(component.path), 'ExportedAssets')
+                    let exported = ppath.join(ppath.dirname(component.path), 'exported')
                     if (await fs.pathExists(exported)) {
                         let used = new Set<string>()
-                        let imported = ppath.join(this.imports, 'ImportedAssets', component.name)
+                        let imported = ppath.join(this.imports, 'imported', component.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
 
                         // Copy all exported files
