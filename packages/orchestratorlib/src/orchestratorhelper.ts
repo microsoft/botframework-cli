@@ -189,24 +189,6 @@ export class OrchestratorHelper {
     return { orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent };
   }
 
-  public static writeSettingsFile(nlrpath: string, settings: any, out: string) {
-    const content: {
-      'orchestrator': {
-        'modelPath': string;
-        'snapshots': string;
-      };
-    } = {
-      orchestrator: {
-        modelPath: nlrpath,
-        snapshots: settings,
-      },
-    };
-
-    const contentFileName: string = path.join(out, 'orchestrator.settings.json');
-
-    this.writeToFile(contentFileName, JSON.stringify(content, null, 2));
-  }
-
   public static async getEntitiesInLu(luObject: any): Promise<any> {
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);

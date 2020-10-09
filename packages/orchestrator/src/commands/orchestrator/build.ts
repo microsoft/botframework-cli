@@ -25,7 +25,7 @@ export default class OrchestratorBuild extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
     const input: string = flags.in ? path.resolve(flags.in) : '';
-    const output: string = path.resolve(flags.out || __dirname);
+    let output: string = path.resolve(flags.out || process.cwd());
     const isDialog: boolean = flags.dialog;
     let luConfig: any = null;
     let luConfigPath: string = flags.luconfig;
@@ -36,10 +36,17 @@ export default class OrchestratorBuild extends Command {
     }
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
+    const cwd: string = process.cwd();
+    if (!OrchestratorHelper.isDirectory(output)) {
+      output = path.dirname(output);
+    }
 
     try {
-      OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
-      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output, isDialog, luConfig);
+      OrchestratorSettings.init(cwd, flags.model, output, cwd);
+      const retPayload: any = await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, OrchestratorHelper.getLuInputs(input), isDialog, luConfig);
+
+      OrchestratorHelper.writeToFile(path.join(output, 'orchestrator.settings.json'), JSON.stringify(retPayload.settings, null, 2));
+
     } catch (error) {
       throw (new CLIError(error));
     }

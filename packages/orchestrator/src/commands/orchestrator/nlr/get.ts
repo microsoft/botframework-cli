@@ -20,13 +20,14 @@ export default class OrchestratorNlrGet extends Command {
 
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorNlrGet);
-    const output: string = flags.out || __dirname;
+    const cwd: string = process.cwd();
+    const output: string = flags.out || cwd;
     const nlrId: any = flags.versionId;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(__dirname, output, '', __dirname);
+      OrchestratorSettings.init(cwd, output, '', cwd);
       await Orchestrator.nlrGetAsync(
         OrchestratorSettings.ModelPath,
         nlrId,

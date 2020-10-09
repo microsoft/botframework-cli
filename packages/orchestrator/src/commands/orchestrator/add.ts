@@ -31,16 +31,16 @@ export default class OrchestratorAdd extends Command {
 
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorAdd);
-
-    const input: string = path.resolve(flags.in || __dirname);
+    const cwd: string = process.cwd();
+    const input: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;
-    const snapshot: string = path.resolve(flags.snapshot || path.join(__dirname, OrchestratorHelper.SnapshotFileName));
+    const snapshot: string = path.resolve(flags.snapshot || path.join(cwd, OrchestratorHelper.SnapshotFileName));
     const labelPrefix: string = flags.prefix || '';
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
+      OrchestratorSettings.init(cwd, flags.model, output, cwd);
       await Orchestrator.addAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, snapshot, labelPrefix);
     } catch (error) {
       throw (new CLIError(error));

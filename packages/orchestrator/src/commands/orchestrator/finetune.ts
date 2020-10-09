@@ -40,9 +40,10 @@ export default class OrchestratorFinetune extends Command {
   }
 
   async run(): Promise<number> {
+    // const cwd: string = process.cwd();
     // const {args, flags} = this.parse(OrchestratorFinetune);
-    // const input: string  = flags.in || __dirname;
-    // const output: string = flags.out || __dirname;
+    // const input: string  = flags.in || cwd;
+    // const output: string = flags.out || cwd;
     // let nlrPath: string = flags.model;
     // if (nlrPath) {
     //  nlrPath = path.resolve(nlrPath);
@@ -98,11 +99,11 @@ export default class OrchestratorFinetune extends Command {
     }
 
     if (flags.debug) {
-      this.log(`Command -- ${path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll'])} ${cli_args}`);
+      this.log(`Command -- ${path.join(...[cwd, 'netcoreapp3.1', 'OrchestratorCli.dll'])} ${cli_args}`);
     }
 
     try {
-      require('child_process').execSync('dotnet "' + path.join(...[__dirname, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + cli_args, {stdio: [0, 1, 2]});
+      require('child_process').execSync('dotnet "' + path.join(...[cwd, 'netcoreapp3.1', 'OrchestratorCli.dll']) + '" ' + cli_args, {stdio: [0, 1, 2]});
     } catch (error) {
       return 1;
     }

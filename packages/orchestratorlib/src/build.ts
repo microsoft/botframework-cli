@@ -37,13 +37,6 @@ export class OrchestratorBuild {
       }
 
       nlrPath = path.resolve(nlrPath);
-      /*
-      outputPath = path.resolve(outputPath);
-
-      if (!OrchestratorHelper.isDirectory(outputPath)) {
-        outputPath = path.dirname(outputPath);
-      }
-      */
 
       const orchestrator: any = await LabelResolver.loadNlrAsync(nlrPath);
       Utility.debuggingLog('Loaded nlr');
@@ -52,43 +45,52 @@ export class OrchestratorBuild {
       OrchestratorBuild.LuContents = inputs;
       OrchestratorBuild.IsDialog = isDialog;
       const bluPaths: any = {};
+      let buildOutputs: any[];
       if (hasLuConfig) {
-        await OrchestratorBuild.processLuConfig(luConfig, bluPaths);
+        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths);
       } else {
-        await OrchestratorBuild.processInput(inputs, bluPaths);
+        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths);
       }
-/*
-      if (Object.getOwnPropertyNames(bluPaths).length !== 0) {
-        OrchestratorHelper.writeSettingsFile(nlrPath, bluPaths, outputPath);
-      }
-      */
+      const settings: {
+        'orchestrator': {
+          'modelPath': string;
+          'snapshots': string;
+        };
+      } = {
+        orchestrator: {
+          modelPath: nlrPath,
+          snapshots: bluPaths,
+        },
+      };
+      return {outputs: buildOutputs, settings: settings};
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  private static async processLuConfig(luConfig: any, bluPaths: any) {
+  private static async processLuConfig(luConfig: any, bluPaths: any): Promise<any[]> {
+    const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
       const luObject: any = {
         content: OrchestratorHelper.readFile(file),
         id: file,
       };
-      // eslint-disable-next-line no-await-in-loop
-      return await OrchestratorBuild.processInput(luObject, bluPaths);
+      luObjects.push(luObject);
     }
+    return OrchestratorBuild.processInput(luObjects, bluPaths);
   }
 
-  private static async processInput(luObsjects: any[], bluPaths: any) {
+  private static async processInput(luObsjects: any[], bluPaths: any): Promise<any[]> {
     const retPayload: any[] = [];
     for (const luObject of (luObsjects || [])) {
       // eslint-disable-next-line no-await-in-loop
-      const retVal = await OrchestratorBuild.processLuContent(luObject, bluPaths,retPayload);
+      const retVal: any = await OrchestratorBuild.processLuContent(luObject, bluPaths);
       retPayload.push(retVal);
     }
     return retPayload;
   }
 
-  private static async processLuContent(luObject: any, bluPaths: any, retPayload: any[]) {
+  private static async processLuContent(luObject: any, bluPaths: any) {
     const labelResolver: any = LabelResolver.createLabelResolver();
     const baseName: string = luObject.id;
     Utility.debuggingLog('Created label resolver');
@@ -123,6 +125,6 @@ export class OrchestratorBuild {
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
     const recognizer: any = OrchestratorHelper.getDialogFilesContent(OrchestratorBuild.IsDialog, baseName, entities);
     if (recognizer !== undefined) bluPaths[baseName] = snapshot;
-    return { id: baseName, snapshot: snapshot, recognizer: recognizer };
+    return {id: baseName, snapshot: snapshot, recognizer: recognizer};
   }
 }

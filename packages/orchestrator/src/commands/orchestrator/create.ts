@@ -29,15 +29,15 @@ export default class OrchestratorCreate extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
-
-    const input: string = path.resolve(flags.in || __dirname);
+    const cwd: string = process.cwd();
+    const input: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;
     const nlrPath: string = flags.model;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(__dirname, nlrPath, output, __dirname);
+      OrchestratorSettings.init(cwd, nlrPath, output, cwd);
       await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, flags.hierarchical);
       OrchestratorSettings.persist();
     } catch (error) {
