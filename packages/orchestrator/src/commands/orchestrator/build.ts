@@ -44,9 +44,10 @@ export default class OrchestratorBuild extends Command {
     try {
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, OrchestratorHelper.getLuInputs(input), isDialog, luConfig);
-
-      OrchestratorHelper.writeToFile(path.join(output, 'orchestrator.settings.json'), JSON.stringify(retPayload.settings, null, 2));
-
+      OrchestratorHelper.writeBuildOutputFiles(output, retPayload.outputs);
+      const settingsFile: string = path.join(output, 'orchestrator.settings.json');
+      OrchestratorHelper.writeToFile(settingsFile, JSON.stringify(retPayload.settings, null, 2));
+      this.log(`orchestrator.settings.json is written to ${settingsFile}`);
     } catch (error) {
       throw (new CLIError(error));
     }

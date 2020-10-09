@@ -186,7 +186,7 @@ export class OrchestratorHelper {
       },
     };
 
-    return { orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent };
+    return {orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent};
   }
 
   public static async getEntitiesInLu(luObject: any): Promise<any> {
@@ -884,7 +884,7 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
-  public static async getLuInputsEx(inputPath: string, retPayload: any[]) {
+  private static async getLuInputsEx(inputPath: string, retPayload: any[]) {
     if (OrchestratorHelper.isDirectory(inputPath)) {
       const items: string[] = fs.readdirSync(inputPath);
       for (const item of items) {
@@ -906,5 +906,22 @@ export class OrchestratorHelper {
     const retPayload: any[] = [];
     OrchestratorHelper.getLuInputsEx(inputPath, retPayload)
     return retPayload;
+  }
+
+  public static  writeBuildOutputFiles(outputPath: string, buildOutputs: any[]) {
+    for (const buildOutput of (buildOutputs || [])) {
+      const baseName: any = buildOutput.id;
+      const snapshotFile: string = path.join(outputPath, baseName + '.blu');
+      OrchestratorHelper.writeToFile(snapshotFile, buildOutput.snapshot);
+      Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
+
+      const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
+      this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
+      Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);
+
+      const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
+      this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
+      Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
+    }
   }
 }

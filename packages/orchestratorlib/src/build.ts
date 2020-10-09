@@ -117,11 +117,6 @@ export class OrchestratorBuild {
     Utility.debuggingLog(`Processed ${luObject.id}`);
     LabelResolver.addExamples(result, labelResolver);
     const snapshot: any = labelResolver.createSnapshot();
-    /*
-    const snapshotFile: any = path.join(OrchestratorBuild.OutputPath, baseName + '.blu');
-    OrchestratorHelper.writeToFile(snapshotFile, snapshot);
-    Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
-    */
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
     const recognizer: any = OrchestratorHelper.getDialogFilesContent(OrchestratorBuild.IsDialog, baseName, entities);
     if (recognizer !== undefined) bluPaths[baseName] = snapshot;
