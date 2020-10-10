@@ -24,8 +24,9 @@ export default class OrchestratorAdd extends Command {
     prefix: flags.string({char: 'p', description: 'Prefix to be added label in snapshot.'}),
     snapshot: flags.string({char: 's', description: 'Existing orchestrator snapshot to append to.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
-    debug: flags.boolean({char: 'd'}),
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on input file name.'}),
+    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
+    debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator add command help'}),
   }
 
@@ -41,7 +42,9 @@ export default class OrchestratorAdd extends Command {
 
     try {
       OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
-      await Orchestrator.addAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, snapshot, labelPrefix);
+      await Orchestrator.addAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, snapshot,
+        labelPrefix,
+        flags.notToUseCompactEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
     }

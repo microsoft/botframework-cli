@@ -18,6 +18,7 @@ export default class OrchestratorBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     luconfig: flags.string({description: 'Path to luconfig.json.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
+    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
@@ -37,7 +38,10 @@ export default class OrchestratorBuild extends Command {
 
     try {
       OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
-      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output, isDialog, luConfigPath);
+      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output,
+        isDialog,
+        luConfigPath,
+        flags.notToUseCompactEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
     }

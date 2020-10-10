@@ -6,6 +6,8 @@
 import * as path from 'path';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {UtilityLabelResolver} from './utilitylabelresolver';
+import {Utility} from './utility';
 
 export class OrchestratorAdd {
   // eslint-disable-next-line max-params
@@ -14,24 +16,35 @@ export class OrchestratorAdd {
     inputPath: string,
     outputPath: string,
     snapshotPath: string,
-    labelPrefix: string = '') {
+    labelPrefix: string = '',
+    notToUseCompactEmbeddings: boolean = false) {
+    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`inputPath=${inputPath}`);
+    Utility.debuggingLog(`outputPath=${outputPath}`);
+    Utility.debuggingLog(`snapshotPath=${snapshotPath}`);
+    Utility.debuggingLog(`labelPrefix=${labelPrefix}`);
+    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
-
     if (!inputPath || inputPath.length === 0) {
       throw new Error('Please provide input path');
     }
-
     if (!outputPath || outputPath.length === 0) {
       throw new Error('Please provide output path');
     }
-
     if (!snapshotPath || snapshotPath.length === 0) {
       throw new Error('Please provide snapshot path');
     }
 
+    Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
     await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotPath);
+    Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    // ---- NOTE ---- Caller has to ensure all the embeddings are in the same format, otherwise
+    // ---- NOTE ---- all the embeddings will be converted to compact for cosine similarity computation
+    // ---- NOTE ---- and the following statement will not be effective for ensuing
+    // ---- NOTE ---- floating-point embeddings.
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
 
     const ext: string = OrchestratorHelper.isDirectory(inputPath) ? '' : path.extname(inputPath);
     if (ext === '.blu') {
@@ -40,6 +53,11 @@ export class OrchestratorAdd {
       LabelResolver.addExamples((await OrchestratorHelper.getUtteranceLabelsMap(inputPath)));
     }
 
-    OrchestratorHelper.writeToFile(OrchestratorHelper.getOutputPath(outputPath, inputPath), LabelResolver.createSnapshot());
+    const resolvedFilePath: string = OrchestratorHelper.writeToFile(OrchestratorHelper.getOutputPath(outputPath, inputPath), LabelResolver.createSnapshot());
+    if (Utility.isEmptyString(resolvedFilePath)) {
+      Utility.writeToConsole(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
+    } else {
+      Utility.writeToConsole(`Snapshot written to ${resolvedFilePath}`);
+    }
   }
 }

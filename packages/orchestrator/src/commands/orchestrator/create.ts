@@ -22,6 +22,7 @@ export default class OrchestratorCreate extends Command {
     out: flags.string({char: 'o', description: 'Path where generated orchestrator snapshot file will be placed. Default to current working directory.'}),
     model: flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
+    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator create command help'}),
@@ -38,7 +39,9 @@ export default class OrchestratorCreate extends Command {
 
     try {
       OrchestratorSettings.init(__dirname, nlrPath, output, __dirname);
-      await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, flags.hierarchical);
+      await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath,
+        flags.hierarchical,
+        flags.notToUseCompactEmbeddings);
       OrchestratorSettings.persist();
     } catch (error) {
       throw (new CLIError(error));

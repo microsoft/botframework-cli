@@ -3721,18 +3721,19 @@ export class Utility {
   public static dumpFile(
     filename: string,
     content: any,
-    encoding: string = 'utf8'): string {
+    options: any = {encoding: 'utf8', flag: 'w'}): string {
     // Utility.debuggingLog(
     //     `Utility.dumpFile(): filename=${filename}`);
+    const resolvedFilename: string = path.resolve(filename);
     try {
-      fs.mkdirSync(path.dirname(filename), {recursive: true});
-      fs.writeFileSync(filename, content, encoding);
+      fs.mkdirSync(path.dirname(resolvedFilename), {recursive: true});
+      fs.writeFileSync(resolvedFilename, content, options);
     } catch (error) {
       // ---- NOTE ---- An error occurred
-      Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);
+      Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, resolvedFilename=${resolvedFilename}, exception=${error}`);
       return '';
     }
-    return filename;
+    return resolvedFilename;
   }
 
   public static exists(pathToFileSystemEntry: string): boolean {

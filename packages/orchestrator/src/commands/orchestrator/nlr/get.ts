@@ -12,7 +12,7 @@ export default class OrchestratorNlrGet extends Command {
 
   static flags: flags.Input<any> = {
     out: flags.string({char: 'o', description: 'Path to Orchestrator model.'}),
-    versionId: flags.string({description: 'Model version to download.'}),
+    versionId: flags.string({description: 'Key to the model entry for download -- reference nlr:list output for options.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator nlr:get command help'}),
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),

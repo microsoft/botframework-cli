@@ -15,18 +15,33 @@ import {OrchestratorAssess} from './assess';
 import {Utility} from '.';
 
 export class Orchestrator {
-  public static async createAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false): Promise<void> {
-    await OrchestratorCreate.runAsync(nlrPath, inputPathConfiguration, outputPath, hierarchical);
+  // eslint-disable-next-line max-params
+  public static async createAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string,
+    hierarchical: boolean = false,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    await OrchestratorCreate.runAsync(nlrPath, inputPathConfiguration, outputPath,
+      hierarchical,
+      notToUseCompactEmbeddings);
   }
 
   // eslint-disable-next-line max-params
-  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, snapshotPath: string, labelPrefix: string = ''): Promise<void> {
-    await OrchestratorAdd.runAsync(nlrPath, inputPath, outputPath, snapshotPath, labelPrefix);
+  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, snapshotPath: string,
+    labelPrefix: string = '',
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    await OrchestratorAdd.runAsync(nlrPath, inputPath, outputPath, snapshotPath,
+      labelPrefix,
+      notToUseCompactEmbeddings);
   }
 
   // eslint-disable-next-line max-params
-  public static async buildAsync(nlrPath: string, inputPath: string, outputPath: string, isDialog: boolean, luConfigPath: string = ''): Promise<void> {
-    await OrchestratorBuild.runAsync(nlrPath, inputPath, outputPath, isDialog, luConfigPath);
+  public static async buildAsync(nlrPath: string, inputPath: string, outputPath: string,
+    isDialog: boolean = false,
+    luConfigPath: string = '',
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    await OrchestratorBuild.runAsync(nlrPath, inputPath, outputPath,
+      isDialog,
+      luConfigPath,
+      notToUseCompactEmbeddings);
   }
 
   // eslint-disable-next-line max-params
@@ -35,13 +50,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
     await OrchestratorEvaluate.runAsync(
       inputPath, outputPath, nlrPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      notToUseCompactEmbeddings);
   }
 
   public static async fineTuneAsync(nlrPath: string, inputPath: string, outputPath: string): Promise<void> {
@@ -66,13 +83,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
       nlrPath, inputPath, outputPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      notToUseCompactEmbeddings);
   }
 
   // eslint-disable-next-line max-params
@@ -81,13 +100,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
     await OrchestratorTest.runAsync(
       nlrPath, inputPathConfiguration, testPathConfiguration, outputPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      notToUseCompactEmbeddings);
   }
 
   // eslint-disable-next-line max-params

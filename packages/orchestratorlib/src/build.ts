@@ -9,6 +9,7 @@ import * as fs from 'fs-extra';
 import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorBuild {
@@ -21,18 +22,25 @@ export class OrchestratorBuild {
   public static OutputPath: string;
 
   // eslint-disable-next-line max-params
-  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string, isDialog: boolean = false, luConfigFile: string = '') {
+  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string,
+    isDialog: boolean = false,
+    luConfigFile: string = '',
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`inputPath=${inputPath}`);
+    Utility.debuggingLog(`outputPath=${outputPath}`);
+    Utility.debuggingLog(`isDialog=${isDialog}`);
+    Utility.debuggingLog(`luConfigFile=${luConfigFile}`);
+    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
     try {
       if (!nlrPath || nlrPath.length === 0) {
         throw new Error('Please provide path to Orchestrator model');
       }
-
       if (!inputPath || inputPath.length === 0) {
         if (!luConfigFile || luConfigFile.length === 0) {
           throw new Error('Please set either --in or --luconfig');
         }
       }
-
       if (!outputPath || outputPath.length === 0) {
         throw new Error('Please provide output path');
       }
@@ -57,7 +65,7 @@ export class OrchestratorBuild {
       } else if (OrchestratorHelper.isDirectory(inputPath)) {
         await OrchestratorBuild.iterateInputFolder(inputPath, isDialog, bluPaths);
       } else {
-        await OrchestratorBuild.processLuFile(inputPath, isDialog, bluPaths);
+        await OrchestratorBuild.processLuFile(inputPath, isDialog, bluPaths, notToUseCompactEmbeddings);
       }
       if (Object.getOwnPropertyNames(bluPaths).length !== 0) {
         OrchestratorHelper.writeSettingsFile(nlrPath, bluPaths, OrchestratorBuild.OutputPath);
@@ -67,7 +75,7 @@ export class OrchestratorBuild {
     }
   }
 
-  private static async processConfigFile(configFile: string, isDialog: boolean, bluPaths: any) {
+  private static async processConfigFile(configFile: string, isDialog: boolean, bluPaths: any): Promise<void> {
     const configContent: any = JSON.parse(OrchestratorHelper.readFile(configFile));
     for (const file of (configContent.models || [])) {
       // eslint-disable-next-line no-await-in-loop
@@ -75,8 +83,12 @@ export class OrchestratorBuild {
     }
   }
 
-  private static async processLuFile(luFile: string, isDialog: boolean, bluPaths: any) {
+  private static async processLuFile(luFile: string, isDialog: boolean, bluPaths: any,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
     const labelResolver: any = LabelResolver.createLabelResolver();
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
     const baseName: string = path.basename(luFile, '.lu');
     Utility.debuggingLog('Created label resolver');
     const result: {
@@ -88,19 +100,24 @@ export class OrchestratorBuild {
     LabelResolver.addExamples(result, labelResolver);
     const snapshot: any = LabelResolver.createSnapshot();
     const snapshotFile: any = path.join(OrchestratorBuild.OutputPath, baseName + '.blu');
-    OrchestratorHelper.writeToFile(snapshotFile, snapshot);
+    const resolvedFilePath: string = OrchestratorHelper.writeToFile(snapshotFile, snapshot);
+    if (Utility.isEmptyString(resolvedFilePath)) {
+      Utility.writeToConsole(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
+      return;
+    }
     Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luFile);
     const settingsKeyForBlu: string|undefined = OrchestratorHelper.writeDialogFiles(OrchestratorBuild.OutputPath, isDialog, baseName, entities);
-    if (settingsKeyForBlu !== undefined) bluPaths[baseName] = snapshotFile;
+    if (settingsKeyForBlu !== undefined) {
+      bluPaths[baseName] = snapshotFile;
+    }
   }
 
-  private static async iterateInputFolder(inputPath: string, isDialog: boolean, bluPaths: any) {
+  private static async iterateInputFolder(inputPath: string, isDialog: boolean, bluPaths: any): Promise<void> {
     const items: string[] = fs.readdirSync(inputPath);
     for (const item of items) {
       const currentItemPath: string = path.join(inputPath, item);
       const isDirectory: boolean = fs.lstatSync(currentItemPath).isDirectory();
-
       if (isDirectory) {
         // eslint-disable-next-line no-await-in-loop
         await OrchestratorBuild.iterateInputFolder(currentItemPath, isDialog, bluPaths);
