@@ -88,36 +88,28 @@ function mergeObjects(obj1: any, obj2: any): any {
 }
 
 // Build a tree of component (project or package) references in order to compute a topological sort.
-class Component {
-    // Name of component
-    public name: string
-
-    // Version of component
-    public version: string
-
-    // Path to component
-    public path: string
+class ComponentNode {
+    // Component metadata information
+    public metadata: Component
 
     // Explicit patterns
     public explictPatterns: string[] = []
 
     // Parent components
-    private readonly parents: Component[] = []
+    private readonly parents: ComponentNode[] = []
 
     // Child components
-    private readonly children: Component[] = []
+    private readonly children: ComponentNode[] = []
 
     // Track if processed
     private processed = false
 
-    constructor(path?: string, name?: string, version?: string) {
-        this.path = path || ''
-        this.name = name || ''
-        this.version = version || ''
+    constructor(component?: Component) {
+        this.metadata = component || {path: '', name: '', version: ''} as Component
     }
 
     // Add a child component
-    public addChild(component: Component): Component {
+    public addChild(component: ComponentNode): ComponentNode {
         component.parents.push(this)
         this.children.push(component)
         return component
@@ -125,11 +117,11 @@ class Component {
 
     // Return the topological sort of DAG rooted in component.
     // Sort has all parents in bread-first order before any child.
-    public sort(): Component[] {
-        let sort: Component[] = []
-        let remaining: Component[] = [this]
+    public sort(): ComponentNode[] {
+        let sort: ComponentNode[] = []
+        let remaining: ComponentNode[] = [this]
         while (remaining.length > 0) {
-            let newRemaining: Component[] = []
+            let newRemaining: ComponentNode[] = []
             for (let component of remaining) {
                 if (component.allParentsProcessed()) {
                     if (!component.processed) {
@@ -150,16 +142,16 @@ class Component {
 
     public patterns(extensions: string[]): string[] {
         let patterns = this.explictPatterns
-        if (patterns.length === 0 && this.path) {
+        if (patterns.length === 0 && this.metadata.path) {
             patterns = []
-            let root = ppath.dirname(this.path)
+            let root = ppath.dirname(this.metadata.path)
             for (let extension of extensions) {
                 patterns.push(ppath.join(root, `**/*${extension}`))
 
             }
-            if (this.path.endsWith('package.json')) {
+            if (this.metadata.path.endsWith('package.json')) {
                 patterns.push(`!${ppath.join(root, 'node_modules/**')}`)
-            } else if (this.path.endsWith('.csproj')) {
+            } else if (this.metadata.path.endsWith('.csproj')) {
                 patterns.push(`!${ppath.join(root, 'bin/**')}`)
             }
         }
@@ -172,7 +164,7 @@ class Component {
     }
 
     // Check to see if this component is a parent of another component
-    public isParent(node: Component): boolean {
+    public isParent(node: ComponentNode): boolean {
         let found = false
         for (let child of this.children) {
             if (child === node) {
@@ -190,7 +182,7 @@ class Component {
 
     // Test to see if component is a C# project
     public isCSProject(): boolean {
-        return this.path.endsWith('.csproj')
+        return this.metadata.path.endsWith('.csproj')
     }
 
     // Test to see if all parents are processed which means you can be added to sort.
@@ -206,7 +198,7 @@ class Component {
 
 interface PathComponent {
     path: string
-    component: Component
+    node: ComponentNode
 }
 
 /**
@@ -223,6 +215,100 @@ export interface Import {
      * Output path for writing file.
      */
     path: string
+}
+
+/**
+ * Normalized information extracted from language native package components.
+ * This involves some mapping and normalization as described for each property.
+ * For NPM some nuget keywords can be used as a package.json extension and are marked below.
+ * 
+ * Nuget ignored attributes:
+ *   title (not used by nuget UI)
+ *   owners (doesn't seem relevant)
+ *   licenseUrl (deprecated)
+ *   iconUrl (deprecated)
+ *   summary (deprecated)
+ *   requireLicenseAcceptance (we always require)
+ * 
+ * NPM ignored attributes:
+ *   contributors (not relevant)
+ *   bugs (should be off project page)
+ */
+export interface Component {
+    /** Package name.
+     * Nuget: id
+     * NPM: name
+     */
+    name: string
+
+    /** Version.
+     * Nuget: version
+     * NPM: version
+     */
+    version: string
+
+    /** Path to component definition. */
+    path: string
+
+    /** Description of component.
+     * Nuget: description
+     * NPM: description
+     */
+    description: string
+
+    /** Release notes for component.
+     * Nuget: releaseNotes
+     * NPM: releaseNotes extension
+     */
+    releaseNotes: string
+
+    /** Authors of component.
+     * Nuget: break authors on comma
+     * NPM: author string and if structured {name} {email} {url}
+     */
+    authors: string[]
+
+    /** Keywords describing component.
+     * Nuget: tags broken on space
+     * NPM: keywords
+     */
+    keywords: string[]
+
+    /** Icon for component. 
+     * Nuget: relative path to icon in package
+     * NPM: icon extension
+     */
+    icon: string
+
+    /** Repository containing component source.
+     * Nuget: repository.url (dropping type, branch, commit)
+     * NPM: repository string or respository.url (dropping type)
+     */
+    repository: string
+
+    /** License information for component.
+     * Nuget: license
+     * NPM: license
+     */
+    license: string
+
+    /** Locale id for component.
+     * Nuget: language
+     * NPM: language extension
+     */
+    language: string
+
+    /** Copyright information.
+     * Nuget: copyright
+     * NPM: copyright extension
+     */
+    copyright: string
+
+    /** True if includes .schema/.uischema file. */
+    includesSchema: boolean
+
+    /** True if includes exports. */
+    includesExports: boolean
 }
 
 /**
@@ -248,6 +334,9 @@ export interface Imports {
      * Files where a component has a new definition and the old imported definition has been changed.
      */
     conflicts: Import[]
+
+    /** Normalized description of top-level components installed in project. */
+    components: Component[]
 }
 
 /**
@@ -272,9 +361,9 @@ export class SchemaMerger {
     private readonly packages = new Set()
 
     // Component tree
-    private readonly root = new Component()
-    private readonly parents: Component[] = []
-    private components: Component[] = []
+    private readonly root = new ComponentNode()
+    private readonly parents: ComponentNode[] = []
+    private components: ComponentNode[] = []
 
     // Files
     private readonly files: Map<string, Map<string, PathComponent[]>> = new Map<string, Map<string, PathComponent[]>>()
@@ -367,22 +456,22 @@ export class SchemaMerger {
     }
 
     // Push a child on the current parent and make it the new parent
-    private pushParent(path: string, name?: string, version?: string): Component {
-        let component = new Component(path, name, version)
-        let child = this.currentParent().addChild(component)
+    private pushParent(component: Component): ComponentNode {
+        let node = new ComponentNode(component)
+        let child = this.currentParent().addChild(node)
         this.parents.push(child)
-        this.currentFile = path
-        return component
+        this.currentFile = component.path
+        return node
     }
 
     // Pop the current parent
     private popParent() {
         this.parents.pop()
-        this.currentFile = this.currentParent().path
+        this.currentFile = this.currentParent().metadata.path
     }
 
     // Return the current parent
-    private currentParent(): Component {
+    private currentParent(): ComponentNode {
         return this.parents[this.parents.length - 1]
     }
 
@@ -465,11 +554,11 @@ export class SchemaMerger {
                         this.validateSchema(component)
                     }
                     delete component.$schema
-                    if (componentPath.component.name && componentPath.component.version) {
+                    if (componentPath.node.metadata.name && componentPath.node.metadata.version) {
                         // Only include versioned components
                         component.$package = {
-                            name: componentPath.component.name,
-                            version: componentPath.component.version
+                            name: componentPath.node.metadata.name,
+                            version: componentPath.node.metadata.version
                         }
                     }
                     let filename = ppath.basename(path)
@@ -659,15 +748,15 @@ export class SchemaMerger {
 
     // Copy all exported assets into imported assets
     private async copyAssets(): Promise<Imports | undefined> {
-        let imports: Imports | undefined = this.failed ? undefined : {added: [], deleted: [], unchanged: [], conflicts: []}
+        let imports: Imports | undefined = this.failed ? undefined : {added: [], deleted: [], unchanged: [], conflicts: [], components: []}
         if (imports && !this.schemaPath && this.components.length > 0) {
             this.log(`Copying exported assets to ${this.imports}`)
             for (let component of this.components) {
                 if (!component.isRoot()) {
-                    let exported = ppath.join(ppath.dirname(component.path), 'exported')
+                    let exported = ppath.join(ppath.dirname(component.metadata.path), 'exported')
                     if (await fs.pathExists(exported)) {
                         let used = new Set<string>()
-                        let imported = ppath.join(this.imports, 'imported', component.name)
+                        let imported = ppath.join(this.imports, 'imported', component.metadata.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
 
                         // Copy all exported files
@@ -825,6 +914,26 @@ export class SchemaMerger {
         return '  '.repeat(this.parents.length)
     }
 
+    private nuspecComponent(path: string, nuspec: any): Component {
+        let component: Component = {
+            name: nuspec.id[0],
+            version: nuspec.version[0],
+            path: path,
+            description: nuspec.description[0],
+            releaseNotes: nuspec.releaseNotes[0],
+            authors: nuspec.authors[0].split(',').map(s => s.trim()),
+            keywords: nuspec.tags[0].split(' ').map(s => s.trim()),
+            icon: nuspec.icon[0],
+            repository: nuspec.repository[0].url,
+            license: nuspec.license[0],
+            language: nuspec.language[0],
+            copyright: nuspec.copyright[0],
+            includesSchema: false,
+            includesExports: false
+        }
+        return component
+    }
+
     // Expand a .nuspec by walking its dependencies
     private async expandNuspec(path: string): Promise<void> {
         path = normalize(path)
@@ -836,7 +945,7 @@ export class SchemaMerger {
                     this.vlog(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
                     let nuspec = await this.xmlToJSON(path)
                     let md = nuspec?.package?.metadata[0]
-                    this.pushParent(path, md.id[0], md.version[0])
+                    this.pushParent(this.nuspecComponent(path, md))
                     let dependencies: any[] = []
                     walkJSON(nuspec, val => {
                         if (val.dependencies) {
@@ -912,7 +1021,7 @@ export class SchemaMerger {
             } catch (e) {
                 this.parsingWarning(e.message)
             } finally {
-                this.currentFile = this.currentParent().path
+                this.currentFile = this.currentParent().metadata.path
             }
         }
     }
@@ -925,7 +1034,7 @@ export class SchemaMerger {
             try {
                 this.currentFile = this.prettyPath(path)
                 this.vlog(`${this.indent()}Following ${this.currentFile}`)
-                this.pushParent(path)
+                this.pushParent({path} as Component)
                 let json = await this.xmlToJSON(path)
 
                 // Walk projects
@@ -985,6 +1094,43 @@ export class SchemaMerger {
         }
     }
 
+    private packageJsonComponent(path: string, pkg: any): Component {
+        let component: Component = {
+            name: pkg.name,
+            version: pkg.version,
+            path: path,
+            description: pkg.description || '',
+            releaseNotes: pkg.releaseNotes || '',
+            authors: [],
+            keywords: pkg.keywords || [],
+            icon: pkg.icon || '',
+            repository: '',
+            license: pkg.license || '',
+            language: pkg.language || '',
+            copyright: pkg.copyright || '',
+            includesSchema: false,
+            includesExports: false
+        }
+
+        if (pkg.author) {
+            let author = pkg.author
+            if (typeof author === 'object') {
+                author = `${author.name} ${author.email} ${author.url}`
+            }
+            component.authors.push(author)
+        }
+
+        if (pkg.repository) {
+            let repo = pkg.repository
+            if (typeof repo === 'object') {
+                repo = repo.url
+            }
+            component.repository = repo
+        }
+
+        return component
+    }
+
     private async expandPackageJson(path: string): Promise<void> {
         path = normalize(path)
         if (!this.packages.has(path)) {
@@ -992,8 +1138,7 @@ export class SchemaMerger {
                 this.packages.add(path)
                 this.vlog(`${this.indent()}Following ${this.prettyPath(path)}`)
                 let pkg = await fs.readJSON(path)
-                let component = this.pushParent(path, pkg.name, pkg.version)
-                component.name = pkg.name || component.name
+                this.pushParent(this.packageJsonComponent(path, pkg))
                 if (pkg.dependencies) {
                     for (let dependent of Object.keys(pkg.dependencies)) {
                         let rootDir = ppath.dirname(path)
@@ -1041,12 +1186,12 @@ export class SchemaMerger {
         if (!this.output) {
             // Figure out base app name from first project
             for (let component of this.components) {
-                if (component.path.endsWith('.csproj')) {
-                    this.output = ppath.basename(component.path, '.csproj')
-                } else if (component.path.endsWith('.nuspec')) {
-                    this.output = ppath.basename(component.path, '.nuspec')
-                } else if (component.path.endsWith('package.json')) {
-                    this.output = ppath.basename(ppath.dirname(component.path))
+                if (component.metadata.path.endsWith('.csproj')) {
+                    this.output = ppath.basename(component.metadata.path, '.csproj')
+                } else if (component.metadata.path.endsWith('.nuspec')) {
+                    this.output = ppath.basename(component.metadata.path, '.nuspec')
+                } else if (component.metadata.path.endsWith('package.json')) {
+                    this.output = ppath.basename(ppath.dirname(component.metadata.path))
                 }
                 if (this.output) {
                     break
@@ -1073,7 +1218,7 @@ export class SchemaMerger {
                     record = []
                     map.set(name, record)
                 }
-                record.push({path: ppath.resolve(path), component})
+                record.push({path: ppath.resolve(path), node: component})
             }
         }
     }
@@ -1089,7 +1234,7 @@ export class SchemaMerger {
                 let conflicts: PathComponent[] = []
                 for (let alt of records) {
                     if (alt !== winner) {
-                        if (winner.component === alt.component) {
+                        if (winner.node === alt.node) {
                             same.push(alt)
                         } else if (ext === '.schema') {
                             // Check for same content which can happen when project and nuget from project are 
@@ -1105,7 +1250,7 @@ export class SchemaMerger {
 
                 if (same.length > 0) {
                     this.failed = true
-                    this.error(`Error multiple definitions of ${file} in ${winner.component.name}`)
+                    this.error(`Error multiple definitions of ${file} in ${winner.node.metadata.name}`)
                     this.error(`  ${winner.path}`)
                     for (let alt of same) {
                         this.error(`  ${alt.path}`)
@@ -1115,9 +1260,9 @@ export class SchemaMerger {
                 if (conflicts.length > 0) {
                     this.failed = true
                     this.error(`Error conflicting definitions of ${file}`)
-                    this.error(`  ${winner.component.name}: ${winner.path}`)
+                    this.error(`  ${winner.node.metadata.name}: ${winner.path}`)
                     for (let alt of conflicts) {
-                        this.error(`  ${alt.component.name}: ${alt.path}`)
+                        this.error(`  ${alt.node.metadata.name}: ${alt.path}`)
                     }
                 }
             }
