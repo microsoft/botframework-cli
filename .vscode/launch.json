@@ -9,15 +9,20 @@
             "request": "launch",
             "name": "bf CLI",
             "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/cli/bin/run",
+            "program": "${workspaceFolder}/packages/orchestrator/bin/run",
             "outputCapture": "std",
             "outFiles": [
                 "${workspaceFolder}/packages/luis/lib/**"
             ],
             "args": [
-                "luis:build",
-                "--luConfig",
-                "${env:TEMP}/sandwich.out/luconfig.json"
+                "orchestrator:build",
+                "--dialog",
+                "--in",
+                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Dialogs",
+                "--out",
+                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Generated",
+                "--model",
+                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Model",
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}"

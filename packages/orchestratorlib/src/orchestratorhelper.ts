@@ -239,7 +239,7 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap);
     } else if (ext === '.json') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      if (OrchestratorHelper.getLuisIntentsEnitiesUtterances(
+      if (OrchestratorHelper.getIntentsEntitiesUtterances(
         fs.readJsonSync(filePath),
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utteranceLabelsMap,
@@ -319,7 +319,7 @@ export class OrchestratorHelper {
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
 
-    OrchestratorHelper.getLuisIntentsEnitiesUtterances(
+    OrchestratorHelper.getIntentsEntitiesUtterances(
       luisObject,
       hierarchicalLabel,
       utteranceLabelsMap,
@@ -541,7 +541,7 @@ export class OrchestratorHelper {
   }
 
   // eslint-disable-next-line max-params
-  static getLuisIntentsEnitiesUtterances(
+  static getIntentsEntitiesUtterances(
     luisObject: any,
     hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
@@ -573,7 +573,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEnitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
       throw error;
     }
     return false;

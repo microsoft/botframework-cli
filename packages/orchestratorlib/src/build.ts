@@ -105,7 +105,7 @@ export class OrchestratorBuild {
         utteranceEntityLabelsMap: new Map<string, Label[]>(),
         utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
 
-    OrchestratorHelper.parseLuContent(
+    await OrchestratorHelper.parseLuContent(
       luObject.id,
       luObject.content,
       '',
