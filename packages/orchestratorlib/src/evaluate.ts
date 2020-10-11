@@ -34,7 +34,8 @@ export class OrchestratorEvaluate {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    notToUseCompactEmbeddings: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPath)) {
@@ -59,6 +60,7 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
+    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPath;
@@ -72,8 +74,9 @@ export class OrchestratorEvaluate {
     const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
     // ---- NOTE ---- create a labelResolver object with a snapshot
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
+    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
     // ---- NOTE ---- retrieve labels
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), JSON.stringify(labels)=${JSON.stringify(labels)}`);
@@ -93,7 +96,6 @@ export class OrchestratorEvaluate {
     Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), examples.length=${examples.length}`);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      const examples: any = labelResolver.getExamples();
       const example: any = examples[0];
       const example_text: string = example.text;
       const labels: any = example.labels;

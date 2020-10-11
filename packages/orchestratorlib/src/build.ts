@@ -7,6 +7,7 @@ import * as path from 'path';
 import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorBuild {
@@ -21,7 +22,13 @@ export class OrchestratorBuild {
     nlrPath: string,
     inputs: any[],
     isDialog: boolean = false,
-    luConfig: any = null) {
+    luConfig: any = null,
+    notToUseCompactEmbeddings: boolean = false): Promise<any> {
+    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`inputPath=${JSON.stringify(inputs, null, 2)}`);
+    Utility.debuggingLog(`isDialog=${isDialog}`);
+    Utility.debuggingLog(`luConfigFile=${JSON.stringify(luConfig, null, 2)}`);
+    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
     try {
       if (!nlrPath || nlrPath.length === 0) {
         throw new Error('Please provide path to Orchestrator model');
@@ -47,10 +54,11 @@ export class OrchestratorBuild {
       const bluPaths: any = {};
       let buildOutputs: any[];
       if (hasLuConfig) {
-        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths);
+        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths, notToUseCompactEmbeddings);
       } else {
-        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths);
+        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths, notToUseCompactEmbeddings);
       }
+   
       const settings: {
         'orchestrator': {
           'modelPath': string;
@@ -68,7 +76,7 @@ export class OrchestratorBuild {
     }
   }
 
-  private static async processLuConfig(luConfig: any, bluPaths: any): Promise<any[]> {
+  private static async processLuConfig(luConfig: any, bluPaths: any, notToUseCompactEmbeddings: boolean = false): Promise<any[]> {
     const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
       const luObject: any = {
@@ -80,20 +88,24 @@ export class OrchestratorBuild {
     return OrchestratorBuild.processInput(luObjects, bluPaths);
   }
 
-  private static async processInput(luObsjects: any[], bluPaths: any): Promise<any[]> {
+  private static async processInput(luObsjects: any[], bluPaths: any, fullEmbedding: boolean = false): Promise<any[]> {
     const retPayload: any[] = [];
     for (const luObject of (luObsjects || [])) {
       // eslint-disable-next-line no-await-in-loop
-      const retVal: any = await OrchestratorBuild.processLuContent(luObject, bluPaths);
+      const retVal: any = await OrchestratorBuild.processLuContent(luObject, bluPaths, fullEmbedding);
       retPayload.push(retVal);
     }
     return retPayload;
   }
 
-  private static async processLuContent(luObject: any, bluPaths: any) {
+  private static async processLuContent(luObject: any, bluPaths: any, fullEmbedding: bool = false) {
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
     const labelResolver: any = LabelResolver.createLabelResolver();
-    const baseName: string = luObject.id;
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
     Utility.debuggingLog('Created label resolver');
+
+    const baseName: string = luObject.id;
 
     const result: {
       'utteranceLabelsMap': Map<string, Set<string>>;

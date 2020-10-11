@@ -15,18 +15,38 @@ import {OrchestratorAssess} from './assess';
 import {Utility} from '.';
 
 export class Orchestrator {
-  public static async createAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false): Promise<void> {
-    await OrchestratorCreate.runAsync(nlrPath, inputPathConfiguration, outputPath, hierarchical);
+  // eslint-disable-next-line max-params
+  public static async createAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string,
+    hierarchical: boolean = false,
+    fullEmbedding: boolean = false): Promise<void> {
+    await OrchestratorCreate.runAsync(
+      nlrPath,
+      inputPathConfiguration,
+      outputPath,
+      hierarchical,
+      fullEmbedding);
   }
 
   // eslint-disable-next-line max-params
-  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, snapshotPath: string, labelPrefix: string = ''): Promise<void> {
-    await OrchestratorAdd.runAsync(nlrPath, inputPath, outputPath, snapshotPath, labelPrefix);
+  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, snapshotPath: string,
+    labelPrefix: string = '',
+    fullEmbedding: boolean = false): Promise<void> {
+    await OrchestratorAdd.runAsync(
+      nlrPath,
+      inputPath,
+      outputPath,
+      snapshotPath,
+      labelPrefix,
+      fullEmbedding);
   }
 
   // eslint-disable-next-line max-params
-  public static async buildAsync(nlrPath: string, inputs: any[], isDialog: boolean, luConfig: any = null): Promise<void> {
-    await OrchestratorBuild.runAsync(nlrPath, inputs, isDialog, luConfig);
+  public static async buildAsync(
+    nlrPath: string, inputs: any[], 
+    isDialog: boolean,
+    luConfig: any = null,
+    fullEmbedding: boolean = false): Promise<void> {
+    await OrchestratorBuild.runAsync(nlrPath, inputs, isDialog, luConfig, fullEmbedding);
   }
 
   // eslint-disable-next-line max-params
@@ -35,13 +55,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorEvaluate.runAsync(
       inputPath, outputPath, nlrPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      fullEmbedding);
   }
 
   public static async fineTuneAsync(nlrPath: string, inputPath: string, outputPath: string): Promise<void> {
@@ -51,8 +73,8 @@ export class Orchestrator {
   public static async nlrGetAsync(
     nlrPath: string,
     nlrId: string,
-    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
-    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
     await OrchestratorNlr.getAsync(nlrPath, nlrId, onProgress, onFinish);
   }
 
@@ -66,13 +88,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
       nlrPath, inputPath, outputPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      fullEmbedding);
   }
 
   // eslint-disable-next-line max-params
@@ -81,13 +105,15 @@ export class Orchestrator {
     ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
-    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter): Promise<void> {
+    unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
+    fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorTest.runAsync(
       nlrPath, inputPathConfiguration, testPathConfiguration, outputPath,
       ambiguousClosenessParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
-      unknownLabelPredictionThresholdParameter);
+      unknownLabelPredictionThresholdParameter,
+      fullEmbedding);
   }
 
   // eslint-disable-next-line max-params

@@ -31,8 +31,11 @@ export class UnitTestHelper {
   public static async downloadModelFileForTest(
     nlrId: string,
     nlrPath: string,
-    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
-    onTest: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onTest: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    Utility.debuggingLog('Entering UnitTestHelper.downloadModelFileForTest()');
+    Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), nlrId=${nlrId}`);
+    Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), nlrPath=${nlrPath}`);
     if (!Utility.exists(nlrPath)) {
       const nlrVersions: string = OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json'));
       const nlrModels: any = JSON.parse(nlrVersions);
@@ -47,8 +50,9 @@ export class UnitTestHelper {
         modelUrl,
         onProgress,
         onTest);
+      Utility.debuggingLog('Finished calling OrchestratorNlr.getModelAsync()');
     }
-    Utility.debuggingLog('Finished calling downloadModelFile()');
+    Utility.debuggingLog('Leaving UnitTestHelper.downloadModelFile()');
   }
 }
 

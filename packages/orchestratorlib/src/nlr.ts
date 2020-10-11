@@ -13,29 +13,26 @@ export class OrchestratorNlr {
   public static async getAsync(
     nlrPath: string,
     nlrId: string,
-    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
-    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
     try {
       if (nlrPath) {
         nlrPath = path.resolve(nlrPath);
       }
-
       if (nlrPath.length === 0) {
-        throw new Error('Please provide path to Orchestrator model');
+        throw new Error('ERROR: please provide path to Orchestrator model');
       }
-
-      Utility.debuggingLog(`Version id: ${nlrId}`);
-      Utility.debuggingLog(`Nlr path: ${nlrPath}`);
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrId=${nlrId}`);
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrPath=${nlrPath}`);
 
       const versions: any = await OrchestratorNlr.getNlrVersionsAsync();
-      await onProgress('Downloading model...');
+      onProgress('Downloading model...');
       if (!versions) {
-        throw new Error('Failed getting nlr_versions.json');
+        throw new Error('ERROR: failed getting nlr_versions.json');
       }
-
       const modelInfo: any = versions.models[nlrId];
       if (!modelInfo) {
-        throw new Error(`Model info for model ${nlrId} not found`);
+        throw new Error(`ERROR: Model info for model ${nlrId} not found`);
       }
 
       const modelUrl: string = modelInfo.modelUri;
@@ -48,40 +45,40 @@ export class OrchestratorNlr {
   public static async getModelAsync(
     nlrPath: string,
     modelUrl: string,
-    onProgress: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync,
-    onFinish: (message: string) => Promise<void> = OrchestratorNlr.defaultHandlerAsync): Promise<void> {
+    onProgress: any = OrchestratorNlr.defaultHandler,
+    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
     try {
-      const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
-      const res: any = await fetch(modelUrl);
       fs.mkdirSync(nlrPath, {recursive: true});
+      const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const modelZipPath: string = path.join(nlrPath, fileName);
-      const fileStream: any = fs.createWriteStream(modelZipPath);
-      res.body.pipe(fileStream);
-      res.body.on('error', () => {
-        throw new Error(`Failed downloading model file: ${modelUrl}`);
-      });
-      fileStream.on('finish', async () => {
+      const response: any = await fetch(modelUrl);
+      Utility.debuggingLog('OrchestratorNlr.getModelAsync(): calling  await response.arrayBuffer()');
+      const arrayBuffer: ArrayBuffer = await response.arrayBuffer();
+      const uint8Array: Uint8Array = new Uint8Array(arrayBuffer);
+      fs.writeFileSync(modelZipPath, uint8Array);
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished calling  await response.arrayBuffer(), arrayBuffer.byteLength=${arrayBuffer.byteLength}`);
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished calling  await response.arrayBuffer(), uint8Array.byteLength=${uint8Array.byteLength}`);
+      if (onProgress) {
+        onProgress('OrchestratorNlr.getModelAsync(): model downloaded...');
+      }
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
+      const seven: any = new Zip();
+      if (onProgress) {
+        onProgress('OrchestratorNlr.getModelAsync(): extracting...');
+      }
+      await seven.extractFull(modelZipPath, nlrPath).then(() => {
         if (onProgress) {
-          await onProgress('Model downloaded...');
+          onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
         }
-        Utility.debuggingLog(`Finished downloading model file: ${modelUrl} to ${modelZipPath}`);
-        const seven: any = new Zip();
-        if (onProgress) {
-          await onProgress('Extracting...');
+        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${nlrPath}`);
+        fs.unlinkSync(modelZipPath);
+        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): cleaned up .7z file: ${modelZipPath}`);
+        if (onFinish) {
+          onFinish('OrchestratorNlr.getModelAsync(): rom OrchestratorNlr.getModelAsync() calling onFinish()');
         }
-        seven.extractFull(modelZipPath, nlrPath).then(() => async () => {
-          if (onProgress) {
-            await onProgress('Cleaning up...');
-          }
-          Utility.debuggingLog(`Finished extracting model file: ${modelUrl} and extracted to ${nlrPath}`);
-          fs.unlinkSync(modelZipPath);
-          Utility.debuggingLog(`Cleaned up .7z file: ${modelZipPath}`);
-          if (onFinish) {
-            await onFinish('From OrchestratorNlr.getModelAsync() calling onFinish()');
-          }
-          Utility.debuggingLog('Finished calling OrchestratorNlr.getModelAsync()');
-        });
+        Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling OrchestratorNlr.getModelAsync()');
       });
+      Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling fileStream.on()');
     } catch (error) {
       throw error;
     }

@@ -5,7 +5,7 @@
 
 import {LabelResolver} from '../src/labelresolver';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
-import {OrchestratorCreate} from '../src/create';
+// import {OrchestratorCreate} from '../src/create';
 import * as path from 'path';
 const sinon: any = require('sinon');
 
@@ -21,6 +21,7 @@ describe('OrchestratorCreateTests', () => {
     sinon.restore();
   });
 
+  /* ---- NOTE-DISABLE-THESE-TESTS-TEMPORARILY ----
   it('runAsync', async () => {
     await OrchestratorCreate.runAsync(
       './test/fixtures/',
@@ -28,4 +29,5 @@ describe('OrchestratorCreateTests', () => {
       './test/fixtures/',
       true);
   });
+  */
 });

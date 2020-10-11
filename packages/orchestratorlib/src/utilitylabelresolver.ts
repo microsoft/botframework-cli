@@ -28,7 +28,45 @@ export class UtilityLabelResolver {
     const ignoreSameExampleObjectJson: string = Utility.jsonStringify(ignoreSameExampleObject);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExampleObjectJson=${ignoreSameExampleObjectJson}`);
     LabelResolver.setRuntimeParams(ignoreSameExampleObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver=${LabelResolver}`);
+    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    return LabelResolver.getConfigJson();
+  }
+
+  public static resetLabelResolverSettingUseCompactEmbeddings(
+    notToUseCompactEmbeddings: boolean = false,
+    resetAll: boolean = false): any {
+    const useCompactEmbeddingsObject: {
+      use_compact_embeddings: boolean;
+    } = {
+      use_compact_embeddings: !notToUseCompactEmbeddings,
+    };
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject=${useCompactEmbeddingsObject}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject.use_compact_embeddings=${useCompactEmbeddingsObject.use_compact_embeddings}`);
+    const useCompactEmbeddingsObjectJson: string = Utility.jsonStringify(useCompactEmbeddingsObject);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObjectJson=${useCompactEmbeddingsObjectJson}`);
+    LabelResolver.setRuntimeParams(useCompactEmbeddingsObjectJson, resetAll);
+    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    return LabelResolver.getConfigJson();
+  }
+
+  public static resetLabelResolverSettingKnnK(
+    knnK: boolean = true,
+    resetAll: boolean = false): any {
+    const knnKObject: {
+      knn_k: boolean;
+    } = {
+      knn_k: knnK,
+    };
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnK=${knnK}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObject=${knnKObject}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObject.knn_k=${knnKObject.knn_k}`);
+    const knnKObjectJson: string = Utility.jsonStringify(knnKObject);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObjectJson=${knnKObjectJson}`);
+    LabelResolver.setRuntimeParams(knnKObjectJson, resetAll);
+    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 

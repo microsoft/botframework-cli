@@ -6,6 +6,8 @@
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
+require('fast-text-encoding');
+
 import {LabelType} from './labeltype';
 import {Label} from './label';
 import {Span} from './span';
@@ -36,7 +38,15 @@ export class OrchestratorHelper {
   }
 
   public static readBluSnapshotFile(filePath: string): string {
-    return Utility.processUnknownLabelsInBluFileContent(ReadText.readSync(filePath));
+    return ReadText.readSync(filePath);
+    // ---- NOTE
+    // the code below was trying to normalize unknown labels in a BLU file,
+    // but the unknown labels should have been processed during ingesting
+    // an input file (LU, QnA, TSV, etc.) and before creating a BLU file,
+    // so there is really no need to process unknown labels in a BLU file
+    // anymore. The line below is thus deprecated especially now the BLU
+    // file can be a JSON, so the statement below does not applu anyway.
+    // ---- return Utility.processUnknownLabelsInTsvBluFileContent(ReadText.readSync(filePath));
   }
 
   public static readFile(filePath: string): string {
@@ -44,9 +54,13 @@ export class OrchestratorHelper {
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
-    fs.writeFileSync(filePath, content, options);
-    Utility.writeToConsole(`Successfully wrote to file ${filePath}`);
-    return filePath;
+    const resolvedFilePath: string = Utility.dumpFile(filePath, content, options);
+    if (Utility.isEmptyString(resolvedFilePath)) {
+      Utility.debuggingLog(`ERROR: failed writing to file ${resolvedFilePath}`);
+    } else {
+      Utility.debuggingLog(`Successfully wrote to file ${resolvedFilePath}`);
+    }
+    return resolvedFilePath;
   }
 
   public static deleteFile(filePath: string)  {
@@ -185,7 +199,6 @@ export class OrchestratorHelper {
         '': `${baseName}.en-us.lu`,
       },
     };
-
     return {orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent};
   }
 
@@ -239,22 +252,32 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap);
     } else if (ext === '.json') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      if (OrchestratorHelper.getIntentsEntitiesUtterances(
-        fs.readJsonSync(filePath),
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap,
-        utteranceEntityLabelsMap,
-        utteranceEntityLabelDuplicateMap)) {
-        return;
+
+      try {
+        const rvLuis: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
+          fs.readJsonSync(filePath),
+          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap,
+          utteranceEntityLabelsMap,
+          utteranceEntityLabelDuplicateMap);
+        if (rvLuis) {
+          return;
+        }
+        const rvJson: boolean = OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+            fs.readJsonSync(filePath),
+            OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap);
+        if (!rvJson) {
+          throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+        }
+      } catch (error) {
+        Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEntitiesUtterances(), error=${error}`);
+        throw error;
       }
-      OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-        fs.readJsonSync(filePath),
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap,
-        utteranceEntityLabelsMap,
-        utteranceEntityLabelDuplicateMap);
     } else if (ext === '.tsv' || ext === '.txt') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
       OrchestratorHelper.parseTsvFile(
@@ -262,9 +285,9 @@ export class OrchestratorHelper {
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utteranceLabelsMap,
         utteranceLabelDuplicateMap);
-    } else if (ext === '.blu') {
+    } else if (ext === '.blu') { // ---- NOTE-TODO-processing-JSON-BLU-files ----
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      OrchestratorHelper.parseBluFile(
+      OrchestratorHelper.parseTsvBluFile(
         filePath,
         utteranceLabelsMap,
         utteranceLabelDuplicateMap);
@@ -273,7 +296,29 @@ export class OrchestratorHelper {
     }
   }
 
-  static parseBluFile(
+  // eslint-disable-next-line max-params
+  static async parseJsonBluFile(
+    jsonBluFile: string,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    const fileContents: string = OrchestratorHelper.readFile(jsonBluFile);
+    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseJsonBluFile()');
+    // Utility.debuggingLog(`BEFORE calling OrchestratorHelper.parseJsonBluFile(), fileContents=${fileContents}`);
+    const jsonBluObject: any = JSON.parse(fileContents);
+    Utility.debuggingLog('AFTER calling OrchestratorHelper.parseJsonBluFile()');
+    OrchestratorHelper.getJsonBluIntentsEntitiesUtterances(
+      jsonBluObject,
+      hierarchicalLabel,
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+  }
+
+  static parseTsvBluFile(
     bluFile: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
@@ -319,13 +364,23 @@ export class OrchestratorHelper {
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
 
-    OrchestratorHelper.getIntentsEntitiesUtterances(
-      luisObject,
-      hierarchicalLabel,
-      utteranceLabelsMap,
-      utteranceLabelDuplicateMap,
-      utteranceEntityLabelsMap,
-      utteranceEntityLabelDuplicateMap);
+    try
+    {
+      const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
+        luisObject,
+        hierarchicalLabel,
+        utteranceLabelsMap,
+        utteranceLabelDuplicateMap,
+        utteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap);
+
+      if (!rvLu) {
+        throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
+    }
   }
 
   static parseTsvFile(
@@ -602,6 +657,62 @@ export class OrchestratorHelper {
         );
       });
     });
+  }
+
+  // eslint-disable-next-line max-params
+  static getJsonBluIntentsEntitiesUtterances(
+    jsonBluObject: any,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+    try {
+      let jsonBluExamplesArray: any = null;
+      // eslint-disable-next-line no-prototype-builtins
+      if (jsonBluObject.hasOwnProperty('examples')) {
+        jsonBluExamplesArray = jsonBluObject.examples;
+      } else {
+        return false;
+      }
+      if (jsonBluExamplesArray.length > 0)  {
+        jsonBluExamplesArray.forEach((jsonBluExample: any) => {
+          const utterance: string = jsonBluExample.text.trim();
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonBluExample.hasOwnProperty('intents')) {
+            const jsonBluExampleIntents: any = jsonBluExample.intents;
+            jsonBluExampleIntents.forEach((jsonBluExampleIntent: any) => {
+              const jsonBluExampleIntentLabel: string = jsonBluExampleIntent.name;
+              OrchestratorHelper.addNewLabelUtterance(
+                utterance,
+                jsonBluExampleIntentLabel,
+                hierarchicalLabel,
+                utteranceLabelsMap,
+                utteranceLabelDuplicateMap);
+            });
+          }
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonBluExample.hasOwnProperty('entities')) { // ---- NOTE-TODO-NEED-TO-REEXAMINE-AFTER-BLU-IS-IMPLEMENTED ----
+            const jsonBluExampleEntities: any[] = jsonBluExample.entities;
+            jsonBluExampleEntities.forEach((jsonBluExampleEntity: any) => {
+              const jsonBluExampleEntityLabel: string = jsonBluExampleEntity.entity;
+              const jsonBluExampleEntityOffset: number = jsonBluExampleEntity.offset;
+              const jsonBluExampleEntityLength: number = jsonBluExampleEntity.length;
+              OrchestratorHelper.addNewEntityLabelUtterance(
+                utterance,
+                Label.newEntityLabel(jsonBluExampleEntityLabel, jsonBluExampleEntityOffset, jsonBluExampleEntityLength),
+                utteranceEntityLabelsMap,
+                utteranceEntityLabelDuplicateMap);
+            });
+          }
+        });
+        return true;
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
+    }
+    return false;
   }
 
   // eslint-disable-next-line max-params
