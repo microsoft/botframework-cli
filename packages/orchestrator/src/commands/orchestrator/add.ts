@@ -25,7 +25,7 @@ export default class OrchestratorAdd extends Command {
     snapshot: flags.string({char: 's', description: 'Existing orchestrator snapshot to append to.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on input file name.'}),
-    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator add command help'}),
   }
@@ -47,7 +47,7 @@ export default class OrchestratorAdd extends Command {
         input, OrchestratorSettings.SnapshotPath, 
         snapshot,
         labelPrefix,
-        flags.notToUseCompactEmbeddings);
+        flags.fullEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
     }

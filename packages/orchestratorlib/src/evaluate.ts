@@ -35,7 +35,7 @@ export class OrchestratorEvaluate {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    fullEmbeddings: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPath)) {
@@ -60,7 +60,7 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPath;
@@ -76,7 +76,7 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
     await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     // ---- NOTE ---- retrieve labels
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), JSON.stringify(labels)=${JSON.stringify(labels)}`);

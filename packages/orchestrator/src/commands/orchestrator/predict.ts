@@ -22,7 +22,7 @@ export default class OrchestratorPredict extends Command {
     low_confidence: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
     multi_label: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknown: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
-    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -88,7 +88,7 @@ export default class OrchestratorPredict extends Command {
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
         unknownLabelPredictionThresholdParameter,
-        flags.notToUseCompactEmbeddings);
+        flags.fullEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
     }

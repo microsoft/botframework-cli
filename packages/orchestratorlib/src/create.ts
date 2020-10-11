@@ -15,12 +15,12 @@ export class OrchestratorCreate {
   // eslint-disable-next-line max-params
   public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string,
     hierarchical: boolean = false,
-    notToUseCompactEmbeddings: boolean = false) {
+    fullEmbeddings: boolean = false) {
     Utility.debuggingLog(`nlrPath=${nlrPath}`);
     Utility.debuggingLog(`inputPathConfiguration=${inputPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`hierarchical=${hierarchical}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
@@ -37,7 +37,7 @@ export class OrchestratorCreate {
     Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createAsync()');
     await LabelResolver.createAsync(nlrPath);
     Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createAsync()');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     const processedUtteranceLabelsMap: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;

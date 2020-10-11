@@ -77,7 +77,7 @@ export class OrchestratorPredict {
 
   protected unknownLabelPredictionThreshold: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
 
-  protected notToUseCompactEmbeddings: boolean = false;
+  protected fullEmbeddings: boolean = false;
 
   protected snapshotFile: string = '';
 
@@ -166,7 +166,7 @@ export class OrchestratorPredict {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    notToUseCompactEmbeddingsParameter: boolean = false) {
+    fullEmbeddings: boolean = false) {
     // ---- NOTE ---- process arguments
     // if (Utility.isEmptyString(inputPath)) {
     //   Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, from OrchestratorPredict.constructor()`);
@@ -197,7 +197,7 @@ export class OrchestratorPredict {
     Utility.debuggingLog(`lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddingsParameter=${notToUseCompactEmbeddingsParameter}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.nlrPath = nlrPath;
@@ -205,7 +205,7 @@ export class OrchestratorPredict {
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
-    this.notToUseCompactEmbeddings = notToUseCompactEmbeddingsParameter;
+    this.fullEmbeddings = fullEmbeddings;
     // ---- NOTE ---- load the snapshot set
     this.snapshotFile = this.inputPath;
     if (this.snapshotFile) {
@@ -256,7 +256,7 @@ export class OrchestratorPredict {
       await LabelResolver.createAsync(this.nlrPath);
     }
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after creating a LabelResolver object');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.notToUseCompactEmbeddings);
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
   }
 
   public static async runAsync(
@@ -265,7 +265,7 @@ export class OrchestratorPredict {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    notToUseCompactEmbeddings: boolean = false): Promise<number> {
+    fullEmbeddings: boolean = false): Promise<number> {
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
       nlrPath,
       inputPath,
@@ -274,7 +274,7 @@ export class OrchestratorPredict {
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      notToUseCompactEmbeddings);
+      fullEmbeddings);
     // ---- NOTE ---- create a LabelResolver object.
     await orchestratorPredict.buildLabelResolver();
     // ---- NOTE ---- enter the command loop.

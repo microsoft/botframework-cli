@@ -18,7 +18,7 @@ export default class OrchestratorBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     luconfig: flags.string({description: 'Path to luconfig.json.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
-    notToUseCompactEmbeddings: flags.boolean({description: 'Not to use compact embeddings.'}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
@@ -49,7 +49,7 @@ export default class OrchestratorBuild extends Command {
         OrchestratorHelper.getLuInputs(input), 
         isDialog, 
         luConfig,
-        flags.notToUseCompactEmbeddings);
+        flags.fullEmbeddings);
       OrchestratorHelper.writeBuildOutputFiles(output, retPayload.outputs);
       const settingsFile: string = path.join(output, 'orchestrator.settings.json');
       OrchestratorHelper.writeToFile(settingsFile, JSON.stringify(retPayload.settings, null, 2));

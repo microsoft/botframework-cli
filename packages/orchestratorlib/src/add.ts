@@ -17,13 +17,13 @@ export class OrchestratorAdd {
     outputPath: string,
     snapshotPath: string,
     labelPrefix: string = '',
-    notToUseCompactEmbeddings: boolean = false) {
+    fullEmbeddings: boolean = false) {
     Utility.debuggingLog(`nlrPath=${nlrPath}`);
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`snapshotPath=${snapshotPath}`);
     Utility.debuggingLog(`labelPrefix=${labelPrefix}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
@@ -44,7 +44,7 @@ export class OrchestratorAdd {
     // ---- NOTE ---- all the embeddings will be converted to compact for cosine similarity computation
     // ---- NOTE ---- and the following statement will not be effective for ensuing
     // ---- NOTE ---- floating-point embeddings.
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
 
     const ext: string = OrchestratorHelper.isDirectory(inputPath) ? '' : path.extname(inputPath);
     if (ext === '.blu') {

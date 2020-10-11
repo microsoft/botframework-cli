@@ -23,12 +23,12 @@ export class OrchestratorBuild {
     inputs: any[],
     isDialog: boolean = false,
     luConfig: any = null,
-    notToUseCompactEmbeddings: boolean = false): Promise<any> {
+    fullEmbeddings: boolean = false): Promise<any> {
     Utility.debuggingLog(`nlrPath=${nlrPath}`);
     Utility.debuggingLog(`inputPath=${JSON.stringify(inputs, null, 2)}`);
     Utility.debuggingLog(`isDialog=${isDialog}`);
     Utility.debuggingLog(`luConfigFile=${JSON.stringify(luConfig, null, 2)}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     try {
       if (!nlrPath || nlrPath.length === 0) {
         throw new Error('Please provide path to Orchestrator model');
@@ -54,9 +54,9 @@ export class OrchestratorBuild {
       const bluPaths: any = {};
       let buildOutputs: any[];
       if (hasLuConfig) {
-        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths, notToUseCompactEmbeddings);
+        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths, fullEmbeddings);
       } else {
-        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths, notToUseCompactEmbeddings);
+        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths, fullEmbeddings);
       }
    
       const settings: {
@@ -76,7 +76,7 @@ export class OrchestratorBuild {
     }
   }
 
-  private static async processLuConfig(luConfig: any, bluPaths: any, notToUseCompactEmbeddings: boolean = false): Promise<any[]> {
+  private static async processLuConfig(luConfig: any, bluPaths: any, fullEmbeddings: boolean = false): Promise<any[]> {
     const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
       const luObject: any = {
@@ -85,7 +85,7 @@ export class OrchestratorBuild {
       };
       luObjects.push(luObject);
     }
-    return OrchestratorBuild.processInput(luObjects, bluPaths);
+    return OrchestratorBuild.processInput(luObjects, bluPaths, fullEmbeddings);
   }
 
   private static async processInput(luObsjects: any[], bluPaths: any, fullEmbedding: boolean = false): Promise<any[]> {
@@ -98,7 +98,7 @@ export class OrchestratorBuild {
     return retPayload;
   }
 
-  private static async processLuContent(luObject: any, bluPaths: any, fullEmbedding: bool = false) {
+  private static async processLuContent(luObject: any, bluPaths: any, fullEmbedding: boolean = false) {
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
     const labelResolver: any = LabelResolver.createLabelResolver();
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');

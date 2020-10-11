@@ -38,7 +38,7 @@ export class OrchestratorTest {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    notToUseCompactEmbeddings: boolean = false): Promise<void> {
+    fullEmbeddings: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPathConfiguration)) {
@@ -66,7 +66,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
-    Utility.debuggingLog(`notToUseCompactEmbeddings=${notToUseCompactEmbeddings}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPathConfiguration;
@@ -82,7 +82,7 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
     await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(notToUseCompactEmbeddings);
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     // ---- NOTE ---- retrieve labels
     const snapshotSetLabels: string[] =
       LabelResolver.getLabels(LabelType.Intent);
