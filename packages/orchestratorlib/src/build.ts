@@ -51,23 +51,22 @@ export class OrchestratorBuild {
       OrchestratorBuild.Orchestrator = orchestrator;
       OrchestratorBuild.LuContents = inputs;
       OrchestratorBuild.IsDialog = isDialog;
-      const bluPaths: any = {};
       let buildOutputs: any[];
       if (hasLuConfig) {
-        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, bluPaths, fullEmbeddings);
+        buildOutputs = await OrchestratorBuild.processLuConfig(luConfig, fullEmbeddings);
       } else {
-        buildOutputs = await OrchestratorBuild.processInput(inputs, bluPaths, fullEmbeddings);
+        buildOutputs = await OrchestratorBuild.processInput(inputs, fullEmbeddings);
       }
-   
+
       const settings: {
         'orchestrator': {
           'modelPath': string;
-          'snapshots': string;
+          'snapshots': Map<string, string>;
         };
       } = {
         orchestrator: {
           modelPath: nlrPath,
-          snapshots: bluPaths,
+          snapshots: new Map<string, string>(),
         },
       };
       return {outputs: buildOutputs, settings: settings};
@@ -76,7 +75,7 @@ export class OrchestratorBuild {
     }
   }
 
-  private static async processLuConfig(luConfig: any, bluPaths: any, fullEmbeddings: boolean = false): Promise<any[]> {
+  private static async processLuConfig(luConfig: any, fullEmbeddings: boolean = false): Promise<any[]> {
     const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
       const luObject: any = {
@@ -85,24 +84,26 @@ export class OrchestratorBuild {
       };
       luObjects.push(luObject);
     }
-    return OrchestratorBuild.processInput(luObjects, bluPaths, fullEmbeddings);
+    return OrchestratorBuild.processInput(luObjects, fullEmbeddings);
   }
 
-  private static async processInput(luObsjects: any[], bluPaths: any, fullEmbedding: boolean = false): Promise<any[]> {
+  private static async processInput(luObsjects: any[], fullEmbedding: boolean = false): Promise<any[]> {
     const retPayload: any[] = [];
     for (const luObject of (luObsjects || [])) {
       // eslint-disable-next-line no-await-in-loop
-      const retVal: any = await OrchestratorBuild.processLuContent(luObject, bluPaths, fullEmbedding);
+      const retVal: any = await OrchestratorBuild.processLuContent(luObject, fullEmbedding);
       retPayload.push(retVal);
     }
     return retPayload;
   }
 
-  private static async processLuContent(luObject: any, bluPaths: any, fullEmbedding: boolean = false) {
+  private static async processLuContent(luObject: any, fullEmbedding: boolean = false) {
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
     const labelResolver: any = LabelResolver.createLabelResolver();
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
+    if (fullEmbedding) {
+      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
+    }
     Utility.debuggingLog('Created label resolver');
 
     const baseName: string = luObject.id;
@@ -131,7 +132,6 @@ export class OrchestratorBuild {
     const snapshot: any = labelResolver.createSnapshot();
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
     const recognizer: any = OrchestratorHelper.getDialogFilesContent(OrchestratorBuild.IsDialog, baseName, entities);
-    if (recognizer !== undefined) bluPaths[baseName] = snapshot;
     return {id: baseName, snapshot: snapshot, recognizer: recognizer};
   }
 }

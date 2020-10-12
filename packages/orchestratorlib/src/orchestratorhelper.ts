@@ -1020,7 +1020,9 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
-  public static  writeBuildOutputFiles(outputPath: string, buildOutputs: any[]) {
+  public static  writeBuildOutputFiles(outputPath: string, retPayload: any) {
+    const buildOutputs: any[] = retPayload.outputs;
+    const bluPaths: any = retPayload.settings.orchestrator.snapshots;
     for (const buildOutput of (buildOutputs || [])) {
       const baseName: any = buildOutput.id;
       const snapshotFile: string = path.join(outputPath, baseName + '.blu');
@@ -1034,6 +1036,8 @@ export class OrchestratorHelper {
       const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
       this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
       Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
+
+      if (buildOutput.recognizer !== undefined) bluPaths[baseName] = snapshotFile;
     }
   }
 }

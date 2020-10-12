@@ -42,11 +42,12 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async buildAsync(
-    nlrPath: string, inputs: any[], 
+    nlrPath: string,
+    inputs: any[], 
     isDialog: boolean,
     luConfig: any = null,
-    fullEmbedding: boolean = false): Promise<void> {
-    await OrchestratorBuild.runAsync(nlrPath, inputs, isDialog, luConfig, fullEmbedding);
+    fullEmbedding: boolean = false): Promise<any> {
+    return OrchestratorBuild.runAsync(nlrPath, inputs, isDialog, luConfig, fullEmbedding);
   }
 
   // eslint-disable-next-line max-params

@@ -26,7 +26,8 @@ export default class OrchestratorBuild extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
     const input: string = flags.in ? path.resolve(flags.in) : '';
-    let output: string = path.resolve(flags.out || process.cwd());
+    const cwd: string = process.cwd();
+    let output: string = path.resolve(flags.out || cwd);
     const isDialog: boolean = flags.dialog;
     let luConfig: any = null;
     let luConfigPath: string = flags.luconfig;
@@ -37,7 +38,6 @@ export default class OrchestratorBuild extends Command {
     }
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
-    const cwd: string = process.cwd();
     if (!OrchestratorHelper.isDirectory(output)) {
       output = path.dirname(output);
     }
@@ -45,12 +45,12 @@ export default class OrchestratorBuild extends Command {
     try {
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
-        OrchestratorSettings.ModelPath, 
-        OrchestratorHelper.getLuInputs(input), 
-        isDialog, 
+        OrchestratorSettings.ModelPath,
+        OrchestratorHelper.getLuInputs(input),
+        isDialog,
         luConfig,
         flags.fullEmbeddings);
-      OrchestratorHelper.writeBuildOutputFiles(output, retPayload.outputs);
+      OrchestratorHelper.writeBuildOutputFiles(output, retPayload);
       const settingsFile: string = path.join(output, 'orchestrator.settings.json');
       OrchestratorHelper.writeToFile(settingsFile, JSON.stringify(retPayload.settings, null, 2));
       this.log(`orchestrator.settings.json is written to ${settingsFile}`);
