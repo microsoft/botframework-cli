@@ -4,7 +4,7 @@
  */
 
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
+import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings} from '../../../utils/settings';
 
 export default class OrchestratorNlrGet extends Command {
@@ -21,12 +21,15 @@ export default class OrchestratorNlrGet extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorNlrGet);
     const cwd: string = process.cwd();
-    const output: string = flags.out || cwd;
+    const output: string = flags.out || `${cwd}/model`;
     const nlrId: any = flags.versionId;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
+      if (!OrchestratorHelper.exists(output)) {
+        OrchestratorHelper.mkDir(output);
+      }
       OrchestratorSettings.init(cwd, output, '', cwd);
       await Orchestrator.nlrGetAsync(
         OrchestratorSettings.ModelPath,
@@ -37,8 +40,13 @@ export default class OrchestratorNlrGet extends Command {
           }
         },
         (message: any) => {
-          this.log(`Model ${nlrId} downloaded to ${output} with message: ${message}`);
+          this.log(`Model ${nlrId} downloaded to ${output}`);
+          if (flags.debug) {
+            Utility.debuggingLog(`Model ${nlrId} downloaded to ${output} with message ${message}`);
+          }
         });
+
+      OrchestratorSettings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }

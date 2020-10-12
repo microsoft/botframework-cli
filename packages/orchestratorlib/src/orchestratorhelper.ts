@@ -37,6 +37,10 @@ export class OrchestratorHelper {
     }
   }
 
+  public static mkDir(path: string): void {
+    fs.mkdirSync(path);
+  }
+
   public static readBluSnapshotFile(filePath: string): string {
     return ReadText.readSync(filePath);
     // ---- NOTE
