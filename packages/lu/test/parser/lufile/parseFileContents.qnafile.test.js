@@ -129,6 +129,7 @@ test
             .then(res => {
                 assert.equal(res.qnaJsonStructure.qnaList[0].questions[0], 'what are you');
                 assert.equal(res.qnaJsonStructure.qnaList[0].questions[1], 'who are you');
+                assert.equal(res.qnaJsonStructure.qnaList[0].answer, 'test');
                 done();
             })
             .catch(err => done(err))
