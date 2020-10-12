@@ -346,12 +346,44 @@ describe('dialog:merge', async () => {
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
-        assert(countMatches('Copying', lines) === 2, 'Wrong number of copies')
+        assert(countMatches('Copy ', lines) === 5, 'Wrong number of copies')
         assert(await fs.pathExists(ppath.join(tempDir, 'imported', 'dependent-package', 'assets', 'dependent-package.jpg')), 'Incomplete assets copy')
         assert(!await fs.pathExists(ppath.join(tempDir, 'imported', 'root-package')), 'Copied rootx')
         await compareToOracle('root-package.schema')
         await compareToOracle('root-package.uischema')
-        checkMerged(merged, 0, 0, 0, 0, '')
+        checkMerged(merged, 5, 0, 0, 0, '',
+            [{
+                name: 'dependent-package',
+                version: '1.0.0',
+                path: 'C:\\Users\\chrimc\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package\\package.json',
+                description: 'A package',
+                releaseNotes: 'A good time.',
+                authors: ['Chris Tom'],
+                keywords: ['somthing wicked', 'this way'],
+                icon: 'icon.png',
+                repository: 'https://github.com',
+                license: 'MIT',
+                language: 'en-us',
+                copyright: 'mine',
+                includesSchema: true,
+                includesExports: true
+            },
+            {
+                name: 'parent-package',
+                version: '1.0.0',
+                path: 'C:\\Users\\chrimc\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package\\package.json',
+                description: '',
+                releaseNotes: '',
+                authors: ['Chris Tom, tom@botmail.com, https://christom.com'],
+                keywords: [],
+                icon: '',
+                repository: 'https://github.com',
+                license: '',
+                language: '',
+                copyright: '',
+                includesSchema: true,
+                includesExports: false
+            }])
     })
 
     it('nuspec', async () => {

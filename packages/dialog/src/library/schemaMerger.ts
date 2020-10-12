@@ -449,7 +449,7 @@ export class SchemaMerger {
     public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
-        this.imports = imports ?? ppath.dirname(this.output)
+        this.imports = imports ?? ppath.join(ppath.dirname(this.output), 'imported')
         this.checkOnly = checkOnly
         this.verbose = verbose
         this.log = log
@@ -794,7 +794,7 @@ export class SchemaMerger {
 
                     if (await fs.pathExists(exported)) {
                         let used = new Set<string>()
-                        let imported = ppath.join(this.imports, 'imported', component.metadata.name)
+                        let imported = ppath.join(this.imports, component.metadata.name)
                         this.vlog(`Copying ${exported} to ${imported}`)
                         component.metadata.includesExports = true
 
@@ -1137,7 +1137,7 @@ export class SchemaMerger {
         let component: Component = {
             name: pkg.name,
             version: pkg.version,
-            path: path,
+            path,
             description: pkg.description || '',
             releaseNotes: pkg.releaseNotes || '',
             authors: [],
@@ -1154,7 +1154,7 @@ export class SchemaMerger {
         if (pkg.author) {
             let author = pkg.author
             if (typeof author === 'object') {
-                author = `${author.name} ${author.email} ${author.url}`
+                author = `${author.name}, ${author.email}, ${author.url}`
             }
             component.authors.push(author)
         }
