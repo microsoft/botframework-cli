@@ -40,7 +40,7 @@ export default class OrchestratorCreate extends Command {
     try {
       OrchestratorSettings.init(cwd, nlrPath, output, cwd);
       await Orchestrator.createAsync(
-        OrchestratorSettings.ModelPath, 
+        OrchestratorSettings.ModelPath,
         input, OrchestratorSettings.SnapshotPath,
         flags.hierarchical,
         flags.fullEmbeddings);

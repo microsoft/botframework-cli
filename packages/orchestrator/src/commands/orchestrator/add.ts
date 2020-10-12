@@ -43,8 +43,8 @@ export default class OrchestratorAdd extends Command {
     try {
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       await Orchestrator.addAsync(
-        OrchestratorSettings.ModelPath, 
-        input, OrchestratorSettings.SnapshotPath, 
+        OrchestratorSettings.ModelPath,
+        input, OrchestratorSettings.SnapshotPath,
         snapshot,
         labelPrefix,
         flags.fullEmbeddings);

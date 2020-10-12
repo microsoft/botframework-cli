@@ -265,12 +265,12 @@ export class OrchestratorHelper {
           return;
         }
         const rvJson: boolean = OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-            fs.readJsonSync(filePath),
-            OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-            utteranceLabelsMap,
-            utteranceLabelDuplicateMap,
-            utteranceEntityLabelsMap,
-            utteranceEntityLabelDuplicateMap);
+          fs.readJsonSync(filePath),
+          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap,
+          utteranceEntityLabelsMap,
+          utteranceEntityLabelDuplicateMap);
         if (!rvJson) {
           throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
         }
@@ -338,7 +338,6 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
-
     OrchestratorHelper.parseLuContent(
       luFile,
       OrchestratorHelper.readFile(luFile),
@@ -363,9 +362,7 @@ export class OrchestratorHelper {
       id: luFile,
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
-
-    try
-    {
+    try {
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
         luisObject,
         hierarchicalLabel,
@@ -373,7 +370,6 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap,
         utteranceEntityLabelsMap,
         utteranceEntityLabelDuplicateMap);
-
       if (!rvLu) {
         throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
       }
@@ -973,7 +969,7 @@ export class OrchestratorHelper {
     return false;
   }
 
-  static findLuFiles(srcId: string, idsToFind: string[]) {
+  static findLuFiles(srcId: string, idsToFind: string[]): any[] {
     const baseDir: string = path.dirname(srcId);
     const retPayload: any[] = [];
     (idsToFind || []).forEach((ask: any)  => {
@@ -996,7 +992,7 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
-  private static async getLuInputsEx(inputPath: string, retPayload: any[]) {
+  private static async getLuInputsEx(inputPath: string, retPayload: any[]): Promise<void> {
     if (OrchestratorHelper.isDirectory(inputPath)) {
       const items: string[] = fs.readdirSync(inputPath);
       for (const item of items) {
@@ -1014,13 +1010,13 @@ export class OrchestratorHelper {
     }
   }
 
-  public static getLuInputs(inputPath: string) {
+  public static getLuInputs(inputPath: string): any[] {
     const retPayload: any[] = [];
-    OrchestratorHelper.getLuInputsEx(inputPath, retPayload)
+    OrchestratorHelper.getLuInputsEx(inputPath, retPayload);
     return retPayload;
   }
 
-  public static  writeBuildOutputFiles(outputPath: string, retPayload: any) {
+  public static  writeBuildOutputFiles(outputPath: string, retPayload: any): void {
     const buildOutputs: any[] = retPayload.outputs;
     const bluPaths: any = retPayload.settings.orchestrator.snapshots;
     for (const buildOutput of (buildOutputs || [])) {
