@@ -90,8 +90,9 @@ async function modifyFile(path: string, pattern: RegExp, replacement: string) {
 
 function checkMerged(merged: merger.Imports | undefined, adds: number, conflicts: number, deletes: number, unchanged: number, msg: string, components?: any[]) {
     if (merged) {
-        console.log(`adds: ${merged.added.length}, conflicts: ${merged.conflicts.length}, deleted: ${merged.deleted.length}, unchanged: ${merged.unchanged.length}`)
-        console.log(JSON.stringify(merged.components))
+        // NOTE: This is useful to help write tests.
+        // console.log(`adds: ${merged.added.length}, conflicts: ${merged.conflicts.length}, deleted: ${merged.deleted.length}, unchanged: ${merged.unchanged.length}`)
+        // console.log(JSON.stringify(merged.components))
         assert(merged.added.length === adds, `Wrong number of adds ${msg}`)
         assert(merged.conflicts.length === conflicts, `Wrong number of conflicts ${msg}`)
         assert(merged.deleted.length === deletes, `Wrong number of deletes ${msg}`)

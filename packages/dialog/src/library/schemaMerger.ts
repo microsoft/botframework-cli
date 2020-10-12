@@ -140,20 +140,22 @@ class ComponentNode {
         return sort
     }
 
-    public patterns(extensions: string[]): string[] {
+    public patterns(extensions: string[], negativePatterns: string[]): string[] {
         let patterns = this.explictPatterns
         if (patterns.length === 0 && this.metadata.path) {
             patterns = []
             let root = ppath.dirname(this.metadata.path)
             for (let extension of extensions) {
                 patterns.push(ppath.join(root, `**/*${extension}`))
-
             }
             if (this.metadata.path.endsWith('package.json')) {
                 patterns.push(`!${ppath.join(root, 'node_modules/**')}`)
             } else if (this.metadata.path.endsWith('.csproj')) {
                 patterns.push(`!${ppath.join(root, 'bin/**')}`)
             }
+            patterns.push(`!${ppath.join(root, 'test/**')}`)
+            patterns.push(`!${ppath.join(root, 'tests/**')}`)
+            patterns = patterns.concat(negativePatterns)
         }
         return patterns
     }
@@ -388,6 +390,9 @@ export class SchemaMerger {
     private readonly debug: boolean | undefined
     private nugetRoot = ''    // Root where nuget packages are found
 
+    // Negative patterns found in input globs
+    private readonly negativePatterns: string[]
+
     // Track packages that have been processed
     private readonly packages = new Set()
 
@@ -447,7 +452,8 @@ export class SchemaMerger {
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
     public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
-        this.patterns = patterns
+        this.patterns = patterns.map(forwardSlashes)
+        this.negativePatterns = this.patterns.filter(p => p.startsWith('!'))
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
         this.imports = imports ?? ppath.join(ppath.dirname(this.output), 'imported')
         this.checkOnly = checkOnly
@@ -470,7 +476,7 @@ export class SchemaMerger {
         let imports: Imports | undefined
         try {
             this.log('Finding component files')
-            await this.expandPackages(await glob(this.patterns.map(forwardSlashes)))
+            await this.expandPackages(await glob(this.patterns))
             await this.analyze()
             let schema = await this.mergeSchemas()
             this.log('')
@@ -1243,7 +1249,7 @@ export class SchemaMerger {
     private async expandPackages(paths: string[]): Promise<void> {
         await this.buildComponentTree(paths)
         for (let component of this.components) {
-            let patterns = component.patterns(this.extensions).map(forwardSlashes)
+            let patterns = component.patterns(this.extensions, this.negativePatterns).map(forwardSlashes)
             for (let path of await glob(patterns)) {
                 let ext = ppath.extname(path)
                 let map = this.files.get(ext)
