@@ -8,18 +8,25 @@ import * as path from 'path';
 import {Label} from './label';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorCreate {
-  public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string, hierarchical: boolean = false) {
+  // eslint-disable-next-line max-params
+  public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string,
+    hierarchical: boolean = false,
+    fullEmbeddings: boolean = false) {
+    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`inputPathConfiguration=${inputPathConfiguration}`);
+    Utility.debuggingLog(`outputPath=${outputPath}`);
+    Utility.debuggingLog(`hierarchical=${hierarchical}`);
+    Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     if (!nlrPath || nlrPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
-
     if (!inputPathConfiguration || inputPathConfiguration.length === 0) {
       throw new Error('Please provide path to input file/folder');
     }
-
     if (!outputPath || outputPath.length === 0) {
       throw new Error('Please provide output path');
     }
@@ -27,7 +34,10 @@ export class OrchestratorCreate {
     nlrPath = path.resolve(nlrPath);
     outputPath = path.resolve(outputPath);
 
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createAsync()');
     await LabelResolver.createAsync(nlrPath);
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createAsync()');
+    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     const processedUtteranceLabelsMap: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
@@ -39,7 +49,11 @@ export class OrchestratorCreate {
     const snapshot: any = LabelResolver.createSnapshot();
 
     const outPath: string = OrchestratorHelper.getOutputPath(outputPath, inputPathConfiguration);
-    OrchestratorHelper.writeToFile(outPath, snapshot);
-    Utility.debuggingLog(`Snapshot written to ${outputPath}`);
+    const resolvedFilePath: string = OrchestratorHelper.writeToFile(outPath, snapshot);
+    if (Utility.isEmptyString(resolvedFilePath)) {
+      Utility.writeToConsole(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
+    } else {
+      Utility.writeToConsole(`Snapshot written to ${resolvedFilePath}`);
+    }
   }
 }

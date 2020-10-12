@@ -4,10 +4,11 @@
  */
 
 import * as path from 'path';
-import {Utility} from './utility';
-import {OrchestratorHelper} from './orchestratorhelper';
+
 import {Label} from './label';
 import {LabelType} from './labeltype';
+import {OrchestratorHelper} from './orchestratorhelper';
+import {Utility} from './utility';
 
 const oc: any = require('orchestrator-core');
 
@@ -26,8 +27,7 @@ export class LabelResolver {
     Utility.debuggingLog('LabelResolver.loadNlrAsync(): Creating Orchestrator..');
     Utility.debuggingLog(`LabelResolver.loadNlrAsync(): nlrPath=${nlrPath}`);
     LabelResolver.Orchestrator = new oc.Orchestrator();
-
-    if (nlrPath) {
+    if (!Utility.isEmptyString(nlrPath)) {
       Utility.debuggingLog('LabelResolver.loadNlrAsync(): Loading NLR..');
       if (await LabelResolver.Orchestrator.loadAsync(nlrPath) === false) {
         throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${nlrPath}")!`);
@@ -35,9 +35,12 @@ export class LabelResolver {
     } else if (LabelResolver.Orchestrator.load() === false) {
       throw new Error('Failed calling LabelResolver.Orchestrator.load()!');
     }
-
     Utility.debuggingLog('LabelResolver.loadNlrAsync(): Leaving..');
     return LabelResolver.Orchestrator;
+  }
+
+  public static createLabelResolver() {
+    return LabelResolver.Orchestrator.createLabelResolver();
   }
 
   public static async createAsync(nlrPath: string) {
@@ -46,10 +49,6 @@ export class LabelResolver {
     LabelResolver.LabelResolver = LabelResolver.Orchestrator.createLabelResolver();
     Utility.debuggingLog('LabelResolver.createAsync(): Finished creating labeler...');
     return LabelResolver.LabelResolver;
-  }
-
-  public static createLabelResolver() {
-    return LabelResolver.Orchestrator.createLabelResolver();
   }
 
   public static async createWithSnapshotAsync(nlrPath: string, snapshotPath: string) {
@@ -61,7 +60,7 @@ export class LabelResolver {
     Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): Creating labeler...');
     LabelResolver.LabelResolver = await LabelResolver.Orchestrator.createLabelResolver(snapshot);
     if (!LabelResolver.LabelResolver) {
-      Utility.debuggingThrow('FAILED to create a LabelResolver object');
+      throw new Error('FAILED to create a LabelResolver object');
     }
     Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): Finished creating labeler...');
     return LabelResolver.LabelResolver;
@@ -209,10 +208,10 @@ export class LabelResolver {
   }
 
   private static ensureLabelResolver(labelResolver: any) {
-    if (labelResolver === null) {
+    if (!labelResolver) {
       labelResolver = LabelResolver.LabelResolver;
     }
-    if (labelResolver === null) {
+    if (!labelResolver) {
       throw new Error('LabelResolver was not initialized');
     }
     return labelResolver;

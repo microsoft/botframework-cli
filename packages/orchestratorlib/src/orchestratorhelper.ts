@@ -54,9 +54,13 @@ export class OrchestratorHelper {
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
-    fs.writeFileSync(filePath, content, options);
-    Utility.writeToConsole(`Successfully wrote to file ${filePath}`);
-    return filePath;
+    const resolvedFilePath: string = Utility.dumpFile(filePath, content, options);
+    if (Utility.isEmptyString(resolvedFilePath)) {
+      Utility.debuggingLog(`ERROR: failed writing to file ${resolvedFilePath}`);
+    } else {
+      Utility.debuggingLog(`Successfully wrote to file ${resolvedFilePath}`);
+    }
+    return resolvedFilePath;
   }
 
   public static deleteFile(filePath: string)  {
@@ -174,7 +178,7 @@ export class OrchestratorHelper {
     return retValue;
   }
 
-  public static writeDialogFiles(out: string, isDialog: boolean, baseName: string, recognizers: any = []) {
+  public static getDialogFilesContent(isDialog: boolean, baseName: string, recognizers: any = []) {
     if (!isDialog) return undefined;
     const recoContent: {
       '$kind': string;
@@ -188,8 +192,6 @@ export class OrchestratorHelper {
       entityRecognizers: recognizers,
     };
 
-    const recoFileName: string = path.join(out, `${baseName}.lu.dialog`);
-    this.writeToFile(recoFileName, JSON.stringify(recoContent, null, 2));
     const multiRecoContent: any = {
       $kind: 'Microsoft.MultiLanguageRecognizer',
       recognizers: {
@@ -197,36 +199,10 @@ export class OrchestratorHelper {
         '': `${baseName}.en-us.lu`,
       },
     };
-
-    const multiRecoFileName: string = path.join(out, `${baseName}.en-us.lu.dialog`);
-    this.writeToFile(multiRecoFileName, JSON.stringify(multiRecoContent, null, 2));
-    return baseName;
+    return {orchestratorRecognizer: recoContent, multiLanguageRecognizer: multiRecoContent};
   }
 
-  public static writeSettingsFile(nlrpath: string, settings: any, out: string) {
-    const content: {
-      'orchestrator': {
-        'modelPath': string;
-        'snapshots': string;
-      };
-    } = {
-      orchestrator: {
-        modelPath: nlrpath,
-        snapshots: settings,
-      },
-    };
-
-    const contentFileName: string = path.join(out, 'orchestrator.settings.json');
-
-    this.writeToFile(contentFileName, JSON.stringify(content, null, 2));
-  }
-
-  public static async getEntitiesInLu(input: string): Promise<any> {
-    const fileContents: string = OrchestratorHelper.readFile(input);
-    const luObject: any = {
-      content: fileContents,
-      id: input,
-    };
+  public static async getEntitiesInLu(luObject: any): Promise<any> {
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);
   }
@@ -276,22 +252,32 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap);
     } else if (ext === '.json') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
-      if (OrchestratorHelper.getLuisIntentsEnitiesUtterances(
-        fs.readJsonSync(filePath),
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap,
-        utteranceEntityLabelsMap,
-        utteranceEntityLabelDuplicateMap)) {
-        return;
+
+      try {
+        const rvLuis: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
+          fs.readJsonSync(filePath),
+          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap,
+          utteranceEntityLabelsMap,
+          utteranceEntityLabelDuplicateMap);
+        if (rvLuis) {
+          return;
+        }
+        const rvJson: boolean = OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+            fs.readJsonSync(filePath),
+            OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap);
+        if (!rvJson) {
+          throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+        }
+      } catch (error) {
+        Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEntitiesUtterances(), error=${error}`);
+        throw error;
       }
-      OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-        fs.readJsonSync(filePath),
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap,
-        utteranceEntityLabelsMap,
-        utteranceEntityLabelDuplicateMap);
     } else if (ext === '.tsv' || ext === '.txt') {
       Utility.writeToConsole(`Processing ${filePath}...\n`);
       OrchestratorHelper.parseTsvFile(
@@ -299,7 +285,7 @@ export class OrchestratorHelper {
         OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
         utteranceLabelsMap,
         utteranceLabelDuplicateMap);
-    } else if (ext === '.blu') {
+    } else if (ext === '.blu') { // ---- NOTE-TODO-processing-JSON-BLU-files ----
       Utility.writeToConsole(`Processing ${filePath}...\n`);
       OrchestratorHelper.parseTsvBluFile(
         filePath,
@@ -308,6 +294,28 @@ export class OrchestratorHelper {
     } else {
       throw new Error(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
     }
+  }
+
+  // eslint-disable-next-line max-params
+  static async parseJsonBluFile(
+    jsonBluFile: string,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    const fileContents: string = OrchestratorHelper.readFile(jsonBluFile);
+    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseJsonBluFile()');
+    // Utility.debuggingLog(`BEFORE calling OrchestratorHelper.parseJsonBluFile(), fileContents=${fileContents}`);
+    const jsonBluObject: any = JSON.parse(fileContents);
+    Utility.debuggingLog('AFTER calling OrchestratorHelper.parseJsonBluFile()');
+    OrchestratorHelper.getJsonBluIntentsEntitiesUtterances(
+      jsonBluObject,
+      hierarchicalLabel,
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
   }
 
   static parseTsvBluFile(
@@ -330,22 +338,49 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
-    const fileContents: string = OrchestratorHelper.readFile(luFile);
-    const luObject: any = {
-      content: fileContents,
-      id: luFile,
-    };
-    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseLuFile()');
-    // Utility.debuggingLog(`BEFORE calling OrchestratorHelper.parseLuFile(), fileContents=${fileContents}`);
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
-    Utility.debuggingLog('AFTER calling OrchestratorHelper.parseLuFile()');
-    OrchestratorHelper.getLuisIntentsEnitiesUtterances(
-      luisObject,
+
+    OrchestratorHelper.parseLuContent(
+      luFile,
+      OrchestratorHelper.readFile(luFile),
       hierarchicalLabel,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap);
+  }
+
+  // eslint-disable-next-line max-params
+  static async parseLuContent(
+    luFile: string,
+    luContent: string,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    const luObject: any = {
+      content: luContent,
+      id: luFile,
+    };
+    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+
+    try
+    {
+      const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
+        luisObject,
+        hierarchicalLabel,
+        utteranceLabelsMap,
+        utteranceLabelDuplicateMap,
+        utteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap);
+
+      if (!rvLu) {
+        throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
+    }
   }
 
   static parseTsvFile(
@@ -561,7 +596,7 @@ export class OrchestratorHelper {
   }
 
   // eslint-disable-next-line max-params
-  static getLuisIntentsEnitiesUtterances(
+  static getIntentsEntitiesUtterances(
     luisObject: any,
     hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
@@ -593,7 +628,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEnitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
       throw error;
     }
     return false;
@@ -622,6 +657,62 @@ export class OrchestratorHelper {
         );
       });
     });
+  }
+
+  // eslint-disable-next-line max-params
+  static getJsonBluIntentsEntitiesUtterances(
+    jsonBluObject: any,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+    try {
+      let jsonBluExamplesArray: any = null;
+      // eslint-disable-next-line no-prototype-builtins
+      if (jsonBluObject.hasOwnProperty('examples')) {
+        jsonBluExamplesArray = jsonBluObject.examples;
+      } else {
+        return false;
+      }
+      if (jsonBluExamplesArray.length > 0)  {
+        jsonBluExamplesArray.forEach((jsonBluExample: any) => {
+          const utterance: string = jsonBluExample.text.trim();
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonBluExample.hasOwnProperty('intents')) {
+            const jsonBluExampleIntents: any = jsonBluExample.intents;
+            jsonBluExampleIntents.forEach((jsonBluExampleIntent: any) => {
+              const jsonBluExampleIntentLabel: string = jsonBluExampleIntent.name;
+              OrchestratorHelper.addNewLabelUtterance(
+                utterance,
+                jsonBluExampleIntentLabel,
+                hierarchicalLabel,
+                utteranceLabelsMap,
+                utteranceLabelDuplicateMap);
+            });
+          }
+          // eslint-disable-next-line no-prototype-builtins
+          if (jsonBluExample.hasOwnProperty('entities')) { // ---- NOTE-TODO-NEED-TO-REEXAMINE-AFTER-BLU-IS-IMPLEMENTED ----
+            const jsonBluExampleEntities: any[] = jsonBluExample.entities;
+            jsonBluExampleEntities.forEach((jsonBluExampleEntity: any) => {
+              const jsonBluExampleEntityLabel: string = jsonBluExampleEntity.entity;
+              const jsonBluExampleEntityOffset: number = jsonBluExampleEntity.offset;
+              const jsonBluExampleEntityLength: number = jsonBluExampleEntity.length;
+              OrchestratorHelper.addNewEntityLabelUtterance(
+                utterance,
+                Label.newEntityLabel(jsonBluExampleEntityLabel, jsonBluExampleEntityOffset, jsonBluExampleEntityLength),
+                utteranceEntityLabelsMap,
+                utteranceEntityLabelDuplicateMap);
+            });
+          }
+        });
+        return true;
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
+    }
+    return false;
   }
 
   // eslint-disable-next-line max-params
@@ -903,5 +994,50 @@ export class OrchestratorHelper {
       }
     });
     return retPayload;
+  }
+
+  private static async getLuInputsEx(inputPath: string, retPayload: any[]) {
+    if (OrchestratorHelper.isDirectory(inputPath)) {
+      const items: string[] = fs.readdirSync(inputPath);
+      for (const item of items) {
+        const currentItemPath: string = path.join(inputPath, item);
+        OrchestratorHelper.getLuInputsEx(currentItemPath, retPayload);
+      }
+    } else {
+      const ext: string = path.extname(inputPath);
+      if (ext === '.lu') {
+        retPayload.push({
+          content: OrchestratorHelper.readFile(inputPath),
+          id: path.basename(inputPath, '.lu'),
+        });
+      }
+    }
+  }
+
+  public static getLuInputs(inputPath: string) {
+    const retPayload: any[] = [];
+    OrchestratorHelper.getLuInputsEx(inputPath, retPayload)
+    return retPayload;
+  }
+
+  public static  writeBuildOutputFiles(outputPath: string, retPayload: any) {
+    const buildOutputs: any[] = retPayload.outputs;
+    const bluPaths: any = retPayload.settings.orchestrator.snapshots;
+    for (const buildOutput of (buildOutputs || [])) {
+      const baseName: any = buildOutput.id;
+      const snapshotFile: string = path.join(outputPath, baseName + '.blu');
+      OrchestratorHelper.writeToFile(snapshotFile, buildOutput.snapshot);
+      Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
+
+      const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
+      this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
+      Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);
+
+      const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
+      this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
+      Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
+
+      if (buildOutput.recognizer !== undefined) bluPaths[baseName] = snapshotFile;
+    }
   }
 }

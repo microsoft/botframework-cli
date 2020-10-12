@@ -12,7 +12,7 @@ export default class OrchestratorNlrGet extends Command {
 
   static flags: flags.Input<any> = {
     out: flags.string({char: 'o', description: 'Path to Orchestrator model.'}),
-    versionId: flags.string({description: 'Model version to download.'}),
+    versionId: flags.string({description: 'Key to the model entry for download -- reference nlr:list output for options.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator nlr:get command help'}),
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
@@ -20,13 +20,14 @@ export default class OrchestratorNlrGet extends Command {
 
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorNlrGet);
-    const output: string = flags.out || __dirname;
+    const cwd: string = process.cwd();
+    const output: string = flags.out || cwd;
     const nlrId: any = flags.versionId;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(__dirname, output, '', __dirname);
+      OrchestratorSettings.init(cwd, output, '', cwd);
       await Orchestrator.nlrGetAsync(
         OrchestratorSettings.ModelPath,
         nlrId,

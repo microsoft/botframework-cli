@@ -3,11 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import {LabelResolver} from '../src/labelresolver';
-import {OrchestratorHelper} from '../src/orchestratorhelper';
-import {OrchestratorAdd} from '../src/add';
 import * as path from 'path';
+
 const sinon: any = require('sinon');
+
+import {LabelResolver} from '../src/labelresolver';
+// import {OrchestratorNlr} from '../src/nlr';
+// import {OrchestratorAdd} from '../src/add';
+import {OrchestratorHelper} from '../src/orchestratorhelper';
+// import {Utility} from '../src/utility';
+// import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorAddTests', () => {
   beforeEach(() => {
@@ -22,7 +27,8 @@ describe('OrchestratorAddTests', () => {
     sinon.restore();
   });
 
-  it('runAsync', async () => {
+  /* ---- NOTE-DISABLE-THESE-TESTS-TEMPORARILY ----
+  it('runAsync-0', async () => {
     await OrchestratorAdd.runAsync(
       './test/fixtures/',
       './test/fixtures/adaptive/',
@@ -30,7 +36,7 @@ describe('OrchestratorAddTests', () => {
       './test/fixtures/dispatch/orchestrator.blu');
   });
 
-  it('runAsync', async () => {
+  it('runAsync-1', async () => {
     await OrchestratorAdd.runAsync(
       './test/fixtures/',
       './test/fixtures/adaptive/',
@@ -38,4 +44,5 @@ describe('OrchestratorAddTests', () => {
       './test/fixtures/dispatch/orchestrator.blu',
       'testPrefix');
   });
+  */
 });

@@ -22,6 +22,7 @@ export default class OrchestratorEvaluate extends Command {
     low_confidence: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
     multi_label: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknown: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -86,7 +87,8 @@ export default class OrchestratorEvaluate extends Command {
         ambiguousClosenessParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
-        unknownLabelPredictionThresholdParameter);
+        unknownLabelPredictionThresholdParameter,
+        flags.fullEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
     }

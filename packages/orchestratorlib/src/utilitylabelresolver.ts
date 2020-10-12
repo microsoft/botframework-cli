@@ -33,14 +33,14 @@ export class UtilityLabelResolver {
   }
 
   public static resetLabelResolverSettingUseCompactEmbeddings(
-    useCompactEmbeddings: boolean = true,
+    fullEmbeddings: boolean = false,
     resetAll: boolean = false): any {
     const useCompactEmbeddingsObject: {
       use_compact_embeddings: boolean;
     } = {
-      use_compact_embeddings: useCompactEmbeddings,
+      use_compact_embeddings: !fullEmbeddings,
     };
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddings=${useCompactEmbeddings}`);
+    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), fullEmbeddings=${fullEmbeddings}`);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject=${useCompactEmbeddingsObject}`);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject.use_compact_embeddings=${useCompactEmbeddingsObject.use_compact_embeddings}`);

@@ -22,6 +22,7 @@ export default class OrchestratorCreate extends Command {
     out: flags.string({char: 'o', description: 'Path where generated orchestrator snapshot file will be placed. Default to current working directory.'}),
     model: flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
     hierarchical: flags.boolean({description: 'Add hierarchical labels based on lu/qna file name.'}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator create command help'}),
@@ -29,16 +30,20 @@ export default class OrchestratorCreate extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
-
-    const input: string = path.resolve(flags.in || __dirname);
+    const cwd: string = process.cwd();
+    const input: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;
     const nlrPath: string = flags.model;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(__dirname, nlrPath, output, __dirname);
-      await Orchestrator.createAsync(OrchestratorSettings.ModelPath, input, OrchestratorSettings.SnapshotPath, flags.hierarchical);
+      OrchestratorSettings.init(cwd, nlrPath, output, cwd);
+      await Orchestrator.createAsync(
+        OrchestratorSettings.ModelPath, 
+        input, OrchestratorSettings.SnapshotPath,
+        flags.hierarchical,
+        flags.fullEmbeddings);
       OrchestratorSettings.persist();
     } catch (error) {
       throw (new CLIError(error));

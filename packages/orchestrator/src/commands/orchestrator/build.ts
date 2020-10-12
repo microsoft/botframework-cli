@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
+import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings} from '../../utils/settings';
 
 export default class OrchestratorBuild extends Command {
@@ -18,6 +18,7 @@ export default class OrchestratorBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     luconfig: flags.string({description: 'Path to luconfig.json.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
+    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
@@ -25,19 +26,34 @@ export default class OrchestratorBuild extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
     const input: string = flags.in ? path.resolve(flags.in) : '';
-    const output: string = path.resolve(flags.out || __dirname);
+    const cwd: string = process.cwd();
+    let output: string = path.resolve(flags.out || cwd);
     const isDialog: boolean = flags.dialog;
+    let luConfig: any = null;
     let luConfigPath: string = flags.luconfig;
 
     if (luConfigPath && luConfigPath.length > 0) {
       luConfigPath = path.resolve(luConfigPath);
+      luConfig = JSON.parse(OrchestratorHelper.readFile(luConfigPath));
     }
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
+    if (!OrchestratorHelper.isDirectory(output)) {
+      output = path.dirname(output);
+    }
 
     try {
-      OrchestratorSettings.init(__dirname, flags.model, output, __dirname);
-      await Orchestrator.buildAsync(OrchestratorSettings.ModelPath, input, output, isDialog, luConfigPath);
+      OrchestratorSettings.init(cwd, flags.model, output, cwd);
+      const retPayload: any = await Orchestrator.buildAsync(
+        OrchestratorSettings.ModelPath,
+        OrchestratorHelper.getLuInputs(input),
+        isDialog,
+        luConfig,
+        flags.fullEmbeddings);
+      OrchestratorHelper.writeBuildOutputFiles(output, retPayload);
+      const settingsFile: string = path.join(output, 'orchestrator.settings.json');
+      OrchestratorHelper.writeToFile(settingsFile, JSON.stringify(retPayload.settings, null, 2));
+      this.log(`orchestrator.settings.json is written to ${settingsFile}`);
     } catch (error) {
       throw (new CLIError(error));
     }
