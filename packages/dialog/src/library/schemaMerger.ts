@@ -140,7 +140,7 @@ class ComponentNode {
         return sort
     }
 
-    public patterns(extensions: string[], negativePatterns: string[]): string[] {
+    public patterns(extensions: string[], negativePatterns: string[], imports: string): string[] {
         let patterns = this.explictPatterns
         if (patterns.length === 0 && this.metadata.path) {
             patterns = []
@@ -153,6 +153,7 @@ class ComponentNode {
             } else if (this.metadata.path.endsWith('.csproj')) {
                 patterns.push(`!${ppath.join(root, 'bin/**')}`)
             }
+            patterns.push(`!${imports}`)
             patterns.push(`!${ppath.join(root, 'test/**')}`)
             patterns.push(`!${ppath.join(root, 'tests/**')}`)
             patterns = patterns.concat(negativePatterns)
@@ -1249,7 +1250,7 @@ export class SchemaMerger {
     private async expandPackages(paths: string[]): Promise<void> {
         await this.buildComponentTree(paths)
         for (let component of this.components) {
-            let patterns = component.patterns(this.extensions, this.negativePatterns).map(forwardSlashes)
+            let patterns = component.patterns(this.extensions, this.negativePatterns, this.imports).map(forwardSlashes)
             for (let path of await glob(patterns)) {
                 let ext = ppath.extname(path)
                 let map = this.files.get(ext)
@@ -1292,6 +1293,8 @@ export class SchemaMerger {
                             if (winnerSrc !== altSrc) {
                                 conflicts.push(alt)
                             }
+                        } else if (ext !== '.uischema') {
+                            conflicts.push(alt)
                         }
                     }
                 }

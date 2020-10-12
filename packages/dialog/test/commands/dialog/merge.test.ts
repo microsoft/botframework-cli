@@ -111,7 +111,14 @@ function checkMerged(merged: merger.Imports | undefined, adds: number, conflicts
                             assert(actualVal[e] === expectedVal[e], `${actual.name}.${key}[${e}] ${actualVal[e]} != ${expectedVal[e]} ${msg}`)
                         }
                     } else {
-                        assert(actualVal === expectedVal, `${actual.name}.${key} ${actual} != ${expected} ${msg}`)
+                        if (key === 'path') {
+                            actualVal = actualVal.replace(/\\/g, '/')
+                            expectedVal = expectedVal.replace(/\\/g, '/')
+                            assert(actualVal.endsWith(expectedVal),
+                                `${actual.name}.${key} ${actualVal} does not end with ${expectedVal} ${msg}`)
+                        } else {
+                            assert(actualVal === expectedVal, `${actual.name}.${key} ${actualVal} != ${expectedVal} ${msg}`)
+                        }
                     }
                 }
             }
@@ -217,7 +224,9 @@ describe('dialog:merge', async () => {
             [{
                 name: 'nuget3',
                 version: '1.0.0',
-                path: 'C:\\Users\\chrimc\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\nuget\\nuget3\\1.0.0\\nuget3.nuspec', description: 'Nuget 3', releaseNotes: 'Changed metatdata',
+                path: 'nuget\\nuget3\\1.0.0\\nuget3.nuspec',
+                description: 'Nuget 3',
+                releaseNotes: 'Changed metatdata',
                 authors: ['Chris Tom', 'John Mark'],
                 keywords: ['a', 'good', 'thing'],
                 icon: 'icon.png', repository: 'https://github.com',
@@ -356,7 +365,7 @@ describe('dialog:merge', async () => {
             [{
                 name: 'dependent-package',
                 version: '1.0.0',
-                path: 'C:\\Users\\chrimc\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\root-package\\node_modules\\dependent-package\\package.json',
+                path: 'npm\\node_modules\\root-package\\node_modules\\dependent-package\\package.json',
                 description: 'A package',
                 releaseNotes: 'A good time.',
                 authors: ['Chris Tom'],
@@ -372,7 +381,7 @@ describe('dialog:merge', async () => {
             {
                 name: 'parent-package',
                 version: '1.0.0',
-                path: 'C:\\Users\\chrimc\\source\\repos\\botframework-cli\\packages\\dialog\\test\\commands\\dialog\\npm\\node_modules\\parent-package\\package.json',
+                path: 'npm\\node_modules\\parent-package\\package.json',
                 description: '',
                 releaseNotes: '',
                 authors: ['Chris Tom, tom@botmail.com, https://christom.com'],
@@ -410,6 +419,16 @@ describe('dialog:merge', async () => {
             process.chdir(cwd)
         }
     })
+
+    /* Example of invoking library through test because of issues with launch.json
+    it('botbuilder-schema', async () => {
+        console.log('\nStart botbuilder-schema')
+        let [merged, lines] = await merge(['../../../../../../botbuilder-dotnet/libraries/**\*.schema',
+    '../../../../../../botbuilder-dotnet/tests/**\*.schema'], 'sdk.schema', true)
+        console.log(merged)
+        console.log(lines)
+    })
+    */
 })
 
 /* TODO: These tests are related to verify and need to be updated and moved there.
