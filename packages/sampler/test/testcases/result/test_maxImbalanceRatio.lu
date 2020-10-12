@@ -1,0 +1,40 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+## greeting
+- say hello world to Bob
+- say hello world
+- hello world
+- hello
+- say hi
+- say hello to Bob
+- say hello
+- say hi to Bob
+- say hey to Bob
+
+
+## cancel
+- cancel that
+- stop
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+

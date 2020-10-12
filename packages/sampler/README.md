@@ -52,7 +52,7 @@ _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botf
 
 ## `bf sampler:sampling`
 
-Do sampling to lu files.
+Do sampling to utterances in lu files.
 
 ```
 USAGE
@@ -62,12 +62,12 @@ OPTIONS
   -h, --help                                Orchestrator 'assess' command help.
   -i, --in=in                               Path to lu file or folder that contains lu files.
   -o, --out=out                             Path where sampled lu files will be placed. Default to current working directory.
-  --maxImbalanceRatio=maxImbalanceRatio     [Default: 0.1] Max imbalance ratio for sampling.
+  --maxImbalanceRatio=maxImbalanceRatio     [Default: 10 Max imbalance ratio for sampling.
   --maxUtteranceAllowed=maxUtteranceAllowed [Default: 15000] Max utterances allowed after samping.
   --sampleSize=sampleSize                   [Default: 2] sample size.
 
 EXAMPLE
-  bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 0.1 --maxUtteranceAllowed 15000 --sampleSize 2
+  bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000 --sampleSize 2
 ```
 
 _See code: [src\commands\orchestrator\assess.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/sampler/sampling.ts)_
