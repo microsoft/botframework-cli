@@ -84,3 +84,10 @@ tsconfig.tsbuildinfo
 
 # download NLR model file folder
 model_dte_roberta_for_test_command
+**/*.blu
+**/*.json
+**/*.onnx
+**/*.config
+**/vocab.txt
+**/merges.txt
+**/model/**/license.md

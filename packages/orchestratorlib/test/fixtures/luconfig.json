@@ -1,0 +1,16 @@
+{
+    "botName":"MyProject",
+    "region": "westus",
+    "defaultCulture":"en-us",
+    "deleteOldVersion": true, 
+    "dialog": "multiLanguage",
+    "fallbackLocale": "en-us",
+    "force": true,  
+    "out": ".",
+    "suffix": "bobd",
+    "models": [
+        "./test/fixtures/adaptive/AddToDoDialog.lu",
+        "./test/fixtures/adaptive/DeleteToDoDialog.lu",
+        "./test/fixtures/adaptive/GetUserProfileDialog.lu"
+    ]
+}

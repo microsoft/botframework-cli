@@ -10,7 +10,7 @@ Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/micro
 
 ## Prerequisite
 
-- [Node.js](https://nodejs.org/) version 12 or higher
+- [Node.js](https://nodejs.org/) version 10.14.1 or higher
 - @microsoft/botframework-cli
 ```
 $ npm install -g @microsoft/botframework-cli

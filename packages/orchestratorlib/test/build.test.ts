@@ -21,10 +21,12 @@ describe('OrchestratorBuildTests', () => {
   });
 
   it('runAsync', async () => {
+    /*
     await OrchestratorBuild.runAsync(
       './test/fixtures/',
-      './test/fixtures/dispatch/',
-      './test/fixtures/',
-      true);
+      OrchestratorHelper.getLuInputs('./test/fixtures/dispatch/'),
+      true,
+      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+    */
   });
 });
