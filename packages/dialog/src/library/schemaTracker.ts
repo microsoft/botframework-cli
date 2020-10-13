@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import ajv from 'ajv';
+import Ajv = require('ajv')
 import parser from '@apidevtools/json-schema-ref-parser'
 
 let getUri: any = require('get-uri')
@@ -28,16 +28,15 @@ export class SchemaTracker {
     // Map from dialog path to kind.
     pathToKind: Map<string, string>
 
-    private readonly validator: ajv.Ajv
+    private readonly validator = new Ajv({logger: false});
 
     constructor() {
         this.kindToKind = new Map<string, Kind>()
         this.pathToKind = new Map<string, string>()
         // NOTE: This is so that ajv doesn't complain about extra keywords around $ref
-        this.validator = new ajv({logger: false})
     }
 
-    async getValidator(schemaPath: string): Promise<[ajv.ValidateFunction, boolean]> {
+    async getValidator(schemaPath: string): Promise<[Ajv.ValidateFunction, boolean]> {
         let validator = this.validator.getSchema(schemaPath)
         let added = false
         if (!validator) {
@@ -82,11 +81,15 @@ export class SchemaTracker {
                     this.validator.addSchema(metaSchema, metaSchemaName)
                 }
                 this.validator.addSchema(fullSchema, schemaPath)
-                validator = this.validator.getSchema(schemaPath) as ajv.ValidateFunction
+                validator = this.validator.getSchema(schemaPath)
+                if (!validator) {
+                    throw new Error(`Could not get validator for schema ${schemaPath}`)
+                }
             } catch (err) {
                 throw new Error(`Could not use schema ${schemaPath}\n${err.message}`)
             }
         }
+
         return [validator, added]
     }
 
