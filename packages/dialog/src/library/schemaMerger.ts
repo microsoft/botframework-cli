@@ -157,7 +157,7 @@ class ComponentNode {
             patterns.push(`!${imports}`)
             patterns.push(`!${ppath.join(root, 'test/**')}`)
             patterns.push(`!${ppath.join(root, 'tests/**')}`)
-            patterns = patterns.concat(negativePatterns)
+            patterns = [...patterns, ...negativePatterns]
         }
         return patterns
     }
@@ -1197,19 +1197,25 @@ export class SchemaMerger {
                 this.packages.add(path)
                 this.vlog(`${this.indent()}Following ${this.prettyPath(path)}`)
                 let pkg = await fs.readJSON(path)
+                let dependencies = { ...pkg.dependencies, ...pkg.optionalDependencies }
                 this.pushParent(this.packageJsonComponent(path, pkg))
-                if (pkg.dependencies) {
-                    for (let dependent of Object.keys(pkg.dependencies)) {
+                if (dependencies) {
+                    for (let dependent of Object.keys(dependencies)) {
+                        let lastDir = ''
                         let rootDir = ppath.dirname(path)
                         // Walk up parent directories to find package
-                        while (rootDir) {
+                        while (rootDir !== lastDir) {
                             let dependentPath = ppath.join(rootDir, 'node_modules', dependent, 'package.json')
                             if (await fs.pathExists(dependentPath)) {
                                 await this.expandPackageJson(dependentPath)
                                 break
                             } else {
+                                lastDir = rootDir
                                 rootDir = ppath.dirname(rootDir)
                             }
+                        }
+                        if (rootDir === lastDir && pkg.optionalDependencies && !(dependent in pkg.optionalDependencies)) {
+                            this.missingPackage(dependent)
                         }
                     }
                 }
@@ -1598,7 +1604,7 @@ export class SchemaMerger {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
                     } else {
-                        this.missing(val.$kind)
+                        this.missingKind(val.$kind)
                     }
                 }
                 return false
@@ -1910,10 +1916,10 @@ export class SchemaMerger {
         }
     }
 
-    // Report missing component.
-    private missing(kind: string): void {
+    // Report missing $kind.
+    private missingKind(kind: string): void {
         if (!this.missingKinds.has(kind)) {
-            this.error(`${this.currentKind}: Missing ${kind} schema file from merge`)
+            this.error(`${this.currentKind}: Error missing ${kind} schema file from merge`)
             this.missingKinds.add(kind)
             this.failed = true
         }
@@ -1973,6 +1979,12 @@ export class SchemaMerger {
     // Generic error message
     private uiError(path: string): void {
         this.error(`Error ${path} does not exist in schema`)
+        this.failed = true
+    }
+
+    // Report missing $kind.
+    private missingPackage(component: string): void {
+        this.error(`${this.currentFile}: Error could not find dependency ${component}`)
         this.failed = true
     }
 
