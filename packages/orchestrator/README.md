@@ -41,7 +41,7 @@ bf plugins:install @microsoft/bf-orchestrator-cli@beta
 To uninstall the bf-orchestrator-cli plugin, a step for upgrading the plugin:
 
 ```
-bf plugins:unstall @microsoft/bf-orchestrator-cli@beta
+bf plugins:unstall @microsoft/bf-orchestrator-cli
 ```
 
 # Commands
