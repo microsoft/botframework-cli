@@ -127,7 +127,7 @@ function checkMerged(merged: merger.Imports | undefined, adds: number, conflicts
 }
 
 describe('dialog:merge', async () => {
-    before(async () => {
+    beforeEach(async () => {
         // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
         await fs.remove(tempDir)
         await fs.mkdirp(tempDir)
@@ -345,6 +345,18 @@ describe('dialog:merge', async () => {
         assert((await fs.readFile(luPath, 'utf8')).includes('changed'), 'Did not write file')
         assert((await fs.readFile(jpgPath, 'utf8')).includes('changed'), 'Wrote file in check-only')
         assert(!await fs.pathExists(deletedPath), 'Did not delete file')
+
+        // Fifth import with component removed
+        console.log('\nFifth import removing reference')
+        await modifyFile(project, /<PackageReference.*/, '')
+        let [merged5, lines5] = await merge([project], 'project3.schema', true, undefined, false)
+        assert(merged5, 'Could not merge 5th')
+        assert(countMatches(/error/i, lines5) === 1, 'Error merging schemas 5th')
+        assert(countMatches(/warning/i, lines5) === 1, 'Wrong number of warnings 5th')
+        assert(merged5?.added.length === 0, 'Wrong number added 5th')
+        assert(merged5?.deleted.length === 4, 'Wrong number deleted 5th')
+        assert(merged5?.unchanged.length === 0, 'Wrong number unchanged 5th')
+        assert(merged5?.conflicts.length === 1, 'Wrong number of conflicts on 5th')
     })
 
     it('package.json', async () => {

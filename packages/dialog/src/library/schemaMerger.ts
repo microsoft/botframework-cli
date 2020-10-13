@@ -784,14 +784,16 @@ export class SchemaMerger {
             added: [], deleted: [], unchanged: [], conflicts: [],
             components: []
         }
-        if (imports && !this.schemaPath && this.components.length > 0) {
+        if (imports && !this.schemaPath) {
             this.log(`Copying exported assets to ${this.imports}`)
+            let processed = new Set<string>()
             for (let component of this.components) {
                 if (!component.isRoot()) {
                     let exported = ppath.join(ppath.dirname(component.metadata.path), 'exported')
                     if (component.isTopComponent()) {
                         imports.components.push(component.metadata)
                     }
+                    processed.add(component.metadata.name)
 
                     if (await fs.pathExists(exported)) {
                         let used = new Set<string>()
@@ -850,6 +852,27 @@ export class SchemaMerger {
                                     await fs.remove(path)
                                 }
                             }
+                        }
+                    }
+                }
+            }
+
+            // Identify previously imported components that are not there any more
+            if (await fs.pathExists(this.imports)) {
+                for (let importedDir of await fs.readdir(this.imports)) {
+                    if (!processed.has(importedDir)) {
+                        for (let path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '/**')))) {
+                            let { unchanged } = await hash.isUnchanged(path)
+                            if (unchanged) {
+                                imports.deleted.push(path)
+                                this.vlog(`Delete ${path}`)
+                            } else {
+                                imports.conflicts.push({ definition: '', path })
+                                this.warn(`Warning deleted modified ${path}`)
+                            }
+                        }
+                        if (!this.checkOnly) {
+                            await fs.remove(importedDir)
                         }
                     }
                 }
