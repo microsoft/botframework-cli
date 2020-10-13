@@ -21,7 +21,7 @@
     "node-fetch": "~2.6.0",
     "please-upgrade-node": "^3.0.1",
     "semver": "^5.5.1",
-    "tslib": "^1.9.3",
+    "tslib": "^2.0.3",
     "window-size": "^1.1.0"
   },
   "devDependencies": {

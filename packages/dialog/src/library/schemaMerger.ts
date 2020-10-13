@@ -9,16 +9,17 @@ import * as nuget from '@snyk/nuget-semver'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as xp from 'xml2js'
-import Validator from 'ajv'
-import glob from 'globby'
+import Ajv = require('ajv');
 import parser from '@apidevtools/json-schema-ref-parser'
 import {JsonPointer as ptr} from 'json-ptr'
 
-let allof: any = require('json-schema-merge-allof')
-let clone: any = require('clone')
-let getUri: any = require('get-uri')
-let util: any = require('util')
-let exec: any = util.promisify(require('child_process').exec)
+const allof = require('json-schema-merge-allof')
+const clone = require('clone')
+const getUri = require('get-uri')
+const glob = require('globby')
+const util = require('util')
+
+const exec = util.promisify(require('child_process').exec)
 
 // Walk over JSON object, stopping if true from walker.
 // Walker gets the current value, the parent object and full path to that object
@@ -280,7 +281,7 @@ export class SchemaMerger {
     private readonly files: Map<string, Map<string, PathComponent[]>> = new Map<string, Map<string, PathComponent[]>>()
 
     // Validator for checking schema
-    private readonly validator = new Validator()
+    private readonly validator = new Ajv()
 
     // $schema that defines allowed component .schema
     private metaSchemaId = ''
@@ -784,7 +785,7 @@ export class SchemaMerger {
     // Validate against component schema
     private validateSchema(schema: any): void {
         if (!this.validator.validate('componentSchema', schema)) {
-            for (let error of this.validator.errors as Validator.ErrorObject[]) {
+            for (let error of this.validator.errors as Ajv.ErrorObject[]) {
                 this.schemaError(error)
             }
             this.validator.errors = undefined
@@ -794,7 +795,7 @@ export class SchemaMerger {
     // Validate against UI schema
     private validateUISchema(schema: any): void {
         if (!this.validator.validate('UISchema', schema)) {
-            for (let error of this.validator.errors as Validator.ErrorObject[]) {
+            for (let error of this.validator.errors as Ajv.ErrorObject[]) {
                 this.schemaError(error)
             }
             this.validator.errors = undefined
@@ -1717,7 +1718,7 @@ export class SchemaMerger {
     }
 
     // Error in schema validity
-    private schemaError(err: Validator.ErrorObject): void {
+    private schemaError(err: Ajv.ErrorObject): void {
         this.error(`${this.currentFile}: ${err.dataPath} error: ${err.message}`)
         this.failed = true
     }
