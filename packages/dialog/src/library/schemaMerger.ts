@@ -105,7 +105,7 @@ class ComponentNode {
     private processed = false
 
     constructor(component?: Component) {
-        this.metadata = component || { path: '', name: '', version: '' } as Component
+        this.metadata = component ?? { path: '', name: '', version: '' } as Component
     }
 
     // Add a child component
@@ -190,14 +190,7 @@ class ComponentNode {
 
     // Test to see if first-level component
     public isTopComponent(): boolean {
-        let top = false
-        for (let parent of this.parents) {
-            if (parent.parents.length > 0 && parent.isRoot()) {
-                top = true
-                break
-            }
-        }
-        return top
+        return this.parents.find(p => p.parents.length > 0 && p.isRoot()) !== undefined
     }
 
     // Test to see if all parents are processed which means you can be added to sort.
@@ -462,10 +455,10 @@ export class SchemaMerger {
         this.log = log
         this.warn = warn
         this.error = error
-        this.extensions = extensions || ['.schema', '.lu', '.lg', '.qna', '.dialog', '.uischema']
+        this.extensions = extensions ?? ['.schema', '.lu', '.lg', '.qna', '.dialog', '.uischema']
         this.schemaPath = schema
         this.debug = debug
-        this.nugetRoot = nugetRoot || ''
+        this.nugetRoot = nugetRoot ?? ''
     }
 
     /** 
@@ -962,18 +955,18 @@ export class SchemaMerger {
 
     private nuspecComponent(path: string, nuspec: any): Component {
         let component: Component = {
-            name: nuspec.id?.[0] || '',
-            version: nuspec.version?.[0] || '',
+            name: nuspec.id?.[0] ?? '',
+            version: nuspec.version?.[0] ?? '',
             path,
-            description: nuspec.description?.[0] || '',
-            releaseNotes: nuspec.releaseNotes?.[0] || '',
-            authors: nuspec.authors?.[0].split(',').map(s => s.trim()) || [],
-            keywords: nuspec.tags?.[0].split(' ').map(s => s.trim()) || [],
-            icon: nuspec.icon?.[0] || '',
-            repository: nuspec.repository?.[0].$?.url || '',
-            license: nuspec.license?.[0] || '',
-            language: nuspec.language?.[0] || '',
-            copyright: nuspec.copyright?.[0] || '',
+            description: nuspec.description?.[0] ?? '',
+            releaseNotes: nuspec.releaseNotes?.[0] ?? '',
+            authors: nuspec.authors?.[0].split(',').map(s => s.trim()) ?? [],
+            keywords: nuspec.tags?.[0].split(' ').map(s => s.trim()) ?? [],
+            icon: nuspec.icon?.[0] ?? '',
+            repository: nuspec.repository?.[0].$?.url ?? '',
+            license: nuspec.license?.[0] ?? '',
+            language: nuspec.language?.[0] ?? '',
+            copyright: nuspec.copyright?.[0] ?? '',
             includesSchema: false,
             includesExports: false
         }
@@ -1054,7 +1047,7 @@ export class SchemaMerger {
                         }
                     }
                     let version = nuget.minSatisfying(versions, minVersion)
-                    pkgPath = ppath.join(pkgPath, version || '')
+                    pkgPath = ppath.join(pkgPath, version ?? '')
                     let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
                     await this.expandNuspec(nuspecPath)
                 } else if (this.debug) {
@@ -1072,6 +1065,25 @@ export class SchemaMerger {
         }
     }
 
+    private packageComponent(path: string): Component {
+        return {
+            name: '',
+            version: '',
+            path,
+            description: '',
+            releaseNotes: '',
+            authors: [],
+            keywords: [],
+            icon: '',
+            repository: '',
+            license: '',
+            language: '',
+            copyright: '',
+            includesSchema: false,
+            includesExports: false
+        }
+    }
+
     // Expand .csproj packages, nugets and projects
     private async expandCSProj(path: string): Promise<void> {
         path = normalize(path)
@@ -1080,7 +1092,7 @@ export class SchemaMerger {
             try {
                 this.currentFile = this.prettyPath(path)
                 this.vlog(`${this.indent()}Following ${this.currentFile}`)
-                this.pushParent({ path } as Component)
+                this.pushParent(this.packageComponent(path))
                 let json = await this.xmlToJSON(path)
 
                 // Walk projects
@@ -1145,15 +1157,15 @@ export class SchemaMerger {
             name: pkg.name,
             version: pkg.version,
             path,
-            description: pkg.description || '',
-            releaseNotes: pkg.releaseNotes || '',
+            description: pkg.description ?? '',
+            releaseNotes: pkg.releaseNotes ?? '',
             authors: [],
-            keywords: pkg.keywords || [],
-            icon: pkg.icon || '',
+            keywords: pkg.keywords ?? [],
+            icon: pkg.icon ?? '',
             repository: '',
-            license: pkg.license || '',
-            language: pkg.language || '',
-            copyright: pkg.copyright || '',
+            license: pkg.license ?? '',
+            language: pkg.language ?? '',
+            copyright: pkg.copyright ?? '',
             includesSchema: false,
             includesExports: false
         }
