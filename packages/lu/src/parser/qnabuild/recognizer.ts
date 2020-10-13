@@ -3,26 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Settings} from './settings'
-import * as path from 'path'
-
 export class Recognizer {
-  static load(qnaFile: string, targetFileName: string, dialogPath: string, qnaSettings: Settings, existingRecognizer: any, schema?: string): Recognizer {
-    if (existingRecognizer) {
-      let recognizer = new Recognizer(qnaFile, targetFileName, schema)
-      recognizer.dialogPath = dialogPath
-      Object.assign(recognizer, existingRecognizer)
-      recognizer.setKBId(qnaSettings.qna[path.basename(qnaFile).split('.').join('_')])
-
-      return recognizer
-    }
-
-    let recognizer = new Recognizer(qnaFile, targetFileName, schema)
-    recognizer.dialogPath = dialogPath
-
-    return recognizer
-  }
-
   private readonly id: string
   private readonly knowledgeBaseId: string | undefined
   private readonly hostname: string | undefined
@@ -31,12 +12,13 @@ export class Recognizer {
   private kbId: string
   private dialogPath: string | undefined
 
-  constructor(private readonly qnaFile: string, targetFileName: string, schema?: string) {
+  constructor(private readonly qnaFile: string, targetFileName: string, dialogPath: string, schema?: string) {
     this.kbId = ''
     this.id = `QnA_${targetFileName.split('.')[0]}`
     this.knowledgeBaseId = `=settings.qna.${targetFileName.split('.').join('_').replace(/-/g, '_')}`
     this.hostname = '=settings.qna.hostname'
     this.endpointKey = '=settings.qna.endpointKey'
+    this.dialogPath = dialogPath
     this.$schema = schema
   }
 

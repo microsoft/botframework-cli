@@ -27,7 +27,7 @@ module.exports = {
    * Cross train lu and qna files.
    * @param {string} input full path of input lu and qna files folder.
    * @param {string} intentName interruption intent name. Default value is _Interruption.
-   * @param {string} config path to config of mapping rules or mapping rules json content itself. If undefined, it will read config.json from input folder.
+   * @param {string} config path to config of mapping rules or mapping rules json content itself.
    * @param {boolean} verbose verbose to indicate whether log warnings and errors or not when parsing cross-train files.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
@@ -37,10 +37,15 @@ module.exports = {
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
     const configContent = config && !fs.existsSync(config) ? {id: path.join(input, 'config.json'), content: config} : await file.getConfigContent(config)
 
-    const configObject = file.getConfigObject(configContent, intentName, verbose)
+    const trainedResult = await crossTrainer.crossTrain(
+      luContents,
+      qnaContents,
+      JSON.parse(configContent.content), {
+      configId: configContent.id,
+      intentName,
+      verbose
+    })
 
-    const trainedResult = await crossTrainer.crossTrain(luContents, qnaContents, configObject)
-    
     return trainedResult
   }
 }

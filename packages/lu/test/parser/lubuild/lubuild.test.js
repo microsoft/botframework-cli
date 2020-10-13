@@ -244,15 +244,13 @@ describe('builder: loadContents function can resolve import files with customize
 
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
-      [`${path.join(rootDir, "lu-import-resolver", "common.en-us.lu")}`],
-      "en-us",
-      "dev",
-      "westus",
-      undefined,
-      importResolver)
+      [`${path.join(rootDir, "lu-import-resolver", "common.en-us.lu")}`], {
+      culture: 'en-us',
+      importResolver: importResolver
+    })
 
-    assert.equal(result.luContents.length, 1)
-    assert.isTrue(result.luContents[0].content.includes(
+    assert.equal(result.length, 1)
+    assert.isTrue(result[0].content.includes(
       `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}## cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## welcome${NEWLINE}- welcome here`
     ))
   })
@@ -269,13 +267,10 @@ describe('builder: loadContents function can resolve import files with new impor
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
       [`${path.join(rootDir, "new-import-format", "a.lu")}`],
-      "en-us",
-      "dev",
-      "westus",
-      undefined)
+      {culture: 'en-us'})
 
-    assert.equal(result.luContents.length, 1)
-    assert.isTrue(result.luContents[0].content.includes(
+    assert.equal(result.length, 1)
+    assert.isTrue(result[0].content.includes(
       `## cancel${NEWLINE}- stop that${NEWLINE}- cancel the task${NEWLINE}${NEWLINE}${NEWLINE}## greeting${NEWLINE}- hello`
     ))
   })
@@ -287,10 +282,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-syntax.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -303,10 +295,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-syntax2.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -319,10 +308,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-syntax3.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -335,10 +321,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-reference.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -351,10 +334,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-reference2.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -367,10 +347,7 @@ describe('builder: loadContents function can catch invalid import exceptions suc
     try {
       await builder.loadContents(
         [`${path.join(rootDir, "new-import-format", "invalid-reference3.lu")}`],
-        "en-us",
-        "dev",
-        "westus",
-        undefined)
+        {culture: 'en-us'})
 
       assert.fail("Invalid syntax exception is not thrown.")
     } catch (e) {
@@ -385,10 +362,10 @@ describe('builder: build function can catch relative endpoint exception successf
     try {
       await builder.build(
         [new luObject('# Greeting')],
-        undefined,
         'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
-        'http:fsd'
-      )
+        'test', {
+        endpoint: 'http:fsd'
+      })
 
       assert.fail("Relative endpoint exception is not thrown.")
     } catch (e) {
@@ -401,10 +378,10 @@ describe('builder: build function can catch relative endpoint exception successf
     try {
       await builder.build(
         [new luObject('# Greeting')],
-        undefined,
         'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
-        'fsd'
-      )
+        'test', {
+        endpoint: 'fsd'
+      })
 
       assert.fail("Relative endpoint exception is not thrown.")
     } catch (e) {

@@ -354,7 +354,7 @@ OPTIONS
 
   --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
-  --dialog=dialog                  [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
+  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set

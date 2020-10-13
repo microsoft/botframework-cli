@@ -278,16 +278,13 @@ describe('builder: loadContents function can resolve import files with customize
 
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
-      [`${path.join(rootDir, "common.en-us.qna")}`],
-      "test",
-      "dev",
-      "westus",
-      "en-us",
-      undefined,
-      importResolver)
+      [`${path.join(rootDir, "common.en-us.qna")}`], {
+        culture: 'en-us',
+        importResolver: importResolver
+      })
 
-    assert.equal(result.qnaContents.length, 1)
-    assert.isTrue(result.qnaContents[0].content.includes(
+    assert.equal(result.length, 1)
+    assert.isTrue(result[0].content.includes(
       `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
   })
 })
@@ -297,10 +294,11 @@ describe('builder: build function can catch relative endpoint exception successf
     const builder = new Builder(() => { })
     try {
       await builder.build(
-        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``)],
-        undefined,
-        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
-        'http:fsd'
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))],
+        "f8c64e2a-1111-3a09-8f78-39d7adc76ec5",
+        "test", {
+          endpoint: 'http:fsd'
+        }
       )
 
       assert.fail("Relative endpoint exception is not thrown.")
@@ -313,10 +311,11 @@ describe('builder: build function can catch relative endpoint exception successf
     const builder = new Builder(() => { })
     try {
       await builder.build(
-        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``)],
-        undefined,
-        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
-        'fsd'
+        [new qnaObject(`# ? Greeting${NEWLINE}\`\`\`${NEWLINE}hello${NEWLINE}\`\`\``, new qnaOptions('', true, 'en-us', ''))],
+        "f8c64e2a-1111-3a09-8f78-39d7adc76ec5",
+        "test", {
+          endpoint: 'fsd'
+        }
       )
 
       assert.fail("Relative endpoint exception is not thrown.")
