@@ -9,7 +9,7 @@ import {Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestra
 import {OrchestratorSettings} from '../../utils/settings';
 
 export default class OrchestratorAdd extends Command {
-  static description: string = 'Add examples from .lu/.qna/.json/.blu files to existing orchestrator examples file';
+  static description: string = 'Add examples from .lu/.qna/.json/.blu files to existing Orchestrator snapshot file';
 
   static examples: Array<string> = [`
     $ bf orchestrator:add 
@@ -20,11 +20,10 @@ export default class OrchestratorAdd extends Command {
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
     model: flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
-    out: flags.string({char: 'o', description: 'Path where generated orchestrator example file will be placed. Default to current working directory.'}),
-    prefix: flags.string({char: 'p', description: 'Prefix to be added label in snapshot.'}),
-    snapshot: flags.string({char: 's', description: 'Existing orchestrator snapshot to append to.'}),
+    out: flags.string({char: 'o', description: 'Path where generated Orchestrator example file will be placed. Default to current working directory.'}),
+    prefix: flags.string({char: 'p', description: 'Prefix to be added to label in snapshot.'}),
+    snapshot: flags.string({char: 's', description: 'Existing Orchestrator snapshot to append to.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
-    hierarchical: flags.boolean({description: 'Add hierarchical labels based on input file name.'}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator add command help'}),

@@ -49,6 +49,7 @@ bf plugins:unstall @microsoft/bf-orchestrator-cli
 <!-- commands -->
 
 * [`bf orchestrator`](#bf-orchestrator)
+* [`bf orchestrator:add`](#bf-orchestratoradd)
 * [`bf orchestrator:assess`](#bf-orchestratorassess)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:build`](#bf-orchestratorbuild)
@@ -71,6 +72,36 @@ OPTIONS
 ```
 
 _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
+
+
+## `bf orchestrator:add`
+
+Add examples from .lu/.qna/.json/.blu files to existing Orchestrator snapshot file.
+
+```
+USAGE
+  $ bf orchestrator:add
+
+OPTIONS
+  -d, --debug
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               Orchestrator add command help
+  -i, --in=in              Path to example file (.lu/.qna/.json/.tsv/.blu).
+  -m, --model=model        Path to Orchestrator model directory.
+  -o, --out=out            Path where generated Orchestrator example file will be placed. Default to current working directory
+  -p, --prefix=prefix      Prefix to be added to label in snapshot
+  -s, --snapshot=snapshot  Existing Orchestrator snapshot to append to
+  --dialog                 Generate multi language or cross train Orchestrator recognizers.
+
+EXAMPLE
+       $ bf orchestrator:add 
+       $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/
+       $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/
+       $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
+```
+
+_See code: [src\commands\orchestrator\add.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/add.ts)_
+
 
 ## `bf orchestrator:assess`
 
@@ -345,7 +376,7 @@ OPTIONS
   -h, --help         Orchestrator create command help
 
   -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
-                     to current working directory.
+                     to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
 
   -m, --model=model  Path to Orchestrator model directory.
 
