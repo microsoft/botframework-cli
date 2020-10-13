@@ -5,7 +5,7 @@
 // tslint:disable:no-console
 // tslint:disable:no-object-literal-type-assertion
 
-import {assert} from 'chai'
+import { assert } from 'chai'
 import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
@@ -26,7 +26,7 @@ function countMatches(pattern: string | RegExp, lines: string[]): number {
 
 async function merge(patterns: string[], output?: string, verbose?: boolean, schemaPath?: string, checkOnly?: boolean): Promise<[merger.Imports | undefined, string[]]> {
     let lines: string[] = []
-    let logger = msg => {
+    let logger = (msg: string) => {
         console.log(msg)
         lines.push(msg)
     }
@@ -34,7 +34,7 @@ async function merge(patterns: string[], output?: string, verbose?: boolean, sch
     let mergeClass = new merger.SchemaMerger(patterns,
         outputDir,
         undefined,
-        checkOnly == undefined ? false : checkOnly,
+        checkOnly === undefined ? false : checkOnly,
         verbose || false,
         logger, logger, logger,
         undefined,
@@ -86,6 +86,44 @@ async function modifyFile(path: string, pattern: RegExp, replacement: string) {
     let contents = await fs.readFile(path, 'utf-8')
     contents = contents.replace(pattern, replacement)
     await fs.writeFile(path, contents)
+}
+
+function checkMerged(merged: merger.Imports | undefined, adds: number, conflicts: number, deletes: number, unchanged: number, msg: string, components?: any[]) {
+    if (merged) {
+        // NOTE: This is useful to help write tests.
+        // console.log(`adds: ${merged.added.length}, conflicts: ${merged.conflicts.length}, deleted: ${merged.deleted.length}, unchanged: ${merged.unchanged.length}`)
+        // console.log(JSON.stringify(merged.components))
+        assert(merged.added.length === adds, `Wrong number of adds ${msg}`)
+        assert(merged.conflicts.length === conflicts, `Wrong number of conflicts ${msg}`)
+        assert(merged.deleted.length === deletes, `Wrong number of deletes ${msg}`)
+        assert(merged.unchanged.length === unchanged, `Wrong number of unchanged ${msg}`)
+        if (components) {
+            assert(merged.components.length === components.length, `Wrong number of components ${msg}`)
+            for (let i = 0; i < components.length; ++i) {
+                let actual: any = merged.components[i]
+                let expected: any = components[i]
+                for (let key of Object.keys(expected)) {
+                    let actualVal = actual[key]
+                    let expectedVal = expected[key]
+                    if (Array.isArray(expectedVal)) {
+                        assert(actualVal.length === expectedVal.length, `${actual.name}.${key} length ${actualVal.length} != ${expectedVal.length} ${msg}`)
+                        for (let e = 0; e < actualVal.length; ++e) {
+                            assert(actualVal[e] === expectedVal[e], `${actual.name}.${key}[${e}] ${actualVal[e]} != ${expectedVal[e]} ${msg}`)
+                        }
+                    } else {
+                        if (key === 'path') {
+                            actualVal = actualVal.replace(/\\/g, '/')
+                            expectedVal = expectedVal.replace(/\\/g, '/')
+                            assert(actualVal.endsWith(expectedVal),
+                                `${actual.name}.${key} ${actualVal} does not end with ${expectedVal} ${msg}`)
+                        } else {
+                            assert(actualVal === expectedVal, `${actual.name}.${key} ${actualVal} != ${expectedVal} ${msg}`)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 describe('dialog:merge', async () => {
@@ -179,9 +217,22 @@ describe('dialog:merge', async () => {
         assert(countMatches(/Parsing.*nuget3.component1.schema/, lines) === 1, 'Missing nuget3.component1.schema')
         assert(countMatches(/Copying/i, lines) === 2, 'Wrong number of copies')
         assert(countMatches(/Copy /i, lines) === 6, 'Did not copy resources')
-        assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'nuget3', 'stuff', 'nuget3.qna')), 'Did not copy directory')
+        assert(await fs.pathExists(ppath.join(tempDir, 'imported', 'nuget3', 'stuff', 'nuget3.qna')), 'Did not copy directory')
         await compareToOracle('project3.schema')
         await compareToOracle('project3.en-us.uischema')
+        checkMerged(merged, 6, 0, 0, 0, '',
+            [{
+                name: 'nuget3',
+                version: '1.0.0',
+                path: 'nuget\\nuget3\\1.0.0\\nuget3.nuspec',
+                description: 'Nuget 3',
+                releaseNotes: 'Changed metatdata',
+                authors: ['Chris Tom', 'John Mark'],
+                keywords: ['a', 'good', 'thing'],
+                icon: 'icon.png', repository: 'https://github.com',
+                license: 'MIT',
+                language: 'en-us', copyright: 'Mine only.', includesSchema: true, includesExports: true
+            }])
     })
 
     it('csproj-errors', async () => {
@@ -245,40 +296,31 @@ describe('dialog:merge', async () => {
         let [merged, lines] = await merge([project], 'project3.schema', false)
         assert(merged, 'Could not merge')
         assert(countMatches(/error|warning/i, lines) === 0, 'Error merging schemas')
-        assert(merged?.added.length === 6, 'Wrong number added')
-        assert(merged?.deleted.length === 0, 'Wrong number deleted')
-        assert(merged?.unchanged.length === 0, 'Wrong number unchanged')
-        assert(merged?.conflicts.length === 0, 'No conflicts on initial copy')
+        checkMerged(merged, 6, 0, 0, 0, 'initial')
 
         // Second import with no changes
         console.log('\nSecond import without changes')
         let [merged2, lines2] = await merge([project], 'project3.schema', false)
         assert(merged2, 'Could not merge 2nd')
         assert(countMatches(/error|warning/i, lines2) === 0, 'Error merging schemas 2nd')
-        assert(merged2?.added.length === 1, 'Wrong number added 2nd')
-        assert(merged2?.deleted.length === 0, 'Wrong number deleted 2nd')
-        assert(merged2?.unchanged.length === 5, 'Wrong number unchanged 2nd')
-        assert(merged2?.conflicts.length === 0, 'No conflicts on 2nd')
+        checkMerged(merged2, 1, 0, 0, 5, '2nd')
 
         // Third import with changes but check only
         console.log('\nThird import with check-only changes')
-        let luPath = ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.lu')
-        let jpgPath = ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.jpg')
-        let deletedPath = ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3-deleted.dialog')
+        let luPath = ppath.join(tempDir, 'imported/nuget3/nuget3.lu')
+        let jpgPath = ppath.join(tempDir, 'imported/nuget3/nuget3.jpg')
+        let deletedPath = ppath.join(tempDir, 'imported/nuget3/stuff/nuget3-deleted.dialog')
         await modifyFile(project, /1.0.0/, '1.0.1')
         await modifyFile(luPath, /intent/, 'intent modified')
-        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/nuget3.lg'), /template/, 'template modified')
-        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3.qna'), /question/, 'question modified')
-        await modifyFile(ppath.join(tempDir, 'ImportedAssets/nuget3/stuff/nuget3.dialog'), /dialog/, 'dialog modified')
+        await modifyFile(ppath.join(tempDir, 'imported/nuget3/nuget3.lg'), /template/, 'template modified')
+        await modifyFile(ppath.join(tempDir, 'imported/nuget3/stuff/nuget3.qna'), /question/, 'question modified')
+        await modifyFile(ppath.join(tempDir, 'imported/nuget3/stuff/nuget3.dialog'), /dialog/, 'dialog modified')
         await modifyFile(jpgPath, /picture/, 'picture modified')
         let [merged3, lines3] = await merge([project], 'project3.schema', true, undefined, true)
         assert(merged3, 'Could not merge 3rd')
         assert(countMatches(/error/i, lines3) === 0, 'Error merging schemas 3rd')
         assert(countMatches(/warning/i, lines3) === 3, 'Wrong number of warnings 3rd')
-        assert(merged3?.added.length === 1, 'Wrong number added 3rd')
-        assert(merged3?.deleted.length === 1, 'Wrong number deleted 3rd')
-        assert(merged3?.unchanged.length === 1, 'Wrong number unchanged 3rd')
-        assert(merged3?.conflicts.length === 3, 'Wrong number of conflicts on 3rd')
+        checkMerged(merged3, 1, 3, 1, 1, '3rd')
         assert(countMatches('modified', lines3) === 0, 'Missed deletion change 3rd')
         assert(countMatches('conflicting', lines3) === 3, 'Missed conflicts 3rd')
         assert((await fs.readFile(luPath, 'utf8')).includes('modified'), 'Wrote file in check-only')
@@ -314,11 +356,44 @@ describe('dialog:merge', async () => {
         assert(countMatches('dependent-package.schema', lines) === 1, 'Missing dependent-package.schema')
         assert(countMatches('parent-package.schema', lines) === 1, 'Missing parent-package.schema')
         assert(countMatches('no-package.schema', lines) === 0, 'Extra no-package.schema')
-        assert(countMatches('Copying', lines) === 2, 'Wrong number of copies')
-        assert(await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'dependent-package', 'assets', 'dependent-package.jpg')), 'Incomplete assets copy')
-        assert(!await fs.pathExists(ppath.join(tempDir, 'ImportedAssets', 'root-package')), 'Copied rootx')
+        assert(countMatches('Copy ', lines) === 5, 'Wrong number of copies')
+        assert(await fs.pathExists(ppath.join(tempDir, 'imported', 'dependent-package', 'assets', 'dependent-package.jpg')), 'Incomplete assets copy')
+        assert(!await fs.pathExists(ppath.join(tempDir, 'imported', 'root-package')), 'Copied rootx')
         await compareToOracle('root-package.schema')
         await compareToOracle('root-package.uischema')
+        checkMerged(merged, 5, 0, 0, 0, '',
+            [{
+                name: 'dependent-package',
+                version: '1.0.0',
+                path: 'npm\\node_modules\\root-package\\node_modules\\dependent-package\\package.json',
+                description: 'A package',
+                releaseNotes: 'A good time.',
+                authors: ['Chris Tom'],
+                keywords: ['somthing wicked', 'this way'],
+                icon: 'icon.png',
+                repository: 'https://github.com',
+                license: 'MIT',
+                language: 'en-us',
+                copyright: 'mine',
+                includesSchema: true,
+                includesExports: true
+            },
+            {
+                name: 'parent-package',
+                version: '1.0.0',
+                path: 'npm\\node_modules\\parent-package\\package.json',
+                description: '',
+                releaseNotes: '',
+                authors: ['Chris Tom, tom@botmail.com, https://christom.com'],
+                keywords: [],
+                icon: '',
+                repository: 'https://github.com',
+                license: '',
+                language: '',
+                copyright: '',
+                includesSchema: true,
+                includesExports: false
+            }])
     })
 
     it('nuspec', async () => {
@@ -344,6 +419,16 @@ describe('dialog:merge', async () => {
             process.chdir(cwd)
         }
     })
+
+    /* Example of invoking library through test because of issues with launch.json
+    it('botbuilder-schema', async () => {
+        console.log('\nStart botbuilder-schema')
+        let [merged, lines] = await merge(['../../../../../../botbuilder-dotnet/libraries/**\*.schema',
+    '../../../../../../botbuilder-dotnet/tests/**\*.schema'], 'sdk.schema', true)
+        console.log(merged)
+        console.log(lines)
+    })
+    */
 })
 
 /* TODO: These tests are related to verify and need to be updated and moved there.
