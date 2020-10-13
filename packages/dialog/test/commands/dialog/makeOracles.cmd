@@ -23,4 +23,4 @@ echo *** promptOnly
 call node %ds% dialog:merge schemas/prompt.schema schemas/basePrompt.schema -o oracles/promptOnly.schema --verbose
 
 rem remove copied assets
-rd /s /q oracles\ImportedAssets
+rd /s /q oracles\imported
