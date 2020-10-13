@@ -342,7 +342,7 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
-    OrchestratorHelper.parseLuContent(
+    await OrchestratorHelper.parseLuContent(
       luFile,
       OrchestratorHelper.readFile(luFile),
       hierarchicalLabel,

@@ -510,10 +510,10 @@ describe('Test Suite - orchestratorhelper', () => {
   });
 
   it('Test.0500 OrchestratorHelper.getUtteranceLabelsMap()', async () => {
-    //const inputFile: string = './test/fixtures/adaptive/RootDialog.lu';
-    //const result: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
-    //assert.ok(result.has('Hey'), 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
-    //assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
-    //assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
+    const inputFile: string = './test/fixtures/adaptive/RootDialog.lu';
+    const result: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
+    assert.ok(result.has('Hey'), 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
+    assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
+    assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
   });
 });
