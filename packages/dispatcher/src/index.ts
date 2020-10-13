@@ -76,6 +76,8 @@ export { BootstrapSamplerKeyMapDistribution } from "./mathematics/sampler/Bootst
 export { ReservoirArraySampler } from "./mathematics/sampler/ReservoirArraySampler";
 export { ReservoirSampler } from "./mathematics/sampler/ReservoirSampler";
 export { ReservoirSamplerKeyMap } from "./mathematics/sampler/ReservoirSamplerKeyMap";
+export { ComposerBootstrapSampler } from "./mathematics/sampler/ComposerBootstrapSampler";
+export { ComposerReservoirSampler } from "./mathematics/sampler/ComposerReservoirSampler";
 
 export { mainCrossValidatorWithColumnarContent } from "./model/evaluation/cross_validation/AppCrossValidator";
 export { mainCrossValidatorWithLuContent } from "./model/evaluation/cross_validation/AppCrossValidator";

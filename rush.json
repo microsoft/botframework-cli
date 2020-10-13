@@ -16,6 +16,10 @@
     {
       "packageName": "@microsoft/bf-orchestrator-cli",
       "projectFolder": "packages/orchestrator"
+    },
+    {
+      "packageName": "@microsoft/bf-sampler-cli",
+      "projectFolder": "packages/sampler"
     }
   ]
 }
