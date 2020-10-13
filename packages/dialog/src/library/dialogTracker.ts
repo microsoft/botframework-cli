@@ -7,10 +7,10 @@ export * from './schemaTracker';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import * as st from './schemaTracker';
-import glob from 'globby';
 import parser from '@apidevtools/json-schema-ref-parser'
 
-let clone = require('clone')
+const clone = require('clone')
+const glob = require('globby');
 
 // Top-level dialog definition that would be found in a file.
 export class Dialog {

@@ -59,7 +59,7 @@
     "readline-sync": "^1.4.9",
     "rimraf": "^2.6.3",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.3",
     "window-size": "^1.1.0",
     "username": "^4.1.0"
   },

@@ -51,7 +51,7 @@
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.19",
     "node-fetch": "~2.6.0",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.3",
     "username": "^4.1.0"
   },
   "devDependencies": {
