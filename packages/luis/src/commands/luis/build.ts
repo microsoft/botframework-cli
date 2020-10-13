@@ -119,7 +119,7 @@ export default class LuisBuild extends Command {
         // load existing recognizers, multiRecogniers and settings or create default ones
         luContents = await builder.loadContents(files, {
           culture: defaultCulture,
-          log: log
+          log
         })
       } else {
         // load lu content from stdin and create default recognizer, multiRecognier and settings
