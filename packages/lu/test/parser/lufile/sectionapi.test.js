@@ -497,6 +497,32 @@ describe('Section range tests', () => {
         assert.equal(luresource.Sections[1].Range.End.Line, 11)
         assert.equal(luresource.Sections[1].Range.End.Character, 7)
     });
+
+    it('simple intent section with errors test', () => {
+        let fileContent =
+`#WhoAreYou
+- my name is {@userName=luhan}
+@ prebuilt personName hasRoles`;
+
+        let updatedContent = 
+`#WhoAreYou
+- my name is {@userName=luhan}
+@ prebuilt personName hasRoles userName`;
+
+        let luresource = luparser.parse(fileContent);
+
+        assert.equal(luresource.Errors.length, 2);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), `${fileContent}`);
+        assert.equal(`#WhoAreYou${NEWLINE}${luresource.Sections[0].Body}`.replace(/\r\n/g, "\n"), fileContent);
+
+        luresource = new SectionOperator(luresource).updateSection(luresource.Sections[0].Id, updatedContent);
+
+        assert.equal(luresource.Errors.length, 0);
+        assert.equal(luresource.Sections.length, 1);
+        assert.equal(luresource.Content.replace(/\r\n/g, "\n"), updatedContent);
+        assert.equal(`#WhoAreYou${NEWLINE}${luresource.Sections[0].Body}`.replace(/\r\n/g, "\n"), updatedContent);
+    });
 })
 
 describe('Section CRUD tests for insert and update sections with newline', () => {

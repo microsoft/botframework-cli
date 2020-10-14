@@ -141,7 +141,7 @@ class SectionOperator {
       let index = -1;
 
       while ((index = errors.findIndex(u =>
-        u.Range && ((u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine)
+        !u.Range || ((u.Range.Start.Line >= startLine && u.Range.Start.Line <= endLine)
         || (u.Range.End.Line >= startLine && u.Range.End.Line <= endLine)))) >= 0) {
         this.Luresource.Errors.splice(index, 1);
       }
@@ -156,13 +156,13 @@ class SectionOperator {
         });
       } else if (startLine >= 0 && (endLine === undefined || endLine < startLine)) {
         errors.forEach(u => {
-          if (u.Range.Start.Line >= startLine) {
+          if (u.Range && u.Range.Start.Line >= startLine) {
             this.adjustErrorRange(u, offset);
           }
         });
       } else if (startLine >= 0 && endLine >= startLine) {
         errors.forEach(u => {
-          if (u.Range.Start.Line >= startLine && u.Range.End.Line <= endLine) {
+          if (u.Range && u.Range.Start.Line >= startLine && u.Range.End.Line <= endLine) {
             this.adjustErrorRange(u, offset);
           }
         });
