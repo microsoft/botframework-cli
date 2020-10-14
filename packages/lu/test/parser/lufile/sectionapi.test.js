@@ -498,7 +498,7 @@ describe('Section range tests', () => {
         assert.equal(luresource.Sections[1].Range.End.Character, 7)
     });
 
-    it.only('simple intent section with errors test', () => {
+    it('simple intent section with errors test', () => {
         let fileContent =
 `#WhoAreYou
 - my name is {@userName=luhan}
