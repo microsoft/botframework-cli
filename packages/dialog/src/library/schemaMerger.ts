@@ -532,9 +532,11 @@ export class SchemaMerger {
 
         // Delete existing output
         let outputPath = ppath.resolve(this.output + '.schema')
-        await fs.remove(this.output + '.schema')
-        await fs.remove(this.output + '.schema.final')
-        await fs.remove(this.output + '.schema.expanded')
+        if (!this.checkOnly) {
+            await fs.remove(this.output + '.schema')
+            await fs.remove(this.output + '.schema.final')
+            await fs.remove(this.output + '.schema.expanded')
+        }
 
         let componentPaths: PathComponent[] = []
         let schemas = this.files.get('.schema')
@@ -679,7 +681,9 @@ export class SchemaMerger {
      * Does extensive error checking and validation against the schema.
      */
     private async mergeUISchemas(schema: any): Promise<void> {
-        await fs.remove(this.output + '.uischema')
+        if (!this.checkOnly) {
+            await fs.remove(this.output + '.uischema')
+        }
 
         let uiSchemas = this.files.get('.uischema')
         let result = {}
@@ -872,7 +876,7 @@ export class SchemaMerger {
                             }
                         }
                         if (!this.checkOnly) {
-                            await fs.remove(importedDir)
+                            await fs.remove(ppath.join(this.imports, importedDir))
                         }
                     }
                 }

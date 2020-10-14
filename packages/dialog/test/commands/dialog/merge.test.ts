@@ -357,6 +357,7 @@ describe('dialog:merge', async () => {
         assert(merged5?.deleted.length === 4, 'Wrong number deleted 5th')
         assert(merged5?.unchanged.length === 0, 'Wrong number unchanged 5th')
         assert(merged5?.conflicts.length === 1, 'Wrong number of conflicts on 5th')
+        assert(!await fs.pathExists(ppath.join(tempDir, 'imported/nuget3')))
     })
 
     it('package.json', async () => {
