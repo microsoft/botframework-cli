@@ -26,7 +26,7 @@ bf plugins:install @microsoft/bf-sampler-cli@beta
 To uninstall the bf-sampler-cli plugin, a step for upgrading the plugin:
 
 ```
-bf plugins:unstall @microsoft/bf-sampler-cli@beta
+bf plugins:uninstall @microsoft/bf-sampler-cli
 ```
 
 # Commands
@@ -56,18 +56,18 @@ Do sampling to utterances in lu files.
 
 ```
 USAGE
-  $ bf sampler:sampling
+  $ bf sampler:sampling -h
 
 OPTIONS
   -h, --help                                Orchestrator 'assess' command help.
-  -i, --in=in                               Path to lu file or folder that contains lu files.
+  -i, --in=in                               Path to lu file or folder that contains lu files. Default to current working directory.
   -o, --out=out                             Path where sampled lu files will be placed. Default to current working directory.
   --maxImbalanceRatio=maxImbalanceRatio     [Default: 10 Max imbalance ratio for sampling.
   --maxUtteranceAllowed=maxUtteranceAllowed [Default: 15000] Max utterances allowed after samping.
   --sampleSize=sampleSize                   [Default: 2] sample size.
 
 EXAMPLE
-  bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000 --sampleSize 2
+  bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000 --sampleSize 2
 ```
 
 _See code: [src\commands\orchestrator\assess.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/sampler/sampling.ts)_

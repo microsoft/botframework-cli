@@ -14,15 +14,16 @@ export default class SamplerSampling extends Command {
   static description: string = 'Do sampling to utterances in lu files';
 
   static examples: Array<string> = [
-    '$ bf sampler:sampling --in ./path/to/file/',
-    '$ bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/',
-    '$ bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 10',
-    '$ bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000',
-    '$ bf sampler:sampling --in ./path/to/file/ --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000 --sampleSize 2',
+    '$ bf sampler:sampling',
+    '$ bf sampler:sampling --in ./path/to/file/or/folder',
+    '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/',
+    '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/ --maxImbalanceRatio 10',
+    '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000',
+    '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/ --maxImbalanceRatio 10 --maxUtteranceAllowed 15000 --sampleSize 2',
   ]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to lu file or folder that contains lu files.'}),
+    in: flags.string({char: 'i', description: 'Path to lu file or folder that contains lu files. Default to current working directory.'}),
     out: flags.string({char: 'o', description: 'Path where sampled lu files will be placed. Default to current working directory.'}),
     maxImbalanceRatio: flags.integer({description: 'Max imbalance ratio for sampling.', default: 10}),
     maxUtteranceAllowed: flags.integer({description: 'Max utterances allowed after samping.', default: 15000}),
