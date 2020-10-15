@@ -8,18 +8,18 @@
 > # Intent definitions
 
 ## greeting
-- hello world
-- say hey to Bob
-- say hello to Bob
-- say hello
-- hi
-- say hello world
-- hello
-- say hey
 - say hello world to Bob
+- say hey to Bob
+- say hey
+- say hello world
+- hello world
+- say hello
+- say hi
+- say hello to Bob
 
 
 ## cancel
+- cancel that
 - stop
 
 
