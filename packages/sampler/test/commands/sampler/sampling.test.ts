@@ -75,6 +75,6 @@ describe('sampler:sampling test empty file skipped', () => {
   .stdout()
   .command(['sampler:sampling', '--in', './test/testcases/source', '--out', './results/', '--maxUtteranceAllowed',  '10'])
   .it('should do sampling successfully without throwing error for empty file', async (_: any) => {
-    expect(await compareFiles('./../../../results/test.lu', './../../testcases/result/test_maxUtteranceAllowed.lu')).to.be.true;
+    expect(await compareFiles('./../../../results/test.lu', './../../testcases/result/test_maxUtteranceAllowed2.lu')).to.be.true;
   });
 });
