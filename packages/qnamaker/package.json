@@ -27,6 +27,7 @@
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "posttest": "",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",

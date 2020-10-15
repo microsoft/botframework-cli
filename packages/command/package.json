@@ -15,8 +15,8 @@
   "main": "lib/index.js",
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
-    "prepack": "",
     "postpack": "",
+    "prepack": "npm run clean && npm run build",
     "posttest": "",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
