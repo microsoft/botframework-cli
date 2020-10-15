@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+const luisBuilder = require('../../../src/parser/luis/luisBuilder');
 const parseFile = require('../../../src/parser/lufile/parseFileContents');
 const luconvert = require('../../../src/parser/luis/luConverter');
 const entityNameWithSpaceAndFeature = require('../../fixtures/testcases/entityNameWithSpaceAndFeature.json');
@@ -19,14 +20,19 @@ describe('Model as feature definitions', function () {
                 .catch(err => done())
         });
         
-        it('Intent can only have features and nothing else empty throws', function (done) {
+        it('Intent can have empty uses feature assignment line', function (done) {
             let luFile = `
-                @ intent xyz
+            ## None
+            - all of them
+            - i want them all
+            - i want to all of them
+            
+            @ intent None
             `;
 
             parseFile.parseFile(luFile)
-                .then(res => done(res))
-                .catch(err => done())
+                .then(res => done())
+                .catch(err => done(err))
         });
 
         it('Intent must be defined before a feature can be added to it.', function(done) {
@@ -90,6 +96,24 @@ describe('Model as feature definitions', function () {
                 })
                 .catch(err => done(err))
         });
+
+        it('Phrase lists marked as disabled for all models is handled correctly', function(done) {
+            let luFile = `
+@ phraselist pl1(interchangeable) 
+@ pl1 disabled, disabledForAllModels
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'pl1');
+                    assert.equal(res.LUISJsonStructure.model_features[0].mode, true);
+                    assert.equal(res.LUISJsonStructure.model_features[0].activated, false);
+                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    done();
+                })
+                .catch(err => done(err))
+        })
 
         it('Phrase list marked as interchangeable can be added as a feature to an intent', function(done) {
             let luFile = `
@@ -173,8 +197,7 @@ describe('Model as feature definitions', function () {
                     @ ml x1
                     @ x1 usesFeature city3
                 `;
-    
-                parseFile.parseFile(luFile)
+                luisBuilder.fromContentAsync(luFile)
                     .then(res => done(res))
                     .catch(err => done())
             });
@@ -412,11 +435,10 @@ describe('Model as feature definitions', function () {
         describe('Composite entity', function() {
             it('Features must be defined before they can be added.', function(done) {
                 let luFile = `
-                    @ patternany x1
+                    @ composite x1
                     @ x1 usesFeature city3
                 `;
-    
-                parseFile.parseFile(luFile)
+                luisBuilder.fromContentAsync(luFile)
                     .then(res => done(res))
                     .catch(err => done())
             });

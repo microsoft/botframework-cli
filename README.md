@@ -3,7 +3,7 @@
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
 # BF Command Line Interface
-[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=master)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=master)
+[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=main)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=main)
 
 The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
@@ -27,19 +27,25 @@ $ bf
 ## Available Commands
 The following commands are currently available:
 * [Chatdown][1] 
-* [QnAMaker][2]
-* [Config](https://github.com/microsoft/botframework-cli/tree/master/packages/cli#bf-config)
-* [Luis][3]
+* [Config][2]
+* [Dialog][3]
+* [Luis][4]
+* [QnAMaker][5]
+
+<!--
+Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/main/packages/plugins#microsoftbf-cli-plugins))
+* [Dialog](https://github.com/microsoft/botframework-cli/tree/main/packages/dialog)
+-->
 
 #### Future Commands
 The following commands will be ported in upcoming releases:
 * Dispatch
 
-See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
+See [Porting Map](https://github.com/microsoft/botframework-cli/blob/main/PortingMap.md) for a mapping reference between old and new tools
 
 ## Overview
 
-The  Bot Framework Command Line Interface (BF CLI) cross-platform tool is used to manage Bot Framework bots and related services. It is part the [Microsoft Bot Framework](https://github.com/Microsoft/botframework), a comprehensive framework for building enterprise-grade conversational AI experiences.  In particular, BF CLI provides fundamental functionality when used in conjunction with Continuous Integration, and Continuous Deployment (CI/CD) pipelines. 
+The  Bot Framework Command Line Interface (BF CLI) cross-platform tool is used to manage Bot Framework bots and related services. It is part of the [Microsoft Bot Framework](https://github.com/Microsoft/botframework), a comprehensive framework for building enterprise-grade conversational AI experiences.  In particular, BF CLI provides fundamental functionality when used in conjunction with Continuous Integration, and Continuous Deployment (CI/CD) pipelines. 
 
 As you build your bot, you may also need to integrate AI services like [LUIS.ai](http://luis.ai) for language understanding, [QnAMaker.ai](http://qnamaker.ai) for your bot to respond to simple questions in a Q&A format, and more. The _[bf luis](./packages/cli#bf-luis)_ command is used to convert, and translate language definition _.lu_ files or generate corresponding source (C# or JavaScript) code. Then, use the [Luis Tool](https://github.com/microsoft/botbuilder-tools/tree/master/packages/LUIS)  to deploy the local files, train, test, and publish them as Language Understanding models within the LUIS service. If used to define QnAMaker question/answer Knowledgebase, use the _[bf qnamaker](./packages/cli#bf-qnamaker)_ command to create and manage QnAMaker assets both locally, and on the QnAMaker service. Please refer to the[ _lu_ library documentation](./packages/lu)  for extended discussion on how to work with .lu file formats. _Note: You may be familiar with the Luis command if you used the legacy [LuDown](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Ludown) and [LuisGen](https://github.com/microsoft/botbuilder-tools/tree/master/packages/LUISGen) tools._
 
@@ -53,7 +59,7 @@ Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), yo
 
 
 ### See Also
-* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/master/packages/cli)
+* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/main/packages/cli)
 * [Bot Framework Homepage](https://dev.botframework.com/)
 * [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
 * [LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/index)
@@ -77,25 +83,23 @@ To disable data collection see the  __*bf config*__ command.
 
 Please refer to [Microsoft Privacy Statement](https://privacy.microsoft.com/en-US/privacystatement) for more details.
 
+### Enable Telemetry in Continuous Integration Pipelines
+
+Per above, Microsoft will only collect anonymous data to help improve the CLI. To set your CI/CD pipeline telemetry collection behavior set the following OS environment variable:
+
+* set BF_CLI_TELEMETRY = true  : Bypass prompts and **enables** telemetry collection.
+* set BF_CLI_TELEMETRY = false : Bypass prompts and **disables** telemetry collection (default).
+* BF_CLI_TELEMETRY = null (absent) : If no value is set in configuration file defaults to false - disabled.
+
 ## Nightly builds
 
 Nightly builds are generated using the latest code. Therefore, they may not be stable, and most likely lack up to date documentation. These builds are better suited for more experienced users, although everyone is welcome to use them and provide feedback.
 
-You can get the latest nightly build of bot framework cli from the [BotBuilder MyGet](https://botbuilder.myget.org/gallery) feed. To install the nightly -
-
-```shell
-npm config set registry https://botbuilder.myget.org/F/botframework-cli/npm/
-```
-
 Install using npm:
 ```shell
-npm i -g @microsoft/botframework-cli
+npm i -g @microsoft/botframework-cli@next
 ```
 
-To reset registry:
-```shell
-npm config set registry https://registry.npmjs.org/
-```
 
 ## Contributing
 
@@ -117,6 +121,10 @@ Security issues and bugs should be reported privately, via email, to the Microso
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-[1]:./packages/chatdown/README.md
-[2]:./packages/qnamaker/README.md
-[3]:./packages/luis/README.md
+[1]: ./packages/chatdown/README.md
+[2]: ./packages/cli#bf-config
+[3]: ./packages/dialog/README.md
+[4]: ./packages/luis/README.md
+[5]: ./packages/qnamaker/README.md
+
+

@@ -24,6 +24,17 @@ export default class LuisGenerateCs extends Command {
 
   }
 
+  renameProp(
+    oldProp: string,
+    newProp: string,
+    {[oldProp]: old, ...others}
+  ): any {
+    return {
+      [newProp]: old,
+      ...others
+    }
+  }
+
   reorderEntities(app: any, name: string): void {
     if (app[name] !== null && app[name] !== undefined) {
       app[name].sort((a: any, b: any) => (a.name > b.name ? 1 : -1))
@@ -42,7 +53,7 @@ export default class LuisGenerateCs extends Command {
     const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
     let app: any
     try {
-      app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+      app = flags.in ? await fs.readJSON(path.join(pathPrefix, flags.in)) : JSON.parse(stdInput as string)
     } catch (err) {
       throw new CLIError(err)
     }
@@ -55,6 +66,10 @@ export default class LuisGenerateCs extends Command {
       flags.className = flags.className.substr(dot_index + 1)
     } else {
       flags.className = upperFirst(camelCase(flags.className))
+    }
+
+    if ('regexEntities' in app) {
+      app = this.renameProp('regexEntities', 'regex_entities', app)
     }
 
     this.reorderEntities(app, 'entities')

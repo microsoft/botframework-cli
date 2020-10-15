@@ -169,18 +169,6 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done())
     });
 
-    it('Invalid child definition throws (missing -)', function (done) {
-        let luFile = `
-            @ml xyz = 
-                - @ ml x1
-                - @ ml abc =
-                    @number p1
-        `;
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    });
-
     it('Invalid child definition throws (missing type or name)', function (done) {
         let luFile = `
             @ml xyz = 
@@ -210,18 +198,6 @@ describe('V2 NDepth definitions using @ notation', function () {
             @list xyz
             @ml xyz = 
                 - @ ml x1
-        `;
-        parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
-    });
-
-    it('Child entity names must be unique', function (done) {
-        let luFile = `
-            @ml xyz
-            @ml xyz1 = 
-                - @ ml xyz
-
         `;
         parseFile.parseFile(luFile)
             .then(res => done(res))
@@ -305,7 +281,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 2);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "xyz");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "abc");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].features[0].modelName, "number");
                 done();
             })
             .catch(err => done(err))
@@ -348,23 +324,23 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "2");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children.length, 3);
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].name, "n2");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].name, "3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children.length, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].name, "l3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].instanceOf, "list1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].features[0].modelName, "list1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].name, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children.length, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].name, "r4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].instanceOf, "regex1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].features[0].modelName, "regex1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[1].name, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].name, "l4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].instanceOf, "list3");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].features[0].modelName, "list3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].name, "n4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[4].name, "s4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].name, "n3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[3].name, "s3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[2].name, "s2");
                 done();
@@ -408,23 +384,23 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "2");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children.length, "3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].name, "n2");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].name, "3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children.length, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].name, "l3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].instanceOf, "list1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].features[0].modelName, "list1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].name, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children.length, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].name, "r4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].instanceOf, "regex1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].features[0].modelName, "regex1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[1].name, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].name, "l4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].instanceOf, "list3");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].features[0].modelName, "list3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].name, "n4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[4].name, "s4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].name, "n3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[3].name, "s3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[2].name, "s2");
                 done();
@@ -468,23 +444,23 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].name, "2");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children.length, "3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].name, "n2");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[0].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].name, "3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children.length, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].name, "l3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].instanceOf, "list1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[0].features[0].modelName, "list1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].name, "4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children.length, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].name, "r4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].instanceOf, "regex1");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[0].features[0].modelName, "regex1");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[1].name, "5");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].name, "l4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].instanceOf, "list3");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[2].features[0].modelName, "list3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].name, "n4");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[3].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[1].children[4].name, "s4");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].name, "n3");
-                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].instanceOf, "number");
+                assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[2].features[0].modelName, "number");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[1].children[3].name, "s3");
                 assert.equal(res.LUISJsonStructure.entities[0].children[1].children[2].name, "s2");
                 done();
@@ -504,7 +480,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "s1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1', "Regex Entity Extractor")]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.entityFeature('x1', false)]);
                 done();
             })
             .catch(err => done(err))
@@ -522,7 +498,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "s1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.modelToFeature('x1', "Regex Entity Extractor"), new helperclasses.modelToFeature('x2', "Regex Entity Extractor")]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.entityFeature('x1', false), new helperclasses.entityFeature('x2', false)]);
                 done();
             })
             .catch(err => done(err))
@@ -640,7 +616,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist")]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.plFeature("pl1", false)]);
                 assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                 assert.equal(res.LUISJsonStructure.phraselists[0].name, 'pl1');
                 done();
@@ -661,7 +637,7 @@ describe('V2 NDepth definitions using @ notation', function () {
                 assert.equal(res.LUISJsonStructure.entities.length, 2);
                 assert.equal(res.LUISJsonStructure.entities[0].children.length, 1);
                 assert.equal(res.LUISJsonStructure.entities[0].children[0].name, "x1");
-                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.featureToModel('pl1', "phraselist"), new helperclasses.modelToFeature('s1', "Entity Extractor"), new helperclasses.modelToFeature('number', "Prebuilt Entity Extractor")]);
+                assert.deepEqual(res.LUISJsonStructure.entities[0].children[0].features, [new helperclasses.plFeature("pl1", false), new helperclasses.entityFeature('s1', false), new helperclasses.entityFeature('number', false)]);
                 assert.equal(res.LUISJsonStructure.phraselists.length, 1);
                 assert.equal(res.LUISJsonStructure.phraselists[0].name, 'pl1');
                 assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
@@ -741,38 +717,100 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done(err))
     });
 
-    it('[level 1 child] Every child must have its parent labelled in an utterance', function(done) {
+    
+    it('prebuilt child entity type can be labelled in an utterance', function(done) {
         let luFile = `
-        # test
-        - my name is vishwac
-            - my name is {@userName = vishwac}
+        @ ml userProfile
+    - @ number number
+    - @ personName name
 
-        @ ml userProfile = 
-            - @ personName userName
-            - @ age userAge
+@ prebuilt number
+@ prebuilt personName
 
-        @ prebuilt personName
-        @ prebuilt age`;
-
+# userProfile
+- I'm {@userProfile = {@number = 36}} years old
+        `;
         parseFile.parseFile(luFile)
-            .then(res => done(res))
-            .catch(err => done())
+            .then(res => done())
+            .catch(err => done(err))
     })
 
-    it('[level 2 child] Every child must have its parent labelled in an utterance', function(done) {
+    it('list child entity type can be labelled in an utterance', function(done) {
         let luFile = `
         # test
-        - my name is vishwac
-            - my name is {@firstName = vishwac}
+- {@AddToQuantity={@PROPERTYName=Quantity} is {@number=99}}
 
-        @ ml userProfile = 
-            - @ ml userName
-                - @ personName firstName
-            - @ age userAge
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
 
-        @ prebuilt personName
-        @ prebuilt age`;
+@ list PROPERTYName
+    - Quantity:
+		- property
 
+@ prebuilt number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('[1] At least one immediate parent of a child entity must be labelled', function(done) {
+        let luFile = `
+        # test
+- add {@AddToQuantity={@number=1000}}
+
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+@ml RemoveFromQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+
+@ list PROPERTYName
+    - Quantity:
+		- property
+
+@ prebuilt number
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('At least one immediate parent of a child entity must be labelled', function(done) {
+        let luFile = `
+        # test
+- remove {@RemoveFromQuantity={@number=99}}
+
+@ml AddToQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+@ml RemoveFromQuantity = 
+    - @number number
+    - @PROPERTYName PROPERTYName
+
+@ prebuilt number hasRole Quantity
+@ list PROPERTYName
+    - Quantity:
+		- property
+
+        `;
+        parseFile.parseFile(luFile)
+            .then(res => done())
+            .catch(err => done(err))
+    })
+
+    it('Invalid utterance definition throws with good error message', function(done) {
+        let luFile = `
+        # test
+- add {{@AddToSauces={@SaucesEntity=yellow}}, {{@AddToSauces={@SaucesEntity=mustard}} and {{@AddToSauces={@SaucesEntity=yellow}}
+- add {{@AddToSauces={@SaucesEntity=mustard}}, {{@AddToSauces={@SaucesEntity=mustard}} and {{@AddToSauces={@SaucesEntity=dijon mustard}}
+- add {{@AddToSauces={@SaucesEntity=mustard}}, {{@AddToSauces={@SaucesEntity=yellow}} and {{@AddToSauces={@SaucesEntity=pepper}}
+
+@ml AddToSauces = 
+    - @ml SaucesEntity
+        `;
         parseFile.parseFile(luFile)
             .then(res => done(res))
             .catch(err => done())

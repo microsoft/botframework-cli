@@ -9,7 +9,7 @@ const exportKbJSON = require('./../../../../utils/payloads/exportkb')
 import {Inputs, processInputs} from '../../../utils/qnamakerbase'
 
 export default class QnamakerKbExport extends Command {
-  static description = 'Echos a knowledgebase json to stdout'
+  static description = 'Echos a knowledgebase in json or qna format to stdout'
 
   static flags: flags.Input<any> = {
     kbId: flags.string({description: 'Knowledgebase id to be exported. Overrides the knowledge base id present in the config'}),

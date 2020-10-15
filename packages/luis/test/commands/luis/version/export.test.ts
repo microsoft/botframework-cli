@@ -1,9 +1,10 @@
+import fs from 'fs-extra'
+import rimraf from 'rimraf'
+import sinon from 'sinon'
+import uuidv1 from 'uuid/v1'
 import {expect, test} from '@oclif/test'
-const sinon = require('sinon')
-const uuidv1 = require('uuid/v1')
+
 const utils = require('../../../../src/utils/index')
-const fs = require('fs-extra')
-import * as rimraf from 'rimraf'
 
 describe('luis:version:export', () => {
 
@@ -51,12 +52,19 @@ describe('luis:version:export', () => {
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .get(uri => uri.includes('export'))
-  .reply(200, {name: 'testname'})
+  .reply(200, {
+    name: "Utilities.Cancel",
+    inherits: {
+      domain_name: "Utilities",
+      model_name: "Cancel"
+    },
+    "features": []
+})
   )
   .stdout()
   .command(['luis:version:export', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('exports a luis app and displays the export contents in the console', ctx => {
-    expect(ctx.stdout).to.contain('testname')
+    expect(ctx.stdout).to.contain('domain_name')
   })
 
   test

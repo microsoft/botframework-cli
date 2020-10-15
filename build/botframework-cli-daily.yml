@@ -1,0 +1,31 @@
+#
+# Build Botframework-CLI daily bits on Windows agent
+#
+
+# "name" here defines the build number format. Build number is accessed via $(Build.BuildNumber)
+name: $(Build.BuildId)
+
+pool:
+  name: Hosted Windows 2019 with VS2019
+
+pr: none
+trigger: none
+
+schedules:
+- cron: "0 7 * * *"
+  displayName: Daily midnight build (UTC Time)
+  branches:
+    include:
+    - main
+
+variables:
+- template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
+#  version: define this in Azure, settable at queue time
+
+stages:
+- stage: Build
+  jobs:
+  - job:
+    steps:
+    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-dev
+    - template: bf-cli-build-test-steps.yml

@@ -1,7 +1,0 @@
-# entities
-- ${roleEntities('boolean')}
-
-# templates
-- ${propertyTemplates()}
-
-[generator.lg](generator.lg)

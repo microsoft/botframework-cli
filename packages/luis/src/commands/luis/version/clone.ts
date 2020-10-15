@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Version from './../../../api/version'
+
 const utils = require('../../../utils/index')
 
 export default class LuisVersionClone extends Command {
@@ -34,16 +36,14 @@ export default class LuisVersionClone extends Command {
     const requiredProps = {appId, endpoint, subscriptionKey, versionId, targetVersionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-    const options = {
-      versionCloneObject: {
-        version: targetVersionId
-      }
-    }
-
     try {
-      const latestVersion = await client.versions.clone(appId, versionId, options)
-      const output = flags.json ? JSON.stringify({Status: 'Success', version: latestVersion}, null, 2) : `App successfully cloned. Latest version is now: ${latestVersion}`
+      const messageData = await Version.clone({subscriptionKey, endpoint, appId}, flags.versionId, flags.targetVersionId)
+
+      if (messageData.error) {
+        throw new CLIError(messageData.error.message)
+      }
+
+      const output = flags.json ? JSON.stringify({Status: 'Success', version: messageData}, null, 2) : `App successfully cloned. Latest version is now: ${messageData}`
       this.log(output)
     } catch (err) {
       throw new CLIError(`Failed to clone app: ${err}`)

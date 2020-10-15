@@ -72,7 +72,7 @@ const parseIntentsToLu = function(luisObj, luisJSON){
         if (intent.intent.features) {
             let rolesAndFeatures = addRolesAndFeatures(intent.intent);
             if (rolesAndFeatures !== '') {
-                fileContent += `@ intent ${intent.intent.name}`;
+                fileContent += `@ intent ${intent.intent.name.includes(' ') ? `"${intent.intent.name}"` : `${intent.intent.name}`}`;
                 fileContent += rolesAndFeatures;
                 fileContent += NEWLINE + NEWLINE;
             }
@@ -92,31 +92,53 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(utterance.entities.length >= 0) {
             // update utterance for each entity
             let text = utterance.text;
-            let sortedEntitiesList = objectSortByStartPos(utterance.entities);
+            // flatten entities
+            let flatEntities = [];
+            Object.assign([], utterance.entities).forEach(entity => flattenEntities(entity, flatEntities));
+            let sortedEntitiesList = objectSortByStartPos(flatEntities);
+            // remove all children
+            sortedEntitiesList.forEach(entity => delete entity.children);
             let tokenizedText = text.split('');
-            let nonCompositesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) == undefined);
-            nonCompositesInUtterance.forEach(entity => {
-                if (entity.role !== undefined) {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                } else {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
-                }
-                tokenizedText[parseInt(entity.endPos)] += `}`;
-            })
-            let compositeEntitiesInUtterance = sortedEntitiesList.filter(entity => luisJSON.composites.find(composite => composite.name == entity.entity) != undefined);
-            compositeEntitiesInUtterance.forEach(entity => {
-                if (entity.role !== undefined) {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;
-                } else {
-                    tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;
-                }
-                tokenizedText[parseInt(entity.endPos)] += `}`;
-            })
-            updatedText = tokenizedText.join(''); 
+            // handle cases where we have both child as well as cases where more than one entity can have the same start position
+            // if there are multiple entities in the same start position, then order them by composite, nDepth, regular entity
+            getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
+            updatedText = tokenizedText.join('');
         }
-        if(updatedText) fileContent += '- ' + updatedText + NEWLINE;
-    }); 
-    return fileContent  
+
+        // remove duplicated whitespaces between words inside utterance to make sure they are aligned with the luis portal
+        // as luis portal only keeps one whitespace between words even if you type multiple ones
+        // this will benefit the comparison of lu files that are converted from local and remote luis application
+        if(updatedText) fileContent += '- ' + updatedText.replace(/\s+/g, ' ') + NEWLINE;
+    });
+    return fileContent
+}
+
+const flattenEntities = function(entity, flatEntities)
+{
+    if (entity.children !== undefined && Array.isArray(entity.children) && entity.children.length !== 0) {
+        entity.children.forEach(child => flattenEntities(child, flatEntities));
+    }
+    flatEntities.push(Object.assign({}, entity));
+}
+
+const getEntitiesByPositionList = function(entitiesList, tokenizedText) {
+    (entitiesList || []).forEach(entity => {
+        // does this entity have child labels?
+        (entity.children || []).forEach(child => {
+            getEntitiesByPositionList(child.children, tokenizedText);
+            updateTokenizedTextByEntity(tokenizedText, child);
+        })
+        updateTokenizedTextByEntity(tokenizedText, entity);
+    })
+};
+
+const updateTokenizedTextByEntity = function(tokenizedText, entity) {
+    if (entity.role !== undefined) {
+        tokenizedText[parseInt(entity.startPos)] = `{@${entity.role}=${tokenizedText[parseInt(entity.startPos)]}`;    
+    } else {
+        tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
+    }
+    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] + '}';
 }
 
 const parsePredictedResultToLu =  function(utterance, luisJSON){
@@ -186,8 +208,7 @@ const parseEntitiesToLu =  function(luisJson){
                 }
                 fileContent += NEWLINE + NEWLINE;
             }
-            fileContent += `@ ml `;
-            fileContent += entity.name.includes(' ') ? `"${entity.name}"` : `${entity.name}`;
+            fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
             fileContent += addRolesAndFeatures(entity);
             fileContent += NEWLINE + NEWLINE;
         } else {
@@ -198,6 +219,10 @@ const parseEntitiesToLu =  function(luisJson){
     fileContent += NEWLINE;
     
     return fileContent
+}
+
+const writeEntityName = function(entityName) {
+    return entityName.includes(' ') ? `"${entityName}"` : `${entityName}`
 }
 
 const parseToLuPrebuiltEntities = function(luisJson){
@@ -323,9 +348,13 @@ const handlePhraseLists = function(collection) {
         fileContent += entity.name.includes(' ') ? `"${entity.name}"` : `${entity.name}`;
         fileContent += `${(entity.mode ? `(interchangeable)` : ``)}`;
         if (entity.activated !== undefined && !entity.activated) flags += `disabled`;
-        if (entity.enabledForAllModels !== undefined && entity.enabledForAllModels) {
-            flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
-        }
+        if (entity.enabledForAllModels !== undefined) {
+            if (entity.enabledForAllModels === true) {
+                flags += (flags !== '') ? `, enabledForAllModels` : `enabledForAllModels`;
+            } else {
+                flags += (flags !== '') ? `, disabledForAllModels` : `disabledForAllModels`;
+            }
+        } 
         if (flags !== '') fileContent += ` ${flags}`;
         if (entity.words && entity.words !== '') {
             fileContent += ` = ${NEWLINE}\t- ${entity.words}`;
@@ -362,7 +391,7 @@ const addAppMetaData = function(LUISJSON) {
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
-    fileContent += `@ ${EntityTypeEnum.ML} ${entity.name}`;
+    fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
     fileContent += addRolesAndFeatures(entity);
     fileContent += NEWLINE;
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
@@ -378,13 +407,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     let myFileContent = '';
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
-        myFileContent += '- @ ';
-        if (child.instanceOf) {
-            myFileContent += child.instanceOf;
-        } else {
-            myFileContent += EntityTypeEnum.ML;
-        }
-        myFileContent += ` ${child.name}`;
+        myFileContent += `- @ ${getEntityType(child.features)} ${writeEntityName(child.name)}`;
         myFileContent += addRolesAndFeatures(child);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
@@ -392,6 +415,15 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
         }
     });
     return myFileContent;
+}
+const getEntityType = function(features) {
+    // find constraint
+    let constraint = (features || []).find(feature => feature.isRequired == true);
+    if (constraint !== undefined) {
+        return constraint.modelName;
+    } else {
+        return EntityTypeEnum.ML;
+    }
 }
 /**
  * Helper to construt role and features list for an entity
@@ -414,7 +446,14 @@ const addRolesAndFeatures = function(entity) {
     let featuresList = new Array();
     entity.features.forEach(item => {
         if (item.featureName) featuresList.push(item.featureName);
-        if (item.modelName) featuresList.push(item.modelName);
+        if (item.modelName) {
+            if (item.isRequired !== undefined) {
+                if (item.isRequired !== true) 
+                    featuresList.push(item.modelName);
+            } else {
+                featuresList.push(item.modelName);
+            }
+        }
     })
     if (featuresList.length > 0) {
         roleAndFeatureContent += ` ${featuresList.length > 1 ? `usesFeatures` : `usesFeature`} `;
@@ -438,7 +477,7 @@ const addRolesAndFeatures = function(entity) {
 const updateUtterancesList = function (srcCollection, tgtCollection, attribute) {
     (srcCollection || []).forEach(srcItem => {
         let matchInTarget = tgtCollection.find(item => item.intent.name == srcItem.intent);
-        if(matchInTarget.utterances.length === 0) {
+        if(!matchInTarget || matchInTarget.utterances.length === 0) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }

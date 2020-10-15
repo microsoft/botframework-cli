@@ -1,6 +1,7 @@
 const LUISBuilder = require('./../../../src/parser/luis/luisBuilder')
 const LU = require('./../../../src/parser/lu/lu')
 var chai = require('chai');
+const luisobjenum = require('../../../src/parser/utils/enums/luisobjenum');
 var assert = chai.assert;
 
 describe('LUISBuilder', function() {
@@ -58,6 +59,24 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.entities[0].roles.length, 2);
         assert.deepEqual(luisObject.entities[0].roles, ['firstName', 'lastName']);
     });
+
+    it('PL with enabledForAllModels = false is handled correctly', async () => {
+        let testJSON = require('../../fixtures/testcases/plFeatureDisabled.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes('disabledForAllModels'), true);
+    })
+
+    it('Overlapping entities are converted to LU correctly', async () => {
+        let testJSON = require('../../fixtures/testcases/overlappingEntities.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes(`- {@add=add {@globalCount={@count={@countNumber=two} apples}}}`), true);
+    })
+
+    it('Intent name with spaces are handled correctly with feature assignment', async () => {
+        let testJSON = require('../../fixtures/testcases/intentWithSpace.json');
+        const luisObject = LUISBuilder.fromJson(testJSON).parseToLU();
+        assert.equal(luisObject.content.includes(`@ intent "test intent" usesFeature bar`), true);
+    })
 
     
 });

@@ -10,7 +10,10 @@ paragraph
     : newline
     | nestedIntentSection
     | simpleIntentSection
+    | entitySection
+    | newEntitySection
     | importSection
+    | referenceSection
     | qnaSection
     | modelInfoSection
     ;
@@ -51,7 +54,7 @@ subIntentDefinition
     ;
 
 simpleIntentSection
-    : (intentDefinition? (entitySection | newEntitySection)+) | intentDefinition
+    : intentDefinition
     ;
 
 intentDefinition
@@ -119,11 +122,11 @@ newEntityRoleOrFeatures
     ;
 
 newEntityName
-    : NEW_ENTITY_IDENTIFIER
+    : NEW_ENTITY_IDENTIFIER (WS* PHRASE_LIST_LABEL)?
     ;
 
 newEntityNameWithWS
-    : NEW_ENTITY_IDENTIFIER_WITH_WS
+    : NEW_ENTITY_IDENTIFIER_WITH_WS (WS* PHRASE_LIST_LABEL)?
     ;
 
 entitySection
@@ -135,15 +138,15 @@ entityDefinition
     ;
     
 entityLine
-    : WS* DOLLAR (entityName COLON_MARK entityType)?
+    : WS* DOLLAR entityName? COLON_MARK? entityType?
     ;
 
 entityName
-    : (ENTITY_TEXT|WS)*
+    : (ENTITY_TEXT|WS)+
     ;
 
 entityType
-    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)*
+    : (compositeEntityIdentifier|regexEntityIdentifier|ENTITY_TEXT|COLON_MARK|WS)+
     ;
 
 compositeEntityIdentifier
@@ -167,7 +170,15 @@ importSection
     ;
 
 importDefinition
-    : IMPORT_DESC IMPORT_PATH
+    : WS* IMPORT WS*
+    ;
+
+referenceSection
+    : referenceDefinition
+    ;
+
+referenceDefinition
+    : WS* REFERENCE WS*
     ;
 
 qnaSection

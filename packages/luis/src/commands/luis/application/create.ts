@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationCreate extends Command {
@@ -51,15 +53,12 @@ export default class LuisApplicationCreate extends Command {
     const requiredProps = {endpoint, subscriptionKey, name}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-    const options = {}
-
     const applicationCreateObject = {name, culture, description, versionId, usageScenario, tokenizerVersion}
 
     try {
-      const response = await client.apps.add(applicationCreateObject, options)
+      const response = await Application.create({subscriptionKey, endpoint}, applicationCreateObject)
 
-      const output: string = flags.json ? JSON.stringify({Status: 'App successfully created', id: response.body}, null, 2) : `App successfully created with id ${response.body}.`
+      const output: string = flags.json ? JSON.stringify({Status: 'App successfully created', id: response}, null, 2) : `App successfully created with id ${response}.`
       this.log(output)
 
       if (save) {

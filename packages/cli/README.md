@@ -26,8 +26,16 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf config:show:luis`](#bf-configshowluis)
 * [`bf config:show:qnamaker`](#bf-configshowqnamaker)
 * [`bf config:show:telemetry`](#bf-configshowtelemetry)
+* [`bf dialog`](#bf-dialog)
+* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 * [`bf help [COMMAND]`](#bf-help-command)
+* [`bf lg`](#bf-lg)
+* [`bf lg:expand`](#bf-lgexpand)
+* [`bf lg:translate`](#bf-lgtranslate)
+* [`bf lg:verify`](#bf-lgverify)
 * [`bf luis`](#bf-luis)
+* [`bf luis:application:assignazureaccount`](#bf-luisapplicationassignazureaccount)
 * [`bf luis:application:create`](#bf-luisapplicationcreate)
 * [`bf luis:application:delete`](#bf-luisapplicationdelete)
 * [`bf luis:application:import`](#bf-luisapplicationimport)
@@ -38,9 +46,11 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf luis:application:show`](#bf-luisapplicationshow)
 * [`bf luis:build`](#bf-luisbuild)
 * [`bf luis:convert`](#bf-luisconvert)
+* [`bf luis:cross-train`](#bf-luiscross-train)
 * [`bf luis:endpoints:list`](#bf-luisendpointslist)
 * [`bf luis:generate:cs`](#bf-luisgeneratecs)
 * [`bf luis:generate:ts`](#bf-luisgeneratets)
+* [`bf luis:test`](#bf-luistest)
 * [`bf luis:train:run`](#bf-luistrainrun)
 * [`bf luis:train:show`](#bf-luistrainshow)
 * [`bf luis:translate`](#bf-luistranslate)
@@ -58,7 +68,9 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf qnamaker:alterations`](#bf-qnamakeralterations)
 * [`bf qnamaker:alterations:list`](#bf-qnamakeralterationslist)
 * [`bf qnamaker:alterations:replace`](#bf-qnamakeralterationsreplace)
+* [`bf qnamaker:build`](#bf-qnamakerbuild)
 * [`bf qnamaker:convert`](#bf-qnamakerconvert)
+* [`bf qnamaker:cross-train`](#bf-qnamakercross-train)
 * [`bf qnamaker:endpointkeys`](#bf-qnamakerendpointkeys)
 * [`bf qnamaker:endpointkeys:list`](#bf-qnamakerendpointkeyslist)
 * [`bf qnamaker:endpointkeys:refresh`](#bf-qnamakerendpointkeysrefresh)
@@ -168,14 +180,15 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      LUIS application Id
+  --authoringKey=authoringKey        LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).
   --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
   --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)
   --versionId=versionId              LUIS version Id
 
 EXAMPLE
 
-       $ bf config:set:luis --appId {APPLICATION_ID} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} 
-  --endpoint {ENDPOINT}
+       $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} 
+  --versionId {VERSION_ID} --endpoint {ENDPOINT}
 ```
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/set/luis.ts)_
@@ -280,6 +293,61 @@ OPTIONS
 
 _See code: [@microsoft/bf-cli-config](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/show/telemetry.ts)_
 
+## `bf dialog`
+
+Dialog related commands for working with .schema and .dialog files.
+
+```
+USAGE
+  $ bf dialog
+
+OPTIONS
+  -h, --help  Dialog command help
+```
+
+_See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/index.ts)_
+
+## `bf dialog:merge PATTERNS`
+
+Merge component .schema files into an app.schema.
+
+```
+USAGE
+  $ bf dialog:merge PATTERNS
+
+ARGUMENTS
+  PATTERNS  Any number of glob regex patterns to match .schema, .csproj, or package.json files.
+
+OPTIONS
+  -h, --help           show CLI help
+  -o, --output=output  [default: app.schema] Output path and filename for merged schema.
+  -v, --verbose        Show verbose logging of files as they are processed.
+
+EXAMPLES
+  $ bf dialog:merge *.csproj
+  $ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema
+```
+
+_See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/merge.ts)_
+
+## `bf dialog:verify PATTERNS`
+
+Verify .dialog files match their app.schema.
+
+```
+USAGE
+  $ bf dialog:verify PATTERNS
+
+ARGUMENTS
+  PATTERNS  Any number of glob regex patterns to match .dialog files.
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose  Show verbose output
+```
+
+_See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/verify.ts)_
+
 ## `bf help [COMMAND]`
 
 display help for bf
@@ -297,6 +365,84 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
+## `bf lg`
+
+Parse, collate, expand and translate lg files.
+
+```
+USAGE
+  $ bf lg
+
+OPTIONS
+  -h, --help  lg command help
+```
+
+_See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/index.ts)_
+
+## `bf lg:expand`
+
+Expand one or all templates in .lg file(s). Expand an inline expression.
+
+```
+USAGE
+  $ bf lg:expand
+
+OPTIONS
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               lg:expand help
+  -i, --in=in              (required) Folder that contains .lg file.
+  -o, --out=out            Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse            Consider sub-folders to find .lg file(s)
+  --all                    When set, all templates in the .lg file be expanded.
+  --expression=expression  Inline expression provided as a string to evaluate.
+  --interactive            Interactively prompt for all missing entity value references required for expansion.
+  --template=template      Name of the template to expand. Template names with spaces must be enclosed in quotes.
+  --testInput=testInput    Path to a JSON file containing test input for all variable references.
+```
+
+_See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/expand.ts)_
+
+## `bf lg:translate`
+
+Machine translate .lg files using Microsoft Translator Text API.
+
+```
+USAGE
+  $ bf lg:translate
+
+OPTIONS
+  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                   lg:translate help
+  -i, --in=in                  (required) Folder that contains .lg file.
+  -o, --out=out                Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse                Consider sub-folders to find .lg file(s)
+  --srclang=srclang            Source lang code. Auto detect if missing.
+  --tgtlang=tgtlang            (required) Comma separated list of target languages.
+  --translate_comments         Machine translate all comments found in .lg file
+  --translate_link_text        Machine translate link description in .lg file
+  --translatekey=translatekey  (required) Machine translation endpoint key.
+```
+
+_See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/translate.ts)_
+
+## `bf lg:verify`
+
+Verify .lg file(s) and collate them into a single file.
+
+```
+USAGE
+  $ bf lg:verify
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     lg:verify help
+  -i, --in=in    (required) Folder that contains .lg file.
+  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse  Considere sub-folders to find .lg file(s)
+```
+
+_See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/verify.ts)_
+
 ## `bf luis`
 
 Manages LUIS assets on service and/or locally.
@@ -310,6 +456,36 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/index.ts)_
+
+## `bf luis:application:assignazureaccount`
+
+Assign a LUIS azure accounts to an application
+
+```
+USAGE
+  $ bf luis:application:assignazureaccount
+
+OPTIONS
+  -h, --help                                 show CLI help
+  --accountName=accountName                  (required) Account name
+  --appId=appId                              (required) LUIS application Id (defaults to config:LUIS:appId)
+
+  --armToken=armToken                        (required) The bearer authorization header to use; containing the user`s
+                                             ARM token used to validate azure accounts information
+
+  --azureSubscriptionId=azureSubscriptionId  (required) Azure Subscription Id
+
+  --endpoint=endpoint                        LUIS endpoint hostname
+
+  --json                                     Display output as JSON
+
+  --resourceGroup=resourceGroup              (required) Resource Group
+
+  --subscriptionKey=subscriptionKey          (required) LUIS cognitive services subscription key (default:
+                                             config:LUIS:subscriptionKey)
+```
+
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/assignazureaccount.ts)_
 
 ## `bf luis:application:create`
 
@@ -560,36 +736,44 @@ USAGE
   $ bf luis:build
 
 OPTIONS
-  -f, --force                      If --dialog flag is provided, overwirtes relevant dialog file
-  -h, --help                       show CLI help
+  -f, --force                      If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output file or folder name. If not specified, current directory will be used as
-                                   output
-
-  --authoringKey=authoringKey      (required) LUIS authoring key
+  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified, application
+                                   setting will be output to console
+                                   
+  --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
-  --dialog                         Write out .dialog files
+  --deleteOldVersion               Deletes old version of LUIS application after building new one.
+
+  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
-                                   valid if --dialog is set
+                                   valid if --out is set
 
-  --log                            write out log messages to console
+  --log                            Writes out log messages to console
 
-  --luConfig=luConfig              Path to config for lu build
+  --luConfig=luConfig              Path to config for lu build which can contain switches for arguments
 
   --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
 
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
-                                   current logged in useralias
+                                   current logged in user alias
+
+  --endpoint                       Luis authoring endpoint for publishing
+
+  --schema=schema                  Defines $schema for generated .dialog files
+
+  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
 EXAMPLE
 
-       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME} --dialog {true}
+       $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/build.ts)_
@@ -618,6 +802,33 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/convert.ts)_
+
+## `bf luis:cross-train`
+
+Lu and Qna cross train tool
+
+```
+USAGE
+  $ bf luis:cross-train
+
+OPTIONS
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               luis:cross-train command help
+  -i, --in=in              Source lu and qna files folder
+
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
+                           folder under folder of current command
+
+  --config=config          Path to config file of mapping rules
+
+  --intentName=intentName  [default: _Interruption] Interruption intent name
+
+  --rootDialog=rootDialog  Root dialog file path
+
+  --log                    [default: false] Writes out log messages to console
+```
+
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
 
 ## `bf luis:endpoints:list`
 
@@ -684,6 +895,37 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/generate/ts.ts)_
+
+## `bf luis:test`
+
+Test a .lu file or LUIS application JSON model against a published LUIS model
+
+```
+USAGE
+  $ bf luis:test
+
+OPTIONS
+  -a, --appId=appId                      (required) LUIS application Id
+  -h, --help                             luis:test help
+  -i, --in=in                            Source .lu file or LUIS application JSON model for testing
+  -o, --out=out                          Output file or folder name. If not specified stdout will be used as output
+  -s, --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key
+
+  --allowIntentsCount=allowIntentsCount  [default: 1] Top-scoring intent or top n Intent with score to show in the
+                                         result
+
+  --endpoint=endpoint                    [default: https://westus.api.cognitive.microsoft.com] LUIS endpoint hostname
+
+  --force                                If --out flag is provided with the path to an existing file, overwrites that
+                                         file
+
+  --intentOnly                           Only test intent
+
+  --staging                              Presence of flag targets the staging app, if no flag passed defaults to
+                                         production
+```
+
+_See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/test.ts)_
 
 ## `bf luis:train:run`
 
@@ -1089,6 +1331,54 @@ OPTIONS
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/alterations/replace.ts)_
 
+## `bf qnamaker:build`
+
+Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations
+
+```
+USAGE
+  $ bf qnamaker:build
+
+OPTIONS
+  -b, --botName=botName                  (required) Bot name
+  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help                             qnamaker:build command help
+  -i, --in=in                            Source .qna file or folder
+
+  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified, knowledge base
+                                         setting will be output to console
+
+  -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+
+  --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
+                                         if not set
+
+  --dialog=dialog                        Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
+
+  --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
+                                         Only valid if --out is set
+
+  --log                                  [default: false] Writes out log messages to console
+
+  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
+
+  --region=region                        [default: westus] Overrides public endpoint
+                                         https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
+
+  --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
+                                         Defaults to current logged in user alias
+                   
+  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
+
+  --schema=schema                        Defines $schema for generated .dialog files
+
+EXAMPLE
+
+       $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
+```
+
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/build.ts)_
+
 ## `bf qnamaker:convert`
 
 Converts .qna file(s) to QnA application JSON models or vice versa.
@@ -1110,6 +1400,33 @@ OPTIONS
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/convert.ts)_
+
+## `bf qnamaker:cross-train`
+
+Lu and Qna cross train tool
+
+```
+USAGE
+  $ bf qnamaker:cross-train
+
+OPTIONS
+  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               qnamaker:cross-train command help
+  -i, --in=in              Source lu and qna files folder
+
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
+                           folder under folder of current command
+
+  --config=config          Path to config file of mapping rules
+
+  --intentName=intentName  [default: _Interruption] Interruption intent name
+
+  --rootDialog=rootDialog  Root dialog file path.
+
+  --log                    [default: false] Writes out log messages to console
+```
+
+_See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_
 
 ## `bf qnamaker:endpointkeys`
 
@@ -1297,7 +1614,7 @@ _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cl
 
 ## `bf qnamaker:kb:export`
 
-Echos a knowledgebase json to stdout
+Echos a knowledgebase in json or qna format to stdout
 
 ```
 USAGE
@@ -1310,6 +1627,8 @@ OPTIONS
 
   --kbId=kbId                        Knowledgebase id to be exported. Overrides the knowledge base id present in the
                                      config
+
+  --qnaFormat                        Specifies if the content should be exported to .qna format.
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource
                                      Management section for your Qna Maker cognitive service). Overrides the
@@ -1389,8 +1708,12 @@ USAGE
 
 OPTIONS
   -h, --help                         qnamaker:kb:replace command help
-  -i, --in=in                        File path to the ReplaceKbDTO object to send in the body of the request
+
+  -i, --in=in                        File path to the ReplaceKbDTO object to send in the body of the request.
+                                     Alternately this can be path to a .qna file
+
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
+
   --kbId=kbId                        Knowledgebase id. Overrides the knowledge base id present in the config
 
   --subscriptionKey=subscriptionKey  Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource

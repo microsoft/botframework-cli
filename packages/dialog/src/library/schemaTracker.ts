@@ -1,175 +1,151 @@
-#!/usr/bin/env node
-
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
 
-import * as ajv from 'ajv';
-import * as fs from 'fs-extra';
-import * as path from 'path';
-const http = require('http')
-const https = require('https')
+import Ajv = require('ajv')
+import parser from '@apidevtools/json-schema-ref-parser'
+
+let getUri: any = require('get-uri')
+
+// Get JSON from a URI.
+async function getJSON(uri: string): Promise<any> {
+    if (uri.indexOf(':') < 2) {
+        uri = `file:///${uri}`
+    }
+    let stream = await getUri(uri)
+    let data = ''
+    for await (let chunk of stream) {
+        data += chunk.toString()
+    }
+    return JSON.parse(data)
+}
 
 export class SchemaTracker {
-    // Map from type name to information about that type.
-    typeToType: Map<string, Type>
+    // Map from type name to information about that kind.
+    kindToKind: Map<string, Kind>
 
-    private readonly validator: ajv.Ajv
+    // Map from dialog path to kind.
+    pathToKind: Map<string, string>
+
+    private readonly validator = new Ajv({logger: false});
 
     constructor() {
-        this.typeToType = new Map<string, Type>()
-        this.validator = new ajv()
+        this.kindToKind = new Map<string, Kind>()
+        this.pathToKind = new Map<string, string>()
+        // NOTE: This is so that ajv doesn't complain about extra keywords around $ref
     }
 
-    async getValidator(schemaPath: string): Promise<[ajv.ValidateFunction, boolean]> {
+    async getValidator(schemaPath: string): Promise<[Ajv.ValidateFunction, boolean]> {
         let validator = this.validator.getSchema(schemaPath)
         let added = false
         if (!validator) {
-            let schemaObject = await fs.readJSON(schemaPath)
-            added = true
-            if (schemaObject.oneOf) {
-                const defRef = '#/definitions/'
-                const implementsRole = 'implements('
-                let processRole = (role: string, type: Type) => {
-                    if (role.startsWith(implementsRole)) {
-                        role = role.substring(implementsRole.length, role.length - 1)
-                        let interfaceDefinition = this.typeToType.get(role)
-                        if (!interfaceDefinition) {
-                            interfaceDefinition = new Type(role)
-                            this.typeToType.set(role, interfaceDefinition)
+            try {
+                let schemaObject = await getJSON(schemaPath)
+                let fullSchema = await parser.dereference(schemaObject) as any
+                added = true
+                if (fullSchema.oneOf) {
+                    const implementsRole = 'implements('
+                    let processRole = (role: string, type: Kind) => {
+                        if (role.startsWith(implementsRole)) {
+                            role = role.substring(implementsRole.length, role.length - 1)
+                            let interfaceDefinition = this.kindToKind.get(role)
+                            if (!interfaceDefinition) {
+                                interfaceDefinition = new Kind(role)
+                                this.kindToKind.set(role, interfaceDefinition)
+                            }
+                            interfaceDefinition.addImplementation(type)
                         }
-                        interfaceDefinition.addImplementation(type)
                     }
-                }
-                for (let one of schemaObject.oneOf) {
-                    let ref = one.$ref
-                    // NOTE: Assuming schema file format is from httpSchema or we will ignore.
-                    // Assumption is that a given type name is the same across different schemas.
-                    // All .dialog in one app should use the same app.schema, but if you are using
-                    // a .dialog from another app then it will use its own schema which if it follows the rules
-                    // should have globally unique type names.
-                    if (ref.startsWith(defRef)) {
-                        ref = ref.substring(defRef.length)
-                        if (!this.typeToType.get(ref)) {
-                            let def = schemaObject.definitions[ref]
-                            if (def) {
-                                let type = new Type(ref, def)
-                                this.typeToType.set(ref, type)
-                                if (def.$role) {
-                                    if (typeof def.$role === 'string') {
-                                        processRole(def.$role, type)
-                                    } else {
-                                        for (let role of def.$role) {
-                                            processRole(role, type)
-                                        }
-                                    }
+                    for (let def of fullSchema.oneOf) {
+                        let kind = def.properties.$kind.const
+                        let type = new Kind(kind, def)
+                        this.kindToKind.set(kind, type)
+                        if (def.$role) {
+                            if (typeof def.$role === 'string') {
+                                processRole(def.$role, type)
+                            } else {
+                                for (let role of def.$role) {
+                                    processRole(role, type)
                                 }
                             }
                         }
+                        this.walkProps(def, kind)
                     }
                 }
-            }
-            let metaSchemaName = schemaObject.$schema
-            let metaSchemaCache = path.join(__dirname, path.basename(metaSchemaName))
-            let metaSchema: any
-            if (!await fs.pathExists(metaSchemaCache)) {
-                try {
-                    let metaSchemaDefinition = await this.getURL(metaSchemaName)
-                    metaSchema = JSON.parse(metaSchemaDefinition)
-                } catch {
-                    throw new Error(`Could not parse ${metaSchemaName}`)
+
+                // Pick up component.schema
+                let metaSchemaName = fullSchema.$schema as string
+                if (!this.validator.getSchema(metaSchemaName)) {
+                    let metaSchema = await getJSON(metaSchemaName)
+                    this.validator.addSchema(metaSchema, metaSchemaName)
                 }
-                await fs.writeJSON(metaSchemaCache, metaSchema, { spaces: 4 })
-            } else {
-                metaSchema = await fs.readJSON(metaSchemaCache)
+                this.validator.addSchema(fullSchema, schemaPath)
+                validator = this.validator.getSchema(schemaPath)
+                if (!validator) {
+                    throw new Error(`Could not get validator for schema ${schemaPath}`)
+                }
+            } catch (err) {
+                throw new Error(`Could not use schema ${schemaPath}\n${err.message}`)
             }
-            if (!this.validator.getSchema(metaSchemaName)) {
-                this.validator.addSchema(metaSchema, metaSchemaName)
-            }
-            this.validator.addSchema(schemaObject, schemaPath)
-            validator = this.validator.getSchema(schemaPath)
         }
-        if (!validator) {
-            throw new Error('Could not find schema validator.')
-        }
+
         return [validator, added]
     }
 
-    private async getURL(url: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-
-            let client = http
-
-            if (url.toString().indexOf('https') === 0) {
-                client = https
-            }
-
-            client.get(url, (resp: any) => {
-                let data = ''
-
-                // A chunk of data has been received.
-                resp.on('data', (chunk: any) => {
-                    data += chunk
-                })
-
-                // The whole response has been received.
-                resp.on('end', () => {
-                    resolve(data)
-                })
-
-            }).on('error', (err: any) => {
-                reject(err)
-            })
-        })
-    }
-
-}
-
-// Information about a type.
-export class Type {
-    // Name of the type.
-    name: string
-
-    // Paths to lg properties for concrete types.
-    lgProperties: string[]
-
-    // Possible types for an interface type.
-    implementations: Type[]
-
-    // Interface types this type implements.
-    interfaces: Type[]
-
-    constructor(name: string, schema?: any) {
-        this.name = name
-        this.lgProperties = []
-        this.implementations = []
-        this.interfaces = []
-        if (schema) {
-            this.walkProps(schema, name)
-        }
-    }
-
-    addImplementation(type: Type) {
-        this.implementations.push(type)
-        type.interfaces.push(this)
-    }
-
-    toString(): string {
-        return this.name
+    expectsKind(dialog: string, path: string): Kind | undefined {
+        const normalized = `${dialog}${path.replace(/\[\d+\]/, '')}`
+        const kind = this.pathToKind.get(normalized)
+        return kind ? this.kindToKind.get(kind) : undefined
     }
 
     private walkProps(val: any, path: string) {
         if (val.properties) {
             for (let propName in val.properties) {
                 let prop = val.properties[propName]
+                if (prop.type === 'array') {
+                    prop = prop.items
+                }
                 let newPath = `${path}/${propName}`
-                if (prop.$role === 'lg') {
-                    this.lgProperties.push(newPath)
-                } else if (prop.properties) {
+                if (prop.$kind) {
+                    // Path points to a $kind
+                    this.pathToKind.set(newPath, prop.$kind)
+                }
+                if (prop.properties) {
                     this.walkProps(prop, newPath)
                 }
             }
         }
+    }
+}
+
+// Information about a type.
+export class Kind {
+    // Name of the type.
+    name: string
+
+    // Definition
+    definition?: object
+
+    // Possible types for an interface type.
+    implementations: Kind[]
+
+    // Interface types this type implements.
+    interfaces: Kind[]
+
+    constructor(name: string, definition?: object) {
+        this.name = name
+        this.definition = definition
+        this.implementations = []
+        this.interfaces = []
+    }
+
+    addImplementation(type: Kind) {
+        this.implementations.push(type)
+        type.interfaces.push(this)
+    }
+
+    toString(): string {
+        return this.name
     }
 }

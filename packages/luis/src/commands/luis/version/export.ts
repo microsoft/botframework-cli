@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Version from './../../../api/version'
+
 const utils = require('../../../utils/index')
 
 export default class LuisVersionExport extends Command {
@@ -41,16 +43,18 @@ export default class LuisVersionExport extends Command {
     const requiredProps = {appId, versionId, endpoint, subscriptionKey}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     try {
-      const appJSON = await client.versions.exportMethod(appId, versionId)
-      if (!appJSON) throw new CLIError('Failed to export file')
+      const messageData = await Version.export({subscriptionKey, endpoint, appId}, versionId)
+
+      if (messageData.error) {
+        throw new CLIError(messageData.error.message)
+      }
+
       if (out) {
-        const writtenFilePath: string = await utils.writeToFile(out, appJSON, force)
+        const writtenFilePath: string = await utils.writeToFile(out, messageData, force)
         this.log(`File successfully written: ${writtenFilePath}`)
       } else {
-        await utils.writeToConsole(appJSON)
+        await utils.writeToConsole(messageData)
       }
     } catch (error) {
       throw new CLIError(error)

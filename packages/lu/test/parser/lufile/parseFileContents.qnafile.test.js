@@ -118,5 +118,20 @@ hi there
             .catch(err => done(err))
     })
     
-
+    it('correctly parses qna questions with trailing tab or whitespaces', function (done) {
+        let fileContent =
+`# ? what are you   
+- who are you  
+\`\`\`
+test
+\`\`\``;
+        parseFile(fileContent)
+            .then(res => {
+                assert.equal(res.qnaJsonStructure.qnaList[0].questions[0], 'what are you');
+                assert.equal(res.qnaJsonStructure.qnaList[0].questions[1], 'who are you');
+                assert.equal(res.qnaJsonStructure.qnaList[0].answer, 'test');
+                done();
+            })
+            .catch(err => done(err))
+    });
 });

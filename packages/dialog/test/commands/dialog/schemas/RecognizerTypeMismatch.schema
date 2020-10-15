@@ -1,4 +1,0 @@
-{
-    "$schema": "https://raw.githubusercontent.com/microsoft/botbuilder-dotnet/master/schemas/component.schema",
-    "$role": "implements(IRecognizer)"
-}

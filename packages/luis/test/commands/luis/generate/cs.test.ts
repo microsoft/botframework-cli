@@ -84,6 +84,17 @@ describe('luis:generate:cs', () => {
     .it('Generates regex entities correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/RegexEntities.cs', '../../../fixtures/generate/results/RegexEntities.cs')
     })
+  
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/RegexEntities2.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/RegexEntities2.cs')}`])
+    .it('Generates regex entities with alternative format correctly', async () => {
+      await compareSourceFiles('../../../fixtures/generate/RegexEntities.cs', '../../../fixtures/generate/results/RegexEntities2.cs')
+    })
 
   test
     .stdout()
@@ -150,5 +161,16 @@ describe('luis:generate:cs', () => {
       `${path.join(__dirname, '../../../fixtures/generate/results/SchemaV6.cs')}`])
     .it('Generates class based on luis schema v6 correctly', async () => {
       await compareSourceFiles('../../../fixtures/generate/SchemaV6.cs', '../../../fixtures/generate/results/SchemaV6.cs')
+    })
+
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/V6AnyEntityAsInstanceOf.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')}`])
+    .it('Generates class based on V6 with entity instanceOf referencing a closedList', async () => {
+      await compareSourceFiles('../../../fixtures/generate/V6AnyEntityAsInstanceOf.cs', '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')
     })
 })

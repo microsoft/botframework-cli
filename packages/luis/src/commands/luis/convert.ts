@@ -45,11 +45,12 @@ export default class LuisConvert extends Command {
       if (isLu) {
         const luFiles = await file.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
         result = await LuisBuilder.build(luFiles, flags.log, flags.culture)
+        result.validate()
         if (!hasContent(result)) {
           throw new CLIError('No LU or Luis content parsed!')
         }
       } else {
-        const luisContent = stdin ? stdin : await file.getContentFromFile(flags.in)
+        const luisContent = flags.in ? await file.getContentFromFile(flags.in) : stdin
         const luisObject = new Luis(file.parseJSON(luisContent, 'Luis'))
         if (flags.sort) {
           sort(luisObject)

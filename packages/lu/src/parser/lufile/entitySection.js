@@ -2,30 +2,46 @@ const EntitySectionContext = require('./generated/LUFileParser').LUFileParser.En
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
+const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
-class EntitySection {
+class EntitySection extends BaseSection {
     /**
      * 
      * @param {EntitySectionContext} parseTree 
      */
     constructor(parseTree) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.ENTITYSECTION;
-        this.Errors = []
         this.Name = this.ExtractName(parseTree);
         this.Type = this.ExtractType(parseTree);
         this.SynonymsOrPhraseList = this.ExtractSynonymsOrPhraseList(parseTree);
         this.Id = `${this.SectionType}_${this.Name}`;
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractName(parseTree) {
+        let entityName;
         if (parseTree.entityDefinition().entityLine().entityName()) {
-            return parseTree.entityDefinition().entityLine().entityName().getText().trim();
+            entityName = parseTree.entityDefinition().entityLine().entityName().getText().trim();
         } else {
             this.Errors.push(BuildDiagnostic({
                 message: "Invalid entity line, did you miss entity name after $",
                 context: parseTree.entityDefinition().entityLine()
-            }))     
+            }));
+        }
+
+        if (entityName && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+            this.Errors.push(BuildDiagnostic({
+                message: `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`,
+                context: parseTree.newEntityDefinition().newEntityLine()
+            }));
+        } else {
+            return entityName;
         }
     }
 

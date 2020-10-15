@@ -1,0 +1,22 @@
+# ? raconter la blague
+
+**Filters:**
+- dialogName=dia1
+
+```
+ha ha ha
+```
+
+> Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
+# ? J'ai besoin d'un hôtel quatre étoiles
+- puis-je réserver un hôtel près de l'aiguille spatiale
+- guide de l'utilisateur
+
+**Filters:**
+- dialogName=dia1
+
+```
+intent=DeferToRecognizer_LUIS_dia1
+```

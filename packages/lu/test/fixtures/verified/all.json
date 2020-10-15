@@ -175,18 +175,18 @@
       ]
     },
     {
-      "text": "you can call me vishwac",
+      "text": "you  can call me vishwac",
       "intent": "AskForUserName",
       "entities": [
         {
           "entity": "userName",
-          "startPos": 16,
-          "endPos": 22
+          "startPos": 17,
+          "endPos": 23
         }
       ]
     },
     {
-      "text": "create an alarm",
+      "text": "create  an alarm",
       "intent": "CreateAlarm",
       "entities": []
     },

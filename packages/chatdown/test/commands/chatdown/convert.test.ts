@@ -1,9 +1,10 @@
-import {expect, test} from '@oclif/test'
 import * as cp from 'child_process';
-import * as rimraf from 'rimraf';
-let pkg = require('../../../package.json');
-let assert = require('assert');
-const fs = require('fs-extra')
+import assert from 'assert';
+import fs from 'fs-extra';
+import rimraf from 'rimraf';
+import {expect, test} from '@oclif/test'
+
+const pkg = require('../../../package.json');
 
 describe('chatdown:convert', function() {
 

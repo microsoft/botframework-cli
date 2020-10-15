@@ -1,0 +1,9 @@
+{
+    "$schema": "https://raw.githubusercontent.com/microsoft/BotFramework-Composer/stable/Composer/packages/server/schemas/sdk.schema",
+    "$kind": "Microsoft.MultiLanguageRecognizer",
+    "id": "LUIS_sandwich",
+    "recognizers": {
+        "en-us": "sandwich.en-us.lu",
+        "": "sandwich.en-us.lu"
+    }
+}

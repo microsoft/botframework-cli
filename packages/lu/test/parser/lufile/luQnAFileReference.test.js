@@ -7,6 +7,7 @@ const assert = chai.assert;
 const luMerger = require('./../../../src/parser/lu/luMerger');
 const luObj = require('../../../src/parser/lu/lu');
 const luOptions = require('../../../src/parser/lu/luOptions');
+const luisBuilder = require('./../../../src/parser/luis/luisBuilder');
 describe('Deep reference tests', function() {
     it('Ability to pull in all answers from a qna', function(done) {
         let luContent = `
@@ -167,12 +168,214 @@ describe('Deep reference tests', function() {
                 done()
             })
     })
+
+    it('Phrase lists defined as feautre to an entity are handled correctly when the phrase list definition is imported', function(done) {
+      let luContent = `
+[import phraselist](phraselists)
+
+# test
+- utterance
+
+@ ml test1 usesFeature phraseList1
+      `;
+      luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+        .then(res => {
+          assert.equal(res.entities[0].features[0].featureName, "phraseList1");
+          done()
+        })
+        .catch(err => done(err))
+    })
+
+    it('Fix for BF-CLI #797 - deep references to phrase lists are handled correctly', function(done) {
+        let luContent = `
+@ phraselist pl_1(interchangeable) =
+    - pl 1
+    - pl 1 1
+    
+## l_Test
+- [l_Test](./Test.lu#Test.Weather)
+`;
+
+        luMerger.Build([new luObj(luContent, new luOptions('main.lu', true))], false, undefined, findLuFiles)
+        .then(res => done())
+        .catch(err => done(err))
+    })
+
+    it('NDepth entities with incompatible types throw', function(done) {
+        let luContent = `
+@ ml AddToName r1 =
+    - @ personName personName usesFeature f1
+    - @ ml l2 = 
+        - @ personName p1
+
+@ ml f1
+@ prebuilt personName
+
+[import](./3nDepth.lu)`;
+        luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+            .then(res => done(res))
+            .catch(err => done())
+    })
+
+    it('NDepth entities are correctly merged via reference', function(done) {
+        let luContent = `
+@ ml AddToName r1 =
+    - @ personName personName usesFeature f1
+    - @ ml l2 = 
+        - @ personName p1
+
+@ ml f1
+@ prebuilt personName
+
+[import](./2nDepth.lu)`;
+        luisBuilder.fromLUAsync([new luObj(luContent, new luOptions('main.lu', true))], findLuFiles)
+        .then(res => {
+            let entitiesJson = `{"entities": [
+                {
+                  "name": "AddToName",
+                  "roles": [
+                    "r1",
+                    "r2"
+                  ],
+                  "children": [
+                    {
+                      "name": "personName",
+                      "children": [],
+                      "features": [
+                        {
+                          "modelName": "f1",
+                          "isRequired": false
+                        },
+                        {
+                          "modelName": "personName",
+                          "isRequired": true
+                        },
+                        {
+                          "modelName": "f2",
+                          "isRequired": false
+                        }
+                      ]
+                    },
+                    {
+                      "name": "l2",
+                      "children": [
+                        {
+                          "name": "p1",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "personName",
+                              "isRequired": true
+                            }
+                          ]
+                        },
+                        {
+                          "name": "f2l2",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "f2",
+                              "isRequired": true
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "NameEntity",
+                      "children": [],
+                      "features": [
+                        {
+                          "modelName": "NameEntity",
+                          "isRequired": true
+                        }
+                      ]
+                    },
+                    {
+                      "name": "l3",
+                      "children": [
+                        {
+                          "name": "N2",
+                          "children": [],
+                          "features": [
+                            {
+                              "modelName": "NameEntity",
+                              "isRequired": true
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "f1",
+                  "roles": []
+                },
+                {
+                  "name": "f2",
+                  "roles": []
+                },
+                {
+                  "name": "NameEntity",
+                  "roles": []
+                }
+              ]}`;
+
+            let entityParsed = JSON.parse(entitiesJson);
+            assert.deepEqual(res.entities, entityParsed.entities);
+            assert.equal(res.prebuiltEntities[0].name, 'personName');
+            done()
+        })
+        .catch(err => done(err))
+    })
 })
     
 const findLuFiles = async function(srcId, idsToFind){
     let retPayload = [];
     idsToFind.forEach(ask => {
         switch(ask.filePath) {
+            case 'phraselists':
+              retPayload.push(new luObj(`
+@ phraselist phraseList1 = 
+- one
+- two
+- three
+              `, new luOptions(ask.filePath)));
+              break;
+            case './3nDepth.lu':
+                retPayload.push(new luObj(`
+@ ml AddToName r2 =
+- @ f3 personName usesFeature f2
+
+@ ml f2
+@ ml f3`, new luOptions(ask.filePath)));
+            case './2nDepth.lu':
+                retPayload.push(new luObj(`
+@ ml AddToName r2 =
+- @ personName personName usesFeature f2
+- @ NameEntity NameEntity
+- @ ml l3
+    - @ NameEntity N2
+- @ ml l2
+    - @ f2 f2l2
+            
+@ prebuilt personName
+@ ml f2
+@ ml NameEntity`, new luOptions(ask.filePath)));
+                break;
+            case './Test.lu': 
+                retPayload.push(new luObj(`
+[Phrase list definitions](./phrases.lumodule)
+
+> # Intent definitions
+## Test.Weather
+- what is the weather`, new luOptions(ask.filePath, false)));
+                retPayload.push(new luObj(`
+@ phraselist pl_2(interchangeable) =
+- pl 2
+- pl 2 2`, new luOptions(`phrases.lumodule`, true)))
+                break;
             case 'qna1': 
                 retPayload.push(new luObj(`
 # ? q1

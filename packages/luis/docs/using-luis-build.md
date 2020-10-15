@@ -21,29 +21,40 @@ For each LU file (and its language variants) **luis:build** will do the followin
 **Note:** When using `--in` option, `luis:build` will create one LUIS application for every .lu file found per lang x locale.
 
 ## luconfig.json
-Some times you might need to have more control over which specific .lu files correspond to a luis application within your project folder. This is especially helpful if you are leveraging [external references][3] in your .lu files so not every single .lu file is treated as a LUIS application. To achieve this, you can author a luconfig.json and provide it via `bf luis:build --luconfig <luconfig.json path>`
+Some times you might need to have more control over which specific .lu files correspond to a luis application within your project folder. This is especially helpful if you are leveraging [external references][3] in your .lu files so not every single .lu file is treated as a LUIS application. To achieve this, you can author a luconfig.json with command line switches in it and provide it via `bf luis:build --luconfig <luconfig.json path>`.  You will need to also specify `--authoringKey <yourKey>` or set it via `bf config:set:luis --authoringKey=<yourKey>`.
 
 ```jsonc
 {
-    // CLI argument for --botName can be skipped if this is specified
-    "name":"MyProject",
+    // CLI argument --botName.  Serves as a prefix for your LUIS applications.
+    "botName":"MyProject",
+
+    // CLI argument --region.  Where to publish your LUIS applications.
+    "region": "westus",
     
-    // CLI argument for --defaultCulture (--culture) can be skipped if this is specified. This is the application culture if a single .lu file is passed via --in. This is also the default culture for any .lu file without a lang-code in file name if a folder is passed in to --in. (e,.g. foo.lu will be foo.fr-fr.lu assuming --defaultCulture is set to fr-fr. This will continue to default to en-us
-    "defaultLanguage":"en-us",
+    // CLI argument for --defaultCulture. This is the application culture if a single .lu file is passed via --in. This is also the default culture for any .lu file without a lang-code in file name if a folder is passed in to --in. (e,.g. foo.lu will be foo.fr-fr.lu assuming --defaultCulture is set to fr-fr. This will continue to default to en-us
+    "defaultCulture":"en-us",
     
-    // defaults to false when not specified. When set to true, old model version (when we create a new version) is automatically deleted for all applications
+    // CLI argument --deleteOldVersion. When set to true, old model version (when we create a new version) is automatically deleted for all applications
     "deleteOldVersion": true, 
+        
+    // CLI argument --dialog.  Specifies to generate either multiLanguage or crossTrain recongizers. 
+    "dialog": "multiLanguage",
+
+    // CLI argument --falbackLocale. Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --dialog is specified.
+    "fallbackLocale": "en-us",
     
-    // absolute or relative path to set the output folder. When specified in conjunction with "writeDialogFiles", any generated .dialog files are written out to the "out" folder.
+    // CLI argument --force. If --dialog flag is provided, overwrites relevant dialog file.
+    "force": true,  
+    
+    // CLI argument --out.  Absolute or relative path to set the output folder. When specified in conjunction with --dialog, any generated .dialog files are written out to the "out" folder.
     "out": ".",
-    
-    // defaults to false when absent
-    // when no --out or "out" is specified, any generated .dialog files are written to the respective folders where the .lu file was found
-    "writeDialogFiles": true,
-    
-    // each model is a LUIS application
+
+    // CLI argument --suffix.  Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias.
+    "suffix": "bobd",
+
+    // Each model is a LUIS application.
     "models": [
-        // each line is to an lu file and each line corresponds to a luis application. 
+        // Each line is to an lu file and corresponds to a LUIS application. 
         // relative paths here are relative to the luconfig.json file itself. 
         "test/test.lu",
         "test/sample/x/Contoso.Foo.lu",
@@ -183,7 +194,7 @@ generates the following files
 
 [1]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-concept-keys#programmatic-key
 [2]:https://docs.microsoft.com/en-us/azure/cognitive-services/luis/luis-reference-regions#luis-authoring-regions
-[3]:./lu-file-format.md#External-references
-[4]:./lu-file-format.md#Model-description
+[3]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#external-references
+[4]:https://docs.microsoft.com/en-us/azure/bot-service/file-format/bot-builder-lu-file-format?view=azure-bot-service-4.0#model-description
 [5]:./examples/luis-build
 [6]:./examples/luis-build/luconfig.json

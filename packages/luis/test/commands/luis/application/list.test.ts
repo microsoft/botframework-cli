@@ -1,9 +1,10 @@
+import fs from 'fs-extra'
+import rimraf from 'rimraf'
+import sinon from 'sinon'
+import uuidv1 from 'uuid/v1'
 import {expect, test} from '@oclif/test'
-const sinon = require('sinon')
-const uuidv1 = require('uuid/v1')
+
 const utils = require('../../../../src/utils/index')
-const fs = require('fs-extra')
-import * as rimraf from 'rimraf'
 
 describe('luis:application:list', () => {
 
@@ -48,7 +49,7 @@ describe('luis:application:list', () => {
   .stdout()
   .command(['luis:application:list', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
   .it('displays a list of applications', ctx => {
-    expect(ctx.stdout).to.contain('"name": "testapp"\n ')
+    expect(ctx.stdout).to.contain('"name": "testapp"')
   })
 
   test

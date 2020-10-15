@@ -5,6 +5,7 @@ const Luis = require('./luis')
 const helpers = require('./../utils/helpers')
 const mergeLuFiles = require('./../lu/luMerger').Build
 const exception = require('./../utils/exception')
+const retCode = require('../utils/enums/CLI-errors')
 
 /**
  * Builds a Luis instance from a Lu list.
@@ -41,6 +42,7 @@ const collate = function(luisList) {
         let blob = luisList[i]
         mergeResults(blob, luisObject, LUISObjNameEnum.INTENT);
         mergeResults(blob, luisObject, LUISObjNameEnum.ENTITIES);
+        mergeNDepthEntities(blob.entities, luisObject.entities);
         mergeResults_closedlists(blob, luisObject, LUISObjNameEnum.CLOSEDLISTS);
         mergeResults(blob, luisObject, LUISObjNameEnum.PATTERNANYENTITY);
         mergeResultsWithHash(blob, luisObject, LUISObjNameEnum.UTTERANCE, hashTable);
@@ -52,6 +54,7 @@ const collate = function(luisList) {
         buildPatternAny(blob, luisObject)
     }
     helpers.checkAndUpdateVersion(luisObject)
+    helpers.cleanUpExplicitEntityProperty(luisObject)
     cleanupEntities(luisObject)
     return luisObject
 }
@@ -72,6 +75,7 @@ const cleanupEntities = function(luisObject) {
         if (consolidatedList.find(e => e.name == item.name) !== undefined) idxToRemove.push(idx);
     })
     idxToRemove.sort((a, b) => a-b).forEach(idx => luisObject.entities.splice(idx, 1))
+    delete luisObject.onAmbiguousLabels;
 }
 
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
@@ -102,7 +106,77 @@ const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
         }
     });
 }
+const mergeNDepthEntities = function (blob, finalCollection) {
+    let nDepthInBlob = (blob || []).filter(x => x.children !== undefined && Array.isArray(x.children) && x.children.length !== 0);
+    if (nDepthInBlob === undefined) return;
+    nDepthInBlob.forEach(item => {
+        let itemExistsInFinal = (finalCollection || []).find(x => x.name == item.name);
+        if (itemExistsInFinal === undefined) {
+            finalCollection.push(item);
+        } else {
+            // de-dupe and merge roles
+            (item.roles || []).forEach(r => {
+                if (itemExistsInFinal.roles === undefined) {
+                    itemExistsInFinal.roles = [r];
+                } else {
+                    if (!itemExistsInFinal.roles.includes(r)) {
+                        itemExistsInFinal.roles.push(r);
+                    }
+                }
+            })
+            // de-dupe and merge children
+            if (item.children !== undefined && Array.isArray(item.children) && item.children.length !== 0) {
+                recursivelyMergeChildrenAndFeatures(item.children, itemExistsInFinal.children)
+            }
+        }
+    })
+}
 
+const recursivelyMergeChildrenAndFeatures = function(srcChildren, tgtChildren) {
+    if (tgtChildren === undefined || !Array.isArray(tgtChildren) || tgtChildren.length === 0) {
+        tgtChildren = srcChildren;
+        return;
+    }
+    (srcChildren || []).forEach(item => {
+        // find child in tgt
+        let itemExistsInFinal = (tgtChildren || []).find(x => x.name == item.name);
+        if (itemExistsInFinal === undefined) {
+            tgtChildren.push(item);
+        } else {
+            // merge features
+            if (item.features !== undefined && item.features.length !== 0) {
+                // merge and verify type
+                let typeForFinalItem = (itemExistsInFinal.features || []).find(t => t.isRequired == true);
+                let typeForItem = (item.features || []).find(t1 => t1.isRequired == true);
+                if (typeForFinalItem !== undefined) {
+                    if (typeForItem !== undefined) {
+                        if (typeForFinalItem.modelName !== typeForItem.modelName) {
+                            throw new exception(retCode.errorCode.INVALID_REGEX_ENTITY, `Child entity ${item.name} does not have consistent type definition. Please verify all definitions for this entity.`)
+                        }
+                    }
+                }
+                item.features.forEach(f => {
+                    let featureInFinal = (itemExistsInFinal.features || []).find(itFea => {
+                        return ((itFea.featureName !== undefined && itFea.featureName == f.featureName) || 
+                                (itFea.modelName !== undefined && itFea.modelName == f.modelName))
+                    });
+                    if (featureInFinal === undefined) {
+                        itemExistsInFinal.features.push(f);
+                    } else {
+                        // throw if isRequired is not the same.
+                        if (featureInFinal.isRequired !== f.isRequired) {
+                            throw new exception(retCode.errorCode.INVALID_REGEX_ENTITY, `Feature ${f.featureName} does not have consistent definition for entity ${item.name}. Please verify all definitions for this feature for this entity.`)
+                        }
+                    }
+                })
+            }
+            // de-dupe and merge children
+            if (item.children !== undefined && Array.isArray(item.children) && item.children.length !== 0) {
+                recursivelyMergeChildrenAndFeatures(item.children, itemExistsInFinal.children)
+            }
+        }
+    })
+}
 /**
  * Helper function to merge item if it does not already exist
  *
@@ -245,14 +319,17 @@ const buildPrebuiltEntities = function(blob, FinalLUISJSON){
 }
 
 const buildModelFeatures = function(blob, FinalLUISJSON){
-    // do we have model_features?
-    if (blob.model_features === undefined || blob.model_features.length === 0) {
-        return
-    }
-    blob.model_features.forEach(function (modelFeature) {
-        let modelFeatureInMaster = helpers.filterMatch(FinalLUISJSON.model_features, 'name', modelFeature.name);
+    // Find what scope to use in blob
+    let blobScope = blob.model_features || blob.phraselists || [];
+    if (blobScope.length === 0) return;
+
+    // Find the finalLuisJson scope to use
+    let finalScope = FinalLUISJSON.model_features || FinalLUISJSON.phraselists;
+
+    blobScope.forEach(function (modelFeature) {
+        let modelFeatureInMaster = helpers.filterMatch(finalScope, 'name', modelFeature.name);
         if (modelFeatureInMaster.length === 0) {
-            FinalLUISJSON.model_features.push(modelFeature);
+            finalScope.push(modelFeature);
         } else {
             if (modelFeatureInMaster[0].mode !== modelFeature.mode) {
                 // error.

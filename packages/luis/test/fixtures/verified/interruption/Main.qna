@@ -1,0 +1,44 @@
+# ? user guide
+
+**Filters:**
+- aa=bb
+- dialogName=Main
+
+```
+Here is the [user guide](http://contoso.com/userguide.pdf)
+```
+
+# ? tell joke
+
+**Filters:**
+- dialogName=Main
+
+```
+Tell a funny joke
+```
+
+# ? what can you do
+- how can you help
+
+**Filters:**
+- dialogName=Main
+
+```
+I can help book flight, book hotel and book train ticket
+```
+
+> Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
+# ? book a hotel for me
+- book a flight for me
+- book a train ticket for me
+- hi
+- hello
+
+**Filters:**
+- dialogName=Main
+
+```
+intent=DeferToRecognizer_LUIS_Main
+```

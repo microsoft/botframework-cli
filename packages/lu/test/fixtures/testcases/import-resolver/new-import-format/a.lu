@@ -1,0 +1,9 @@
+[import b.lu][1]
+
+# cancel
+- [import c.lu#stop][2]
+- [import url][3]
+
+[1]:b.lu
+[2] : c.lu#stop
+[3]:https://blobstore.azurewebsites.net/1.lu#cancel

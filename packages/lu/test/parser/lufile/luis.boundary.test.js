@@ -201,6 +201,16 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             })
     })
 
+    it (`At Least one phrase in any phrase list`, function(done) {
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(1, 0), 'stdin', true)))
+            .then(res => done(res))
+            .catch(err => {
+                assert.equal(err.errCode, retCode.errorCode.BOUNDARY_MINMUM_PHRASE_LIMIT);
+                assert(err.text.includes(`0 phrases found in phrase list: PL0. Empty phrase list is not allowed.`));
+                done();
+            })
+    })
+
 })
 
 const getMaxListEntity = function() {

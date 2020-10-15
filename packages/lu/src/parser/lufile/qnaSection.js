@@ -1,16 +1,18 @@
 const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
-const helpers = require('../utils/helpers');
 const QNA_GENERIC_SOURCE = "custom editorial";
+const BaseSection = require('./baseSection');
+const Range = require('./diagnostic').Range;
+const Position = require('./diagnostic').Position;
 
-class QnaSection {
+class QnaSection extends BaseSection {
     /**
      * 
      * @param {QnaSectionContext} parseTree 
      */
     constructor(parseTree) {
-        this.ParseTree = parseTree;
+        super();
         this.SectionType = LUSectionTypes.QNASECTION;
         this.Questions = [this.ExtractQuestion(parseTree)];
         let result = this.ExtractMoreQuestions(parseTree);
@@ -24,14 +26,17 @@ class QnaSection {
         this.prompts = result.promptDefinitions;
         this.promptsText = result.promptTextList;
         this.Errors = this.Errors.concat(result.errors);
-        this.Id = this.ExtractAssignedId(parseTree);
+        this.QAPairId = this.ExtractAssignedId(parseTree);
         this.source = this.ExtractSourceInfo(parseTree);
+        const startPosition = new Position(parseTree.start.line, parseTree.start.column);
+        const stopPosition = new Position(parseTree.stop.line, parseTree.stop.column + parseTree.stop.text.length);
+        this.Range = new Range(startPosition, stopPosition);
     }
 
     ExtractSourceInfo(parseTree) {
         let srcAssignment = parseTree.qnaDefinition().qnaSourceInfo()
         if (srcAssignment) {
-            let srcRegExp = new RegExp(/^[ ]*\>[ ]*!#[ ]*@qna.pair.source[ ]*=[ ]*(?<sourceInfo>.*?)$/gmi);
+            let srcRegExp = /^[ ]*\>[ ]*!#[ ]*@qna.pair.source[ ]*=[ ]*(?<sourceInfo>.*?)$/gmi;
             let srcParsed = srcRegExp.exec(srcAssignment.getText().trim());
             return srcParsed.groups.sourceInfo || QNA_GENERIC_SOURCE;
         }
@@ -41,7 +46,7 @@ class QnaSection {
     ExtractAssignedId(parseTree) {
         let idAssignment = parseTree.qnaDefinition().qnaIdMark()
         if (idAssignment) {
-            let idTextRegExp = new RegExp(/^\<a[ ]*id[ ]*=[ ]*[\"\'](?<idCaptured>.*?)[\"\'][ ]*>[ ]*\<\/a\>$/gmi);
+            let idTextRegExp = /^\<a[ ]*id[ ]*=[ ]*[\"\'](?<idCaptured>.*?)[\"\'][ ]*>[ ]*\<\/a\>$/gmi;
             let idTextParsed = idTextRegExp.exec(idAssignment.getText().trim());
             return idTextParsed.groups.idCaptured || undefined;
         }
@@ -70,7 +75,7 @@ class QnaSection {
             let filterLineText = promptLine.getText().trim();
             filterLineText = filterLineText.substr(1).trim();
             promptTextList.push(filterLineText);
-            let promptConfigurationRegExp = new RegExp(/^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi);
+            let promptConfigurationRegExp = /^\[(?<displayText>.*?)]\([ ]*\#[ ]*[ ?]*(?<linkedQuestion>.*?)\)[ ]*(?<contextOnly>\`context-only\`)?.*?$/gmi;
             let splitLine = promptConfigurationRegExp.exec(filterLineText);
             if (!splitLine) {
                 errors.push(BuildDiagnostic({

@@ -1,0 +1,30 @@
+{
+  "$type": "Microsoft.AdaptiveDialog",
+  "$designer": {
+    "name": "dia1",
+    "id": "806771"
+  },
+  "autoEndDialog": "true",
+  "defaultResultProperty": "dialog.result",
+  "triggers": [
+    {
+      "$type": "Microsoft.OnBeginDialog",
+      "$designer": {
+        "name": "BeginDialog",
+        "id": "392603"
+      },
+      "actions": [
+        {
+          "$type": "Microsoft.SendActivity",
+          "$designer": {
+            "id": "326063",
+            "name": "Send a response"
+          },
+          "activity": "@{bfdactivity-326063()}"
+        }
+      ]
+    }
+  ],
+  "generator": "dia1.lg",
+  "recognizer": "dia1.lu"
+}

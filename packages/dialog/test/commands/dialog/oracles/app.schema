@@ -1,0 +1,460 @@
+{
+  "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+  "type": "object",
+  "title": "Component kinds",
+  "description": "These are all of the kinds that can be created by the loader.",
+  "oneOf": [
+    {
+      "$ref": "#/definitions/Recognizer"
+    },
+    {
+      "$ref": "#/definitions/prompt"
+    },
+    {
+      "$ref": "#/definitions/root"
+    }
+  ],
+  "definitions": {
+    "INothing": {
+      "title": "Microsoft Nothing",
+      "description": "Definition of a union type with no implementations.",
+      "$role": "interface"
+    },
+    "IRecognizer": {
+      "$role": "interface",
+      "$comment": "Has multiple implementations",
+      "title": "Recognizer",
+      "description": "Recognizer interface.",
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "Reference to IRecognizer",
+          "description": "Reference to IRecognizer .dialog file."
+        },
+        {
+          "$ref": "#/definitions/Recognizer"
+        }
+      ]
+    },
+    "Recognizer": {
+      "$role": "implements(IRecognizer)",
+      "required": [
+        "req",
+        "$kind"
+      ],
+      "definitions": {
+        "insideDef": {
+          "$role": "expression",
+          "title": "Inside",
+          "description": "Something inside."
+        }
+      },
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "req": {
+          "$role": "expression",
+          "title": "Required",
+          "description": "Something required."
+        },
+        "opt": {
+          "type": "string",
+          "title": "Optional",
+          "description": "Something optional."
+        },
+        "complex": {
+          "title": "Complex",
+          "description": "Complex object.",
+          "properties": {
+            "inside": {
+              "$ref": "#/definitions/Recognizer/definitions/insideDef"
+            }
+          }
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "Recognizer"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "arrayExpression": {
+      "$role": "expression",
+      "title": "Array or expression",
+      "description": "Array or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "array",
+          "title": "Array",
+          "description": "Array constant."
+        },
+        {
+          "$ref": "#/definitions/equalsExpression"
+        }
+      ]
+    },
+    "basePrompt": {
+      "$comment": "This is a base schema that cannot be instantiated.",
+      "type": "object",
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "title": "Base prompt",
+          "description": "Base prompt."
+        },
+        "alternatePrompt": {
+          "title": "Alternate",
+          "description": "Alternate prompt of anything."
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "basePrompt"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "booleanExpression": {
+      "$role": "expression",
+      "title": "Boolean or expression",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean constant.",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.isVip"
+          ]
+        }
+      ]
+    },
+    "component": {
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "condition": {
+      "$role": "expression",
+      "title": "Boolean condition",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/expression"
+        },
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean value.",
+          "default": true,
+          "examples": [
+            false
+          ]
+        }
+      ]
+    },
+    "equalsExpression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression starting with =.",
+      "pattern": "^=.*\\S.*",
+      "examples": [
+        "=user.name"
+      ]
+    },
+    "expression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression to evaluate.",
+      "pattern": "^.*\\S.*",
+      "examples": [
+        "user.age > 13"
+      ]
+    },
+    "integerExpression": {
+      "$role": "expression",
+      "title": "Integer or expression",
+      "description": "Integer constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "title": "Integer",
+          "description": "Integer constant.",
+          "default": 0,
+          "examples": [
+            15
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.age"
+          ]
+        }
+      ]
+    },
+    "numberExpression": {
+      "$role": "expression",
+      "title": "Number or expression",
+      "description": "Number constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "number",
+          "title": "Number",
+          "description": "Number constant.",
+          "default": 0,
+          "examples": [
+            15.5
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=dialog.quantity"
+          ]
+        }
+      ]
+    },
+    "objectExpression": {
+      "$role": "expression",
+      "title": "Object or expression",
+      "description": "Object or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Object",
+          "description": "Object constant."
+        },
+        {
+          "$ref": "#/definitions/equalsExpression"
+        }
+      ]
+    },
+    "prompt": {
+      "$role": "extends(basePrompt)",
+      "required": [
+        "prompt",
+        "$kind"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "title": "Base prompt",
+          "description": "Base prompt."
+        },
+        "alternatePrompt": {
+          "title": "Alternate",
+          "description": "Alternate prompt of anything."
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "prompt"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "role": {
+      "title": "$role",
+      "description": "Defines the role played in the dialog schema from [expression|interface|implements($kind)|extends($kind)].",
+      "type": "string",
+      "pattern": "^((expression)|(interface)|(implements\\([a-zA-Z][a-zA-Z0-9.]*\\))|(extends\\([a-zA-Z][a-zA-Z0-9.]*\\)))$"
+    },
+    "root": {
+      "$role": [],
+      "required": [
+        "recognizers",
+        "$kind"
+      ],
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "recognizers": {
+          "type": "array",
+          "title": "Recognizers",
+          "description": "Some recognizers.",
+          "items": {
+            "$kind": "IRecognizer",
+            "$ref": "#/definitions/IRecognizer"
+          }
+        },
+        "prompt": {
+          "$kind": "prompt",
+          "title": "A prompt",
+          "description": "A prompt.",
+          "$ref": "#/definitions/prompt"
+        },
+        "condition": {
+          "title": "Condition",
+          "description": "A condition to test",
+          "$ref": "#/definitions/booleanExpression"
+        },
+        "property": {
+          "type": "string",
+          "title": "Something",
+          "description": "About something."
+        },
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
+          "const": "root"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "stringExpression": {
+      "$role": "expression",
+      "title": "String or expression",
+      "description": "Interpolated string or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "string",
+          "title": "String",
+          "description": "Interpolated string",
+          "pattern": "^(?!(=)).*",
+          "examples": [
+            "Hello ${user.name}"
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=concat('x','y','z')"
+          ]
+        }
+      ]
+    },
+    "valueExpression": {
+      "$role": "expression",
+      "title": "Any or expression",
+      "description": "Any constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "object",
+          "title": "Object",
+          "description": "Object constant."
+        },
+        {
+          "type": "array",
+          "title": "Array",
+          "description": "Array constant."
+        },
+        {
+          "type": "string",
+          "title": "String",
+          "description": "Interpolated string.",
+          "pattern": "^(?!(=)).*",
+          "examples": [
+            "Hello ${user.name}"
+          ]
+        },
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean constant",
+          "examples": [
+            false
+          ]
+        },
+        {
+          "type": "number",
+          "title": "Number",
+          "description": "Number constant.",
+          "examples": [
+            15.5
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=..."
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -5,6 +5,8 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationPublish extends Command {
@@ -20,8 +22,8 @@ export default class LuisApplicationPublish extends Command {
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to publish (defaults to config:LUIS:versionId)'}),
-    staging: flags.boolean({description: 'Publishes application version to Staging slot, otherwise publish to production (default: false)'}),
-    direct: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production (default: false)'})
+    staging: flags.boolean({description: 'Publishes application version to Staging slot, otherwise publish to production', default: false}),
+    direct: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
   }
 
   async run() {
@@ -41,8 +43,6 @@ export default class LuisApplicationPublish extends Command {
     const requiredProps = {endpoint, subscriptionKey, appId, versionId}
     utils.validateRequiredProps(requiredProps)
 
-    const client = utils.getLUISClient(subscriptionKey, endpoint)
-
     const applicationPublishObject = {
       versionId,
       isStaging: staging,
@@ -50,8 +50,13 @@ export default class LuisApplicationPublish extends Command {
     }
 
     try {
-      const publishedAppData = await client.apps.publish(appId, applicationPublishObject)
-      this.log(`${JSON.stringify(publishedAppData, null, 2)}`)
+      const messageData = await Application.publish({subscriptionKey, appId, endpoint}, applicationPublishObject)
+
+      if (messageData.error) {
+        throw new CLIError(messageData.error.message)
+      }
+
+      this.log(`${JSON.stringify(messageData, null, 2)}`)
     } catch (err) {
       throw new CLIError(`Failed to publish app: ${err}`)
     }

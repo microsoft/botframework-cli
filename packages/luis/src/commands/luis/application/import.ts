@@ -5,6 +5,9 @@
 
 import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
 
+import Application from './../../../api/application'
+
+const Luis = require('@microsoft/bf-lu').V2.LuisBuilder
 const utils = require('../../../utils/index')
 
 export default class LuisApplicationImport extends Command {
@@ -38,36 +41,24 @@ export default class LuisApplicationImport extends Command {
 
     inVal = inVal ? inVal.trim() : flags.in
 
-    const appJSON = stdin ? stdin : await utils.getInputFromFile(inVal)
+    let appJSON = inVal ? await utils.getInputFromFile(inVal) : stdin
     if (!appJSON) throw new CLIError('No import data found - please provide input through stdin or the --in flag')
 
-    // const client = utils.getLUISClient(subscriptionKey, endpoint)
-
-    const options: any = {}
-    if (name) options.appName = name
-
     try {
-      // const response = await client.apps.importMethod(JSON.parse(appJSON), options)
-
-      name = name ? '?appName=' + name : ''
-      let url = endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
-      const headers = {
-        'Content-Type': 'application/json',
-        'Ocp-Apim-Subscription-Key': subscriptionKey
-      }
-      const response = await fetch(url, {method: 'POST', headers, body: appJSON})
-      const messageData = await response.json()
+      appJSON = await this.formatInput(appJSON, name)
+      let messageData = await Application.import({subscriptionKey, endpoint}, JSON.parse(appJSON), name)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)
       }
 
+      messageData = JSON.stringify(messageData)
       const output: string = flags.json ? JSON.stringify({Status: 'Success', id: messageData}, null, 2) : `App successfully imported with id ${messageData}.`
       this.log(output)
 
       if (flags.save) {
         const config = {
-          appId: response.body,
+          appId: messageData,
           endpoint,
           subscriptionKey
         }
@@ -96,4 +87,18 @@ export default class LuisApplicationImport extends Command {
     await utils.writeUserConfig(userConfig, configDir)
   }
 
+  async formatInput(inputContent: string, name: string) {
+    let result = inputContent
+    try {
+      JSON.parse(inputContent)
+      /*tslint:disable: no-unused*/
+    } catch (error) {
+      let LuisObject = await Luis.fromContentAsync(inputContent)
+      if (!LuisObject.name) {
+        LuisObject.name = name
+      }
+      result = JSON.stringify(LuisObject)
+    }
+    return result
+  }
 }

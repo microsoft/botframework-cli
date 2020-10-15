@@ -93,6 +93,10 @@ describe('luis:convert', () => {
         await assertToJSON('./../../fixtures/examples/9a.lu', './../../fixtures/verified/9a.json', '9a')
     })
 
+    it('luis:convert phraselist entity types are parsed correctly', async () => {
+        await assertToJSON('./../../fixtures/examples/13.lu', './../../fixtures/verified/13.json', '13')
+    })
+
     it('Parse to LU instance', async () => {
         let luFile = `
         @ ml test
@@ -135,7 +139,23 @@ describe('luis:convert', () => {
         assert.equal(sanitize(newLU.content), result); 
     });
 })
-describe('luis:convert version 5 upgrade test', () => {
+describe('luis:convert version 7 upgrade test', () => {
+    it('luis:convert successfully converts a lu file with depth information preserved in entity and utterances', async () => {
+        await assertToJSON('./../../fixtures/examples/v7UpgradeTest.lu', './../../fixtures/verified/v7UpgradeTest.json')
+    })
+
+    it('luis:convert successfully converts a JSON file with depth information preserved in entity and utterances', async () => {
+        await assertToLu('./../../fixtures/verified/v7UpgradeTest.json', './../../fixtures/verified/v7UpgradeTest.lu')
+    })
+
+    it('V7 json from LUIS team converts correctly to lu format', async () => {
+        await assertToLu('./../../fixtures/testcases/v7app.json', './../../fixtures/verified/v7app.lu')
+    })
+
+    it('V7 LU (from LUIS team) converts correctly to JSON format', async () => {
+        await assertToJSON('./../../fixtures/verified/v7app.lu', './../../fixtures/verified/v7app_c.json')
+    })
+
     it('luis:convert successfully reconstructs a markdown file from a LUIS input file with v5 constructs', async () => {
         await assertToJSON('./../../fixtures/verified/v5UpgradeTest.lu', './../../fixtures/verified/v5Upgrade.json')
     })
@@ -158,6 +178,10 @@ describe('luis:convert version 5 upgrade test', () => {
   
     it('luis:convert successfully converts LUIS JSON model with no phrase lists (output must have phraselists if any v6 concepts are present in the .lu file)', async () => {
         await assertToJSON('./../../fixtures/testcases/plWithFlags.lu', './../../fixtures/verified/plWithFlags.json')
+    })
+
+    it('Child entities names with spaces in them parse correctly to .lu format', async () => {
+        await assertToLu('./../../fixtures/testcases/Child_Entity_With_Spaces.json', './../../fixtures/verified/Child_Entity_With_Spaces.lu')
     })
   })
 
@@ -199,6 +223,32 @@ describe('luis:convert negative tests', () => {
                 })
             })
         
+    })
+
+    it('luis:convert should show ERR message when prebuilt entity in pattern is not explicitly defined', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad4.lu')    
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                .then(res => done(res))
+                .catch(err => {
+                    assert.isTrue(err.text.includes(`[ERROR] line 2:0 - line 2:27: Pattern "- hi {@personName:userName}" has prebuilt entity personName. Please define it explicitly with @ prebuilt personName.`))
+                    done()
+                })
+            })
+        
+    })
+
+    it('luis:convert should show ERR message when entity name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad5.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        assert.isTrue(err.text.includes('[ERROR] line 4:0 - line 4:20: Invalid entity line, entity name delete$Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
     })
   })
 

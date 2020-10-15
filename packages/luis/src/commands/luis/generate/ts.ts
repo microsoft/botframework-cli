@@ -22,6 +22,17 @@ export default class LuisGenerateTs extends Command {
     help: flags.help({char: 'h', description: 'luis:generate:ts help'}),
   }
 
+  renameProp(
+    oldProp: string,
+    newProp: string,
+    {[oldProp]: old, ...others}
+  ): any {
+    return {
+      [newProp]: old,
+      ...others
+    }
+  }
+
   reorderEntities(app: any, name: string): void {
     if (app[name] !== null && app[name] !== undefined) {
       app[name].sort((a: any, b: any) => (a.name > b.name ? 1 : -1))
@@ -40,13 +51,17 @@ export default class LuisGenerateTs extends Command {
       const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
       let app: any
       try {
-        app = stdInput ? JSON.parse(stdInput as string) : await fs.readJSON(path.join(pathPrefix, flags.in))
+        app = flags.in ? await fs.readJSON(path.join(pathPrefix, flags.in)) : JSON.parse(stdInput as string)
       } catch (error) {
         throw new CLIError(error)
       }
 
       flags.className = flags.className || app.name
       flags.className = upperFirst(camelCase(flags.className))
+
+      if ('regexEntities' in app) {
+        app = this.renameProp('regexEntities', 'regex_entities', app)
+      }
 
       this.reorderEntities(app, 'entities')
       this.reorderEntities(app, 'prebuiltEntities')

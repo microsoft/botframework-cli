@@ -1,0 +1,258 @@
+/**
+ * @module @microsoft/bf-lg-cli
+ */
+/**
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Helper} from '../../utils'
+import {TemplateParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import * as txtfile from 'read-text-file'
+import * as path from 'path'
+import * as fs from 'fs-extra'
+import * as readlineSync from 'readline-sync'
+import * as lodash from 'lodash'
+
+export default class ExpandCommand extends Command {
+  static description = 'Expand one or all templates in .lg file(s). Expand an inline expression.'
+
+  private readonly TempTemplateName = '__temp__'
+
+  static flags: flags.Input<any> = {
+    in: flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
+    recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
+    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
+    template: flags.string({description: 'Name of the template to expand. Template names with spaces must be enclosed in quotes.'}),
+    expression: flags.string({description: 'Inline expression provided as a string to evaluate.'}),
+    all: flags.boolean({description: 'When set, all templates in the .lg file be expanded.'}),
+    interactive: flags.boolean({description: 'Interactively prompt for all missing entity value references required for expansion.'}),
+    testInput: flags.string({description: 'Path to a JSON file containing test input for all variable references.'}),
+    help: flags.help({char: 'h', description: 'lg:expand help'}),
+  }
+
+  async run() {
+    const {flags} = this.parse(ExpandCommand)
+
+    const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
+
+    Helper.checkInputAndOutput(lgFilePaths, flags.out)
+
+    for (const filePath of lgFilePaths) {
+      const lg = this.parseExpressionWithLgfile(flags.expression, Templates.parseFile(filePath))
+      this.checkDiagnostics(lg.allDiagnostics)
+
+      const originalTemplateNames = lg.allTemplates.map(u => u.name)
+      const templateNameList = this.buildTemplateNameList(originalTemplateNames, flags.all, flags.expression, flags.template)
+      const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
+
+      this.handlerOutputContent(expandedTemplates, filePath, flags.out, flags.force)
+    }
+  }
+
+  private checkDiagnostics(diagnostics: Diagnostic[]) {
+    const errors = diagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
+    if (errors && errors.length > 0) {
+      throw new CLIError(errors.map(u => u.toString()).join('\n'))
+    } else {
+      const warnings = diagnostics.filter(u => u.severity === DiagnosticSeverity.Warning)
+      if (warnings && warnings.length > 0) {
+        this.warn(warnings.map(u => u.toString()).join('\n'))
+      }
+    }
+  }
+
+  private handlerOutputContent(expandedTemplates: Map<string, string[]>, filePath: string, out: string|undefined, force: boolean|undefined) {
+    if (expandedTemplates !== undefined && expandedTemplates.size >= 0) {
+      const expandContent = this.generateExpandedTemplatesFile(expandedTemplates)
+
+      const outputFilePath = this.getOutputFile(filePath, out)
+      if (!outputFilePath) {
+        this.log(`expand of file ${filePath}`)
+        this.log(expandContent)
+      } else {
+        Helper.writeContentIntoFile(outputFilePath, expandContent, force)
+        this.log(`expand result of ${filePath} have been written into file ${outputFilePath}`)
+      }
+    } else {
+      this.log(`no expand result of ${filePath}`)
+    }
+  }
+
+  private getOutputFile(filePath: string, out: string|undefined): string | undefined {
+    if (filePath === undefined || filePath === '' || out === undefined) {
+      return undefined
+    }
+
+    const base = Helper.normalizePath(path.resolve(out))
+    const root = path.dirname(base)
+    if (!fs.existsSync(root)) {
+      throw new Error(`folder ${root} not exist`)
+    }
+
+    const extension = path.extname(base)
+    if (extension) {
+      // file
+      return base
+    }
+
+    // folder
+    // a.lg -> a.expand.lg
+    const newFileName = path.basename(filePath).replace('.lg', '') + '.expand.lg'
+    return path.join(base, newFileName)
+  }
+
+  private buildTemplateNameList(origintemplateNames: string[], all: boolean|undefined, expression: string|undefined, template: string|undefined): string[] {
+    let templateNameList: string[] = []
+    if (!template && !all && !expression) {
+      throw new CLIError('please use --template or --all or --expression to specific the template')
+    }
+
+    if (all) {
+      if (expression) {
+        templateNameList = templateNameList.concat(origintemplateNames)
+      } else {
+        // remove __temp__ template
+        templateNameList = templateNameList.concat(origintemplateNames.filter(u => u !== this.TempTemplateName))
+      }
+    } else {
+      if (template && origintemplateNames.includes(template)) {
+        templateNameList.push(template)
+      }
+
+      if (expression) {
+        templateNameList.push(this.TempTemplateName)
+      }
+    }
+
+    return [...new Set(templateNameList)]
+  }
+
+  private expandTemplates(lg: Templates, templateNameList: string[], testInput: string, interactive = false) {
+    const expandedTemplates: Map<string, string[]> = new Map<string, string[]>()
+    let variablesValue: Map<string, any>
+    const userInputValues: Map<string, any> = new Map<string, any>()
+    for (const templateName of templateNameList) {
+      if (lg.allTemplates.find(u => u.name === templateName) === undefined) {
+        this.log(`${templateName} does not exist in ${lg.id}, skip it.`)
+        continue
+      }
+
+      const expectedVariables = lg.analyzeTemplate(templateName).Variables
+      variablesValue = this.getVariableValues(testInput, expectedVariables, userInputValues)
+      for (const variableValue of variablesValue) {
+        if (variableValue[1] === undefined) {
+          if (interactive) {
+            const value = readlineSync.question(`Please enter variable value of ${variableValue[0]} in template ${templateName}: `)
+            let valueObj: any
+            // eslint-disable-next-line max-depth
+            try {
+              valueObj = JSON.parse(value)
+            } catch {
+              valueObj = value
+            }
+
+            variablesValue.set(variableValue[0], valueObj)
+            userInputValues.set(variableValue[0], valueObj)
+          }
+        }
+      }
+
+      const variableObj: any = this.generateVariableObj(variablesValue)
+      const expandedTemplate: string[] =  lg.expandTemplate(templateName, variableObj)
+      expandedTemplates.set(templateName, expandedTemplate)
+    }
+
+    return expandedTemplates
+  }
+
+  private parseExpressionWithLgfile(inlineStr: string|undefined, lgFile: Templates): Templates {
+    if (inlineStr === undefined) {
+      return lgFile
+    }
+
+    const multiLineMark = '```'
+
+    inlineStr = !(inlineStr.trim().startsWith(multiLineMark) && inlineStr.includes('\n')) ?
+      `${multiLineMark}${inlineStr}${multiLineMark}` : inlineStr
+
+    const newContent = `#${this.TempTemplateName} \r\n - ${inlineStr}`
+
+    return TemplateParser.parseTextWithRef(newContent, lgFile)
+  }
+
+  private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
+    let result = ''
+    for (const template of expandedTemplates) {
+      result += '# ' + template[0] + '\n'
+      if (Array.isArray(template[1])) {
+        for (const templateStr of template[1]) {
+          if (templateStr.includes('\n')) {
+            // multiline
+            result += '-```\n' + templateStr.trim() + '\n```\n'
+          } else {
+            result += '- ' + templateStr.trim() + '\n'
+          }
+        }
+      } else {
+        throw new TypeError('generating expanded lg file failed')
+      }
+
+      result += '\n'
+    }
+
+    return result
+  }
+
+  private getVariableValues(testinput: string, expectedVariables: string[], userInputValues: Map<string, any>): Map<string, any> {
+    const result: Map<string, any> = new Map<string, any>()
+    let variablesObj: any
+    if (testinput !== undefined) {
+      let filePath: string = testinput
+      if (!path.isAbsolute(testinput)) {
+        filePath = path.join(process.cwd(), testinput)
+      }
+
+      filePath = Helper.normalizePath(filePath)
+
+      if (!fs.existsSync(filePath) || !fs.statSync(filePath).isFile()) {
+        throw new CLIError('unable to open file: ' + filePath)
+      }
+
+      const fileContent = txtfile.readSync(filePath)
+      if (!fileContent) {
+        throw new CLIError('unable to read file: ' + filePath)
+      }
+
+      variablesObj = JSON.parse(fileContent)
+    }
+
+    if (expectedVariables !== undefined) {
+      for (const variable of expectedVariables) {
+        const evalPathResult = lodash.get(variablesObj, variable)
+        if (variablesObj !== undefined && evalPathResult !== undefined) {
+          result.set(variable, evalPathResult)
+        } else if (userInputValues !== undefined && userInputValues.has(variable)) {
+          result.set(variable, userInputValues.get(variable))
+        } else {
+          result.set(variable, undefined)
+        }
+      }
+    }
+
+    return result
+  }
+
+  private generateVariableObj(variablesValue: Map<string, any>): any {
+    const result: any = {}
+    if (variablesValue !== undefined) {
+      for (const variable of variablesValue) {
+        lodash.set(result, variable[0], variable[1])
+      }
+    }
+
+    return result
+  }
+}

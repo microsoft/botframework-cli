@@ -8,107 +8,82 @@ This package is intended for Microsoft use only and should be consumed through @
 [​![Downloads/week](https://img.shields.io/npm/dw/@microsoft/bf-dialog.svg)](https://npmjs.org/package/@microsoft/bf-dialog)
 [![License](https://img.shields.io/npm/l/@microsoft/bf-dialog.svg)](https://github.com/microsoft/botframework-cli/blob/master/package.json)
 
+# Relevant docs
+- [Dialog documentation](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/docs/readme.md)
+
 # Commands
 <!-- commands -->
-* [`bf `](#bf-)
-* [`bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogmerge-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
-* [`bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`](#bf-dialogverify-glob1-glob2-glob3-glob4-glob5-glob6-glob7-glob8-glob9)
+- [@microsoft/bf-dialog](#microsoftbf-dialog)
+- [Relevant docs](#relevant-docs)
+- [Commands](#commands)
+  - [`bf dialog`](#bf-dialog)
+  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
-## `bf `
+## `bf dialog`
 
-The dialog commands allow you to work with dialog schema.
-
-```
-USAGE
-  $ bf
-
-OPTIONS
-  -h, --help  show CLI help
-```
-
-_See code: [src/commands/index.ts](https://github.com/microsoft/botframework-cli/src/commands/index.ts)_
-
-## `bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
+Dialog related commands for working with .schema and .dialog files.
 
 ```
 USAGE
-  $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
+  $ bf dialog
 
 OPTIONS
-  -b, --branch=branch  [default: master] The branch to use for the meta-schema component.schema.
+  -h, --help  Dialog command help
+```
+
+_See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/index.ts)_
+
+## `bf dialog:merge PATTERNS`
+
+Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an "exported" directory it is copied to /<package> in the --imports directory.
+
+```
+USAGE
+  $ bf dialog:merge PATTERNS
+
+ARGUMENTS
+  PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
+
+OPTIONS
+  -c, --checkOnly        Check and do not write files.
+  -h, --help             show CLI help
+
+  -o, --output=output    Output path and optional filename for merged .schema and .uischema.  Defaults to first project
+                         name.
+
+  -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
+
+  -v, --verbose          Show verbose logging of files as they are processed.
+
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource.
+
+  --imports=imports      Output path for imported assets.  Defaults to the directory of --out with an imported
+                         directory.
+
+EXAMPLES
+  $ bf dialog:merge myProject.csproj plugins/*.nuspec
+  $ bf dialog:merge package.json -o app.schema
+```
+
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/merge.ts)_
+
+## `bf dialog:verify PATTERNS`
+
+Verify .dialog files match their app.schema.
+
+```
+USAGE
+  $ bf dialog:verify PATTERNS
+
+ARGUMENTS
+  PATTERNS  Any number of glob regex patterns to match .dialog files.
+
+OPTIONS
   -h, --help           show CLI help
-  -o, --output=output  [default: app.schema] Output path and filename for merged schema. [default: app.schema]
-
-  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if
-                       baseComponent.schema is present.
-
-  --verbose            output verbose logging of files as they are processed
+  -s, --schema=schema  Default schema to use if no $schema in dialog file.
+  -v, --verbose        Show verbose output
 ```
 
-_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/merge.ts)_
-
-## `bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]`
-
-```
-USAGE
-  $ bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
-
-OPTIONS
-  -h, --help  show CLI help
-  --verbose   Show verbose output
-```
-
-_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/src/commands/dialog/verify.ts)_
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/verify.ts)_
 <!-- commandsstop -->
-* [`bf dialog:merge [FILE]`](#bf-dialogmerge-file)
-* [`bf dialog:verify [FILE]`](#bf-dialogverify-file)
-
-## `bf dialog:merge [FILE]`
-
-The bf dialog:merge creates an merged schema file which represents merging of all of the component
-schemas and the SDK schemas together into an application .schema file.
-
-The file pattern can be an arbitrary GLOB patterns for finding .schema files (such as myfolder/**/*.schema), but
-the better way to use it is to invoke it in the folder that has a project in it (either .csproj or packages.json).
-In that case the project file will be analyzed for all dependent folders and .schema files will be merged to create
-the app.schema for the project.
-
-```
-USAGE
-  $ bf dialog:merge GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
-
-OPTIONS
-  -b, --branch=branch  The branch to use for the meta-schema component.schema. [default: master] 
-  -h, --help              show CLI help
-  -o, --output=output  Output path and filename for merged schema. [default: app.schema]
-  -u, --update         Update .schema files to point the <branch> component.schema and regenerate component.schema if baseComponent.schema is present.
-  --verbose            output verbose logging of files as they are processed
-```
-
-Example:
-```
-bf dialog:merge -o app.schema
-```
-
-_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/merge.ts)_
-
-## `bf dialog:verify [FILE]`
-
-The dialog:verify command is used to validate that all of the .dialog file resources for a project are valid based on the 
-applications app.schema file (see dialog:merge command).
-
-```
-USAGE
-  $ bf dialog:verify GLOB1 [GLOB2] [GLOB3] [GLOB4] [GLOB5] [GLOB6] [GLOB7] [GLOB8] [GLOB9]
-
-OPTIONS
-  -h, --help  show CLI help
-  --verbose   Show verbose output
-```
-
-Example:
-``` 
-bf dialog:verify test/**/*.dialog
-```
-
-_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/blob/v0.0.0/src/commands/dialog/verify.ts)_

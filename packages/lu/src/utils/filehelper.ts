@@ -4,28 +4,30 @@
  */
 
 import {readTextFile} from './textfilereader'
+import Lu = require('../parser/lu/lu')
 const exception = require('./../parser/utils/exception')
 const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
-const luObject = require('./../parser/lu/lu')
 const LUOptions = require('./../parser/lu/luOptions')
+const luParser = require('./../parser/lufile/luParser')
+const LUSectionTypes = require('./../parser/utils/enums/lusectiontypes')
 const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
 
 export async function getLuObjects(stdin: string, input: string | undefined, recurse = false, extType: string | undefined) {
   let luObjects: any = []
-  if (stdin) {
-    luObjects.push(new luObject(stdin, new LUOptions('stdin')))
-  } else {
+  if (input) {
     let luFiles = await getLuFiles(input, recurse, extType)
     for (let i = 0; i < luFiles.length; i++) {
       let luContent = await getContentFromFile(luFiles[i])
       const opts = new LUOptions(path.resolve(luFiles[i]))
-      luObjects.push(new luObject(luContent, opts))
+      luObjects.push(new Lu(luContent, opts))
     }
+  } else {
+    luObjects.push(new Lu(stdin, new LUOptions('stdin')))
   }
 
   return luObjects
@@ -212,23 +214,21 @@ async function getConfigFile(input: string): Promise<string> {
 export function getParsedObjects(contents: {id: string, content: string}[]) {
   const parsedObjects = contents.map(content => {
     const opts = new LUOptions(content.id)
-    return new luObject(content.content, opts)
+    return new Lu(content.content, opts)
   })
 
   return parsedObjects
 }
 
-export function getConfigObject(configContent: any, intentName: string) {
+export function getConfigObject(configObject: any, configId: string, intentName: string, verbose: boolean) {
   let finalLuConfigObj = Object.create(null)
   let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(configContent.id)
-  const luConfigContent = configContent.content
-  if (luConfigContent && luConfigContent !== '') {
+  const configFileDir = configId && configId !== '' ? path.dirname(configId) : undefined
+  if (configObject) {
     try {
-      const luConfigObj = JSON.parse(luConfigContent)
-      for (const rootluFilePath of Object.keys(luConfigObj)) {
-        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-        const triggerObj = luConfigObj[rootluFilePath]
+      for (const rootluFilePath of Object.keys(configObject)) {
+        const rootLuFileFullPath = configFileDir ? path.resolve(configFileDir, rootluFilePath) : rootluFilePath
+        const triggerObj = configObject[rootluFilePath]
         for (const triggerObjKey of Object.keys(triggerObj)) {
           if (triggerObjKey === 'rootDialog') {
             if (triggerObj[triggerObjKey]) {
@@ -239,14 +239,18 @@ export function getConfigObject(configContent: any, intentName: string) {
             for (const triggerKey of Object.keys(triggers)) {
               const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
               for (const destLuFile of destLuFiles) {
-                const destLuFileFullPath = path.resolve(configFileDir, destLuFile)
+                const destLuFileFullPath = configFileDir && destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
                 if (rootLuFileFullPath in finalLuConfigObj) {
-                  const finalDestLuFileToIntent = finalLuConfigObj[rootLuFileFullPath]
-                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
+                  const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
+                  if (finalIntentToDestLuFiles[triggerKey]) {
+                    finalIntentToDestLuFiles[triggerKey].push(destLuFileFullPath)
+                  } else {
+                    finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  }
                 } else {
-                  let finalDestLuFileToIntent = Object.create(null)
-                  finalDestLuFileToIntent[destLuFileFullPath] = triggerKey
-                  finalLuConfigObj[rootLuFileFullPath] = finalDestLuFileToIntent
+                  let finalIntentToDestLuFiles = Object.create(null)
+                  finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                  finalLuConfigObj[rootLuFileFullPath] = finalIntentToDestLuFiles
                 }
               }
             }
@@ -258,18 +262,14 @@ export function getConfigObject(configContent: any, intentName: string) {
     }
   }
 
-  if (rootLuFiles.length > 0) {
-    let crossTrainConfig = {
-      rootIds: rootLuFiles,
-      triggerRules: finalLuConfigObj,
-      intentName,
-      verbose: true
-    }
-
-    return crossTrainConfig
-  } else {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  let crossTrainConfig = {
+    rootIds: rootLuFiles,
+    triggerRules: finalLuConfigObj,
+    intentName,
+    verbose
   }
+
+  return crossTrainConfig
 }
 
 export function parseJSON(input: string, appType: string) {
@@ -301,4 +301,29 @@ export function getCultureFromPath(file: string): string | null {
   default:
     return null
   }
+}
+
+export function isFileSectionEmpty(content: any): boolean {
+  if (content === undefined) return true
+
+  let resource = luParser.parse(content.content)
+  if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
+    return false
+  }
+
+  return true
+}
+
+export function filesSectionEmptyStatus(contents: any[]) {
+  const filesSectionEmptyStatus = new Map<string, boolean>()
+  for (const content of contents) {
+    let resource = luParser.parse(content.content)
+    if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
+      filesSectionEmptyStatus.set(content.path, false)
+    } else {
+      filesSectionEmptyStatus.set(content.path, true)
+    }
+  }
+
+  return filesSectionEmptyStatus
 }

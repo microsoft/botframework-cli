@@ -54,7 +54,7 @@ MODEL_INFO
   ;
 
 COMMENT
-  : WS* '>' ~('\r'|'\n')+ -> skip
+  : WS* '>' ~('\r'|'\n')* -> skip
   ;
 
 QNA
@@ -77,12 +77,12 @@ AT
   : '@' -> pushMode(NEW_ENTITY_MODE)
   ;
 
-IMPORT_DESC
-  : '[' .*? ']'
+IMPORT
+  : WS* '[' ~[\r\n[\]]*? ']' WS* ('(' ~[\r\n()]*? ')' | '[' ~[\r\n[\]]*? ']')
   ;
 
-IMPORT_PATH
-  : '(' .*? ')'
+REFERENCE
+  : WS* '[' ~[\r\n[\]]*? ']' WS* ':' WS* ~[\r\n]*
   ;
 
 FILTER_MARK
@@ -132,6 +132,10 @@ HAS_FEATURES_LABEL
 
 NEW_ENTITY_TYPE_IDENTIFIER
   : S I M P L E | L I S T | R E G E X | P R E B U I L T | C O M P O S I T E | M L | P A T T E R N A N Y | P H R A S E L I S T | I N T E N T
+  ;
+
+PHRASE_LIST_LABEL
+  : '(' (~[\r\n])* ')'
   ;
 
 NEW_COMPOSITE_ENTITY
@@ -191,7 +195,7 @@ EXPRESSION
   ;
 
 TEXT
-  : ~[ \t\r\n{\\}]+
+  : ~[ \t\r\n\\]+?
   ;
 
 mode ENTITY_MODE;
@@ -227,5 +231,5 @@ NEWLINE_IN_QNA
   ;
 
 QNA_TEXT
-  : ~[\t\r\n]+
+  : ~[\r\n]+
   ;
