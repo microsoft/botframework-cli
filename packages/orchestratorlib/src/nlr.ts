@@ -12,7 +12,7 @@ const fetch: any = require('node-fetch');
 export class OrchestratorNlr {
   public static async getAsync(
     nlrPath: string,
-    nlrId: string,
+    nlrId: string = '',
     onProgress: any = OrchestratorNlr.defaultHandler,
     onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
     try {
@@ -30,6 +30,15 @@ export class OrchestratorNlr {
       if (!versions) {
         throw new Error('ERROR: failed getting nlr_versions.json');
       }
+
+      if (nlrId === '') {
+        nlrId = OrchestratorNlr.getDefaultModelId(versions.models);
+      }
+
+      if (nlrId === '') {
+        throw new Error('ERROR: no default model found');
+      }
+
       const modelInfo: any = versions.models[nlrId];
       if (!modelInfo) {
         throw new Error(`ERROR: Model info for model ${nlrId} not found`);
@@ -114,5 +123,24 @@ export class OrchestratorNlr {
       });
       fs.rmdirSync(inputPath);
     }
+  }
+
+  public static getDefaultModelId(models: any): string {
+    let defaultVersion: any = '';
+    for (const modelVersion in models) {
+      // eslint-disable-next-line no-prototype-builtins
+      if (models.hasOwnProperty(modelVersion)) {
+        const model: any = models[modelVersion];
+        if ('isDefault' in model && model.isDefault) {
+          return modelVersion;
+        }
+
+        if (defaultVersion === '') {
+          defaultVersion = modelVersion;
+        }
+      }
+    }
+
+    return defaultVersion;
   }
 }

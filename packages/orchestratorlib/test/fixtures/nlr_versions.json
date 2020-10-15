@@ -11,7 +11,8 @@
       "releaseDate": "09/24/2020",
       "modelUri": "https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.7z",
       "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 3-layer BERT per-token NLR",
-      "minSDKVersion": "4.10.0"
+      "minSDKVersion": "4.10.0",
+      "isDefault": true
     },
     "pretrained.20200924.microsoft.dte.00.06.en.onnx": {
       "releaseDate": "09/24/2020",

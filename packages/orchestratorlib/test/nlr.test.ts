@@ -10,11 +10,12 @@ const sinon: any = require('sinon');
 
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
+import assert = require('assert');
 
 describe('OrchestratorNlrTests', () => {
-  let nlrVersions: string;
+  let nlrVersions: any;
   beforeEach(() => {
-    nlrVersions = OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json'));
+    nlrVersions = JSON.parse(OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json')));
     sinon.stub(OrchestratorNlr, 'getNlrVersionsAsync').returns(nlrVersions);
   });
 
@@ -27,5 +28,14 @@ describe('OrchestratorNlrTests', () => {
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrVersionsJson: string = await OrchestratorNlr.listAsync();
     Utility.debuggingLog(`nlrVersionsJson=${nlrVersionsJson}`);
+  });
+
+  it('getAsync', async function () {
+    OrchestratorNlr.getAsync('./test/fixtures/output');
+  });
+
+  it('getDefaultModelId', () => {
+    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(nlrVersions.models);
+    assert.ok(defaultVersion === 'pretrained.20200924.microsoft.dte.00.03.en.onnx', 'getDefaultModelId fails to return correct default version');
   });
 });
