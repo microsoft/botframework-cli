@@ -23,13 +23,9 @@ export class Helper {
         let luObjects: any[] = await FileHelper.getLuObjects('', file, true, FileExtEnum.LUFile);
         luObjects = luObjects.filter((file: any) => file.content !== '');
 
-        let fileContent: string = '';
-        if (luObjects.length <= 0) {
-          const luContent: any = new LuContent(fileContent, new LuOptions(file));
-          luContents.push(luContent);
-          continue;
-        }
+        if (luObjects.length <= 0) continue;
 
+        let fileContent: string = '';
         let result: any;
         try {
           result = await LuisCollate.build(luObjects, false);

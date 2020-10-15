@@ -61,3 +61,20 @@ describe('sampler:sampling test maxUtteranceAllowed', () => {
     expect(await compareFiles('./../../../results/test.lu', './../../testcases/result/test_maxUtteranceAllowed.lu')).to.be.true;
   });
 });
+
+describe('sampler:sampling test empty file skipped', () => {
+  before(async function () {
+    await fs.ensureDir(path.join(__dirname, './../../../results/'));
+  });
+
+  after(async function () {
+    await fs.remove(path.join(__dirname, './../../../results/'));
+  });
+
+  test
+  .stdout()
+  .command(['sampler:sampling', '--in', './test/testcases/source', '--out', './results/', '--maxUtteranceAllowed',  '10'])
+  .it('should do sampling successfully without throwing error for empty file', async (_: any) => {
+    expect(await compareFiles('./../../../results/test.lu', './../../testcases/result/test_maxUtteranceAllowed2.lu')).to.be.true;
+  });
+});
