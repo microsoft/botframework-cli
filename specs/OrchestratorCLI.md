@@ -127,7 +127,7 @@ Orchestrator command group is starting as a plugin while in preview and will eve
 
 \<any references of relevance\>
 
-[Orchestrator]: https://aka.ms/bf-orchestrator	"Orchestrator"
+[Orchestrator]: (https://aka.ms/bf-orchestrator)	"Orchestrator"
 [Language Understanding]: https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language Understanding"
 [Composer]: https://docs.microsoft.com/en-us/composer/introduction "Composer"
 
@@ -139,7 +139,7 @@ Orchestrator command group is starting as a plugin while in preview and will eve
 [2]: https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language Understanding"
 [3]: https://docs.microsoft.com/en-us/composer/introduction "Composer"
 
-[4]: ./nlrmodels "Natural Language Representation Models"
+[4]: ./NLRModels.md "Natural Language Representation Models"
 
 
 
