@@ -12,7 +12,7 @@ describe('qnamaker:kb:replace', () => {
       .reply(204)
     
     nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
-      .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf?qnaformat=true')
+      .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf')
       .reply(204)
   })
 
