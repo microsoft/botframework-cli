@@ -48,7 +48,7 @@ Initially, Orchestrator is designed as a LUIS alternative for *Dispatch Scenario
 The mainstream bot language recognition development cycles with Orchestrator is assumed to be as follows 
 
 1. Create Intent-utterances example based .lu definition referred to as *label file* using the Language Understanding practices as described in Language Understanding [2] for dispatch (e.g. in a .lu file or within the Composer [3].
-2. Download Natural Language Representation Model (will be referred to as the *nlr*).
+2. Download Natural Language Representation Base Model (will be referred to as the *basemodel*).
 3. Combine the label file .lu from (1) with the base nlr model from (2) to create a *snapshot* file with a .blu extension.
 4. Create another test .lu file similar to (1) with utterances that are similar but are not identical to the ones specified in the example based .lu definition in (1).
 5. Test quality of utterance to intent recognition
@@ -82,7 +82,7 @@ At the root *bf orchestrator* shall print synopsis, and brief description of eac
 
 | Sub-Command | Options                                                      | Comments                                                     |
 | ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| nlr         | :get <br />:list                                             | Downloads the default, generally optimal source model, the Natural Language Representation (nlr) as basis for creating the snapshot file. see [4] for more on *nlr*<br />Other models may work better in some scenarios, and there are tradeoffs of performance; speed, memory usage. One may experiment by using different models. It is however recommended to get familiar with advanced usage (**TBD** see advanced command)<br />To see the list of available models use the list command. |
+| basemodel   | :get <br />:list                                             | Downloads the default, generally optimal base model, the Natural Language Representation (nlr) as basis for creating the snapshot file. see [4] for more on *nlr*<br />Other models may work better in some scenarios, and there are tradeoffs of performance; speed, memory usage. One may experiment by using different models. It is however recommended to get familiar with advanced usage (**TBD** see advanced command)<br />To see the list of available models use the list command. |
 | create      | -i --in  \<label file><br />--m --model \<path><br />-o --out \<path><br />--hierarchical **TBD:necessary for R11?**<br /> | Creates Orchestrator snapshot .blu file from .lu/.qna files  |
 | test        | -a, --ambiguous=ambiguous            Ambiguous threshold, default to 0.2<br/>  -i, --in=in                          Path to a previously created snapshot file<br/>  -l, --low_confidence=low_confidence  Low confidence threshold, default to 0.5<br/>  -m, --model=model                    Directory or hosting Orchestrator config and model files.<br/>  -o, --out=out                        Directory where analysis and output files will be placed.<br/>  -p, --multi_label=multi_label        Plural/multi-label prediction threshold, default to 1<br/>  -t, --test=test                      Path to a test file.<br/>  -u, --unknown=unknown                Unknow label threshold, default to 0.3<br />-t, --prediction=prediction | Run tests on label, and model files. <br /><br />**TBD: How** we distinguish evaluate/assess/test, with mode flag or implicit with explanation? e.g.if test file not specified, run in assessment mode. Add See Also: explain, add link to detailed discussion... |
 | build       | -i, --in=in          Path to lu file or folder with lu files.<br/>  -m, --model=model    Path to Orchestrator model.<br/><br/>  -o, --out=out        Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working<br/>                       directory.<br/><br/>  --dialog             Generate multi language or cross train Orchestrator recognizers.<br/><br/>  --luconfig=luconfig  Path to luconfig.json. | **TBD: Explain build command**                               |
@@ -113,7 +113,7 @@ Dispatch CLI is a predecessor to Orchestrator dispatch functionality in concept.
 
 
 ## Special Considerations
-Orchestrator command group is starting as a plugin while in preview and will eventually be promoted to a command group parallel to luis, and qnamaker. It will evolve to include additional nlr models, and differently from the mentioned LU services it is a local implementation with no service functionality behind. As such it is likely that some advanced tuning capability will be required in order to exploit the full power. In that case, users will be required to possess more advanced knowledge of machine learning and model optimization as well as be more comfortable with the advanced functionality described above. 
+Orchestrator command group is starting as a plugin while in preview and will eventually be promoted to a command group parallel to luis, and qnamaker. It will evolve to include additional nlr base models, and differently from the mentioned LU services it is a local implementation with no service functionality behind. As such it is likely that some advanced tuning capability will be required in order to exploit the full power. In that case, users will be required to possess more advanced knowledge of machine learning and model optimization as well as be more comfortable with the advanced functionality described above. 
 
 
 
@@ -126,6 +126,14 @@ Orchestrator command group is starting as a plugin while in preview and will eve
 ## References
 
 \<any references of relevance\>
+
+[Orchestrator]: https://aka.ms/bf-orchestrator	"Orchestrator"
+[Language Understanding]: https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language Understanding"
+[Composer]: https://docs.microsoft.com/en-us/composer/introduction "Composer"
+
+[Natural Language Representation Models]: ./nlrmodels.md "Natural Language Representation Models"
+
+
 
 [1]: https://aka.ms/bf-orchestrator	"Orchestrator"
 [2]: https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language Understanding"
