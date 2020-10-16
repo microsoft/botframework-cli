@@ -1,4 +1,5 @@
 import {expect, test} from '@oclif/test'
+import { exit } from 'process'
 import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from './../../../configfilehelper'
 const fs = require('fs-extra')
 
@@ -23,6 +24,7 @@ describe('config:set:telemetry', () => {
       test
       .stdout()
       .command(['config:set:telemetry'])
+      .exit(1)
       .it('Shows help and keeps the same seetings', async ctx => {
         let config = await fs.readJSON(getConfigFile())
         expect(config.telemetry).to.be.true

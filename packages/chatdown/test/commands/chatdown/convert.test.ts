@@ -3,6 +3,7 @@ import assert from 'assert';
 import fs from 'fs-extra';
 import rimraf from 'rimraf';
 import {expect, test} from '@oclif/test'
+import { exit } from 'process';
 
 const pkg = require('../../../package.json');
 
@@ -21,6 +22,7 @@ describe('chatdown:convert', function() {
   test
   .stdout()
   .command(['chatdown:convert', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
   })
@@ -28,6 +30,7 @@ describe('chatdown:convert', function() {
   test
   .stdout()
   .command(['chatdown'])
+  .exit(1)
   .it('should print the help contents when no input is passed', (ctx: any) => {
     expect(ctx.stdout).to.contain('Converts chat dialog files in <filename>.')
   })

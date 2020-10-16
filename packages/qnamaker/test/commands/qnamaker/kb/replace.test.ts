@@ -37,6 +37,7 @@ describe('qnamaker:kb:replace', () => {
   test
     .stderr()
     .command(['qnamaker:kb:replace'])
+    .exit(1)
     .it('runs qnamaker:kb:replace', ctx => {
       expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
     })

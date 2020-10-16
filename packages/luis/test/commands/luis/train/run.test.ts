@@ -17,6 +17,7 @@ describe('luis:train:run', () => {
   test
   .stdout()
   .command(['luis:train:run', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Issues asynchronous training request for LUIS application')
   })

@@ -15,6 +15,7 @@ describe('qnamaker:cross-train tests for cli parameters', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:cross-train'])
+    .exit(1)
     .it('displays an error if --in is not provided', ctx => {
       expect(ctx.stderr).to.contain('Missing input. Please specify a folder with --in flag')
     })
@@ -23,6 +24,7 @@ describe('qnamaker:cross-train tests for cli parameters', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`])
+    .exit(1)
     .it('displays an error if config is not provided', ctx => {
       expect(ctx.stderr).to.contain('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
     })

@@ -20,6 +20,7 @@ describe('qnamaker:build cli parameters test', () => {
   test
     .stdout()
     .command(['qnamaker:build', '--help'])
+    .exit(1)
     .it('should print the help contents when --help is passed as an argument', ctx => {
       expect(ctx.stdout).to.contain('Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations')
     })
@@ -28,6 +29,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`, '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing qnamaker subscription key. Please pass subscription key with --subscriptionKey flag or specify via bf config:set:qnamaker --subscriptionKey.')
     })
@@ -36,6 +38,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing input. Please use stdin or pass a file or folder location with --in flag')
     })
@@ -44,6 +47,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag or specify via --qnaConfig.')
     })
@@ -52,6 +56,7 @@ describe('qnamaker:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['qnamaker:build', '--subscriptionKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/qnabuild')}`, '--botName', 'Contoso', '--dialog', 'cross-train'])
+    .exit(1)
     .it('displays an error if option specified by --dialog is not right', ctx => {
       expect(ctx.stderr).to.contain('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
     })
