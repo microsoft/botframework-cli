@@ -139,7 +139,7 @@ Orchestrator command group is starting as a plugin while in preview and will eve
 [2]: https://docs.microsoft.com/en-us/composer/concept-language-understanding "Language Understanding"
 [3]: https://docs.microsoft.com/en-us/composer/introduction "Composer"
 
-[4]: ./nlrmodels.md "Natural Language Representation Models"
+[4]: ./nlrmodels "Natural Language Representation Models"
 
 
 
