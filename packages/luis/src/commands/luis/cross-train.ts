@@ -18,7 +18,6 @@ export default class LuisCrossTrain extends Command {
     out: flags.string({char: 'o', description: 'Output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'Path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
-    rootDialog: flags.string({description: 'Root dialog file path'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false})
   }
@@ -35,11 +34,8 @@ export default class LuisCrossTrain extends Command {
 
       if (flags.config && flags.config !== '') {
         flags.config = path.resolve(flags.config)
-      } else if (flags.rootDialog && flags.rootDialog !== '') {
-        flags.rootDialog = path.resolve(flags.rootDialog)
-        flags.config = await crossTrain.generateConfig(flags.in, flags.rootDialog)
       } else {
-        throw new CLIError('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
+        throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
       const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log)

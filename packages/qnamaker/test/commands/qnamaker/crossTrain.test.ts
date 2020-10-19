@@ -26,7 +26,7 @@ describe('qnamaker:cross-train tests for cli parameters', () => {
     .command(['qnamaker:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`])
     .exit(1)
     .it('displays an error if config is not provided', ctx => {
-      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
+      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config file path by --config.')
     })
 })
 
@@ -86,21 +86,6 @@ describe('qnamaker:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption3/dia1.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia2.lu', './../../fixtures/verified/interruption3/dia2.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia3.lu', './../../fixtures/verified/interruption3/dia3.lu')).to.be.true
-    })
-
-  test
-    .stdout()
-    .command(['qnamaker:cross-train',
-      '--in', './test/fixtures/testcases/interruption4',
-      '--intentName', '_Interruption',
-      '--out', './interruptionGen',
-      '--rootDialog', './test/fixtures/testcases/interruption4/main/main.dialog'])
-    .it('qnamaker:cross training can get expected result when automatically detecting config based on rootdialog and file system', async () => {
-      expect(await compareLuFiles('./../../../interruptionGen/main(1).lu', './../../fixtures/verified/interruption4/main.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1(1).lu', './../../fixtures/verified/interruption4/dia1.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia2(1).lu', './../../fixtures/verified/interruption4/dia2.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia3(1).lu', './../../fixtures/verified/interruption4/dia3.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia4(1).lu', './../../fixtures/verified/interruption4/dia4.lu')).to.be.true
     })
 
   test
