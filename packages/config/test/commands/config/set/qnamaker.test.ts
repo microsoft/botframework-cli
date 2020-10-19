@@ -46,6 +46,7 @@ describe('config:set:qnamaker', () => {
     test
       .stdout()
       .command(['config:set:qnamaker'])
+      .exit(1)
       .it('Asks for a flag', ctx => {
         expect(ctx.stdout).to.contain('Plase specify flag')
     })

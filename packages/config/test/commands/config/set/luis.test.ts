@@ -14,6 +14,7 @@ describe('config:set:luis', () => {
     test
     .stdout()
     .command(['config:set:luis', '--help'])
+    .exit(1)
     .it('should print the help contents when --help is passed as an argument', ctx => {
         expect(ctx.stdout).to.contain('Stores default LUIS application values in global config.')
     })

@@ -18,6 +18,7 @@ describe('luis:application:create', () => {
   test
   .stdout()
   .command(['luis:application:create', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Creates a new LUIS application')
   })
@@ -26,6 +27,7 @@ describe('luis:application:create', () => {
   .stdout()
   .stderr()
   .command(['luis:application:create', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'name' missing.`)
   })
@@ -34,6 +36,7 @@ describe('luis:application:create', () => {
   .stdout()
   .stderr()
   .command(['luis:application:create', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--name', 'orange_app', '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
@@ -54,6 +57,7 @@ describe('luis:application:create', () => {
   .stdout()
   .stderr()
   .command(['luis:application:create', '--endpoint', 'undefined', '--name', 'orange_app', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
+  .exit(1)
   .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
     expect(ctx.stderr).to.contain('Failed to create app: TypeError: Only absolute URLs are supported\n')
   })

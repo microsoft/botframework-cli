@@ -50,6 +50,9 @@ export abstract class Command extends Base {
         this.error(err.message)
       } catch (e) {}
     }
+
+    // return exit code
+    this.exit(1)
   }
 
   // Flush telemetry to avoid performance issues

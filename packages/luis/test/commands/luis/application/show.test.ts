@@ -17,6 +17,7 @@ describe('luis:application:show', () => {
   test
   .stdout()
   .command(['luis:application:show', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Shows application information')
   })
@@ -25,6 +26,7 @@ describe('luis:application:show', () => {
   .stdout()
   .stderr()
   .command(['luis:application:show', '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })

@@ -20,6 +20,7 @@ describe('luis:build cli parameters test', () => {
   test
     .stdout()
     .command(['luis:build', '--help'])
+    .exit(1)
     .it('should print the help contents when --help is passed as an argument', ctx => {
       expect(ctx.stdout).to.contain('Build lu files to train and publish luis applications')
     })
@@ -28,6 +29,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing LUIS authoring key. Please pass authoring key with --authoringKey flag')
     })
@@ -36,6 +38,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing input. Please use stdin or pass a file or folder location with --in flag')
     })
@@ -44,6 +47,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`])
+    .exit(1)
     .it('displays an error if any required input parameters are missing', ctx => {
       expect(ctx.stderr).to.contain('Missing bot name. Please pass bot name with --botName flag')
     })
@@ -52,6 +56,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild/file-name-duplicated')}`, '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if files with same name and locale are found', ctx => {
       expect(ctx.stderr).to.contain('Files with same name and locale are found')
     })
@@ -60,6 +65,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_import_file.lu')}`, '--botName', 'Contoso'])
+    .exit(1)
     .it('displays an error if error occurs in parsing lu content', ctx => {
       expect(ctx.stderr).to.contain('Invalid LU file')
       expect(ctx.stderr).to.contain('bad3.lu')
@@ -70,6 +76,7 @@ describe('luis:build cli parameters test', () => {
     .stdout()
     .stderr()
     .command(['luis:build', '--authoringKey', uuidv1(), '--in', `${path.join(__dirname, './../../fixtures/testcases/lubuild')}`, '--botName', 'Contoso', '--dialog', 'cross-train'])
+    .exit(1)
     .it('displays an error if option specified by --dialog is not right', ctx => {
       expect(ctx.stderr).to.contain('Recognizer type specified by --dialog is not right. Please specify [multiLanguage|crosstrained]')
     })

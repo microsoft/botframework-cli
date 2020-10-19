@@ -20,6 +20,7 @@ describe('luis:application:publish', () => {
   test
   .stdout()
   .command(['luis:application:publish', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Publishes application\'s version')
   })
@@ -28,6 +29,7 @@ describe('luis:application:publish', () => {
   .stdout()
   .stderr()
   .command(['luis:application:publish', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--appId', uuidv1()])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'versionId' missing.`)
   })
@@ -36,6 +38,7 @@ describe('luis:application:publish', () => {
   .stdout()
   .stderr()
   .command(['luis:application:publish', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--versionId', '0.01'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })

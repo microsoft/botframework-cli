@@ -16,6 +16,7 @@ describe('luis:version:clone', () => {
   test
   .stdout()
   .command(['luis:version:clone', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Creates a new version equivalent to the current snapshot of the selected application version.')
   })
@@ -24,6 +25,7 @@ describe('luis:version:clone', () => {
   .stdout()
   .stderr()
   .command(['luis:version:clone', '--versionId', '0.1', '--targetVersionId', '0.2', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', (ctx: any) => {
     expect(ctx.stderr).to.contain(`Required input property 'appId' missing.`)
   })
@@ -32,6 +34,7 @@ describe('luis:version:clone', () => {
   .stdout()
   .stderr()
   .command(['luis:version:clone', '--appId', uuidv1(), '--versionId', '0.1', '--targetVersionId', '0.2', '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', (ctx: any) => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
