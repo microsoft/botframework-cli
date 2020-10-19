@@ -10,7 +10,7 @@ import { TMapStringKeyGenericValue } from "../../data_structure/TMapStringKeyGen
 
 import { BootstrapSamplerKeyMap } from "./BootstrapSamplerKeyMap";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function exampleFunctionBootstrapSamplerKeyMap(): void {
     const sampler: BootstrapSamplerKeyMap<string> =

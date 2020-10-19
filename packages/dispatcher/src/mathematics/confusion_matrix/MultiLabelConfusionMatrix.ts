@@ -13,7 +13,7 @@ import { PredictionTypeArrayOutputIndex } from "../../label_structure/Prediction
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export class MultiLabelConfusionMatrix
 extends MultiLabelConfusionMatrixWithBinaryArrayBase {

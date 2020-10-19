@@ -5,7 +5,7 @@
 
 import { AbstractBaseSampler } from "./AbstractBaseSampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export abstract class AbstractBaseReservoirSampler<T, TLabelMap, TInstances> extends
 AbstractBaseSampler<T, TLabelMap, TInstances> {

@@ -8,7 +8,7 @@ import {ScoreIntent} from "./ScoreIntent";
 import {ScoreEntity} from "./ScoreEntity";
 import { LabelType } from "./LabelType";
 
-import { Utility } from "../Utility/Utility";
+import { Utility } from "../utility/Utility";
 
 export class Result {
     public label: Label;

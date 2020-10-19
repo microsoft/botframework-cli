@@ -16,9 +16,9 @@ import { NgramSubwordFeaturizer } from "../../../../../../src/model/language_und
 // tslint:disable-next-line: max-line-length
 import { LearnerUtility } from "../../../../../../src/model/supervised/classifier/neural_network/learner/UtilityLearner";
 
-import { Utility } from "../../../../../../src/Utility/Utility";
+import { Utility } from "../../../../../../src/utility/Utility";
 
-import { UnitTestHelper } from "../../../../../Utility/Utility.test";
+import { UnitTestHelper } from "../../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/neural_network/learner/utility_learner", () => {
     it("Test.0000 LearnerUtility-exampleFunctionPredictAndEvaluateTestDataset", function() {

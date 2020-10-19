@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { BinaryConfusionMatrix } from "../../../src/mathematics/confusion_matrix/BinaryConfusionMatrix";
 
-import { Utility } from "../../../src/Utility/Utility";
+import { Utility } from "../../../src/utility/Utility";
 
-import { UnitTestHelper } from "../../Utility/Utility.test";
+import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/confusion_matrix/binary_confusion_matrix", () => {
 

@@ -11,7 +11,7 @@ import { MathematicsHelper } from "../../../../mathematics/mathematics_helper/Ma
 
 import { ConfusionMatrix } from "../../../../mathematics/confusion_matrix/ConfusionMatrix";
 
-import { Utility } from "../../../../Utility/Utility";
+import { Utility } from "../../../../utility/Utility";
 
 export class AutoActiveLearner {
 

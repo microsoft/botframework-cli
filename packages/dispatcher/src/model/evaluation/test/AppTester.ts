@@ -24,7 +24,7 @@ import { DataUtility } from "../../../data/DataUtility";
 
 // import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../../../Utility/Utility";
+import { Utility } from "../../../utility/Utility";
 import { LuData } from "../../../data/LuData";
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 import { ColumnarData } from "../../../data/ColumnarData";

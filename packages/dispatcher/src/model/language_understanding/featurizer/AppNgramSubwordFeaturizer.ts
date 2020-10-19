@@ -7,7 +7,7 @@ import assert = require("assert");
 
 import { NgramSubwordFeaturizer } from "./NgramSubwordFeaturizer";
 
-import { Utility } from "../../../Utility/Utility";
+import { Utility } from "../../../utility/Utility";
 
 export function exampleFunctionNgramSubwordFeaturizer(): void {
     const featurizer: NgramSubwordFeaturizer = new NgramSubwordFeaturizer();

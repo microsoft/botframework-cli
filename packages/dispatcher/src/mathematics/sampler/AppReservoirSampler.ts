@@ -8,7 +8,7 @@ import { IDictionaryStringIdGenericValue } from "../../data_structure/IDictionar
 
 import { ReservoirSampler } from "./ReservoirSampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function exampleFunctionReservoirSampler(): void {
     const sampler: ReservoirSampler<string> = new ReservoirSampler<string>();

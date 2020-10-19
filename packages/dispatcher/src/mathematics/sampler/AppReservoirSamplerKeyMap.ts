@@ -10,7 +10,7 @@ import { TMapStringKeyGenericValue } from "../../data_structure/TMapStringKeyGen
 
 import { ReservoirSamplerKeyMap } from "./ReservoirSamplerKeyMap";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function exampleFunctionReservoirSamplerKeyMap(): void {
     const sampler: ReservoirSamplerKeyMap<string> =

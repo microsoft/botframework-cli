@@ -6,7 +6,7 @@
 import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
 import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
 
-import { Utility } from "../../../Utility/Utility";
+import { Utility } from "../../../utility/Utility";
 
 export abstract class AbstractBaseEvaluator {
 

@@ -29,7 +29,7 @@ import { IDictionaryStringIdGenericArrays } from "../data_structure/IDictionaryS
 import { IDictionaryStringIdGenericValue } from "../data_structure/IDictionaryStringIdGenericValue";
 import { IDictionaryStringIdGenericSet } from "../data_structure/IDictionaryStringIdGenericSet";
 
-import { Utility } from "../Utility/Utility";
+import { Utility } from "../utility/Utility";
 
 export class DictionaryMapUtility {
 

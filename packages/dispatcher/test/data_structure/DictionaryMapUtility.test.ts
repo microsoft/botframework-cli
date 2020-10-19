@@ -8,9 +8,9 @@ import assert = require("assert");
 import { IDictionaryStringIdGenericValue } from "../../src/data_structure/IDictionaryStringIdGenericValue";
 import { DictionaryMapUtility } from "../../src/data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../src/Utility/Utility";
+import { Utility } from "../../src/utility/Utility";
 
-import { UnitTestHelper } from "../Utility/Utility.test";
+import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data_structure/DictionaryMapUtility", () => {
     it("Test.0000 buildStringIdNumberValueDictionaryFromUniqueStringArray", function() {

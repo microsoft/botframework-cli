@@ -107,7 +107,7 @@ export { AutoActiveLearner } from "./model/supervised/classifier/auto_active_lea
 export { AppSoftmaxRegressionSparse } from "./model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 export { SoftmaxRegressionSparse } from "./model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
-export { Utility } from "./Utility/Utility";
+export { Utility } from "./utility/Utility";
 export { ListArrayUtility } from "./utility/ListArrayUtility";
 
 export default {};

@@ -27,7 +27,7 @@ import { BootstrapSamplerKeyMapDistribution } from "../../../../mathematics/samp
 import { BootstrapSamplerKeyMap } from "../../../../mathematics/sampler/BootstrapSamplerKeyMap";
 import { ReservoirArraySampler } from "../../../../mathematics/sampler/ReservoirArraySampler";
 
-import { Utility } from "../../../../Utility/Utility";
+import { Utility } from "../../../../utility/Utility";
 
 export const DefaultLimitingSampleSize: number = 15000;
 

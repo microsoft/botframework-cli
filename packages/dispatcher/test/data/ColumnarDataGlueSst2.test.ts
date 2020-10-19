@@ -9,9 +9,9 @@ import { ColumnarData } from "../../src/data/ColumnarData";
 
 import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../../src/Utility/Utility";
+import { Utility } from "../../src/utility/Utility";
 
-import { UnitTestHelper } from "../Utility/Utility.test";
+import { UnitTestHelper } from "../utility/Utility.test";
 
 /* tslint:disable */
 

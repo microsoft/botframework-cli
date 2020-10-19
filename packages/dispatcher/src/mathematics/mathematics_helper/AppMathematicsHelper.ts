@@ -6,7 +6,7 @@
 import { IMathematicsHelper } from "./IMathematicsHelper";
 import { MathematicsHelper } from "./MathematicsHelper";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 const MathematicsHelperObject: IMathematicsHelper =
     MathematicsHelper.GetMathematicsHelperObject();

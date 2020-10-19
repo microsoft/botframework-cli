@@ -9,7 +9,7 @@ import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export abstract class MultiLabelConfusionMatrixBase
 extends ConfusionMatrixBase

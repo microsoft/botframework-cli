@@ -10,7 +10,7 @@ import { NgramSubwordFeaturizer } from "../../../../language_understanding/featu
 import { IMathematicsHelper } from "../../../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { Utility } from "../../../../../Utility/Utility";
+import { Utility } from "../../../../../utility/Utility";
 
 export class LearnerUtility {
 

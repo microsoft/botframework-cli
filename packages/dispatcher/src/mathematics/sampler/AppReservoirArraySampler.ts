@@ -5,7 +5,7 @@
 
 import { ReservoirArraySampler } from "./ReservoirArraySampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function exampleFunctionReservoirArraySampler(): void {
     const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();

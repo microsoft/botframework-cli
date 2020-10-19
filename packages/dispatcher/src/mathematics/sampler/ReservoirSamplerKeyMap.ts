@@ -10,7 +10,7 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 
 import { AbstractBaseReservoirSampler } from "./AbstractBaseReservoirSampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export class ReservoirSamplerKeyMap<T> extends
 AbstractBaseReservoirSampler<T, TMapStringKeyGenericValue<number>, TMapStringKeyGenericArray<T>> {

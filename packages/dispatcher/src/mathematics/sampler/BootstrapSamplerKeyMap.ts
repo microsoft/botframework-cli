@@ -10,7 +10,7 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 
 import { AbstractBaseBootstrapSampler } from "./AbstractBaseBootstrapSampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export class BootstrapSamplerKeyMap<T> extends
 AbstractBaseBootstrapSampler<T, TMapStringKeyGenericValue<number>, TMapStringKeyGenericArray<T>> {

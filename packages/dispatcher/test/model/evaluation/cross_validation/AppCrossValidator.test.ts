@@ -20,9 +20,9 @@ import { ConfusionMatrix } from "../../../../src/mathematics/confusion_matrix/Co
 
 import { CrossValidator } from "../../../../src/model/evaluation/cross_validation/CrossValidator";
 
-import { Utility } from "../../../../src/Utility/Utility";
+import { Utility } from "../../../../src/utility/Utility";
 
-import { UnitTestHelper } from "../../../Utility/Utility.test";
+import { UnitTestHelper } from "../../../utility/Utility.test";
 
 describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () => {
     it("Test.0000 mainCrossValidatorWithLuContent()", async function() {

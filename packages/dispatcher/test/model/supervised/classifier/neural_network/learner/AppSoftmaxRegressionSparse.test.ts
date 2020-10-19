@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { AppSoftmaxRegressionSparse } from "../../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
-import { Utility } from "../../../../../../src/Utility/Utility";
+import { Utility } from "../../../../../../src/utility/Utility";
 
-import { UnitTestHelper } from "../../../../../Utility/Utility.test";
+import { UnitTestHelper } from "../../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/neural_network/learner/app_softmax_regression_sparse", () => {
     it("Test.0000 exampleFunctionSoftmaxRegressionSparseMinibatching", function() {

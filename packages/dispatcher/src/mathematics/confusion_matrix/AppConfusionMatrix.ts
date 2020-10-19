@@ -10,7 +10,7 @@ import { ConfusionMatrix } from "./ConfusionMatrix";
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function mainConfusionMatrixFunction(
     scoreFilename: string,

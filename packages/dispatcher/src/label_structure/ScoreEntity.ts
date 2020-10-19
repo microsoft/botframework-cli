@@ -8,7 +8,7 @@ import {Label} from "./Label";
 import {Result} from "./Result";
 import {Score} from "./Score";
 
-import { Utility } from "../Utility/Utility";
+import { Utility } from "../utility/Utility";
 
 export class ScoreEntity extends Score {
     public static newScoreEntity(

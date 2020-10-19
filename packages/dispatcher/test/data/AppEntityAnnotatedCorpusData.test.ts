@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { exampleFunctionData } from "../../src/data/AppEntityAnnotatedCorpusData";
 
-import { Utility } from "../../src/Utility/Utility";
+import { Utility } from "../../src/utility/Utility";
 
-import { UnitTestHelper } from "../Utility/Utility.test";
+import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data/AppEntityAnnotatedCorpusData", () => {
     it("Test.0000 exampleFunctionData", function() {

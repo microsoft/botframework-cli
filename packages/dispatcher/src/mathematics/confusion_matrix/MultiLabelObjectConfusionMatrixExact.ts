@@ -12,7 +12,7 @@ import { Label } from "../../label_structure/Label";
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export class MultiLabelObjectConfusionMatrixExact
 extends MultiLabelObjectConfusionMatrixWithBinaryBase {

@@ -17,7 +17,7 @@ import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDicti
 import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
 import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../../Utility/Utility";
+import { Utility } from "../../../utility/Utility";
 
 const NumberOfLabelsPerBatchToReport: number = 8;
 const EnableDebuggingInstrumentation: boolean = false;

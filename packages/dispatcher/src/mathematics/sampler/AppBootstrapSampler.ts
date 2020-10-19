@@ -8,7 +8,7 @@ import { IDictionaryStringIdGenericValue } from "../../data_structure/IDictionar
 
 import { BootstrapSampler } from "./BootstrapSampler";
 
-import { Utility } from "../../Utility/Utility";
+import { Utility } from "../../utility/Utility";
 
 export function exampleFunctionBootstrapSampler(): void {
     const sampler: BootstrapSampler<string> = new BootstrapSampler<string>();
