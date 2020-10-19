@@ -3,7 +3,6 @@ import assert from 'assert';
 import fs from 'fs-extra';
 import rimraf from 'rimraf';
 import {expect, test} from '@oclif/test'
-import { exit } from 'process';
 
 const pkg = require('../../../package.json');
 

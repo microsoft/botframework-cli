@@ -1,5 +1,4 @@
 import {expect, test} from '@oclif/test'
-import { exit } from 'process'
 import {initTestConfigFile, deleteTestConfigFile, getConfigFile} from './../../../configfilehelper'
 const fs = require('fs-extra')
 
