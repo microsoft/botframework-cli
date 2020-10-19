@@ -8,7 +8,7 @@ import { isUndefined } from "util";
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export abstract class Data {
 

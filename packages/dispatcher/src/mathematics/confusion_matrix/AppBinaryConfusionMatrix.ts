@@ -5,7 +5,7 @@
 
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
-import { Utility } from "../../utility/Utility";
+import { Utility } from "../../Utility/Utility";
 
 export function exampleFunctionBinaryConfusionMatrix(): void {
     const cell11: number = 1;

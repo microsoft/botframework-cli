@@ -17,7 +17,7 @@ import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictio
 import { DataUtility } from "../../../data/DataUtility";
 import { Data } from "../../../data/Data";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 export function mainDataProfileReporter(): void {

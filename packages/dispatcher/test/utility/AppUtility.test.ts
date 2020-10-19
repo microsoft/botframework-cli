@@ -8,7 +8,7 @@ import assert = require("assert");
 import { exampleFunctionUtilityWithFilename } from "../../src/utility/AppUtility";
 import { exampleFunctionUtility } from "../../src/utility/AppUtility";
 
-import { Utility } from "../../src/utility/Utility";
+import { Utility } from "../../src/Utility/Utility";
 
 import { UnitTestHelper } from "./Utility.test";
 

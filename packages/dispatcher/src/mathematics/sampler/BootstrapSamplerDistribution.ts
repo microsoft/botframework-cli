@@ -10,7 +10,7 @@ import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility"
 
 import { BootstrapSampler } from "./BootstrapSampler";
 
-import { Utility } from "../../utility/Utility";
+import { Utility } from "../../Utility/Utility";
 
 export class BootstrapSamplerDistribution<T> extends
 BootstrapSampler<T> {

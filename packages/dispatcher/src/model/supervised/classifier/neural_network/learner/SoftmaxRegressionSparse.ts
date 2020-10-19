@@ -6,7 +6,7 @@
 import { IMathematicsHelper } from "../../../../../mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../../../mathematics/mathematics_helper/MathematicsHelper";
 
-import { Utility } from "../../../../../utility/Utility";
+import { Utility } from "../../../../../Utility/Utility";
 
 export class SoftmaxRegressionSparse {
 

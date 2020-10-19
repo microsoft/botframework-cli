@@ -10,9 +10,9 @@ import {
     exampleFunctionReservoirSamplerWithArrayInput,
     } from "../../../src/mathematics/sampler/AppReservoirSampler";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 describe("Test Suite - mathematics/sampler/AppReservoirSampler", () => {
     it("Test.0000 exampleFunctionReservoirSampler", function() {

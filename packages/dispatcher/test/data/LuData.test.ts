@@ -9,9 +9,9 @@ import { LuData } from "../../src/data/LuData";
 
 import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../../src/utility/Utility";
+import { Utility } from "../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../utility/Utility.test";
+import { UnitTestHelper } from "../Utility/Utility.test";
 
 /* tslint:disable */
 

@@ -11,9 +11,9 @@ import { BinaryConfusionMatrix } from "../../../src/mathematics/confusion_matrix
 
 import { DictionaryMapUtility } from "../../../src/data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 function getTestingConfusionMatrix(): ConfusionMatrix {
     const labels: string[] = ["label0", "label1", "label2"];

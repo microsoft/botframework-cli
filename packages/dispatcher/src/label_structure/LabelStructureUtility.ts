@@ -14,7 +14,7 @@ import { ScoreEntityUtterancePrediction } from "./ScoreEntityUtterancePrediction
 import { ScoreIntentUtterancePrediction } from "./ScoreIntentUtterancePrediction";
 import { Span } from "./Span";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 import { PredictionType } from "./PredictionType";
 
 export class LabelStructureUtility {

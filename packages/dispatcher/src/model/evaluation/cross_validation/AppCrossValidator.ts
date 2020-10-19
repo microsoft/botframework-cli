@@ -27,7 +27,7 @@ import { DataUtility } from "../../../data/DataUtility";
 
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 /**
  * This function consumes a Data object as input and run cross validation (CV) to evaluate models trained from

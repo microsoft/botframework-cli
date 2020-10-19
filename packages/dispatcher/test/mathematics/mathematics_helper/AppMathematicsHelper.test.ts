@@ -8,9 +8,9 @@ import assert = require("assert");
 import { exampleFunctionMathematicsHelper } from "../../../src/mathematics/mathematics_helper/AppMathematicsHelper";
 import { exampleFunctionMathematicsHelperSoftmax } from "../../../src/mathematics/mathematics_helper/AppMathematicsHelper";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 describe("Test Suite - mathematics/mathematics_helper/app_mathematics_helper", () => {
     it("Test.0000 exampleFunctionMathematicsHelper", function() {

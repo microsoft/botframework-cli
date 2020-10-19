@@ -5,7 +5,7 @@
 
 import { IMathematicsHelper } from "./IMathematicsHelper";
 
-import { Utility } from "../../utility/Utility";
+import { Utility } from "../../Utility/Utility";
 
 export class MathematicsHelper implements IMathematicsHelper {
 

@@ -8,7 +8,7 @@ import { ISparseTextFeaturizer } from "./ISparseTextFeaturizer";
 
 import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
 

@@ -25,7 +25,7 @@ import { ThresholdReporter } from "../report/ThresholdReporter";
 
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export function mainPredictor(): void {
     // -----------------------------------------------------------------------

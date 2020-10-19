@@ -13,7 +13,7 @@ import { DictionaryMapUtility } from "../../src/data_structure/DictionaryMapUtil
 import { TMapStringKeyGenericArray } from "../../src/data_structure/TMapStringKeyGenericArray";
 import { TMapStringKeyGenericValue } from "../../src/data_structure/TMapStringKeyGenericValue";
 
-import { Utility } from "../../src/utility/Utility";
+import { Utility } from "../../src/Utility/Utility";
 
 export class UnitTestHelper {
 
@@ -28,7 +28,7 @@ export class UnitTestHelper {
     }
 }
 
-describe("Test Suite - utility/Utility", () => {
+describe("Test Suite - Utility/Utility", () => {
     it("Test.0000 incrementKeyValueNumberMap()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());

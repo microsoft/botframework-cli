@@ -14,7 +14,7 @@ import { ThresholdReporter } from "../report/ThresholdReporter";
 import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
 import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtility";
 

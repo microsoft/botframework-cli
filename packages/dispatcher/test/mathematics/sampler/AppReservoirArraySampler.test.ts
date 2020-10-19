@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { exampleFunctionReservoirArraySampler } from "../../../src/mathematics/sampler/AppReservoirArraySampler";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     it("Test.0000 exampleFunctionReservoirArraySampler", function() {

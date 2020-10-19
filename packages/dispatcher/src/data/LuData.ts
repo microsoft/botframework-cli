@@ -12,7 +12,7 @@ import { Data } from "./Data";
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export class LuData extends Data {
 

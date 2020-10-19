@@ -18,7 +18,7 @@ import { DataUtility } from "../../../data/DataUtility";
 
 import { Data } from "../../../data/Data";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export function mainModelMetaDataProfileReporter(): void {
     // -----------------------------------------------------------------------

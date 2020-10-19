@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { exampleFunctionConfusionMatrix } from "../../../src/mathematics/confusion_matrix/AppConfusionMatrix";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 describe("Test Suite - model/evaluation/confusion_matrix/app_confusion_matrix", () => {
     it("Test.0000 exampleFunctionConfusionMatrix()", function() {

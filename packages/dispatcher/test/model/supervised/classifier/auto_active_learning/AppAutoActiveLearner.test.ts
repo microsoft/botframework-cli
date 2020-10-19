@@ -25,9 +25,9 @@ import { ColumnarData } from "../../../../../src/data/ColumnarData";
 
 import { LuData } from "../../../../../src/data/LuData";
 
-import { Utility } from "../../../../../src/utility/Utility";
+import { Utility } from "../../../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../../../utility/Utility.test";
+import { UnitTestHelper } from "../../../../Utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoActiveLearner", () => {
     it("Test.0000 mainAutoActiveLearnerWithLuContent()", async function() {

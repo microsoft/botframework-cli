@@ -22,7 +22,7 @@ import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtili
 
 import { AbstractBaseModelFeaturizerEvaluator } from "../abstract_base_evaluator/AbstractBaseModelFeaturizerEvaluator";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export class Predictor extends AbstractBaseModelFeaturizerEvaluator {
 

@@ -7,9 +7,9 @@ import assert = require("assert");
 
 import { exampleFunctionData } from "../../src/data/AppColumnarData";
 
-import { Utility } from "../../src/utility/Utility";
+import { Utility } from "../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../utility/Utility.test";
+import { UnitTestHelper } from "../Utility/Utility.test";
 
 describe("Test Suite - data/AppColumnarData", () => {
     it("Test.0000 exampleFunctionData", function() {

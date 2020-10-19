@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import { BootstrapSampler } from "./BootstrapSampler";
-import { Utility } from "./../../utility/Utility";
+import { Utility } from "./../../Utility/Utility";
 
 export interface IUtterance {
   text: string;

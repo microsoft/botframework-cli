@@ -13,9 +13,9 @@ import { NgramSubwordFeaturizer } from "../../../../../../src/model/language_und
 // import { LearnerUtility }
 // from "../../../../../../src/model/supervised/classifier/neural_network/learner/UtilityLearner";
 
-import { Utility } from "../../../../../../src/utility/Utility";
+import { Utility } from "../../../../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../../../../utility/Utility.test";
+import { UnitTestHelper } from "../../../../../Utility/Utility.test";
 
 function getFeaturizerAndLearner(): {
     "featurizer": NgramSubwordFeaturizer,

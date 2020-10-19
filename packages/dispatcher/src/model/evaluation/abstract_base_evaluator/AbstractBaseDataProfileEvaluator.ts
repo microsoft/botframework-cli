@@ -7,7 +7,7 @@ import { Data } from "../../../data/Data";
 
 import { AbstractBaseEvaluator } from "./AbstractBaseEvaluator";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export abstract class AbstractBaseDataProfileEvaluator extends AbstractBaseEvaluator {
 

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import { Utility } from "../../utility/Utility";
+import { Utility } from "../../Utility/Utility";
 
 export class ReservoirArraySampler<T> {
 

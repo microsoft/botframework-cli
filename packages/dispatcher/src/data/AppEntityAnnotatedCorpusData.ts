@@ -9,7 +9,7 @@ import { EntityAnnotatedCorpusData } from "./EntityAnnotatedCorpusData";
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export function exampleFunctionData(): EntityAnnotatedCorpusData {
     // -----------------------------------------------------------------------

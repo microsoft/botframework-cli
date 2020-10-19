@@ -9,7 +9,7 @@ import { ColumnarData } from "./ColumnarData";
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export function exampleFunctionData(): ColumnarData {
     // -----------------------------------------------------------------------

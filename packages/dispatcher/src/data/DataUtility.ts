@@ -13,7 +13,7 @@ import { ColumnarData } from "./ColumnarData";
 import { LuData } from "./LuData";
 import { Data } from "./Data";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export class DataUtility {
 

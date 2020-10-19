@@ -13,9 +13,9 @@ import { NgramSubwordFeaturizer } from "../../../../src/model/language_understan
 
 import { DictionaryMapUtility } from "../../../../src/data_structure/DictionaryMapUtility";
 
-import { Utility } from "../../../../src/utility/Utility";
+import { Utility } from "../../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../../utility/Utility.test";
+import { UnitTestHelper } from "../../../Utility/Utility.test";
 
 function getNgramSubwordFeaturizerForUnitTests(
     subwordNgramBegin: number = 3,

@@ -9,7 +9,7 @@ import { LuData } from "./LuData";
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-import { Utility } from "../utility/Utility";
+import { Utility } from "../Utility/Utility";
 
 export async function exampleFunctionData(): Promise<string[]> {
     // -----------------------------------------------------------------------

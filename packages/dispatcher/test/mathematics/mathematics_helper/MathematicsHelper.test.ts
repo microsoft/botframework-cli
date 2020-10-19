@@ -8,9 +8,9 @@ import assert = require("assert");
 import { IMathematicsHelper } from "../../../src/mathematics/mathematics_helper/IMathematicsHelper";
 import { MathematicsHelper } from "../../../src/mathematics/mathematics_helper/MathematicsHelper";
 
-import { Utility } from "../../../src/utility/Utility";
+import { Utility } from "../../../src/Utility/Utility";
 
-import { UnitTestHelper } from "../../utility/Utility.test";
+import { UnitTestHelper } from "../../Utility/Utility.test";
 
 const testArray: number[] = [0.4, 0.5, 0.3];
 

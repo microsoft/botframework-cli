@@ -21,7 +21,7 @@ import { DictionaryMapUtility } from "../../../data_structure/DictionaryMapUtili
 
 import { AbstractBaseEvaluator } from "../abstract_base_evaluator/AbstractBaseEvaluator";
 
-import { Utility } from "../../../utility/Utility";
+import { Utility } from "../../../Utility/Utility";
 
 export class CrossValidator extends AbstractBaseEvaluator {
 
