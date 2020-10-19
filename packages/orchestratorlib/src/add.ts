@@ -8,7 +8,7 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
-
+/*
 export class OrchestratorAdd {
   // eslint-disable-next-line max-params
   public static async runAsync(
@@ -61,3 +61,4 @@ export class OrchestratorAdd {
     }
   }
 }
+*/

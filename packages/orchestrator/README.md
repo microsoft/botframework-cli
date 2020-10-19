@@ -445,9 +445,9 @@ USAGE
   $ bf orchestrator:nlr:get
 
 OPTIONS
-  -o, --out        Path to Orchestrator model
-  --versionId      Model version to download
-  -h, --help       show CLI help
+  -o, --out        Optional. Path to where Orchestrator model will be saved to. Default to current working directory.
+  --versionId      Optional. Model version to download -- reference nlr:list output for options.  If not specified, default model will be downloaded.
+  -h, --help       Show CLI help
 ```
 
 _See code: [src\commands\orchestrator\nlr\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/get.ts)_
@@ -462,8 +462,8 @@ USAGE
   $ bf orchestrator:nlr:list
 
 OPTIONS
-  -r, --raw        Raw output
-  -h, --help       show CLI help
+  -r, --raw        Optional. Raw output
+  -h, --help       Show CLI help
 ```
 
 _See code: [src\commands\orchestrator\nlr\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/list.ts)_

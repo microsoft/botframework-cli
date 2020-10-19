@@ -35,7 +35,31 @@ describe('OrchestratorNlrTests', () => {
   });
 
   it('getDefaultModelId', () => {
-    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(nlrVersions.models);
+    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(nlrVersions);
     assert.ok(defaultVersion === 'pretrained.20200924.microsoft.dte.00.03.en.onnx', 'getDefaultModelId fails to return correct default version');
+  });
+
+  it('getDefaultModelIdNoDefaultSet', () => {
+    const nlrVersionsJson: string = `{
+      "version": "0.1",
+      "models": {
+        "pretrained.20201024.microsoft.dte.00.12.roberta.en.onnx": {
+          "releaseDate": "09/24/2020",
+          "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx.7z",
+          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer Roberta per-token NLR",
+          "minSDKVersion": "4.10.0"
+        },
+        "pretrained.20200924.microsoft.dte.00.12.en.onnx": {
+          "releaseDate": "09/24/2020",
+          "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.en.onnx.7z",
+          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer BERT per-token NLR",
+          "minSDKVersion": "4.10.0"
+        }
+      }
+    }`;
+
+    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(JSON.parse(nlrVersionsJson));
+    console.log(`default version: ${defaultVersion}`);
+    assert.ok(defaultVersion === 'pretrained.20201024.microsoft.dte.00.12.roberta.en.onnx', 'getDefaultModelIdNoDefaultSet fails to return correct default version');
   });
 });

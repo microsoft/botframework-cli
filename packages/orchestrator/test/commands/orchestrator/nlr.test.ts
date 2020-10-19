@@ -10,7 +10,6 @@ const sinon: any = require('sinon');
 describe('orchestrator:nlr:get', () => {
   beforeEach(() => {
     sinon.stub(Orchestrator, 'nlrGetAsync');
-    sinon.stub(Orchestrator, 'nlrListAsync');
   });
 
   afterEach(() => {
