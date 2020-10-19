@@ -1029,3 +1029,25 @@ describe('luis:build write settings assets only successfully if --dialog is not 
       expect(await compareFiles('./../../../results/sandwich.lu.dialog', './../../fixtures/testcases/lubuild/sandwich/dialogs/sandwich.lu.dialog')).to.be.false
     })
 })
+
+describe('luis:build throw luis build failed exception successfully', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(401, {
+        error: {
+          code: 401,
+          message: 'Access denied due to invalid subscription key.'
+        }
+      })
+  })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich//lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .exit(1)
+    .it('should throw luis build failed exception successfully', ctx => {
+      expect(ctx.stderr).to.contain('Luis build failed: Access denied due to invalid subscription key.')
+    })
+})
