@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+/*
 import * as path from 'path';
 
 const sinon: any = require('sinon');
@@ -27,7 +27,6 @@ describe('OrchestratorAddTests', () => {
     sinon.restore();
   });
 
-  /* ---- NOTE-DISABLE-THESE-TESTS-TEMPORARILY ----
   it('runAsync-0', async () => {
     await OrchestratorAdd.runAsync(
       './test/fixtures/',
@@ -44,5 +43,5 @@ describe('OrchestratorAddTests', () => {
       './test/fixtures/dispatch/orchestrator.blu',
       'testPrefix');
   });
-  */
 });
+*/

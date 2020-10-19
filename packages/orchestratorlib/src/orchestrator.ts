@@ -2,12 +2,9 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
-import {OrchestratorAdd} from './add';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
-import {OrchestratorFineTune} from './finetune';
 import {OrchestratorNlr} from './nlr';
 import {OrchestratorPredict} from './predict';
 import {OrchestratorTest} from './test';
@@ -24,19 +21,6 @@ export class Orchestrator {
       inputPathConfiguration,
       outputPath,
       hierarchical,
-      fullEmbedding);
-  }
-
-  // eslint-disable-next-line max-params
-  public static async addAsync(nlrPath: string, inputPath: string, outputPath: string, snapshotPath: string,
-    labelPrefix: string = '',
-    fullEmbedding: boolean = false): Promise<void> {
-    await OrchestratorAdd.runAsync(
-      nlrPath,
-      inputPath,
-      outputPath,
-      snapshotPath,
-      labelPrefix,
       fullEmbedding);
   }
 
@@ -67,10 +51,11 @@ export class Orchestrator {
       fullEmbedding);
   }
 
+  /*
   public static async fineTuneAsync(nlrPath: string, inputPath: string, outputPath: string): Promise<void> {
     await OrchestratorFineTune.runAsync(nlrPath, inputPath, outputPath);
   }
-
+  */
   public static async nlrGetAsync(
     nlrPath: string,
     nlrId: string,
@@ -81,6 +66,10 @@ export class Orchestrator {
 
   public static async nlrListAsync(): Promise<string> {
     return OrchestratorNlr.listAsync();
+  }
+
+  public static async nlrGetVersionsAsync(): Promise<any> {
+    return OrchestratorNlr.getNlrVersionsAsync();
   }
 
   // eslint-disable-next-line max-params

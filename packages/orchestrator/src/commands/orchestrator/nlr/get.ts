@@ -11,8 +11,8 @@ export default class OrchestratorNlrGet extends Command {
   static description: string = 'Gets Orchestrator model'
 
   static flags: flags.Input<any> = {
-    out: flags.string({char: 'o', description: 'Optional. Path to Orchestrator model. Default to current working directory.'}),
-    versionId: flags.string({description: 'Optional.  Key to the model entry for download -- reference nlr:list output for options.  If not specified, default model will be downloaded.'}),
+    out: flags.string({char: 'o', description: 'Optional. Path to where Orchestrator model will be saved to. Default to current working directory.'}),
+    versionId: flags.string({description: 'Optional. Model version to download -- reference nlr:list output for options.  If not specified, default model will be downloaded.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator nlr:get command help'}),
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),

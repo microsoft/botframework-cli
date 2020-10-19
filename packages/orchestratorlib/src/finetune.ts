@@ -7,7 +7,7 @@ import * as path from 'path';
 import {Utility} from './utility';
 // import {LabelResolver} from './labelresolver';
 // import {OrchestratorHelper} from './orchestratorhelper';
-
+/*
 export class OrchestratorFineTune {
   public static async runAsync(nlrPath: string, inputPath: string, outputPath: string) {
     try {
@@ -31,3 +31,4 @@ export class OrchestratorFineTune {
     }
   }
 }
+*/

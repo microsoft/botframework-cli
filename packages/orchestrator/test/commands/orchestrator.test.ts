@@ -12,7 +12,6 @@ describe('orchestrator', () => {
   .it('should print the help contents when nothing is passed as an argument', (ctx: any) => {
     expect(ctx.stdout)
     .to.contain('Display Orchestrator CLI available commands')
-    .to.contain('orchestrator:add')
     .to.contain('orchestrator:create')
     .to.contain('orchestrator:build')
     .to.contain('orchestrator:eval')
@@ -27,7 +26,6 @@ describe('orchestrator', () => {
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout)
     .to.contain('Display Orchestrator CLI available commands')
-    .to.contain('orchestrator:add')
     .to.contain('orchestrator:create')
     .to.contain('orchestrator:build')
     .to.contain('orchestrator:eval')

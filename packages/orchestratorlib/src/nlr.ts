@@ -32,7 +32,7 @@ export class OrchestratorNlr {
       }
 
       if (nlrId === '') {
-        nlrId = OrchestratorNlr.getDefaultModelId(versions.models);
+        nlrId = OrchestratorNlr.getDefaultModelId(versions);
       }
 
       if (nlrId === '') {
@@ -93,7 +93,7 @@ export class OrchestratorNlr {
     }
   }
 
-  public static async getNlrVersionsAsync(): Promise<string> {
+  public static async getNlrVersionsAsync(): Promise<object> {
     const response: any = await fetch('https://aka.ms/nlrversions');
     return response.json();
   }
@@ -125,18 +125,20 @@ export class OrchestratorNlr {
     }
   }
 
-  public static getDefaultModelId(models: any): string {
-    let defaultVersion: any = '';
+  public static getDefaultModelId(nlrVersions: any): string {
+    let defaultVersion: string = nlrVersions.default;
+    if (defaultVersion && defaultVersion.length > 0) {
+      return defaultVersion;
+    }
+
+    defaultVersion = '';
+    const models: any = nlrVersions.models;
     for (const modelVersion in models) {
       // eslint-disable-next-line no-prototype-builtins
       if (models.hasOwnProperty(modelVersion)) {
-        const model: any = models[modelVersion];
-        if ('isDefault' in model && model.isDefault) {
-          return modelVersion;
-        }
-
         if (defaultVersion === '') {
           defaultVersion = modelVersion;
+          break;
         }
       }
     }

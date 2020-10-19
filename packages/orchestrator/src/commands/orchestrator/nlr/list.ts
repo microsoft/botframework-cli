@@ -11,7 +11,7 @@ export default class OrchestratorNlrList extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'Orchestrator nlr:list command help'}),
-    raw: flags.boolean({char: 'r', description: 'Raw output', default: false}),
+    raw: flags.boolean({char: 'r', description: 'Optional. Raw output', default: false}),
   }
 
   async run() {
@@ -20,10 +20,9 @@ export default class OrchestratorNlrList extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      const json: string = await Orchestrator.nlrListAsync();
+      const nlrList: any = await Orchestrator.nlrGetVersionsAsync();
       // eslint-disable-next-line no-negated-condition
       if (!flags.raw) {
-        const nlrList: any = JSON.parse(json);
         let output: any = '\n\nAvailable models:\n\n';
         Object.getOwnPropertyNames(nlrList.models).forEach((key: any) => {
           output += `\n${key}\n`;
@@ -33,7 +32,7 @@ export default class OrchestratorNlrList extends Command {
         });
         this.log(output);
       } else {
-        this.log(json);
+        this.log(JSON.stringify(nlrList, null, 2));
       }
     } catch (error) {
       throw (new CLIError(error));
