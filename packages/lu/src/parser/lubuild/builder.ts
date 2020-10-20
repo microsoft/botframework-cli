@@ -207,71 +207,75 @@ export class Builder {
     const filesSectionEmptyStatus = fileHelper.filesSectionEmptyStatus(clonedLuContents)
     let isAllLuEmpty = [...filesSectionEmptyStatus.values()].every((isEmpty) => isEmpty)
 
-    if (!isAllLuEmpty) {
-      const luBuildCore = new LuBuildCore(authoringKey, endpoint, retryCount, retryDuration)
-      const apps = await luBuildCore.getApplicationList()
+    try {
+      if (!isAllLuEmpty) {
+        const luBuildCore = new LuBuildCore(authoringKey, endpoint, retryCount, retryDuration)
+        const apps = await luBuildCore.getApplicationList()
 
-      let settings: any
+        let settings: any
 
-      // here we do a while loop to make full use of luis tps capacity
-      while (clonedLuContents.length > 0) {
-        // get a number(set by luisApiTps) of contents for each loop
-        const subLuContents = clonedLuContents.splice(0, luisAPITPS)
+        // here we do a while loop to make full use of luis tps capacity
+        while (clonedLuContents.length > 0) {
+          // get a number(set by luisApiTps) of contents for each loop
+          const subLuContents = clonedLuContents.splice(0, luisAPITPS)
 
-        // concurrently handle applications
-        await Promise.all(subLuContents.map(async content => {
-          if (!filesSectionEmptyStatus.get(content.path)) {
-            // init current application object from lu content
-            let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
+          // concurrently handle applications
+          await Promise.all(subLuContents.map(async content => {
+            if (!filesSectionEmptyStatus.get(content.path)) {
+              // init current application object from lu content
+              let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
 
-            // init recognizer asset
-            const dialogFile = path.join(path.dirname(content.path), `${content.name}.dialog`)
-            let recognizer = new Recognizer(content.path, content.name, dialogFile, schema)
+              // init recognizer asset
+              const dialogFile = path.join(path.dirname(content.path), `${content.name}.dialog`)
+              let recognizer = new Recognizer(content.path, content.name, dialogFile, schema)
 
-            // find if there is a matched name with current app under current authoring key
-            if (!recognizer.getAppId()) {
-              for (let app of apps) {
-                if (app.name === currentApp.name) {
-                  recognizer.setAppId(app.id)
-                  break
+              // find if there is a matched name with current app under current authoring key
+              if (!recognizer.getAppId()) {
+                for (let app of apps) {
+                  if (app.name === currentApp.name) {
+                    recognizer.setAppId(app.id)
+                    break
+                  }
                 }
               }
-            }
 
-            let needTrainAndPublish = false
+              let needTrainAndPublish = false
 
-            // compare models to update the model if a match found
-            // otherwise create a new application
-            if (recognizer.getAppId() && recognizer.getAppId() !== '') {
-              // To see if need update the model
-              needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests, keptVersionCount)
-            } else {
-              // create a new application
-              needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
-            }
+              // compare models to update the model if a match found
+              // otherwise create a new application
+              if (recognizer.getAppId() && recognizer.getAppId() !== '') {
+                // To see if need update the model
+                needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests, keptVersionCount)
+              } else {
+                // create a new application
+                needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
+              }
 
-            if (needTrainAndPublish) {
-              // train and publish application
-              await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging)
-            }
+              if (needTrainAndPublish) {
+                // train and publish application
+                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging)
+              }
 
-            // init settings asset
-            if (settings === undefined) {
-              const settingsPath = path.join(path.dirname(content.path), `luis.settings.${suffix}.${region}.json`)
-              settings = new Settings(settingsPath, {})
-            }
+              // init settings asset
+              if (settings === undefined) {
+                const settingsPath = path.join(path.dirname(content.path), `luis.settings.${suffix}.${region}.json`)
+                settings = new Settings(settingsPath, {})
+              }
 
-            // update settings asset
-            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
-              "appId": recognizer.getAppId(),
-              "version": recognizer.versionId
+              // update settings asset
+              settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
+                "appId": recognizer.getAppId(),
+                "version": recognizer.versionId
+              }
             }
-          }
-        }))
+          }))
+        }
+
+        // write dialog assets
+        settingsAssets.push(settings)
       }
-
-      // write dialog assets
-      settingsAssets.push(settings)
+    } catch (error) {
+      throw(new exception(retCode.errorCode.LUIS_BUILD_FAILED, `Luis build failed: ${error.message}`))
     }
 
     const settingsContent = this.generateDeclarativeAssets(settingsAssets)

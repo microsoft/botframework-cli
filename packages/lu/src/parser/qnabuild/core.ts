@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-const retCode = require('./../utils/enums/CLI-errors')
-const exception = require('./../utils/exception')
 const {ServiceBase} = require('./serviceBase')
 const NEWLINE = require('os').EOL
 
@@ -16,7 +14,7 @@ export class QnaBuildCore {
   constructor(subscriptionkey: string, endpoint: string) {
     // check endpoint is absolute or not
     if (!absoluteUrlPattern.test(endpoint)) {
-      throw (new exception(retCode.errorCode.INVALID_URI, `Only absolute URLs are supported. "${endpoint}" is not an absolute qnamaker endpoint URL.`))
+      throw new Error(`Only absolute URLs are supported. "${endpoint}" is not an absolute qnamaker endpoint URL.`)
     }
 
     this.service = new ServiceBase(endpoint, subscriptionkey)
@@ -27,7 +25,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const kbList = JSON.parse(text)
     if (kbList.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(kbList.error.message)
     }
 
     return kbList
@@ -38,7 +36,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const kb = JSON.parse(text)
     if (kb.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(kb.error.message)
     }
 
     return kb
@@ -49,7 +47,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const status = JSON.parse(text)
     if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(status.error.message)
     }
 
     return status
@@ -60,7 +58,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const status = JSON.parse(text)
     if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(status.error.message)
     }
 
     return status
@@ -71,7 +69,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const kb = JSON.parse(text)
     if (kb.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(kb.error.message)
     }
 
     return kb
@@ -82,7 +80,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const status = JSON.parse(text)
     if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(status.error.message)
     }
 
     return status
@@ -92,7 +90,7 @@ export class QnaBuildCore {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
     const text = await response.text()
     if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(JSON.parse(text).error.message)
     }
   }
 
@@ -100,7 +98,7 @@ export class QnaBuildCore {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'POST')
     const text = await response.text()
     if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(JSON.parse(text).error.message)
     }
   }
 
@@ -108,7 +106,7 @@ export class QnaBuildCore {
     const response = await this.service.createRequest('/alterations', 'PUT', altJson)
     const text = await response.text()
     if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(JSON.parse(text).error.message)
     }
   }
 
@@ -117,7 +115,7 @@ export class QnaBuildCore {
     const text = await response.text()
     const endpointKeys = JSON.parse(text)
     if (endpointKeys.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(endpointKeys.error.message)
     }
 
     return endpointKeys
@@ -127,7 +125,7 @@ export class QnaBuildCore {
     const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'DELETE')
     const text = await response.text()
     if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+      throw new Error(JSON.parse(text).error.message)
     }
   }
 

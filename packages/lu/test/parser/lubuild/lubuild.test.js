@@ -369,7 +369,7 @@ describe('builder: build function can catch relative endpoint exception successf
 
       assert.fail("Relative endpoint exception is not thrown.")
     } catch (e) {
-      assert.equal(e.text, `Only absolute URLs are supported. "http:fsd" is not an absolute LUIS endpoint URL.`)
+      assert.equal(e.text, `Luis build failed: Only absolute URLs are supported. "http:fsd" is not an absolute LUIS endpoint URL.`)
     }
   })
 
@@ -385,7 +385,7 @@ describe('builder: build function can catch relative endpoint exception successf
 
       assert.fail("Relative endpoint exception is not thrown.")
     } catch (e) {
-      assert.equal(e.text, `Only absolute URLs are supported. "fsd" is not an absolute LUIS endpoint URL.`)
+      assert.equal(e.text, `Luis build failed: Only absolute URLs are supported. "fsd" is not an absolute LUIS endpoint URL.`)
     }
   })
 })

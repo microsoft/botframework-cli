@@ -901,3 +901,25 @@ describe('qnamaker:build write settings assets only successfully if --dialog is 
       expect(await compareFiles('./../../../results/sandwich2.qna.dialog', './../../fixtures/testcases/qnabuild/sandwich/dialogs/sandwich2.qna.dialog')).to.be.false
     })
 })
+
+describe('qnamaker:build throw qnamaker build failed exception successfully', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(401, {
+        error: {
+          code: 401,
+          message: 'Access denied due to invalid subscription key.'
+        }
+      })
+  })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/sandwich/qnafiles/sandwich.en-us.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development'])
+    .exit(1)
+    .it('should throw qnamaker build failed exception successfully', ctx => {
+      expect(ctx.stderr).to.contain('Qnamaker build failed: Access denied due to invalid subscription key.')
+    })
+})
