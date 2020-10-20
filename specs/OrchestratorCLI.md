@@ -52,7 +52,7 @@ The mainstream bot language recognition development cycle with Orchestrator is a
 6. Examine report to ensure that the recognition quality is satisfactory. For more on report interpretation see **TBD**.
 7. If not, adjust the label file in (1) and repeat steps 2-6 until satisfied.
 
-For more information on Machine Learning design practices see [Wikipedia: Training, validation, and test sets][https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets], and [Machine Learning Mastery][https://machinelearningmastery.com/difference-test-validation-datasets/].
+For more information on Machine Learning design practices see [References](#References).
 
 #### Variation: Composer Dialogs 
 
@@ -125,7 +125,8 @@ Orchestrator command group is starting as a plugin while in preview and will eve
 * [Language Understanding](https://docs.microsoft.com/en-us/composer/concept-language-understanding)
 * [Composer](https://docs.microsoft.com/en-us/composer/introduction)
 * [Natural Language Representation Models](./nlrmodels.md)
-
+* [Wikipedia: Training, validation, and test sets](https://en.wikipedia.org/wiki/Training,_validation,_and_test_sets)
+* [Machine Learning Mastery](https://machinelearningmastery.com/difference-test-validation-datasets/).
 
 
 [1]: https://aka.ms/bf-orchestrator	"Orchestrator"
