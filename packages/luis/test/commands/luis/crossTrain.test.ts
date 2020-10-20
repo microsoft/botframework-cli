@@ -26,7 +26,7 @@ describe('luis:cross-train tests for cli parameters', () => {
     .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`])
     .exit(1)
     .it('displays an error if config is not provided', ctx => {
-      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config file path by --config.')
+      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config file path by --config')
     })
 })
 
