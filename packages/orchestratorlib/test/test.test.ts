@@ -10,7 +10,7 @@ import {} from 'mocha';
 import * as path from 'path';
 import * as fs from 'fs';
 
-import {OrchestratorNlr} from '../src/nlr';
+import {OrchestratorBaseModel} from '../src/basemodel';
 import {OrchestratorTest} from '../src/test';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
@@ -25,8 +25,8 @@ describe('Test Suite - test', () => {
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       nlrPath,
-      OrchestratorNlr.defaultHandler,
-      OrchestratorNlr.defaultHandler);
+      OrchestratorBaseModel.defaultHandler,
+      OrchestratorBaseModel.defaultHandler);
     Utility.debuggingLog('Triggering Test.0000 OrchestratorTest.runAsync()-Roberta');
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
@@ -97,8 +97,8 @@ describe('Test Suite - test', () => {
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       nlrPath,
-      OrchestratorNlr.defaultHandler,
-      OrchestratorNlr.defaultHandler);
+      OrchestratorBaseModel.defaultHandler,
+      OrchestratorBaseModel.defaultHandler);
     Utility.debuggingLog('Triggering Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_bert.blu';

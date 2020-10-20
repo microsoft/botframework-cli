@@ -5,7 +5,7 @@
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
-import {OrchestratorNlr} from './nlr';
+import {OrchestratorBaseModel} from './basemodel';
 import {OrchestratorPredict} from './predict';
 import {OrchestratorTest} from './test';
 import {OrchestratorAssess} from './assess';
@@ -56,20 +56,20 @@ export class Orchestrator {
     await OrchestratorFineTune.runAsync(nlrPath, inputPath, outputPath);
   }
   */
-  public static async nlrGetAsync(
+  public static async baseModelGetAsync(
     nlrPath: string,
     nlrId: string,
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
-    await OrchestratorNlr.getAsync(nlrPath, nlrId, onProgress, onFinish);
+    onProgress: any = OrchestratorBaseModel.defaultHandler,
+    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
+    await OrchestratorBaseModel.getAsync(nlrPath, nlrId, onProgress, onFinish);
   }
 
-  public static async nlrListAsync(): Promise<string> {
-    return OrchestratorNlr.listAsync();
+  public static async baseModelListAsync(): Promise<string> {
+    return OrchestratorBaseModel.listAsync();
   }
 
-  public static async nlrGetVersionsAsync(): Promise<any> {
-    return OrchestratorNlr.getNlrVersionsAsync();
+  public static async baseModelGetVersionsAsync(): Promise<any> {
+    return OrchestratorBaseModel.getVersionsAsync();
   }
 
   // eslint-disable-next-line max-params

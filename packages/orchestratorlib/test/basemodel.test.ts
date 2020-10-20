@@ -4,7 +4,7 @@
  */
 
 import {OrchestratorHelper} from '../src/orchestratorhelper';
-import {OrchestratorNlr} from '../src/nlr';
+import {OrchestratorBaseModel} from '../src/basemodel';
 import * as path from 'path';
 const sinon: any = require('sinon');
 
@@ -16,7 +16,7 @@ describe('OrchestratorNlrTests', () => {
   let nlrVersions: any;
   beforeEach(() => {
     nlrVersions = JSON.parse(OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json')));
-    sinon.stub(OrchestratorNlr, 'getNlrVersionsAsync').returns(nlrVersions);
+    sinon.stub(OrchestratorBaseModel, 'getVersionsAsync').returns(nlrVersions);
   });
 
   afterEach(() => {
@@ -26,16 +26,16 @@ describe('OrchestratorNlrTests', () => {
   it('listAsync', async function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-    const nlrVersionsJson: string = await OrchestratorNlr.listAsync();
+    const nlrVersionsJson: string = await OrchestratorBaseModel.listAsync();
     Utility.debuggingLog(`nlrVersionsJson=${nlrVersionsJson}`);
   });
 
   it('getAsync', async function () {
-    OrchestratorNlr.getAsync('./test/fixtures/output');
+    OrchestratorBaseModel.getAsync('./test/fixtures/output');
   });
 
   it('getDefaultModelId', () => {
-    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(nlrVersions);
+    const defaultVersion: string = OrchestratorBaseModel.getDefaultModelId(nlrVersions);
     assert.ok(defaultVersion === 'pretrained.20200924.microsoft.dte.00.03.en.onnx', 'getDefaultModelId fails to return correct default version');
   });
 
@@ -58,8 +58,7 @@ describe('OrchestratorNlrTests', () => {
       }
     }`;
 
-    const defaultVersion: string = OrchestratorNlr.getDefaultModelId(JSON.parse(nlrVersionsJson));
-    console.log(`default version: ${defaultVersion}`);
+    const defaultVersion: string = OrchestratorBaseModel.getDefaultModelId(JSON.parse(nlrVersionsJson));
     assert.ok(defaultVersion === 'pretrained.20201024.microsoft.dte.00.12.roberta.en.onnx', 'getDefaultModelIdNoDefaultSet fails to return correct default version');
   });
 });

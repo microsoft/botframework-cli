@@ -9,12 +9,12 @@ import {Utility} from './utility';
 const Zip: any = require('node-7z-forall');
 const fetch: any = require('node-fetch');
 
-export class OrchestratorNlr {
+export class OrchestratorBaseModel {
   public static async getAsync(
     nlrPath: string,
     nlrId: string = '',
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    onProgress: any = OrchestratorBaseModel.defaultHandler,
+    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
       if (nlrPath) {
         nlrPath = path.resolve(nlrPath);
@@ -25,14 +25,14 @@ export class OrchestratorNlr {
       Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrId=${nlrId}`);
       Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrPath=${nlrPath}`);
 
-      const versions: any = await OrchestratorNlr.getNlrVersionsAsync();
+      const versions: any = await OrchestratorBaseModel.getVersionsAsync();
       onProgress('Downloading model...');
       if (!versions) {
         throw new Error('ERROR: failed getting nlr_versions.json');
       }
 
       if (nlrId === '') {
-        nlrId = OrchestratorNlr.getDefaultModelId(versions);
+        nlrId = OrchestratorBaseModel.getDefaultModelId(versions);
       }
 
       if (nlrId === '') {
@@ -45,7 +45,7 @@ export class OrchestratorNlr {
       }
 
       const modelUrl: string = modelInfo.modelUri;
-      await OrchestratorNlr.getModelAsync(nlrPath, modelUrl, onProgress, onFinish);
+      await OrchestratorBaseModel.getModelAsync(nlrPath, modelUrl, onProgress, onFinish);
     } catch (error) {
       throw error;
     }
@@ -54,8 +54,8 @@ export class OrchestratorNlr {
   public static async getModelAsync(
     nlrPath: string,
     modelUrl: string,
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onFinish: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    onProgress: any = OrchestratorBaseModel.defaultHandler,
+    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
       fs.mkdirSync(nlrPath, {recursive: true});
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
@@ -93,13 +93,13 @@ export class OrchestratorNlr {
     }
   }
 
-  public static async getNlrVersionsAsync(): Promise<object> {
+  public static async getVersionsAsync(): Promise<object> {
     const response: any = await fetch('https://aka.ms/nlrversions');
     return response.json();
   }
 
   public static async listAsync(): Promise<string> {
-    const json: any = await OrchestratorNlr.getNlrVersionsAsync();
+    const json: any = await OrchestratorBaseModel.getVersionsAsync();
     return JSON.stringify(json, null, 2);
   }
 
@@ -116,7 +116,7 @@ export class OrchestratorNlr {
       fs.readdirSync(inputPath).forEach(function (file: string) {
         const curPath: string = path.join(inputPath, file);
         if (fs.lstatSync(curPath).isDirectory()) { // recurse
-          OrchestratorNlr.deleteFolderRecursive(curPath);
+          OrchestratorBaseModel.deleteFolderRecursive(curPath);
         } else { // delete file
           fs.unlinkSync(curPath);
         }

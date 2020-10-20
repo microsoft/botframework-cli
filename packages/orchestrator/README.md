@@ -54,8 +54,8 @@ bf plugins:unstall @microsoft/bf-orchestrator-cli
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:build`](#bf-orchestratorbuild)
 * [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
-* [`bf orchestrator:nlr:get`](#bf-orchestratornlrget)
-* [`bf orchestrator:nlr:list`](#bf-orchestratornlrlist)
+* [`bf orchestrator:basemodel:get`](#bf-orchestratorbasemodelget)
+* [`bf orchestrator:basemodel:list`](#bf-orchestratorbasemodellist)
 * [`bf orchestrator:predict`](#bf-orchestratorpredict)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 
@@ -73,41 +73,11 @@ OPTIONS
 
 _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
 
-
-## `bf orchestrator:add`
-
-Add examples from .lu/.qna/.json/.blu files to existing Orchestrator snapshot file.
-
-```
-USAGE
-  $ bf orchestrator:add
-
-OPTIONS
-  -d, --debug
-  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help               Orchestrator add command help
-  -i, --in=in              Path to example file (.lu/.qna/.json/.tsv/.blu).
-  -m, --model=model        Path to Orchestrator model directory.
-  -o, --out=out            Path where generated Orchestrator example file will be placed. Default to current working directory
-  -p, --prefix=prefix      Prefix to be added to label in snapshot
-  -s, --snapshot=snapshot  Existing Orchestrator snapshot to append to
-  --dialog                 Generate multi language or cross train Orchestrator recognizers.
-
-EXAMPLE
-       $ bf orchestrator:add 
-       $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/
-       $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/
-       $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
-```
-
-_See code: [src\commands\orchestrator\add.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/add.ts)_
-
-
 ## `bf orchestrator:assess`
 
 Create an evaluation report on assessing prediction against ground-truth instances.
 This command can execute an independent assessment of a prediction set against a ground-truth set,
-it does not require a NLR model that other Orchestrator commands may need.
+it does not require a base model that other Orchestrator commands may need.
 
 ```
 USAGE
@@ -348,7 +318,7 @@ OPTIONS
   -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator build command help
   -i, --in=in        Path to lu file or folder with lu files.
-  -m, --model=model  Path to Orchestrator model directory.
+  -m, --model=model  Path to Orchestrator base model directory.
   -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
   --dialog           Generate multi language or cross train Orchestrator recognizers.
 
@@ -357,7 +327,7 @@ EXAMPLE
        $ bf orchestrator:build 
        $ bf orchestrator:build --in ./path/to/lufile/or/folder/
        $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/base/model/directory
 ```
 
 _See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
@@ -378,7 +348,7 @@ OPTIONS
   -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
                      to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
 
-  -m, --model=model  Path to Orchestrator model directory.
+  -m, --model=model  Path to Orchestrator base model directory.
 
   -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
                      directory.
@@ -409,7 +379,7 @@ OPTIONS
   -h, --help                      Orchestrator 'evaluate' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
   -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
-  -m, --model=model               Optional directory or a config file hosting Orchestrator model files.
+  -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
@@ -436,37 +406,37 @@ EXAMPLE
 
 _See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/evaluate.ts)_
 
-## `bf orchestrator:nlr:get`
+## `bf orchestrator:basemodel:get`
 
-Gets Orchestrator model
+Gets Orchestrator base model
 
 ```
 USAGE
-  $ bf orchestrator:nlr:get
+  $ bf orchestrator:basemodel:get
 
 OPTIONS
-  -o, --out        Optional. Path to where Orchestrator model will be saved to. Default to current working directory.
-  --versionId      Optional. Model version to download -- reference nlr:list output for options.  If not specified, default model will be downloaded.
+  -o, --out        Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.
+  --versionId      Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.
   -h, --help       Show CLI help
 ```
 
-_See code: [src\commands\orchestrator\nlr\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/get.ts)_
+_See code: [src\commands\orchestrator\basemodel\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/get.ts)_
 
 
-## `bf orchestrator:nlr:list`
+## `bf orchestrator:basemodel:list`
 
-Lists all Orchestrator model versions
+Lists all Orchestrator base model versions
 
 ```
 USAGE
-  $ bf orchestrator:nlr:list
+  $ bf orchestrator:basemodel:list
 
 OPTIONS
   -r, --raw        Optional. Raw output
   -h, --help       Show CLI help
 ```
 
-_See code: [src\commands\orchestrator\nlr\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/nlr/list.ts)_
+_See code: [src\commands\orchestrator\basemodel\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/list.ts)_
 
 ## `bf orchestrator:predict`
 
@@ -474,7 +444,7 @@ Returns score of given utterance using previously created orchestrator examples
 
 ```
 USAGE
-    $ bf orchestrator:predict --out=<analysis-and-output-folder> --model=<model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
+    $ bf orchestrator:predict --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
   -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
@@ -485,7 +455,7 @@ OPTIONS
                                   to start an Orchestrator snapshot from scratch. The 'n' commandlet
                                   can save the utterance labels into a snapshot (.blu) file.
   -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
-  -m, --model=model               Directory or a config file hosting Orchestrator model files.
+  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted
@@ -553,7 +523,7 @@ EXAMPLE
 
       $ bf orchestrator:predict --out=resources\data\Columnar\PredictOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
 
-      Notice that inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded model files
+      Notice that inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
       among other hyper parameters. Here is an example: 
       {
         "LoadModel": true,
@@ -582,7 +552,7 @@ OPTIONS
   -h, --help                      Orchestrator 'test' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
   -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
-  -m, --model=model               Directory or a config file hosting Orchestrator model files.
+  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
                                   i.e., only max-score intents are predicted

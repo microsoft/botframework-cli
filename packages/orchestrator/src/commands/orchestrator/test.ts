@@ -18,7 +18,7 @@ export default class OrchestratorTest extends Command {
     in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
     test: flags.string({char: 't', description: 'Path to a test file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and model files.'}),
+    model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
     ambiguous: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessParameter}`}),
     low_confidence: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
     multi_label: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),

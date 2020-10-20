@@ -17,7 +17,7 @@ describe('orchestrator', () => {
     .to.contain('orchestrator:eval')
     .to.contain('orchestrator:test')
     .to.contain('orchestrator:predict')
-    .to.contain('orchestrator:nlr');
+    .to.contain('orchestrator:basemodel');
   });
 
   test
@@ -31,6 +31,6 @@ describe('orchestrator', () => {
     .to.contain('orchestrator:eval')
     .to.contain('orchestrator:test')
     .to.contain('orchestrator:predict')
-    .to.contain('orchestrator:nlr');
+    .to.contain('orchestrator:basemodel');
   });
 });

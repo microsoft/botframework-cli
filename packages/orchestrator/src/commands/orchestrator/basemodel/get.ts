@@ -7,19 +7,19 @@ import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings} from '../../../utils/settings';
 
-export default class OrchestratorNlrGet extends Command {
-  static description: string = 'Gets Orchestrator model'
+export default class OrchestratorBaseModelGet extends Command {
+  static description: string = 'Gets Orchestrator base model'
 
   static flags: flags.Input<any> = {
-    out: flags.string({char: 'o', description: 'Optional. Path to where Orchestrator model will be saved to. Default to current working directory.'}),
-    versionId: flags.string({description: 'Optional. Model version to download -- reference nlr:list output for options.  If not specified, default model will be downloaded.'}),
+    out: flags.string({char: 'o', description: 'Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.'}),
+    versionId: flags.string({description: 'Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.'}),
     debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator nlr:get command help'}),
+    help: flags.help({char: 'h', description: 'Orchestrator basemodel:get command help'}),
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
   }
 
   async run() {
-    const {flags}: flags.Output = this.parse(OrchestratorNlrGet);
+    const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
     const output: string = flags.out || `${cwd}/model`;
     const nlrId: any = flags.versionId || '';
@@ -30,7 +30,7 @@ export default class OrchestratorNlrGet extends Command {
         OrchestratorHelper.mkDir(output);
       }
       OrchestratorSettings.init(cwd, output, '', cwd);
-      await Orchestrator.nlrGetAsync(
+      await Orchestrator.baseModelGetAsync(
         OrchestratorSettings.ModelPath,
         nlrId,
         (message: any) => {
@@ -41,7 +41,7 @@ export default class OrchestratorNlrGet extends Command {
         (message: any) => {
           this.log(`Model ${nlrId} downloaded to ${output}`);
           if (flags.debug) {
-            Utility.debuggingLog(`Model ${nlrId} downloaded to ${output} with message ${message}`);
+            Utility.debuggingLog(`Base model ${nlrId} downloaded to ${output} with message ${message}`);
           }
         });
 

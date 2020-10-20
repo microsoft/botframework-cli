@@ -10,7 +10,7 @@ import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
 // import {OrchestratorFineTune} from './finetune';
-import {OrchestratorNlr} from './nlr';
+import {OrchestratorBaseModel} from './basemodel';
 import {OrchestratorPredict} from './predict';
 import {OrchestratorTest} from './test';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -24,7 +24,7 @@ export {
   OrchestratorCreate,
   OrchestratorEvaluate,
   // OrchestratorFineTune,
-  OrchestratorNlr,
+  OrchestratorBaseModel,
   OrchestratorPredict,
   OrchestratorTest,
   OrchestratorHelper,

@@ -11,7 +11,7 @@ import * as path from 'path';
 
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
-import {OrchestratorNlr} from '../src/nlr';
+import {OrchestratorBaseModel} from '../src/basemodel';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 
@@ -31,8 +31,8 @@ export class UnitTestHelper {
   public static async downloadModelFileForTest(
     nlrId: string,
     nlrPath: string,
-    onProgress: any = OrchestratorNlr.defaultHandler,
-    onTest: any = OrchestratorNlr.defaultHandler): Promise<void> {
+    onProgress: any = OrchestratorBaseModel.defaultHandler,
+    onTest: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     Utility.debuggingLog('Entering UnitTestHelper.downloadModelFileForTest()');
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), nlrId=${nlrId}`);
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), nlrPath=${nlrPath}`);
@@ -45,7 +45,7 @@ export class UnitTestHelper {
       }
       const modelUrl: string = modelInfo.modelUri;
       Utility.debuggingLog('Ready to call OrchestratorNlr.getModelAsync()');
-      await OrchestratorNlr.getModelAsync(
+      await OrchestratorBaseModel.getModelAsync(
         nlrPath,
         modelUrl,
         onProgress,

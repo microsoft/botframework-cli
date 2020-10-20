@@ -7,9 +7,9 @@ import {expect, test} from '@oclif/test';
 import {Orchestrator} from '@microsoft/bf-orchestrator';
 const sinon: any = require('sinon');
 
-describe('orchestrator:nlr:get', () => {
+describe('orchestrator:basemodel:get', () => {
   beforeEach(() => {
-    sinon.stub(Orchestrator, 'nlrGetAsync');
+    sinon.stub(Orchestrator, 'baseModelGetAsync');
   });
 
   afterEach(() => {
@@ -18,15 +18,15 @@ describe('orchestrator:nlr:get', () => {
 
   test
   .stdout()
-  .command(['orchestrator:nlr:get', '--help'])
+  .command(['orchestrator:basemodel:get', '--help'])
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Gets Orchestrator model');
+    expect(ctx.stdout).to.contain('Gets Orchestrator base model');
   });
 
   test
   .stdout()
-  .command(['orchestrator:nlr:list', '--help'])
+  .command(['orchestrator:basemodel:list', '--help'])
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Lists all Orchestrator model versions');
+    expect(ctx.stdout).to.contain('Lists all Orchestrator base model versions');
   });
 });

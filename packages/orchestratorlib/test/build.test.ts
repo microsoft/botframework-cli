@@ -4,7 +4,7 @@
  */
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
-import {OrchestratorNlr} from '../src/nlr';
+import {OrchestratorBaseModel} from '../src/basemodel';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
@@ -19,8 +19,8 @@ describe('OrchestratorBuildTests', () => {
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       nlrPath,
-      OrchestratorNlr.defaultHandler,
-      OrchestratorNlr.defaultHandler);
+      OrchestratorBaseModel.defaultHandler,
+      OrchestratorBaseModel.defaultHandler);
   });
 
   it('runAsync', async () => {
