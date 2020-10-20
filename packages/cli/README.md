@@ -823,8 +823,6 @@ OPTIONS
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  Root dialog file path
-
   --log                    [default: false] Writes out log messages to console
 ```
 
@@ -1420,8 +1418,6 @@ OPTIONS
   --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
-
-  --rootDialog=rootDialog  Root dialog file path.
 
   --log                    [default: false] Writes out log messages to console
 ```

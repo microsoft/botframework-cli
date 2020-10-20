@@ -48,6 +48,7 @@ describe('qnamaker:kb:update', () => {
   test
     .stderr()
     .command(['qnamaker:kb:update'])
+    .exit(1)
     .it('Updates knowledgebase no input', ctx => {
       expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
     })

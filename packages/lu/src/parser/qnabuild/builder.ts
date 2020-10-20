@@ -189,73 +189,77 @@ export class Builder {
         })
       }
 
-      const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
-      const kbs = (await qnaBuildCore.getKBList()).knowledgebases
-
       let settingsPerCulture = new Map<string, any>()
 
-      // here we do a while loop to make full use of qna tps capacity
-      while (mergedContents.length > 0) {
-        // get a number(set by qnaApiTps) of contents for each loop
-        const subContents = mergedContents.splice(0, qnaAPITPS)
+      try {
+        const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
+        const kbs = (await qnaBuildCore.getKBList()).knowledgebases
 
-        // concurrently handle applications
-        await Promise.all(subContents.map(async content => {
-          let qnamakerContent = content.qnamakerContent
-          if (!fileHelper.isFileSectionEmpty(qnamakerContent)) {
-            let currentQna = content.qnamakerObject
-            
-            // set kb name
-            if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix}).${qnamakerContent.language}.qna`
+        // here we do a while loop to make full use of qna tps capacity
+        while (mergedContents.length > 0) {
+          // get a number(set by qnaApiTps) of contents for each loop
+          const subContents = mergedContents.splice(0, qnaAPITPS)
 
-            let currentKB = currentQna.kb
-            let currentAlt = currentQna.alterations
-            let hostName = ''
-            let kbId = ''
+          // concurrently handle applications
+          await Promise.all(subContents.map(async content => {
+            let qnamakerContent = content.qnamakerContent
+            if (!fileHelper.isFileSectionEmpty(qnamakerContent)) {
+              let currentQna = content.qnamakerObject
 
-            // find if there is a matched name with current kb under current key 
-            for (let kb of kbs) {
-              if (kb.name === currentKB.name) {
-                kbId = kb.id
-                hostName = kb.hostName
-                break
+              // set kb name
+              if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix}).${qnamakerContent.language}.qna`
+
+              let currentKB = currentQna.kb
+              let currentAlt = currentQna.alterations
+              let hostName = ''
+              let kbId = ''
+
+              // find if there is a matched name with current kb under current key 
+              for (let kb of kbs) {
+                if (kb.name === currentKB.name) {
+                  kbId = kb.id
+                  hostName = kb.hostName
+                  break
+                }
               }
+
+              let needPublish = false
+
+              // compare models to update the model if a match found
+              // otherwise create a new kb
+              if (kbId !== '') {
+                // To see if need update the model
+                needPublish = await this.updateKB(currentKB, qnaBuildCore, kbId, timeBucketOfRequests)
+              } else {
+                // create a new kb
+                kbId = await this.createKB(currentKB, qnaBuildCore, timeBucketOfRequests)
+                needPublish = true
+              }
+
+              if (needPublish) {
+                // train and publish kb
+                await this.publishKB(qnaBuildCore, kbId, currentKB.name, timeBucketOfRequests)
+              }
+
+              if (hostName === '') hostName = (await qnaBuildCore.getKB(kbId)).hostName
+
+              hostName += '/qnamaker'
+
+              // update alterations if there are
+              if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
+                this.handler('Replacing alterations...\n')
+                await qnaBuildCore.replaceAlt(currentAlt)
+              }
+
+              settingsPerCulture.set(qnamakerContent.language, {
+                kbId,
+                hostName
+              })
             }
-
-            let needPublish = false
-
-            // compare models to update the model if a match found
-            // otherwise create a new kb
-            if (kbId !== '') {
-              // To see if need update the model
-              needPublish = await this.updateKB(currentKB, qnaBuildCore, kbId, timeBucketOfRequests)
-            } else {
-              // create a new kb
-              kbId = await this.createKB(currentKB, qnaBuildCore, timeBucketOfRequests)
-              needPublish = true
-            }
-
-            if (needPublish) {
-              // train and publish kb
-              await this.publishKB(qnaBuildCore, kbId, currentKB.name, timeBucketOfRequests)
-            }
-
-            if (hostName === '') hostName = (await qnaBuildCore.getKB(kbId)).hostName
-
-            hostName += '/qnamaker'
-
-            // update alterations if there are
-            if (currentAlt.wordAlterations && currentAlt.wordAlterations.length > 0) {
-              this.handler('Replacing alterations...\n')
-              await qnaBuildCore.replaceAlt(currentAlt)
-            }
-
-            settingsPerCulture.set(qnamakerContent.language, {
-              kbId,
-              hostName
-            })
-          }
-        }))
+          }))
+        }
+      } catch (error) {
+        throw(new exception(retCode.errorCode.QNAMAKER_BUILD_FAILED, `Qnamaker build failed: ${error.message}`))
       }
 
       let settings: any

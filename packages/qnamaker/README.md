@@ -202,8 +202,6 @@ OPTIONS
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  Root dialog file path
-
   --log                    [default: false] Writes out log messages to console
 ```
 
