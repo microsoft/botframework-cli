@@ -1,17 +1,17 @@
 > # Intents
 
-## Greeting
+# Greeting
 - Hi
 - Hello
 - Good morning
 - Good evening
 
-## Help
+# Help
 - help
 - I need help
 - please help
 
-## AskForUserName
+# AskForUserName
 - {userName=vishwac}
 - I'm {userName=vishwac}
 - call me {userName=vishwac}
@@ -19,22 +19,22 @@
 - {userName=vishwac} is my name
 - you can call me {userName=vishwac}
 
-## CreateAlarm
+# CreateAlarm
 - create an alarm
 - create an alarm for 7AM
 - set an alarm for 7AM next thursday
 
-## DeleteAlarm
+# DeleteAlarm
 - delete alarm
 - delete the {alarmTime} alarm
 
 
 
-## CommunicationPreference
+# CommunicationPreference
 - set call as my communication preference
 - I prefer to receive text messages
 
-## Help
+# Help
 - can you help
 
 
@@ -88,19 +88,19 @@ $ChocolateType:phraseList
 > # QnA Definitions
 > This is a QnA definition. Follows # ? Question: \<list of questions\> \```markdown \<Answer> ``` format
 
-### ? How can I change the default message from QnA Maker?
+## ? How can I change the default message from QnA Maker?
 ```markdown
 You can change the default message if you use the QnAMakerDialog. 
 See [this link](https://docs.botframework.com/en-us/azure-bot-service/templates/qnamaker/#navtitle) for details. 
 ```
 
-### ?How do I programmatically update my KB?
+## ?How do I programmatically update my KB?
 ```markdown
 You can use our REST apis to manage your KB. 
 \#1. See here for details: https://westus.dev.cognitive.microsoft.com/docs/services/58994a073d9e04097c7ba6fe/operations/58994a073d9e041ad42d9baa
 ```
 
-### ? Who is your ceo?
+## ? Who is your ceo?
 - get me your ceo info
 ```markdown
 Vishwac

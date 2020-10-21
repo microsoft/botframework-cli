@@ -251,7 +251,7 @@ describe('builder: loadContents function can resolve import files with customize
 
     assert.equal(result.length, 1)
     assert.isTrue(result[0].content.includes(
-      `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}## cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## welcome${NEWLINE}- welcome here`
+      `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}# cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}# welcome${NEWLINE}- welcome here`
     ))
   })
 })
@@ -271,7 +271,7 @@ describe('builder: loadContents function can resolve import files with new impor
 
     assert.equal(result.length, 1)
     assert.isTrue(result[0].content.includes(
-      `## cancel${NEWLINE}- stop that${NEWLINE}- cancel the task${NEWLINE}${NEWLINE}${NEWLINE}## greeting${NEWLINE}- hello`
+      `# cancel${NEWLINE}- stop that${NEWLINE}- cancel the task${NEWLINE}${NEWLINE}${NEWLINE}# greeting${NEWLINE}- hello`
     ))
   })
 })

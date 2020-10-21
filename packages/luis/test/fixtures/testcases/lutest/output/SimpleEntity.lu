@@ -10,7 +10,7 @@
 > # Intent definitions
 
 > Utterance passed in this intent: 2/2
-## AcceptEventEntry
+# AcceptEventEntry
 > PASS. Predicted intent: AcceptEventEntry(0.9916137)
 > PASS. Predicted entities: accept the event
 - accept the event

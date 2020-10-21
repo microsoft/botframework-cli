@@ -66,7 +66,7 @@ const parseIntentsToLu = function(luisObj, luisJSON){
         if (luisJSON.test === true) {
             fileContent += `> Utterance passed in this intent: ${intent.intent.passNumber}/${intent.intent.count}` + NEWLINE
         }
-        fileContent += '## ' + intent.intent.name + NEWLINE;
+        fileContent += '# ' + intent.intent.name + NEWLINE;
         fileContent += parseUtterancesToLu(intent.utterances, luisJSON)
         fileContent += NEWLINE + NEWLINE;
         if (intent.intent.features) {

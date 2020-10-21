@@ -9,7 +9,7 @@
 
 > # Intent definitions
 
-## None
+# None
 - can you delete {@ToDo.TaskContent=abc} item
 - can you delete {@ToDo.TaskContent=todo1}
 - cancel {@ToDo.TaskContent=apples} from shopping list
@@ -95,7 +95,7 @@
 
 > !# @intent.inherits = name : ToDo.AddToDo; domain_name : ToDo; model_name : AddToDo
 
-## ToDo.AddToDo
+# ToDo.AddToDo
 - add a few items to the grocery list
 - add a grocery item to {@ToDo.TaskContent=buy fish}
 - add a grocery item to {@ToDo.TaskContent=buy fruit and vegetables}
