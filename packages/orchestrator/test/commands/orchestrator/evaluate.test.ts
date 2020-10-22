@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+/*
 import {expect, test} from '@oclif/test';
 import {Orchestrator} from '@microsoft/bf-orchestrator';
 const sinon: any = require('sinon');
@@ -23,3 +23,4 @@ describe('orchestrator:evaluate', () => {
     expect(ctx.stdout).to.contain('Create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file');
   });
 });
+*/
