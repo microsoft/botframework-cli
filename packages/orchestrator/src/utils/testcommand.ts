@@ -8,14 +8,15 @@ import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
-export default class OrchestratorPredict extends Command {
-  static description: string = 'Real-time interaction with Orchestrator model and analysis. Can return score of given utterance using previously created orchestrator examples';
+export default class OrchestratorTestCommand extends Command {
+  static description: string = 'Test utterance/label samples from an input file and create an evaluation report';
 
   static examples: Array<string> = [`
-    $ bf orchestrator:predict --in=./path/to/snapshot/file --out=./path/to/output/folder/ --model=./path/to/model/directory`]
+    $ bf orchestrator:test --in=./path/to/snapshot/file --test=./path/to/test/file/ --out=./path/to/output/ --model=./path/to/model/directory`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),
+    in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
+    test: flags.string({char: 't', description: 'Path to a test file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
     ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
@@ -28,9 +29,10 @@ export default class OrchestratorPredict extends Command {
   }
 
   async run(): Promise<number> {
-    const {flags}: flags.Output = this.parse(OrchestratorPredict);
+    const {flags}: flags.Output = this.parse(OrchestratorTestCommand);
 
     const inputPath: string = flags.in;
+    const testPath: string = flags.test;
     const outputPath: string = flags.out;
     let nlrPath: string = flags.model;
     if (nlrPath) {
@@ -73,17 +75,18 @@ export default class OrchestratorPredict extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
     UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
 
-    Utility.debuggingLog(`OrchestratorPredict.run(): inputPath=${inputPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): outputPath=${outputPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): nlrPath=${nlrPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): inputPath=${inputPath}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): testPath=${testPath}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): outputPath=${outputPath}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
 
     try {
-      await Orchestrator.predictAsync(
-        nlrPath, inputPath, outputPath,
+      await Orchestrator.testAsync(
+        nlrPath, inputPath, testPath, outputPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,

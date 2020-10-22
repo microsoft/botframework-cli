@@ -8,7 +8,7 @@ import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
-export default class OrchestratorPredict extends Command {
+export default class OrchestratorPredictCommand extends Command {
   static description: string = 'Real-time interaction with Orchestrator model and analysis. Can return score of given utterance using previously created orchestrator examples';
 
   static examples: Array<string> = [`
@@ -28,7 +28,7 @@ export default class OrchestratorPredict extends Command {
   }
 
   async run(): Promise<number> {
-    const {flags}: flags.Output = this.parse(OrchestratorPredict);
+    const {flags}: flags.Output = this.parse(OrchestratorPredictCommand);
 
     const inputPath: string = flags.in;
     const outputPath: string = flags.out;
@@ -73,13 +73,13 @@ export default class OrchestratorPredict extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
     UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
 
-    Utility.debuggingLog(`OrchestratorPredict.run(): inputPath=${inputPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): outputPath=${outputPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): nlrPath=${nlrPath}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorPredict.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): inputPath=${inputPath}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): outputPath=${outputPath}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorPredictCommand.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
 
     try {
       await Orchestrator.predictAsync(

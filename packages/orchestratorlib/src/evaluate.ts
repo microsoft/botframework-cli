@@ -13,6 +13,7 @@ import {LabelType} from './labeltype';
 import {PredictionScoreStructure}  from './predictionscorestructure';
 
 import {LabelResolver} from './labelresolver';
+import {OrchestratorHelper} from './orchestratorhelper';
 
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
@@ -31,7 +32,7 @@ export class OrchestratorEvaluate {
   // eslint-disable-next-line max-params
   public static async runAsync(
     inputPath: string, outputPath: string, nlrPath: string = '',
-    ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
+    ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
@@ -49,7 +50,7 @@ export class OrchestratorEvaluate {
     } else {
       nlrPath = '';
     }
-    const ambiguousCloseness: number = ambiguousClosenessParameter;
+    const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
@@ -72,11 +73,21 @@ export class OrchestratorEvaluate {
     const snapshotSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetPredictionJsonContentOutputFilename);
     const snapshotSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetSummaryHtmlOutputFilename);
     const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
-    // ---- NOTE ---- create a labelResolver object with a snapshot
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
-    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    // ---- NOTE ---- create a LabelResolver object.
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createAsync()');
+    await LabelResolver.createAsync(nlrPath);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createAsync()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call OrchestratorHelper.getSnapshotFromFile()');
+    const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotFile);
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling OrchestratorHelper.getSnapshotFromFile()');
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.addSnapshot()');
+    await LabelResolver.addSnapshot(snapshot);
+    Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.addSnapshot()');
     // ---- NOTE ---- retrieve labels
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), JSON.stringify(labels)=${JSON.stringify(labels)}`);

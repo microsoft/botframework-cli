@@ -21,7 +21,7 @@ describe('Test Suite - the "predict" command', () => {
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
     const outputPath: string = './resources/data/Columnar/OrchestratorPredict_Email_roberta';
     const nlrPath: string = '';
-    const ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
+    const ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
@@ -29,7 +29,7 @@ describe('Test Suite - the "predict" command', () => {
       nlrPath,
       inputPath,
       outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);

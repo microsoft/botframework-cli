@@ -36,13 +36,13 @@ export class Utility {
 
   public static NumberOfInstancesPerProgressDisplayBatch: number = 1000; // 10000;
 
-  public static readonly DefaultAmbiguousClosenessParameter: number = 0.2;
+  public static readonly DefaultAmbiguousClosenessThresholdParameter: number = 0.2; // ---- Close to the correct top prediction within 20% of the score.
 
-  public static readonly DefaultLowConfidenceScoreThresholdParameter: number = 0.5;
+  public static readonly DefaultLowConfidenceScoreThresholdParameter: number = 0.5; // ---- Lower than the threshold for an ambiguous prediction.
 
-  public static readonly DefaultMultiLabelPredictionThresholdParameter: number = 1.0;
+  public static readonly DefaultMultiLabelPredictionThresholdParameter: number = 1.0; // ---- If greater than 0, then predict all labels with scores higher than the threshold. Predict only highest-score labels if not.
 
-  public static readonly DefaultUnknownLabelPredictionThresholdParameter: number = 0.3;
+  public static readonly DefaultUnknownLabelPredictionThresholdParameter: number = 0.3; // ---- Unknown prediction if score is lower than the threshold.
 
   public static readonly UnknownLabel: string = 'UNKNOWN';
 

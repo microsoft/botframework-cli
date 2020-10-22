@@ -19,10 +19,10 @@ export default class OrchestratorTest extends Command {
     test: flags.string({char: 't', description: 'Path to a test file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
-    ambiguous: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessParameter}`}),
-    low_confidence: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multi_label: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    unknown: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
+    ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
+    lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
+    multiLabelPredictionThreshold: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
@@ -39,35 +39,35 @@ export default class OrchestratorTest extends Command {
       nlrPath = path.resolve(nlrPath);
     }
 
-    let ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
+    let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     let lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     let multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     let unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-    if (flags.ambiguous) {
-      ambiguousClosenessParameter = Number(flags.ambiguous);
-      if (Number.isNaN(ambiguousClosenessParameter)) {
-        Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguous}" is not a number`);
+    if (flags.ambiguousClosenessThreshold) {
+      ambiguousClosenessThresholdParameter = Number(flags.ambiguousClosenessThreshold);
+      if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
+        Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
         return -1;
       }
     }
-    if (flags.low_confidence) {
-      lowConfidenceScoreThresholdParameter = Number(flags.low_confidence);
+    if (flags.lowConfidenceScoreThreshold) {
+      lowConfidenceScoreThresholdParameter = Number(flags.lowConfidenceScoreThreshold);
       if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
-        Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguous}" is not a number`);
+        Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
         return -1;
       }
     }
-    if (flags.multi_label) {
-      multiLabelPredictionThresholdParameter = Number(flags.multi_label);
+    if (flags.multiLabelPredictionThreshold) {
+      multiLabelPredictionThresholdParameter = Number(flags.multiLabelPredictionThreshold);
       if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
-        Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multi_label}" is not a number`);
+        Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
         return -1;
       }
     }
-    if (flags.unknown) {
-      unknownLabelPredictionThresholdParameter = Number(flags.unknown);
+    if (flags.unknownLabelPredictionThreshold) {
+      unknownLabelPredictionThresholdParameter = Number(flags.unknownLabelPredictionThreshold);
       if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
-        Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknown}" is not a number`);
+        Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
         return -1;
       }
     }
@@ -79,7 +79,7 @@ export default class OrchestratorTest extends Command {
     Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);
     Utility.debuggingLog(`OrchestratorTest.run(): outputPath=${outputPath}`);
     Utility.debuggingLog(`OrchestratorTest.run(): nlrPath=${nlrPath}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessParameter=${ambiguousClosenessParameter}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
@@ -87,7 +87,7 @@ export default class OrchestratorTest extends Command {
     try {
       await Orchestrator.testAsync(
         nlrPath, inputPath, testPath, outputPath,
-        ambiguousClosenessParameter,
+        ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
         unknownLabelPredictionThresholdParameter,

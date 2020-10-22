@@ -32,7 +32,7 @@ describe('Test Suite - test', () => {
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
     const testPath: string = './resources/data/Columnar/EmailTest.txt';
     const outputPath: string = './resources/data/Columnar/OrchestratorTest_Email_roberta_12l';
-    const ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
+    const ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
@@ -46,7 +46,7 @@ describe('Test Suite - test', () => {
       inputPath,
       testPath,
       outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
@@ -104,7 +104,7 @@ describe('Test Suite - test', () => {
     const inputPath: string = './resources/data/Columnar/Email_bert.blu';
     const testPath: string = './resources/data/Columnar/EmailTest.txt';
     const outputPath: string = './resources/data/Columnar/OrchestratorTest_Email_bert_3l';
-    const ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter;
+    const ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
@@ -118,7 +118,7 @@ describe('Test Suite - test', () => {
       inputPath,
       testPath,
       outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter);
