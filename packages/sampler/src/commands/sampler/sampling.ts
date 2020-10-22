@@ -14,7 +14,7 @@ export default class SamplerSampling extends Command {
   static description: string = 'Do sampling to utterances in lu files';
 
   static examples: Array<string> = [
-    '$ bf sampler:sampling',
+    '$ bf sampler:sampling -h',
     '$ bf sampler:sampling --in ./path/to/file/or/folder',
     '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/',
     '$ bf sampler:sampling --in ./path/to/file/or/folder --out ./path/to/folder/ --maxImbalanceRatio 10',
@@ -28,6 +28,7 @@ export default class SamplerSampling extends Command {
     maxImbalanceRatio: flags.integer({description: 'Max imbalance ratio for sampling.', default: 10}),
     maxUtteranceAllowed: flags.integer({description: 'Max utterances allowed after samping.', default: 15000}),
     sampleSize: flags.integer({description: 'sample size.', default: 2}),
+    force: flags.boolean({char: 'f', description: 'Force overwrites files if they already exist.', default: false}),
     help: flags.help({char: 'h', description: 'Sampler sampling command help'}),
   }
 
@@ -39,6 +40,7 @@ export default class SamplerSampling extends Command {
     const maxImbalanceRatio: number = flags.maxImbalanceRatio;
     const maxUtteranceAllowed: number = flags.maxUtteranceAllowed;
     const sampleSize: number = flags.sampleSize;
+    const force: boolean = flags.force;
 
     try {
       const luContents: any[] = await Helper.readLuContents(input);
@@ -56,7 +58,7 @@ export default class SamplerSampling extends Command {
         })
       );
 
-      await Helper.writeLuContents(sampledLuContents, output);
+      await Helper.writeLuContents(sampledLuContents, output, force);
     } catch (error) {
       throw (new CLIError(error));
     }

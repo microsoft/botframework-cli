@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError} from '@microsoft/bf-cli-command';
+import {CLIError, utils} from '@microsoft/bf-cli-command';
 const fs: any = require('fs-extra');
 const path: any = require('path');
 const FileHelper: any = require('@microsoft/bf-lu/lib/utils/fileHelper');
@@ -50,7 +50,7 @@ export class Helper {
     }
   }
 
-  public static async writeLuContents(luContents: any[], out: string) {
+  public static async writeLuContents(luContents: any[], out: string, force: boolean) {
     try {
       await Promise.all(luContents.map(async (luContent: any) => {
         let outFilePath: any;
@@ -60,7 +60,16 @@ export class Helper {
           outFilePath = luContent.id;
         }
 
-        await fs.writeFile(outFilePath, luContent.content, 'utf-8');
+        if (force || !fs.existsSync(outFilePath)) {
+          if (!fs.existsSync(path.dirname(outFilePath))) {
+            fs.mkdirSync(path.dirname(outFilePath))
+          }
+           
+          await fs.writeFile(outFilePath, luContent.content, 'utf-8');
+        } else {
+          const validatedPath = utils.validatePath(outFilePath, '', force)
+          await fs.writeFile(validatedPath, luContent.content, 'utf-8');
+        }
       }));
     } catch (error) {
       throw new CLIError(error);
