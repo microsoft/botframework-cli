@@ -13,7 +13,7 @@ import * as fs from 'fs';
 import {OrchestratorEvaluate} from '../src/evaluate';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-
+/*
 describe('Test Suite - the "evaluate" command', () => {
   it('Test.0000 OrchestratorEvaluate.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -77,3 +77,4 @@ describe('Test Suite - the "evaluate" command', () => {
   });
 });
 
+*/

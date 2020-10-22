@@ -2,11 +2,11 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+/*
 import {expect, test} from '@oclif/test';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-/*
+
 const compareFiles = async function (file1: string, file2: string) {
   let result: any = '';
   if (await fs.pathExists(path.join(__dirname, file1))) {

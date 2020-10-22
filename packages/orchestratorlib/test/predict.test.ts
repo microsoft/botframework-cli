@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import {OrchestratorPredict} from '../src/predict';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-
+/*
 describe('Test Suite - the "predict" command', () => {
   it('Test.0000 OrchestratorPredict', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -93,3 +93,4 @@ describe('Test Suite - the "predict" command', () => {
   });
 });
 
+*/
