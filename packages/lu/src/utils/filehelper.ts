@@ -172,7 +172,7 @@ export async function getFilesContent(input: string, extType: string) {
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{id: filePath, content}]
+    return [{id: path.basename(filePath, extType), content}]
   }
 
   if (!fileStat.isDirectory()) {
@@ -182,7 +182,7 @@ export async function getFilesContent(input: string, extType: string) {
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {id: itemPath, content}
+    return {id: path.basename(itemPath, extType), content}
   }))
 }
 
@@ -221,36 +221,33 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
 }
 
 export function getConfigObject(configObject: any, configId: string, intentName: string, verbose: boolean) {
-  let finalLuConfigObj = Object.create(null)
-  let rootLuFiles: string[] = []
-  const configFileDir = configId && configId !== '' ? path.dirname(configId) : undefined
+  let finalConfigObj = Object.create(null)
+  let rootFileIds: string[] = []
   if (configObject) {
     try {
-      for (const rootluFilePath of Object.keys(configObject)) {
-        const rootLuFileFullPath = configFileDir ? path.resolve(configFileDir, rootluFilePath) : rootluFilePath
-        const triggerObj = configObject[rootluFilePath]
+      for (const rootFileId of Object.keys(configObject)) {
+        const triggerObj = configObject[rootFileId]
         for (const triggerObjKey of Object.keys(triggerObj)) {
           if (triggerObjKey === 'rootDialog') {
             if (triggerObj[triggerObjKey]) {
-              rootLuFiles.push(rootLuFileFullPath)
+              rootFileIds.push(rootFileId)
             }
           } else if (triggerObjKey === 'triggers') {
             const triggers = triggerObj[triggerObjKey]
             for (const triggerKey of Object.keys(triggers)) {
-              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
-              for (const destLuFile of destLuFiles) {
-                const destLuFileFullPath = configFileDir && destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
-                if (rootLuFileFullPath in finalLuConfigObj) {
-                  const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
-                  if (finalIntentToDestLuFiles[triggerKey]) {
-                    finalIntentToDestLuFiles[triggerKey].push(destLuFileFullPath)
+              const destFileIds = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destFileId of destFileIds) {
+                if (rootFileId in finalConfigObj) {
+                  let finalIntentToDestFileIds = finalConfigObj[rootFileId]
+                  if (finalIntentToDestFileIds[triggerKey]) {
+                    finalIntentToDestFileIds[triggerKey].push(destFileId)
                   } else {
-                    finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                    finalIntentToDestFileIds[triggerKey] = [destFileId]
                   }
                 } else {
-                  let finalIntentToDestLuFiles = Object.create(null)
-                  finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
-                  finalLuConfigObj[rootLuFileFullPath] = finalIntentToDestLuFiles
+                  let finalIntentToDestFileIds = Object.create(null)
+                  finalIntentToDestFileIds[triggerKey] = [destFileId]
+                  finalConfigObj[rootFileId] = finalIntentToDestFileIds
                 }
               }
             }
@@ -263,8 +260,8 @@ export function getConfigObject(configObject: any, configId: string, intentName:
   }
 
   let crossTrainConfig = {
-    rootIds: rootLuFiles,
-    triggerRules: finalLuConfigObj,
+    rootIds: rootFileIds,
+    triggerRules: finalConfigObj,
     intentName,
     verbose
   }

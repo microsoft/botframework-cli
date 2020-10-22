@@ -1,21 +1,21 @@
 {
-    "./main/main.lu": {
+    "main": {
         "rootDialog": true,
         "triggers": {
-            "dia1_trigger": "./dia1/dia1.lu",
-            "dia2_trigger": "./dia2/dia2.lu"
+            "dia1_trigger": "dia1",
+            "dia2_trigger": "dia2"
         }
     },
-    "./dia2/dia2.lu": {
+    "dia2": {
         "triggers": {
-            "dia3_trigger": "./dia3/dia3.lu",
-            "dia4_trigger": "./dia4/dia4.lu"
+            "dia3_trigger": "dia3",
+            "dia4_trigger": "dia4"
         }
     },
-    "./main/main.fr-fr.lu": {
+    "main.fr-fr": {
         "rootDialog": true,
         "triggers": {
-            "dia1_trigger": "./dia1/dia1.fr-fr.lu"
+            "dia1_trigger": "dia1.fr-fr"
         }
     }
 }
