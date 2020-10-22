@@ -11,7 +11,7 @@ import * as ppath from 'path'
 import * as xp from 'xml2js'
 import Ajv = require('ajv');
 import parser from '@apidevtools/json-schema-ref-parser'
-import { JsonPointer as ptr } from 'json-ptr'
+import {JsonPointer as ptr} from 'json-ptr'
 
 const allof = require('json-schema-merge-allof')
 const clone = require('clone')
@@ -106,7 +106,7 @@ class ComponentNode {
     private processed = false
 
     constructor(component?: Component) {
-        this.metadata = component ?? { path: '', name: '', version: '' } as Component
+        this.metadata = component ?? {path: '', name: '', version: ''} as Component
     }
 
     // Add a child component
@@ -147,16 +147,16 @@ class ComponentNode {
             patterns = []
             let root = ppath.dirname(this.metadata.path)
             for (let extension of extensions) {
-                patterns.push(ppath.join(root, `**/*${extension}`))
+                patterns.push(ppath.join(root, '**', `*${extension}`))
             }
             if (this.metadata.path.endsWith('package.json')) {
-                patterns.push(`!${ppath.join(root, 'node_modules/**')}`)
+                patterns.push(`!${ppath.join(root, 'node_modules', '**')}`)
             } else if (this.metadata.path.endsWith('.csproj')) {
-                patterns.push(`!${ppath.join(root, 'bin/**')}`)
+                patterns.push(`!${ppath.join(root, 'bin', '**')}`)
             }
             patterns.push(`!${imports}`)
-            patterns.push(`!${ppath.join(root, 'test/**')}`)
-            patterns.push(`!${ppath.join(root, 'tests/**')}`)
+            patterns.push(`!${ppath.join(root, 'test', '**')}`)
+            patterns.push(`!${ppath.join(root, 'tests', '**')}`)
             patterns = [...patterns, ...negativePatterns]
         }
         return patterns
@@ -429,7 +429,7 @@ export class SchemaMerger {
     private currentKind = ''
 
     // Default JSON serialization options
-    private readonly jsonOptions = { spaces: '  ', EOL: os.EOL }
+    private readonly jsonOptions = {spaces: '  ', EOL: os.EOL}
 
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
@@ -567,7 +567,7 @@ export class SchemaMerger {
                     if (component.$ref) {
                         // Expand top-level $ref to support testing
                         let ref = await getJSON(component.$ref)
-                        component = { ...ref, ...component }
+                        component = {...ref, ...component}
                         delete component.$ref
                     }
 
@@ -625,11 +625,11 @@ export class SchemaMerger {
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
             .sort()
             .map(kind => {
-                return { $ref: `#/definitions/${kind}` }
+                return {$ref: `#/definitions/${kind}`}
             })
 
         // Add component schema definitions
-        this.definitions = { ...this.metaSchema.definitions, ...this.definitions }
+        this.definitions = {...this.metaSchema.definitions, ...this.definitions}
 
         if (!this.failed) {
             this.currentFile = this.output + '.schema'
@@ -755,7 +755,7 @@ export class SchemaMerger {
             }
             if (!this.failed) {
                 for (let locale of Object.keys(result)) {
-                    let uischema = { $schema: this.metaUISchemaId }
+                    let uischema = {$schema: this.metaUISchemaId}
                     for (let key of Object.keys(result[locale]).sort()) {
                         uischema[key] = result[locale][key]
                     }
@@ -812,8 +812,8 @@ export class SchemaMerger {
                             let msg = `Copy ${path} to ${destination}`
                             try {
                                 let copy = true
-                                let info: Import = { definition: await hash.addHash(path), path: destination }
-                                let { unchanged, embeddedHash } = await hash.isUnchanged(destination)
+                                let info: Import = {definition: await hash.addHash(path), path: destination}
+                                let {unchanged, embeddedHash} = await hash.isUnchanged(destination)
                                 if (hash.embeddedHash(path, info.definition) === embeddedHash) {
                                     // Import is based on last export
                                     this.vlog(`Unchanged ${destination}`)
@@ -844,12 +844,12 @@ export class SchemaMerger {
                         // Delete removed files
                         for (let path of await glob(forwardSlashes(ppath.join(imported, '**')))) {
                             if (!used.has(path)) {
-                                let { unchanged } = await hash.isUnchanged(path)
+                                let {unchanged} = await hash.isUnchanged(path)
                                 if (unchanged) {
                                     imports.deleted.push(path)
                                     this.vlog(`Delete ${path}`)
                                 } else {
-                                    imports.conflicts.push({ definition: '', path })
+                                    imports.conflicts.push({definition: '', path})
                                     this.warn(`Warning deleted modified ${path}`)
                                 }
                                 if (!this.checkOnly) {
@@ -864,14 +864,16 @@ export class SchemaMerger {
             // Identify previously imported components that are not there any more
             if (await fs.pathExists(this.imports)) {
                 for (let importedDir of await fs.readdir(this.imports)) {
-                    if (!processed.has(importedDir)) {
-                        for (let path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '/**')))) {
-                            let { unchanged } = await hash.isUnchanged(path)
+                    const importPath = ppath.join(this.imports, importedDir)
+                    // On a mac .DS_STORE throws an error if you try to glob it so ensure directory
+                    if (!processed.has(importedDir) && (await fs.lstat(importPath)).isDirectory) {
+                        for (let path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '**')))) {
+                            let {unchanged} = await hash.isUnchanged(path)
                             if (unchanged) {
                                 imports.deleted.push(path)
                                 this.vlog(`Delete ${path}`)
                             } else {
-                                imports.conflicts.push({ definition: '', path })
+                                imports.conflicts.push({definition: '', path})
                                 this.warn(`Warning deleted modified ${path}`)
                             }
                         }
@@ -1162,7 +1164,7 @@ export class SchemaMerger {
                             walkJSON(config, elt => {
                                 if (elt.packages?.package) {
                                     for (let info of elt.packages.package) {
-                                        nugetPackages.push({ Include: info.$.id, Version: info.$.version })
+                                        nugetPackages.push({Include: info.$.id, Version: info.$.version})
                                     }
                                     return true
                                 }
@@ -1201,7 +1203,7 @@ export class SchemaMerger {
         if (pkg.author) {
             let author = pkg.author
             if (typeof author === 'object') {
-                author = `${author.name}, ${author.email}, ${author.url}`
+                author = `${author.name}${author.email ? `, ${author.email}` : ''}${author.url ? `, ${author.url}` : ''}`
             }
             component.authors.push(author)
         }
@@ -1224,7 +1226,7 @@ export class SchemaMerger {
                 this.packages.add(path)
                 this.vlog(`${this.indent()}Following ${this.prettyPath(path)}`)
                 let pkg = await fs.readJSON(path)
-                let dependencies = { ...pkg.dependencies, ...pkg.optionalDependencies }
+                let dependencies = {...pkg.dependencies, ...pkg.optionalDependencies}
                 this.pushParent(this.packageJsonComponent(path, pkg))
                 if (dependencies) {
                     for (let dependent of Object.keys(dependencies)) {
@@ -1310,7 +1312,7 @@ export class SchemaMerger {
                     record = []
                     map.set(name, record)
                 }
-                record.push({ path: ppath.resolve(path), node: component })
+                record.push({path: ppath.resolve(path), node: component})
             }
         }
     }
@@ -1380,7 +1382,7 @@ export class SchemaMerger {
         if (!this.nugetRoot) {
             this.nugetRoot = ''
             try {
-                const { stdout } = await exec('dotnet nuget locals global-packages --list')
+                const {stdout} = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
                 let start = stdout.indexOf(name)
                 if (start > -1) {
@@ -1484,7 +1486,7 @@ export class SchemaMerger {
 
             if (extension.patternProperties) {
                 if (definition.patternProperties) {
-                    definition.patternPropties = { ...definition.patternProperties, ...extension.patternProperties }
+                    definition.patternPropties = {...definition.patternProperties, ...extension.patternProperties}
                 } else {
                     definition.patternProperties = clone(extension.patternProperties)
                 }
@@ -1686,7 +1688,7 @@ export class SchemaMerger {
     }
 
     // Split a $ref into path, pointer and name for definition
-    private splitRef(ref: string): { path: string, pointer: string, name: string } {
+    private splitRef(ref: string): {path: string, pointer: string, name: string} {
         const hash = ref.indexOf('#')
         const path = hash < 0 ? '' : ref.substring(0, hash)
         const pointer = hash < 0 ? '' : ref.substring(hash + 1)
@@ -1694,7 +1696,7 @@ export class SchemaMerger {
         if (name.endsWith('#')) {
             name = name.substring(0, name.length - 1)
         }
-        return { path, pointer, name }
+        return {path, pointer, name}
     }
 
     // Bundle remote references into schema while pruning to minimally needed definitions.
@@ -1726,7 +1728,7 @@ export class SchemaMerger {
                         // Component schema reference
                         elt.$ref = val.substring(val.indexOf('#'))
                     } else {
-                        const { path, pointer, name } = this.splitRef(val)
+                        const {path, pointer, name} = this.splitRef(val)
                         if (path) {
                             if (!schema.definitions[name]) {
                                 // New source
