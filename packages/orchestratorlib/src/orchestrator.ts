@@ -37,14 +37,14 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async evaluateAsync(
     inputPath: string, outputPath: string, nlrPath: string = '',
-    ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
+    ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
     fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorEvaluate.runAsync(
       inputPath, outputPath, nlrPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
@@ -75,14 +75,14 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async predictAsync(
     nlrPath: string, inputPath: string, outputPath: string,
-    ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
+    ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
     fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
       nlrPath, inputPath, outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
@@ -92,14 +92,14 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async testAsync(
     nlrPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
-    ambiguousClosenessParameter: number = Utility.DefaultAmbiguousClosenessParameter,
+    ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
     fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorTest.runAsync(
       nlrPath, inputPathConfiguration, testPathConfiguration, outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,

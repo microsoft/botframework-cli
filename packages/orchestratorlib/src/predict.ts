@@ -12,7 +12,7 @@ import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
-// import {OrchestratorHelper} from './orchestratorhelper';
+import {OrchestratorHelper} from './orchestratorhelper';
 
 import {Example} from './example';
 // import {Label} from './label';
@@ -69,7 +69,7 @@ export class OrchestratorPredict {
 
   protected nlrPath: string = '';
 
-  protected ambiguousCloseness: number = Utility.DefaultAmbiguousClosenessParameter;
+  protected ambiguousCloseness: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
 
   protected lowConfidenceScoreThreshold: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
 
@@ -162,7 +162,7 @@ export class OrchestratorPredict {
   /* eslint-disable complexity */
   constructor(
     nlrPath: string, inputPath: string, outputPath: string,
-    ambiguousClosenessParameter: number,
+    ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
@@ -193,7 +193,7 @@ export class OrchestratorPredict {
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`nlrPath=${nlrPath}`);
-    Utility.debuggingLog(`ambiguousClosenessParameter=${ambiguousClosenessParameter}`);
+    Utility.debuggingLog(`ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
@@ -201,7 +201,7 @@ export class OrchestratorPredict {
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.nlrPath = nlrPath;
-    this.ambiguousCloseness = ambiguousClosenessParameter;
+    this.ambiguousCloseness = ambiguousClosenessThresholdParameter;
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
@@ -249,19 +249,35 @@ export class OrchestratorPredict {
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to create a LabelResolver object');
     if (Utility.exists(this.snapshotFile)) {
-      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createWithSnapshotAsync()');
-      await LabelResolver.createWithSnapshotAsync(this.nlrPath, this.snapshotFile);
+      // ---- NOTE ---- create a LabelResolver object.
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call LabelResolver.createAsync()');
+      await LabelResolver.createAsync(this.nlrPath,);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call OrchestratorHelper.getSnapshotFromFile()');
+      const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(this.snapshotFile);
+      Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
+      Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling OrchestratorHelper.getSnapshotFromFile()');
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call LabelResolver.addSnapshot()');
+      await LabelResolver.addSnapshot(snapshot);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.addSnapshot()');
     } else {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
       await LabelResolver.createAsync(this.nlrPath);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
+      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     }
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after creating a LabelResolver object');
-    UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
   }
 
   public static async runAsync(
     nlrPath: string, inputPath: string, outputPath: string,
-    ambiguousClosenessParameter: number,
+    ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
@@ -270,7 +286,7 @@ export class OrchestratorPredict {
       nlrPath,
       inputPath,
       outputPath,
-      ambiguousClosenessParameter,
+      ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
@@ -804,10 +820,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetVATwithEntry(entry: string): number {
-    const ambiguousClosenessParameter: string = entry;
-    const ambiguousCloseness: number = Number(ambiguousClosenessParameter);
+    const ambiguousClosenessThresholdParameter: string = entry;
+    const ambiguousCloseness: number = Number(ambiguousClosenessThresholdParameter);
     if (Number.isNaN(ambiguousCloseness)) {
-      Utility.debuggingLog(`The input "${ambiguousClosenessParameter}" is not a number.`);
+      Utility.debuggingLog(`The input "${ambiguousClosenessThresholdParameter}" is not a number.`);
       return -1;
     }
     this.ambiguousCloseness = ambiguousCloseness;

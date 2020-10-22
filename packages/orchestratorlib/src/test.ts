@@ -34,7 +34,7 @@ export class OrchestratorTest {
   // eslint-disable-next-line max-params
   public static async runAsync(
     nlrPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
-    ambiguousClosenessParameter: number,
+    ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
@@ -54,7 +54,7 @@ export class OrchestratorTest {
       Utility.debuggingThrow(`The nlrPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     nlrPath = path.resolve(nlrPath);
-    const ambiguousCloseness: number = ambiguousClosenessParameter;
+    const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
@@ -79,10 +79,20 @@ export class OrchestratorTest {
     const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
-    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotFile);
-    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createAsync()');
+    await LabelResolver.createAsync(nlrPath);
+    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createAsync()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
+    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call OrchestratorHelper.getSnapshotFromFile()');
+    const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotFile);
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
+    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling OrchestratorHelper.getSnapshotFromFile()');
+    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.addSnapshot()');
+    await LabelResolver.addSnapshot(snapshot);
+    Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.addSnapshot()');
     // ---- NOTE ---- retrieve labels
     const snapshotSetLabels: string[] =
       LabelResolver.getLabels(LabelType.Intent);

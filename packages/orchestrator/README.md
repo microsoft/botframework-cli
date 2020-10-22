@@ -355,6 +355,8 @@ OPTIONS
 
   --hierarchical     Add hierarchical labels based on lu/qna file name.
 
+  --fullEmbeddings Optional flag to create full embeddings instead of compact embeddings.
+
 EXAMPLE
 
        $ bf orchestrator:create 
@@ -374,16 +376,17 @@ USAGE
   $ bf orchestrator:evaluate
 
 OPTIONS
-  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'evaluate' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
-  -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
-                                  i.e., only max-score intents are predicted
-  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
+  -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
+  --fullEmbeddings                                Optional flag to evaluate on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted.
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -398,7 +401,7 @@ DESCRIPTION
      the correctly predicted intent score, then the prediction itself is considered "ambiguous."
   >  Misclassified - utterance's intent labels were not scored the highest.
   >  Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
-     This threshold can be configured through the "low_confidence" parameter, the default is 0.5.
+     This threshold can be configured through the "lowconfidencescorethreshold" parameter, the default is 0.5.
   >  Metrics - test confisuon matrix metrics. Please reference the "assess" command description for details.
 
 EXAMPLE
@@ -447,19 +450,20 @@ USAGE
     $ bf orchestrator:predict --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
-  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'predict' command help.
   -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
                                   This argument is optional users can use the 'predict' command
                                   to start an Orchestrator snapshot from scratch. The 'n' commandlet
                                   can save the utterance labels into a snapshot (.blu) file.
-  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
   -m, --model=model               Directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
-                                  i.e., only max-score intents are predicted
-  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
+  --fullEmbeddings                                Optional flag to run on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -547,18 +551,19 @@ USAGE
   $ bf orchestrator:test
 
 OPTIONS
-  -a, --ambiguous=threshold       Optional ambiguous analysis threshold. Default to 0.2.
   -d, --debug                     Print debugging information during execution.
   -h, --help                      Orchestrator 'test' command help.
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -l, --low_confidence=threshold  Optional low confidence analysis threshold. Default to 0.5.
   -m, --model=model               Directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  -p, --multi_label=threshold     Optional plural/multi-label prediction threshold, default to 1,
-                                  i.e., only max-score intents are predicted
   -t, --test=test                 Path to a test file, or comma-separated paths to
                                   a collection of test files -- most uselful for crosss-valiaton.
-  -u, --unknown=threshold         Optional unknown label threshold, default to 0.3.
+  --fullEmbeddings                                Optional flag to test on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
   The 'test' command can test an Orchestrator model and example set on an input utterance/intent file.
