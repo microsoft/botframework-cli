@@ -4,7 +4,7 @@
  */
 
 // import assert = require('assert');
-/*
+
 import {} from 'mocha';
 
 import * as path from 'path';
@@ -20,11 +20,11 @@ describe('Test Suite - test', () => {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
-    const nlrPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
+    const baseModelPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
     Utility.debuggingLog('Downloading an NLR model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
-      nlrPath,
+      baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
     Utility.debuggingLog('Triggering Test.0000 OrchestratorTest.runAsync()-Roberta');
@@ -42,7 +42,7 @@ describe('Test Suite - test', () => {
     const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     await OrchestratorTest.runAsync(
-      nlrPath,
+      baseModelPath,
       inputPath,
       testPath,
       outputPath,
@@ -92,11 +92,11 @@ describe('Test Suite - test', () => {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
-    const nlrPath: string = path.resolve('./resources/model/model_dte_bert_3l');
+    const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
     Utility.debuggingLog('Downloading an NLR model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
-      nlrPath,
+      baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
     Utility.debuggingLog('Triggering Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
@@ -114,7 +114,7 @@ describe('Test Suite - test', () => {
     const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     await OrchestratorTest.runAsync(
-      nlrPath,
+      baseModelPath,
       inputPath,
       testPath,
       outputPath,
@@ -160,4 +160,3 @@ describe('Test Suite - test', () => {
     Utility.debuggingLog('THE END - Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
   });
 });
-*/
