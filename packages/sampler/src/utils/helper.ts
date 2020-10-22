@@ -62,12 +62,12 @@ export class Helper {
 
         if (force || !fs.existsSync(outFilePath)) {
           if (!fs.existsSync(path.dirname(outFilePath))) {
-            fs.mkdirSync(path.dirname(outFilePath))
+            fs.mkdirSync(path.dirname(outFilePath));
           }
-           
+
           await fs.writeFile(outFilePath, luContent.content, 'utf-8');
         } else {
-          const validatedPath = utils.validatePath(outFilePath, '', force)
+          const validatedPath: string = utils.validatePath(outFilePath, '', force);
           await fs.writeFile(validatedPath, luContent.content, 'utf-8');
         }
       }));
