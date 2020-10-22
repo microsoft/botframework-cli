@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+/*
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBaseModel} from '../src/basemodel';
 import * as path from 'path';
@@ -62,3 +62,4 @@ describe('OrchestratorNlrTests', () => {
     assert.ok(defaultVersion === 'pretrained.20201024.microsoft.dte.00.12.roberta.en.onnx', 'getDefaultModelIdNoDefaultSet fails to return correct default version');
   });
 });
+*/

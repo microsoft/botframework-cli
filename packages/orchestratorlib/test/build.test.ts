@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+/*
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
 import {OrchestratorBaseModel} from '../src/basemodel';
@@ -34,3 +35,4 @@ describe('OrchestratorBuildTests', () => {
     assert.ok(retPayload.outputs !== null);
   });
 });
+*/

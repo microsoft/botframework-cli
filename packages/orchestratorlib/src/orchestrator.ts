@@ -61,7 +61,12 @@ export class Orchestrator {
     nlrId: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
-    await OrchestratorBaseModel.getAsync(nlrPath, nlrId, onProgress, onFinish);
+    try {
+      await OrchestratorBaseModel.getAsync(nlrPath, nlrId, onProgress, onFinish);
+    } catch (error) {
+      onProgress(`Error in downloading model ${error.toString()}`);
+      onFinish(`Error in downloading model ${error.toString()}`);
+    }
   }
 
   public static async baseModelListAsync(): Promise<string> {

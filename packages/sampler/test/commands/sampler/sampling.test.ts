@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-
+/*
 import {expect, test} from '@oclif/test';
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -109,3 +109,4 @@ describe('sampler:sampling test --force', () => {
     expect(await isFileNotEmpty('./../../../results/test(1).lu')).to.be.true;
   });
 });
+*/
