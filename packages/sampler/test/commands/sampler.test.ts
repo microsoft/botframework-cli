@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-/*
+
 import {expect, test} from '@oclif/test';
 
 describe('sampler', () => {
@@ -26,4 +26,3 @@ describe('sampler', () => {
      .to.contain('sampler:sampling');
   });
 });
-*/
