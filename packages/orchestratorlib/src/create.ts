@@ -13,15 +13,15 @@ import {Utility} from './utility';
 
 export class OrchestratorCreate {
   // eslint-disable-next-line max-params
-  public static async runAsync(nlrPath: string, inputPathConfiguration: string, outputPath: string,
+  public static async runAsync(baseModelPath: string, inputPathConfiguration: string, outputPath: string,
     hierarchical: boolean = false,
     fullEmbeddings: boolean = false) {
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`inputPathConfiguration=${inputPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`hierarchical=${hierarchical}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
-    if (!nlrPath || nlrPath.length === 0) {
+    if (!baseModelPath || baseModelPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
     if (!inputPathConfiguration || inputPathConfiguration.length === 0) {
@@ -31,11 +31,11 @@ export class OrchestratorCreate {
       throw new Error('Please provide output path');
     }
 
-    nlrPath = path.resolve(nlrPath);
+    baseModelPath = path.resolve(baseModelPath);
     outputPath = path.resolve(outputPath);
 
     Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createAsync()');
-    await LabelResolver.createAsync(nlrPath);
+    await LabelResolver.createAsync(baseModelPath);
     Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createAsync()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     const processedUtteranceLabelsMap: {

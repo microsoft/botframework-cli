@@ -9,7 +9,7 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorEvaluateCommand extends Command {
-  static description: string = 'Create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file .';
+  static description: string = 'Create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file.';
 
   static examples: Array<string> = [`
     $ bf orchestrator:evaluate --in=./path/to/snapshot/file --out=./path/to/output/folder/ [--model=./path/to/model/directory]`]
@@ -20,7 +20,7 @@ export default class OrchestratorEvaluateCommand extends Command {
     model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
     ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
     lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
@@ -32,9 +32,9 @@ export default class OrchestratorEvaluateCommand extends Command {
 
     const inputPath: string = flags.in;
     const outputPath: string = flags.out;
-    let nlrPath: string = flags.model;
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    let baseModelPath: string = flags.model;
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
     }
 
     let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
@@ -75,7 +75,7 @@ export default class OrchestratorEvaluateCommand extends Command {
 
     Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): inputPath=${inputPath}`);
     Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): outputPath=${outputPath}`);
-    Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorEvaluateCommand.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
@@ -83,7 +83,7 @@ export default class OrchestratorEvaluateCommand extends Command {
 
     try {
       await Orchestrator.evaluateAsync(
-        inputPath, outputPath, nlrPath,
+        inputPath, outputPath, baseModelPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,

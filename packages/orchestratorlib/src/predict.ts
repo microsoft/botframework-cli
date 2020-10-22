@@ -67,7 +67,7 @@ export class OrchestratorPredict {
 
   protected outputPath: string = '';
 
-  protected nlrPath: string = '';
+  protected baseModelPath: string = '';
 
   protected ambiguousCloseness: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
 
@@ -161,7 +161,7 @@ export class OrchestratorPredict {
   /* eslint-disable max-params */
   /* eslint-disable complexity */
   constructor(
-    nlrPath: string, inputPath: string, outputPath: string,
+    baseModelPath: string, inputPath: string, outputPath: string,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -174,25 +174,25 @@ export class OrchestratorPredict {
     if (Utility.isEmptyString(outputPath)) {
       Utility.debuggingThrow('Please provide an output directory');
     }
-    // if (Utility.isEmptyString(nlrPath)) {
-    //   Utility.debuggingThrow('The nlrPath argument is empty');
+    // if (Utility.isEmptyString(baseModelPath)) {
+    //   Utility.debuggingThrow('The baseModelPath argument is empty');
     // }
     if (inputPath) {
       inputPath = path.resolve(inputPath);
     } else {
       inputPath = '';
     }
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
-      if (!Utility.exists(nlrPath)) {
-        Utility.debuggingThrow(`The input model file path "${nlrPath}" does not exist!`);
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
+      if (!Utility.exists(baseModelPath)) {
+        Utility.debuggingThrow(`The input model file path "${baseModelPath}" does not exist!`);
       }
     } else {
-      nlrPath = '';
+      baseModelPath = '';
     }
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
@@ -200,7 +200,7 @@ export class OrchestratorPredict {
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     this.inputPath = inputPath;
     this.outputPath = outputPath;
-    this.nlrPath = nlrPath;
+    this.baseModelPath = baseModelPath;
     this.ambiguousCloseness = ambiguousClosenessThresholdParameter;
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
@@ -251,7 +251,7 @@ export class OrchestratorPredict {
     if (Utility.exists(this.snapshotFile)) {
       // ---- NOTE ---- create a LabelResolver object.
       Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call LabelResolver.createAsync()');
-      await LabelResolver.createAsync(this.nlrPath,);
+      await LabelResolver.createAsync(this.baseModelPath,);
       Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
       Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
@@ -266,7 +266,7 @@ export class OrchestratorPredict {
       Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.addSnapshot()');
     } else {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
-      await LabelResolver.createAsync(this.nlrPath);
+      await LabelResolver.createAsync(this.baseModelPath);
       Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
       Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
@@ -276,14 +276,14 @@ export class OrchestratorPredict {
   }
 
   public static async runAsync(
-    nlrPath: string, inputPath: string, outputPath: string,
+    baseModelPath: string, inputPath: string, outputPath: string,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
     fullEmbeddings: boolean = false): Promise<number> {
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
-      nlrPath,
+      baseModelPath,
       inputPath,
       outputPath,
       ambiguousClosenessThresholdParameter,
@@ -578,7 +578,7 @@ export class OrchestratorPredict {
   }
 
   public commandLetP(): number {
-    if (Utility.isEmptyString(this.nlrPath)) {
+    if (Utility.isEmptyString(this.baseModelPath)) {
       console.log('> No model is loaded, cannot make a prediction.');
     }
     UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(false);

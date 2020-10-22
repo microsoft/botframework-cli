@@ -34,7 +34,7 @@ export class OrchestratorSettings {
     }
   }
 
-  public static init(settingsDir: string, nlrPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
+  public static init(settingsDir: string, baseModelPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
     const settingsFile: string = path.join(settingsDir, 'orchestrator.json');
     OrchestratorSettings.SettingsPath = settingsFile;
     const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile);
@@ -46,17 +46,17 @@ export class OrchestratorSettings {
       settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
     }
 
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
 
-      if (!OrchestratorHelper.exists(nlrPath)) {
-        Utility.debuggingLog(`Invalid model path ${nlrPath}`);
+      if (!OrchestratorHelper.exists(baseModelPath)) {
+        Utility.debuggingLog(`Invalid model path ${baseModelPath}`);
         throw new Error('Invalid model path');
       }
     } else if (!settingsFileExists || !settings.modelPath || settings.modelPath.length === 0) {
       throw new Error('Missing model path');
     } else {
-      nlrPath = settings.modelPath;
+      baseModelPath = settings.modelPath;
     }
 
     if (snapshotPath) {
@@ -78,7 +78,7 @@ export class OrchestratorSettings {
       snapshotPath = settings.snapshotPath;
     }
 
-    OrchestratorSettings.ModelPath = nlrPath;
+    OrchestratorSettings.ModelPath = baseModelPath;
     OrchestratorSettings.SnapshotPath = snapshotPath;
   }
 

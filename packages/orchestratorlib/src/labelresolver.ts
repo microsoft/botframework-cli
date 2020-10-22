@@ -17,20 +17,20 @@ export class LabelResolver {
 
   public static LabelResolver: any;
 
-  public static async loadNlrAsync(nlrPath: string) {
+  public static async loadNlrAsync(baseModelPath: string) {
     Utility.debuggingLog('LabelResolver.loadNlrAsync(): creating Orchestrator..');
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
     }
-    // if (nlrPath.length === 0) {
+    // if (baseModelPath.length === 0) {
     //   throw new Error('Please provide path to Orchestrator model');
     // }
-    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): baseModelPath=${baseModelPath}`);
     LabelResolver.Orchestrator = new oc.Orchestrator();
-    if (!Utility.isEmptyString(nlrPath)) {
+    if (!Utility.isEmptyString(baseModelPath)) {
       Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading NLR..');
-      if (await LabelResolver.Orchestrator.loadAsync(nlrPath) === false) {
-        throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${nlrPath}")!`);
+      if (await LabelResolver.Orchestrator.loadAsync(baseModelPath) === false) {
+        throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${baseModelPath}")!`);
       }
     } else if (LabelResolver.Orchestrator.load() === false) {
       throw new Error('Failed calling LabelResolver.Orchestrator.load()!');
@@ -43,18 +43,18 @@ export class LabelResolver {
     return LabelResolver.Orchestrator.createLabelResolver();
   }
 
-  public static async createAsync(nlrPath: string) {
-    Utility.debuggingLog(`LabelResolver.createAsync(): nlrPath=${nlrPath}`);
-    await LabelResolver.loadNlrAsync(nlrPath);
+  public static async createAsync(baseModelPath: string) {
+    Utility.debuggingLog(`LabelResolver.createAsync(): baseModelPath=${baseModelPath}`);
+    await LabelResolver.loadNlrAsync(baseModelPath);
     Utility.debuggingLog('LabelResolver.createAsync(): Creating label resolver...');
     LabelResolver.LabelResolver = LabelResolver.Orchestrator.createLabelResolver();
     Utility.debuggingLog('LabelResolver.createAsync(): Finished creating label resolver...');
     return LabelResolver.LabelResolver;
   }
 
-  public static async createWithSnapshotAsync(nlrPath: string, snapshotPath: string) {
-    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): nlrPath=${nlrPath}`);
-    await LabelResolver.loadNlrAsync(nlrPath);
+  public static async createWithSnapshotAsync(baseModelPath: string, snapshotPath: string) {
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): baseModelPath=${baseModelPath}`);
+    await LabelResolver.loadNlrAsync(baseModelPath);
     Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): loading a snapshot...');
     const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotPath);
     Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);

@@ -19,18 +19,18 @@ export class OrchestratorBuild {
 
   // eslint-disable-next-line max-params
   public static async runAsync(
-    nlrPath: string,
+    baseModelPath: string,
     inputs: any[],
     isDialog: boolean = false,
     luConfig: any = null,
     fullEmbeddings: boolean = false): Promise<any> {
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`inputPath=${JSON.stringify(inputs, null, 2)}`);
     Utility.debuggingLog(`isDialog=${isDialog}`);
     Utility.debuggingLog(`luConfigFile=${JSON.stringify(luConfig, null, 2)}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     try {
-      if (!nlrPath || nlrPath.length === 0) {
+      if (!baseModelPath || baseModelPath.length === 0) {
         throw new Error('Please provide path to Orchestrator model');
       }
 
@@ -43,9 +43,9 @@ export class OrchestratorBuild {
         }
       }
 
-      nlrPath = path.resolve(nlrPath);
+      baseModelPath = path.resolve(baseModelPath);
 
-      const orchestrator: any = await LabelResolver.loadNlrAsync(nlrPath);
+      const orchestrator: any = await LabelResolver.loadNlrAsync(baseModelPath);
       Utility.debuggingLog('Loaded nlr');
 
       OrchestratorBuild.Orchestrator = orchestrator;
@@ -65,7 +65,7 @@ export class OrchestratorBuild {
         };
       } = {
         orchestrator: {
-          modelPath: nlrPath,
+          modelPath: baseModelPath,
           snapshots: new Map<string, string>(),
         },
       };

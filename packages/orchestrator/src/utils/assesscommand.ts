@@ -9,7 +9,7 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorAssessCommand extends Command {
-  static description: string = 'Assess utterance/label samples from an input file and create an evaluation report';
+  static description: string = 'Assess utterance/label predictions against their ground-truth and create an evaluation report.';
 
   static examples: Array<string> = [`
     $ bf orchestrator:assess --in=./path/to/ground-truth/file --prediction=./path/to/prediction/file --out=./path/to/output/folder/`]

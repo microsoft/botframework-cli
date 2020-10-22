@@ -11,19 +11,19 @@ const fetch: any = require('node-fetch');
 
 export class OrchestratorBaseModel {
   public static async getAsync(
-    nlrPath: string,
+    baseModelPath: string,
     nlrId: string = '',
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
-      if (nlrPath) {
-        nlrPath = path.resolve(nlrPath);
+      if (baseModelPath) {
+        baseModelPath = path.resolve(baseModelPath);
       }
-      if (nlrPath.length === 0) {
+      if (baseModelPath.length === 0) {
         throw new Error('ERROR: please provide path to Orchestrator model');
       }
       Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrId=${nlrId}`);
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrPath=${nlrPath}`);
+      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): baseModelPath=${baseModelPath}`);
 
       const versions: any = await OrchestratorBaseModel.getVersionsAsync();
       onProgress('Downloading model...');
@@ -45,21 +45,21 @@ export class OrchestratorBaseModel {
       }
 
       const modelUrl: string = modelInfo.modelUri;
-      await OrchestratorBaseModel.getModelAsync(nlrPath, modelUrl, onProgress, onFinish);
+      await OrchestratorBaseModel.getModelAsync(baseModelPath, modelUrl, onProgress, onFinish);
     } catch (error) {
       throw error;
     }
   }
 
   public static async getModelAsync(
-    nlrPath: string,
+    baseModelPath: string,
     modelUrl: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
-      fs.mkdirSync(nlrPath, {recursive: true});
+      fs.mkdirSync(baseModelPath, {recursive: true});
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
-      const modelZipPath: string = path.join(nlrPath, fileName);
+      const modelZipPath: string = path.join(baseModelPath, fileName);
       const response: any = await fetch(modelUrl);
       Utility.debuggingLog('OrchestratorNlr.getModelAsync(): calling  await response.arrayBuffer()');
       const arrayBuffer: ArrayBuffer = await response.arrayBuffer();
@@ -75,11 +75,11 @@ export class OrchestratorBaseModel {
       if (onProgress) {
         onProgress('OrchestratorNlr.getModelAsync(): extracting...');
       }
-      await seven.extractFull(modelZipPath, nlrPath).then(() => {
+      await seven.extractFull(modelZipPath, baseModelPath).then(() => {
         if (onProgress) {
           onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
         }
-        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${nlrPath}`);
+        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
         fs.unlinkSync(modelZipPath);
         Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): cleaned up .7z file: ${modelZipPath}`);
         if (onFinish) {

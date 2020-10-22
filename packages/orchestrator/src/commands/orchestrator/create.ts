@@ -33,12 +33,12 @@ export default class OrchestratorCreate extends Command {
     const cwd: string = process.cwd();
     const input: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;
-    const nlrPath: string = flags.model;
+    const baseModelPath: string = flags.model;
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      OrchestratorSettings.init(cwd, nlrPath, output, cwd);
+      OrchestratorSettings.init(cwd, baseModelPath, output, cwd);
       await Orchestrator.createAsync(
         OrchestratorSettings.ModelPath,
         input, OrchestratorSettings.SnapshotPath,

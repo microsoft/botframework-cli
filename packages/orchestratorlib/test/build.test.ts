@@ -12,21 +12,21 @@ import {UnitTestHelper} from './utility.test';
 import assert = require('assert');
 import * as path from 'path';
 const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
-const nlrPath: string = path.resolve('./resources/model/model_dte_bert_3l');
+const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
 
 describe('OrchestratorBuildTests', () => {
   beforeEach(async () => {
     Utility.debuggingLog('Downloading an NLR model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
-      nlrPath,
+      baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
   });
 
   it('runAsync', async () => {
     const retPayload: any = await OrchestratorBuild.runAsync(
-      nlrPath,
+      baseModelPath,
       OrchestratorHelper.getLuInputs('./test/fixtures/adaptive/'),
       true,
       JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));

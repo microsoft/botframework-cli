@@ -9,20 +9,20 @@ import {Utility} from './utility';
 // import {OrchestratorHelper} from './orchestratorhelper';
 /*
 export class OrchestratorFineTune {
-  public static async runAsync(nlrPath: string, inputPath: string, outputPath: string) {
+  public static async runAsync(baseModelPath: string, inputPath: string, outputPath: string) {
     try {
-      if (nlrPath) {
-        nlrPath = path.resolve(nlrPath);
+      if (baseModelPath) {
+        baseModelPath = path.resolve(baseModelPath);
       }
-      Utility.debuggingLog(`nlrPath=${nlrPath}`);
+      Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
       Utility.debuggingLog(`inputPath=${inputPath}`);
       Utility.debuggingLog(`outputPath=${outputPath}`);
 
-      // if (nlrPath.length === 0) {
+      // if (baseModelPath.length === 0) {
       //   throw new Error('Please provide path to Orchestrator model');
       // }
 
-      // const labelResolver = await LabelResolver.createAsync(nlrPath);
+      // const labelResolver = await LabelResolver.createAsync(baseModelPath);
 
       // eslint-disable-next-line no-console
       console.log('Fine tuning will be available soon.');

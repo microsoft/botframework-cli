@@ -56,7 +56,7 @@ bf plugins:uninstall @microsoft/bf-orchestrator-cli
 * [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
 * [`bf orchestrator:basemodel:get`](#bf-orchestratorbasemodelget)
 * [`bf orchestrator:basemodel:list`](#bf-orchestratorbasemodellist)
-* [`bf orchestrator:predict`](#bf-orchestratorpredict)
+* [`bf orchestrator:interactive`](#bf-orchestratorinteractive)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 
 ## `bf orchestrator`
@@ -441,19 +441,19 @@ OPTIONS
 
 _See code: [src\commands\orchestrator\basemodel\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/list.ts)_
 
-## `bf orchestrator:predict`
+## `bf orchestrator:interactive`
 
 Returns score of given utterance using previously created orchestrator examples
 
 ```
 USAGE
-    $ bf orchestrator:predict --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
+    $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
   -d, --debug                     Print debugging information during execution.
-  -h, --help                      Orchestrator 'predict' command help.
+  -h, --help                      Orchestrator 'interactive' command help.
   -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
-                                  This argument is optional users can use the 'predict' command
+                                  This argument is optional users can use the 'interactive' command
                                   to start an Orchestrator snapshot from scratch. The 'n' commandlet
                                   can save the utterance labels into a snapshot (.blu) file.
   -m, --model=model               Directory or a config file hosting Orchestrator base model files.
@@ -467,7 +467,7 @@ OPTIONS
 
 DESCRIPTION
 
-  The 'predict' command is an interactive session that a user can access an Orchestrator model in real-time
+  The 'interactive' command is an interactive session that a user can access an Orchestrator model in real-time
   doing following:
     1) Predict the intent of an input utterance using the 'p' commandlet.
     2) Analyze a model example set, by executing the 'v' (validation) commandlet and produce an evaluation
@@ -478,7 +478,7 @@ DESCRIPTION
     4) Remove some labels completely from the model example set using the 'rl' commandlet.
     5) Create a new model example set snapshot using the 'n' commandlet.
 
-  Below is a list of the commandlets that can be issued during a 'predict' session.
+  Below is a list of the commandlets that can be issued during a 'interactive' session.
 
   Commandlets: h, q, d, s, u, cu, i, ci, ni, cni, q, p, v,
                vd, va, vm, vl, vat, vlt, vmt, vut, a, r, c, rl, n
@@ -525,7 +525,7 @@ DESCRIPTION
 
 EXAMPLE
 
-      $ bf orchestrator:predict --out=resources\data\Columnar\PredictOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
+      $ bf orchestrator:interactive --out=resources\data\Columnar\PredictOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
 
       Notice that inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
       among other hyper parameters. Here is an example: 
@@ -540,7 +540,7 @@ EXAMPLE
 
 ```
 
-_See code: [src\commands\orchestrator\predict.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/predict.ts)_
+_See code: [src\commands\orchestrator\interactive.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/interactive.ts)_
 
 ## `bf orchestrator:test`
 

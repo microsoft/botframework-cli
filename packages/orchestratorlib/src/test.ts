@@ -33,7 +33,7 @@ export class OrchestratorTest {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    nlrPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
+    baseModelPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -50,10 +50,10 @@ export class OrchestratorTest {
     if (Utility.isEmptyString(outputPath)) {
       Utility.debuggingThrow(`Please provide an output directory, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
-    if (Utility.isEmptyString(nlrPath)) {
-      Utility.debuggingThrow(`The nlrPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
+    if (Utility.isEmptyString(baseModelPath)) {
+      Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
-    nlrPath = path.resolve(nlrPath);
+    baseModelPath = path.resolve(baseModelPath);
     const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
@@ -61,7 +61,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`inputPath=${inputPathConfiguration}`);
     Utility.debuggingLog(`testPath=${testPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
@@ -80,7 +80,7 @@ export class OrchestratorTest {
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createAsync()');
-    await LabelResolver.createAsync(nlrPath);
+    await LabelResolver.createAsync(baseModelPath);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createAsync()');
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);

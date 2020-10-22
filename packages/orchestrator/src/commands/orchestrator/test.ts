@@ -9,19 +9,26 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
-  static description: string = 'Test utterance/label samples from an input file and create an evaluation report';
+  static description: string = `
+  Test command can operate in three modes:
+    1) "test": test a collection of utterance/label samples from an input file and create a train/test evaluation report.
+    2) "evaluation": create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report over a previously generated .blu file.
+    3) "assessment": assess a collection of utterance/label predictions against their ground-truth and create an evaluation report, there is no need for a model.`;
 
   static examples: Array<string> = [`
-    $ bf orchestrator:test --in=./path/to/snapshot/file --test=./path/to/test/file/ --out=./path/to/output/ --model=./path/to/model/directory`]
+    $ bf orchestrator:test --in=./path/to/snapshot/file --test=./path/to/test/file/ --out=./path/to/output/ --model=./path/to/model/directory
+    $ bf orchestrator:test --in=./path/to/ground-truth/file --prediction=./path/to/prediction/file --out=./path/to/output/folder/
+    $ bf orchestrator:test --in=./path/to/snapshot/file --out=./path/to/output/folder/ [--model=./path/to/model/directory]`]
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
-    test: flags.string({char: 't', description: 'Path to a test file.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
+    model: flags.string({char: 'm', description: 'Optional directory for hosting Orchestrator config and base model files, not needed for the "assessment" mode.'}),
+    test: flags.string({char: 't', description: 'Optional path to a test file. This option enable the "test" mode.'}),
+    prediction: flags.string({char: 'p', description: 'Optional path to a prediction label file, or comma-separated paths to a collection of (e.g., crosss-valiaton) files.'}),
     ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
     lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
@@ -31,12 +38,19 @@ export default class OrchestratorTest extends Command {
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorTest);
 
-    const inputPath: string = flags.in;
-    const testPath: string = flags.test;
-    const outputPath: string = flags.out;
-    let nlrPath: string = flags.model;
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    const inputPathConfiguration: string = flags.in;
+    const outputPathConfiguration: string = flags.out;
+    let baseModelPath: string = flags.model;
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
+    }
+    let testPath: string = flags.test;
+    if (testPath) {
+      testPath = path.resolve(testPath);
+    }
+    let predictionPathConfiguration: string = flags.prediction;
+    if (predictionPathConfiguration) {
+      predictionPathConfiguration = path.resolve(predictionPathConfiguration);
     }
 
     let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
@@ -75,23 +89,38 @@ export default class OrchestratorTest extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
     UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
 
-    Utility.debuggingLog(`OrchestratorTest.run(): inputPath=${inputPath}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): outputPath=${outputPath}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
     Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTest.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+    Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${flags.fullEmbeddings}`);
 
     try {
-      await Orchestrator.testAsync(
-        nlrPath, inputPath, testPath, outputPath,
-        ambiguousClosenessThresholdParameter,
-        lowConfidenceScoreThresholdParameter,
-        multiLabelPredictionThresholdParameter,
-        unknownLabelPredictionThresholdParameter,
-        flags.fullEmbeddings);
+      if (testPath) {
+        await Orchestrator.testAsync(
+          baseModelPath, inputPathConfiguration, testPath, outputPathConfiguration,
+          ambiguousClosenessThresholdParameter,
+          lowConfidenceScoreThresholdParameter,
+          multiLabelPredictionThresholdParameter,
+          unknownLabelPredictionThresholdParameter,
+          flags.fullEmbeddings);
+      } else if (predictionPathConfiguration) {
+        await Orchestrator.assessAsync(
+          inputPathConfiguration, predictionPathConfiguration, outputPathConfiguration);
+      } else {
+        await Orchestrator.evaluateAsync(
+          inputPathConfiguration, outputPathConfiguration, baseModelPath,
+          ambiguousClosenessThresholdParameter,
+          lowConfidenceScoreThresholdParameter,
+          multiLabelPredictionThresholdParameter,
+          unknownLabelPredictionThresholdParameter,
+          flags.fullEmbeddings);
+      }
     } catch (error) {
       throw (new CLIError(error));
     }

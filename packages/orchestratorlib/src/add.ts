@@ -12,19 +12,19 @@ import {Utility} from './utility';
 export class OrchestratorAdd {
   // eslint-disable-next-line max-params
   public static async runAsync(
-    nlrPath: string,
+    baseModelPath: string,
     inputPath: string,
     outputPath: string,
     snapshotPath: string,
     labelPrefix: string = '',
     fullEmbeddings: boolean = false) {
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`snapshotPath=${snapshotPath}`);
     Utility.debuggingLog(`labelPrefix=${labelPrefix}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
-    if (!nlrPath || nlrPath.length === 0) {
+    if (!baseModelPath || baseModelPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
     if (!inputPath || inputPath.length === 0) {
@@ -38,7 +38,7 @@ export class OrchestratorAdd {
     }
 
     Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    await LabelResolver.createWithSnapshotAsync(nlrPath, snapshotPath);
+    await LabelResolver.createWithSnapshotAsync(baseModelPath, snapshotPath);
     Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
     // ---- NOTE ---- Caller has to ensure all the embeddings are in the same format, otherwise
     // ---- NOTE ---- all the embeddings will be converted to compact for cosine similarity computation

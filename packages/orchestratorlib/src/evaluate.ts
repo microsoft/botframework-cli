@@ -31,7 +31,7 @@ export class OrchestratorEvaluate {
 
   // eslint-disable-next-line max-params
   public static async runAsync(
-    inputPath: string, outputPath: string, nlrPath: string = '',
+    inputPath: string, outputPath: string, baseModelPath: string = '',
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
@@ -45,10 +45,10 @@ export class OrchestratorEvaluate {
     if (Utility.isEmptyString(outputPath)) {
       Utility.debuggingThrow(`Please provide an output directory, CWD=${process.cwd()}, called from OrchestratorEvaluate.runAsync()`);
     }
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
     } else {
-      nlrPath = '';
+      baseModelPath = '';
     }
     const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
@@ -56,7 +56,7 @@ export class OrchestratorEvaluate {
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
-    Utility.debuggingLog(`nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
@@ -75,7 +75,7 @@ export class OrchestratorEvaluate {
     const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call LabelResolver.createAsync()');
-    await LabelResolver.createAsync(nlrPath);
+    await LabelResolver.createAsync(baseModelPath);
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), after calling LabelResolver.createAsync()');
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);

@@ -21,7 +21,7 @@ export default class OrchestratorTestCommand extends Command {
     model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
     ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
     lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'p', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
@@ -34,9 +34,9 @@ export default class OrchestratorTestCommand extends Command {
     const inputPath: string = flags.in;
     const testPath: string = flags.test;
     const outputPath: string = flags.out;
-    let nlrPath: string = flags.model;
-    if (nlrPath) {
-      nlrPath = path.resolve(nlrPath);
+    let baseModelPath: string = flags.model;
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
     }
 
     let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
@@ -78,7 +78,7 @@ export default class OrchestratorTestCommand extends Command {
     Utility.debuggingLog(`OrchestratorTestCommand.run(): inputPath=${inputPath}`);
     Utility.debuggingLog(`OrchestratorTestCommand.run(): testPath=${testPath}`);
     Utility.debuggingLog(`OrchestratorTestCommand.run(): outputPath=${outputPath}`);
-    Utility.debuggingLog(`OrchestratorTestCommand.run(): nlrPath=${nlrPath}`);
+    Utility.debuggingLog(`OrchestratorTestCommand.run(): baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`OrchestratorTestCommand.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTestCommand.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`OrchestratorTestCommand.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
@@ -86,7 +86,7 @@ export default class OrchestratorTestCommand extends Command {
 
     try {
       await Orchestrator.testAsync(
-        nlrPath, inputPath, testPath, outputPath,
+        baseModelPath, inputPath, testPath, outputPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,

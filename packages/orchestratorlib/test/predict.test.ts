@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import {OrchestratorPredict} from '../src/predict';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-/*
+
 describe('Test Suite - the "predict" command', () => {
   it('Test.0000 OrchestratorPredict', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -20,13 +20,13 @@ describe('Test Suite - the "predict" command', () => {
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
     const outputPath: string = './resources/data/Columnar/OrchestratorPredict_Email_roberta';
-    const nlrPath: string = '';
+    const baseModelPath: string = '';
     const ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
-      nlrPath,
+      baseModelPath,
       inputPath,
       outputPath,
       ambiguousClosenessThresholdParameter,
@@ -92,5 +92,3 @@ describe('Test Suite - the "predict" command', () => {
     Utility.debuggingLog('THE END - OrchestratorPredict');
   });
 });
-
-*/
