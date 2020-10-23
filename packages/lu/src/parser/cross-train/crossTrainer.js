@@ -37,7 +37,6 @@ module.exports = {
 
       const crossTrainConfig = fileHelper.getConfigObject(
         configObject,
-        options.configId,
         options.intentName || '_Interruption',
         options.verbose || true)
 

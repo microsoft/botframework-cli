@@ -220,7 +220,7 @@ export function getParsedObjects(contents: {id: string, content: string}[]) {
   return parsedObjects
 }
 
-export function getConfigObject(configObject: any, configId: string, intentName: string, verbose: boolean) {
+export function getConfigObject(configObject: any, intentName: string, verbose: boolean) {
   let finalConfigObj = Object.create(null)
   let rootFileIds: string[] = []
   if (configObject) {
