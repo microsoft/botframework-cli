@@ -10,7 +10,7 @@
 > # Intent definitions
 
 > Utterance passed in this intent: 6/6
-## AcceptEventEntry
+# AcceptEventEntry
 > PASS. Predicted intent: AcceptEventEntry(0.948831439)
 > PASS. Predicted entities: accept all meetings for {@Subject=christmas party} {@FromDate=next week}.
 - accept all meetings for {@Subject=christmas party} {@FromDate=next week}.
@@ -33,7 +33,7 @@
 
 
 > Utterance passed in this intent: 6/6
-## CreateCalendarEntry
+# CreateCalendarEntry
 > PASS. Predicted intent: CreateCalendarEntry(0.999999762)
 > PASS. Predicted entities: book a meeting with huanx@abc.com
 - book a meeting with huanx@abc.com
@@ -55,7 +55,7 @@
 
 
 > Utterance passed in this intent: 2/2
-## FindCalendarEntry
+# FindCalendarEntry
 > PASS. Predicted intent: FindCalendarEntry(0.951522648)
 > PASS. Predicted entities: find a meeting subject {@Subject=daily meeting}
 - find a meeting subject {@Subject=daily meeting}
@@ -65,7 +65,7 @@
 
 
 > Utterance passed in this intent: 3/3
-## None
+# None
 > PASS. Predicted intent: None(0.962541759)
 > PASS. Predicted entities: 1
 - 1

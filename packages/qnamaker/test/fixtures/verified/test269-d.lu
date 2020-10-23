@@ -8,10 +8,10 @@
 
 > # Intent definitions
 
-## None
+# None
 
 
-## TestIntent
+# TestIntent
 - this is a {@EntityOne=one} and a {@EntityTwo=two} and a {@EntityOne=one} again
 
 

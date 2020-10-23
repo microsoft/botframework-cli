@@ -64,7 +64,7 @@ describe('builder: importUrlOrFileReference function return lu content from file
     assert.equal(luContent, `> # QnA pairs${NEWLINE}${NEWLINE}` +
                             `> !# @qna.pair.source = SurfaceManual.pdf${NEWLINE}${NEWLINE}` +
                             `<a id = "1"></a>${NEWLINE}${NEWLINE}` +
-                            `## ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
+                            `# ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
                             `\`\`\`markdown${NEWLINE}` +
                             `25 types${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`)
   })
@@ -128,7 +128,7 @@ describe('builder: importUrlOrFileReference function return lu content from file
     assert.equal(luContent, `> # QnA pairs${NEWLINE}${NEWLINE}` +
       `> !# @qna.pair.source = SurfaceManual.pdf${NEWLINE}${NEWLINE}` +
       `<a id = "1"></a>${NEWLINE}${NEWLINE}` +
-      `## ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
+      `# ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
       `\`\`\`markdown${NEWLINE}` +
       `25 types${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`)
   })
@@ -187,7 +187,7 @@ describe('builder: importUrlOrFileReference function return lu content from url 
     assert.equal(luContent, `> # QnA pairs${NEWLINE}${NEWLINE}` +
                             `> !# @qna.pair.source = faqs${NEWLINE}${NEWLINE}` +
                             `<a id = "1"></a>${NEWLINE}${NEWLINE}` +
-                            `## ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
+                            `# ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
                             `\`\`\`markdown${NEWLINE}` +
                             `25 types${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`)
   })
@@ -250,7 +250,7 @@ describe('builder: importUrlOrFileReference function return lu content from url 
     assert.equal(luContent, `> # QnA pairs${NEWLINE}${NEWLINE}` +
       `> !# @qna.pair.source = faqs${NEWLINE}${NEWLINE}` +
       `<a id = "1"></a>${NEWLINE}${NEWLINE}` +
-      `## ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
+      `# ? how many sandwich types do you have${NEWLINE}${NEWLINE}` +
       `\`\`\`markdown${NEWLINE}` +
       `25 types${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`)
   })
@@ -285,7 +285,7 @@ describe('builder: loadContents function can resolve import files with customize
 
     assert.equal(result.length, 1)
     assert.isTrue(result[0].content.includes(
-      `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}## ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
+      `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
   })
 })
 
