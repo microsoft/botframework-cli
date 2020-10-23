@@ -10,10 +10,13 @@ import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
   static description: string = `
-  Test command can operate in three modes:
-    1) "test": test a collection of utterance/label samples from an input file and create a train/test evaluation report.
-    2) "evaluation": create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report over a previously generated .blu file.
-    3) "assessment": assess a collection of utterance/label predictions against their ground-truth and create an evaluation report, there is no need for a model.`;
+  The "test" command can operate in three modes:
+  1) Test mode: test a collection of utterance/label samples loaded from an input file against
+          a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
+  2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
+          on a previously generated .blu snapshot file.
+  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and create an evaluation report,
+          there is no need for a base model.`;
 
   static examples: Array<string> = [`
     $ bf orchestrator:test --in=./path/to/snapshot/file --test=./path/to/test/file/ --out=./path/to/output/ --model=./path/to/model/directory

@@ -1,7 +1,7 @@
 @microsoft/bf-orchestrator-cli
 ======================
 
-This package is a plugin for @microsoft/botframework-cli. It is not designed to be consumed as an independent package.
+This package is a plugin for @microsoft/botframework-cli.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
@@ -38,7 +38,7 @@ To install the bf-orchestrator-cli plugin:
 bf plugins:install @microsoft/bf-orchestrator-cli@beta
 ```
 
-To uninstall the bf-orchestrator-cli plugin, a step for upgrading the plugin:
+To uninstall the bf-orchestrator-cli plugin, which is a necessary step for upgrading the plugin:
 
 ```
 bf plugins:uninstall @microsoft/bf-orchestrator-cli
@@ -49,14 +49,12 @@ bf plugins:uninstall @microsoft/bf-orchestrator-cli
 <!-- commands -->
 
 * [`bf orchestrator`](#bf-orchestrator)
-* [`bf orchestrator:add`](#bf-orchestratoradd)
-* [`bf orchestrator:assess`](#bf-orchestratorassess)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:build`](#bf-orchestratorbuild)
-* [`bf orchestrator:evaluate`](#bf-orchestratorevaluate)
 * [`bf orchestrator:basemodel:get`](#bf-orchestratorbasemodelget)
 * [`bf orchestrator:basemodel:list`](#bf-orchestratorbasemodellist)
 * [`bf orchestrator:interactive`](#bf-orchestratorinteractive)
+* [`bf orchestrator:query`](#bf-orchestratorquery)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 
 ## `bf orchestrator`
@@ -73,7 +71,332 @@ OPTIONS
 
 _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
 
-## `bf orchestrator:assess`
+## `bf orchestrator:build`
+
+Creates Orchestrator snapshot (.blu) file and Orchestrator dialog definition file (optional) for each lu file in input folder.
+
+```
+USAGE
+  $ bf orchestrator:build
+
+OPTIONS
+  -d, --debug
+  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
+  -h, --help         Orchestrator build command help
+  -i, --in=in        Path to lu file or folder with lu files.
+  -m, --model=model  Path to Orchestrator base model directory.
+  -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
+  --dialog           Generate multi language or cross train Orchestrator recognizers.
+
+EXAMPLE
+
+       $ bf orchestrator:build 
+       $ bf orchestrator:build --in ./path/to/lufile/or/folder/
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
+       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/base/model/directory
+```
+
+_See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
+
+## `bf orchestrator:create`
+
+Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv files, which represent bot modules.
+
+```
+USAGE
+  $ bf orchestrator:create
+
+OPTIONS
+  -d, --debug
+  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
+  -h, --help         Orchestrator create command help
+
+  -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
+                     to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
+
+  -m, --model=model  Path to Orchestrator base model directory.
+
+  -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
+                     directory.
+
+  --hierarchical     Add hierarchical labels based on lu/qna file name.
+
+  --fullEmbeddings Optional flag to create full embeddings instead of compact embeddings.
+
+EXAMPLE
+
+       $ bf orchestrator:create 
+       $ bf orchestrator:create --in ./path/to/file/
+       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/
+       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
+```
+
+_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/create.ts)_
+
+## `bf orchestrator:basemodel:get`
+
+Gets Orchestrator base model
+
+```
+USAGE
+  $ bf orchestrator:basemodel:get
+
+OPTIONS
+  -o, --out        Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.
+  --versionId      Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.
+  -h, --help       Show CLI help
+```
+
+_See code: [src\commands\orchestrator\basemodel\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/get.ts)_
+
+
+## `bf orchestrator:basemodel:list`
+
+Lists all Orchestrator base model versions
+
+```
+USAGE
+  $ bf orchestrator:basemodel:list
+
+OPTIONS
+  -r, --raw        Optional. Raw output
+  -h, --help       Show CLI help
+```
+
+_See code: [src\commands\orchestrator\basemodel\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/list.ts)_
+
+## `bf orchestrator:interactive`
+
+A user can play with an Orchestrator base model interactively and improve a snapshot in real-time.
+
+```
+USAGE
+    $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
+
+OPTIONS
+  -d, --debug                     Print detailed debugging information during execution.
+  -h, --help                      Orchestrator 'interactive' command help.
+  -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
+                                  This argument is optional users can use the 'interactive' command
+                                  to start an Orchestrator snapshot from scratch. The 'n' commandlet
+                                  can save the utterance labels into a snapshot (.blu) file.
+  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
+  -o, --out=out                   Directory where analysis and output files will be placed.
+  --fullEmbeddings                                Optional flag to run on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+
+DESCRIPTION
+
+  The 'interactive' command is an interactive session that a user can access an Orchestrator model in real-time
+  doing following:
+    1) Predict the intent of an input utterance using the 'p' commandlet.
+    2) Analyze a model example set, by executing the 'v' (validation) commandlet and produce an evaluation
+       report in real-time.
+    3) Add, remove, or change the intents of an input utterace using the 'a', 'r', and 'c' commandlets,
+       respectively. Users can reference a validation report and choose an ambiguous, misclassified, or
+       low-confidence utterance and change their intent labels.
+    4) Remove some labels completely from the model example set using the 'rl' commandlet.
+    5) Create a new model example set snapshot using the 'n' commandlet.
+
+  Below is a list of the commandlets that can be issued during a 'interactive' session.
+
+  Commandlets: h, q, d, s, u, cu, i, ci, ni, cni, q, p, v,
+               vd, va, vm, vl, vat, vlt, vmt, vut, a, r, c, rl, n
+    h   - print this help message
+    q   - quit
+    d   - display utterance, intent label array inputs, Orchestrator config,
+          and the label-index map
+    s   - show label-utterance statistics of the model examples
+    u   - enter a new utterance and save it as the "current" utterance input
+    cu  - clear the "current" utterance input
+    i   - enter an intent and add it to the "current" intent label array input
+          (can be an index for retrieving a label from the label-index map)
+    ci  - clear the "current" intent label array input
+    ni  - enter an intent and add it to the "new" intent label array input
+          (can be an index for retrieving a label from the label-index map)
+    cni - clear the "new" intent label array input
+    f   - find the "current" utterance if it is already in the model example set
+    p   - make a prediction on the "current" utterance input
+    v   - validate the model and save analyses (validation report) to
+          "experiment_predicting_va\orchestrator_predicting_set_summary.html"
+    vd  - reference a validation Duplicates report
+          (previously generated by the "v" command) and enter an index
+          for retrieving utterance/intents into "current"
+    va  - reference a validation Ambiguous report
+          (previously generated by the "v" command) and enter an index
+          for retrieving utterance/intents into "current"
+    vm  - reference a validation Misclassified report and enter an index
+          (previously generated by the "v" command)
+          for retrieving utterance/intents into "current"
+    vl  - reference a validation LowConfidence report
+          (previously generated by the "v" command) and enter an index
+          for retrieving utterance/intents into "current"
+    vat - enter a new validation-report ambiguous closeness threshold
+    vlt - enter a new validation-report low-confidence threshold
+    vmt - enter a new multi-label threshold
+    vut - enter a new unknown-label threshold
+    a   - add the "current" utterance and intent labels to the model example set
+    r   - remove the "current" utterance and intent labels from the model example set
+    c   - remove the "current" utterance's intent labels and then
+          add it with the "new" intent labels to the model example set
+    rl  - remove the "current" intent labels from the model example set
+    n   - create a new snapshot of model examples and save it to
+          "experiment_predicting_va\orchestrator_predicting_training_set.blu"
+
+EXAMPLE
+
+      $ bf orchestrator:interactive --out=resources\data\Columnar\InteractiveOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
+
+      Notice that the ModelConfig folder is created by the 'bf orchestrator:basemodel:get' command.
+      Inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
+      among other hyper parameters. Here is an example: 
+      {
+        "VocabFile": "vocab.txt",
+        "ModelFile": "model.onnx",
+        "Name": "pretrained.20200924.microsoft.dte.00.03.en.onnx",
+        "Framework": "onnx",
+        "Publisher": "Microsoft",
+        "ModelType": "dte_bert",
+        "Layers": 3,
+        "EmbedderVersion": 1,
+        "MinRequiredCoreVersion": "1.0.0"
+      }
+
+```
+
+_See code: [src\commands\orchestrator\interactive.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/interactive.ts)_
+
+## `bf orchestrator:test`
+
+The "test" command can operate in three modes:
+  1) Test mode: test a collection of utterance/label samples loaded from an input file against
+      a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
+  2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
+      on a previously generated .blu snapshot file.
+  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and create an evaluation report,
+      there is no need for a base model.
+
+The 'test' mode is activated if there is a '--test' parameter set for a test file. Please see below for detailed help message for this mode.
+The 'assessment' mode is activated if there is a '--prediction' parameter set for a prediction. Please see below for detailed help messahe for this mode.
+If there is no '--test' or '--prediction' parameters, then 'evaluation' mode. 
+
+Notice that the input specificaed by the '--in' parameter may be different from mode to mode.
+
+_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
+
+# `bf orchestrator:test -- test mode`
+
+Test utterance/label samples from an input file and create an evaluation report
+
+```
+USAGE
+  $ bf orchestrator:test
+
+OPTIONS
+  -d, --debug                     Print detailed debugging information during execution.
+  -h, --help                      Orchestrator 'test' command help.
+  -i, --in=in                     Path to a previously created Orchestrator .blu file.
+  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
+  -o, --out=out                   Directory where analysis and output files will be placed.
+  -t, --test=test                 Path to a test file, or comma-separated paths to
+                                  a collection of test files -- most uselful for crosss-valiaton.
+  --fullEmbeddings                                Optional flag to test on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+
+DESCRIPTION
+
+  The 'test' mode can test an Orchestrator model and example snapshot set against a test utterance/intent file.
+  It will generate an evaluation report. Please refer to the 'evaluation' mode for details.
+
+EXAMPLE
+
+      $ bf orchestrator:test --out=resources\data\Columnar\TestOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu --test=resources\data\Columnar\EmailTest.txt
+
+      Notice that the ModelConfig folder is created by the 'bf orchestrator:basemodel:get' command.
+      Inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
+      among other hyper parameters. Here is an example: 
+      {
+        "VocabFile": "vocab.txt",
+        "ModelFile": "model.onnx",
+        "Name": "pretrained.20200924.microsoft.dte.00.03.en.onnx",
+        "Framework": "onnx",
+        "Publisher": "Microsoft",
+        "ModelType": "dte_bert",
+        "Layers": 3,
+        "EmbedderVersion": 1,
+        "MinRequiredCoreVersion": "1.0.0"
+      }
+```
+_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
+
+# `bf orchestrator:test -- evaluation mode`
+
+Create Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file
+
+```
+USAGE
+  $ bf orchestrator:test
+
+OPTIONS
+  -d, --debug                     Print detailed debugging information during execution.
+  -i, --in=in                     Path to a previously created Orchestrator .blu file.
+  -o, --out=out                   Directory where analysis and output files will be placed.
+  -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
+  --fullEmbeddings                                Optional flag to evaluate on full embeddings instead of compact embeddings.
+  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
+            i.e., only max-score intents are predicted.
+  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+
+DESCRIPTION
+
+  The 'evaluation' mode executes a leave-one-out-cross-validation (LOOCV) analysis
+  on a model and its example snapshot set. It also generates a detailed evaluation report
+  with the following sections:
+
+  >  Intent/utterancce Statistics - intent and utterance statistics and distributions.
+  >  Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
+  >  Ambiguous - ambiguous predictions that there are some other intent predictions whose
+     scores are close to the correctly predicted intents. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
+     the correctly predicted intent score, then the prediction itself is considered "ambiguous."
+  >  Misclassified - utterance's intent labels were not scored the highest.
+  >  Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
+     This threshold can be configured through the "lowconfidencescorethreshold" parameter, the default is 0.5.
+  >  Metrics - test confisuon matrix metrics. Please reference the "assess" command description for details.
+
+EXAMPLE
+
+      $ bf orchestrator:test --out=resources\data\Columnar\EvaluationOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
+
+      Notice that it is not required to load a model file if the input is already a snapshop .blu file.
+      Nevertheless the ModelConfig folder is created by the 'bf orchestrator:basemodel:get' command.
+      Inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
+      among other hyper parameters. Here is an example: 
+      {
+        "VocabFile": "vocab.txt",
+        "ModelFile": "model.onnx",
+        "Name": "pretrained.20200924.microsoft.dte.00.03.en.onnx",
+        "Framework": "onnx",
+        "Publisher": "Microsoft",
+        "ModelType": "dte_bert",
+        "Layers": 3,
+        "EmbedderVersion": 1,
+        "MinRequiredCoreVersion": "1.0.0"
+      }
+```
+
+_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
+
+# `bf orchestrator:test -- assessment mode`
 
 Create an evaluation report on assessing prediction against ground-truth instances.
 This command can execute an independent assessment of a prediction set against a ground-truth set,
@@ -81,11 +404,10 @@ it does not require a base model that other Orchestrator commands may need.
 
 ```
 USAGE
-  $ bf orchestrator:assess
+  $ bf orchestrator:test
 
 OPTIONS
-  -d, --debug                     Print debugging information during execution.
-  -h, --help                      Orchestrator 'assess' command help.
+  -d, --debug                     Print detailed debugging information during execution.
   -i, --in=in                     Path to a ground-truth label file, or comma-separated paths to
                                   a collection of files -- most uselful for crosss-valiaton.
   -o, --out=out                   Directory where analysis and output files will be placed.
@@ -94,10 +416,10 @@ OPTIONS
 
 DESCRIPTION
 
-  The "assess" command compares a prediction file against a ground-truth file, then
+  The "assessment" mode compares a prediction file against a ground-truth file, then
   generates two detailed evaluation reports, one on intent prediction and the other entity, along with some
   auxiliary files.
-  The input files can be in LU, LUIS, QnA Maker, TSV, or a JSON label array format described below.
+  The input files can be in LU, LUIS, QnA Maker, TSV, or a JSON label array formats, where are described below.
 
   This command intends to provide a comprehensive and consistent multi-class model evaluation tool in
   order to avoid teams reporting their own inconsistent evaluation metrics, especially in a contest
@@ -122,7 +444,7 @@ DESCRIPTION
         in processing empty, UNKNOWN, or never-seen-before labels in the ground-truth and prediction files.
   7)  Evaluation Tool – every team has their own tools that might not be consistent in metric computation.
 
-  The "assess" command aims to address these issues:
+  The "assessment" mode aims to address these issues:
 
   1)  Metric -- the "assess" command calculates as many average/aggregate metrics as we can think of.
       Which metric to focus on for decision-making is up to an evaluation committee or stakeholder.
@@ -301,274 +623,12 @@ REPORT
         evaluating entity predictions.
 
 EXAMPLE
+
+      $ bf orchestrator:test --out=resources\data\EvaluationJsonFormat\AssessmentOutput \
+      --in=resources\data\EvaluationJsonFormat\orchestrator_testing_set_ground_truth_instances.json \
+      --prediction=resources\data\EvaluationJsonFormat\orchestrator_testing_set_prediction_instances.json
 ```
 
-_See code: [src\commands\orchestrator\assess.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/assess.ts)_
+_See code: [src\commands\orchestrator\test.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
 
-## `bf orchestrator:build`
-
-Creates Orchestrator snapshot (.blu) file and Orchestrator dialog definition file (optional) for each lu file in input folder.
-
-```
-USAGE
-  $ bf orchestrator:build
-
-OPTIONS
-  -d, --debug
-  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
-  -h, --help         Orchestrator build command help
-  -i, --in=in        Path to lu file or folder with lu files.
-  -m, --model=model  Path to Orchestrator base model directory.
-  -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
-  --dialog           Generate multi language or cross train Orchestrator recognizers.
-
-EXAMPLE
-
-       $ bf orchestrator:build 
-       $ bf orchestrator:build --in ./path/to/lufile/or/folder/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/base/model/directory
-```
-
-_See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
-
-## `bf orchestrator:create`
-
-Create orchestrator snapshot (.blu) file from .lu/.qna files, which represent bot modules
-
-```
-USAGE
-  $ bf orchestrator:create
-
-OPTIONS
-  -d, --debug
-  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
-  -h, --help         Orchestrator create command help
-
-  -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
-                     to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
-
-  -m, --model=model  Path to Orchestrator base model directory.
-
-  -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
-                     directory.
-
-  --hierarchical     Add hierarchical labels based on lu/qna file name.
-
-  --fullEmbeddings Optional flag to create full embeddings instead of compact embeddings.
-
-EXAMPLE
-
-       $ bf orchestrator:create 
-       $ bf orchestrator:create --in ./path/to/file/
-       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
-```
-
-_See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/create.ts)_
-
-## `bf orchestrator:evaluate`
-
-Create Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file
-
-```
-USAGE
-  $ bf orchestrator:evaluate
-
-OPTIONS
-  -d, --debug                     Print debugging information during execution.
-  -h, --help                      Orchestrator 'evaluate' command help.
-  -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -o, --out=out                   Directory where analysis and output files will be placed.
-  -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
-  --fullEmbeddings                                Optional flag to evaluate on full embeddings instead of compact embeddings.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted.
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
-
-DESCRIPTION
-
-  The 'evaluate' command can execute a leave-one-out-cross-validation (LOOCV) analysis
-  on a model and its example snapshot set. It also generates a detailed evaluation report
-  with the following sections:
-
-  >  Intent/utterancce Statistics - intent and utterance statistics and distributions.
-  >  Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
-  >  Ambiguous - ambiguous predictions that there are some other intent predictions whose
-     scores are close to the correctly predicted intents. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
-     the correctly predicted intent score, then the prediction itself is considered "ambiguous."
-  >  Misclassified - utterance's intent labels were not scored the highest.
-  >  Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
-     This threshold can be configured through the "lowconfidencescorethreshold" parameter, the default is 0.5.
-  >  Metrics - test confisuon matrix metrics. Please reference the "assess" command description for details.
-
-EXAMPLE
-```
-
-_See code: [src\commands\orchestrator\evaluate.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/evaluate.ts)_
-
-## `bf orchestrator:basemodel:get`
-
-Gets Orchestrator base model
-
-```
-USAGE
-  $ bf orchestrator:basemodel:get
-
-OPTIONS
-  -o, --out        Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.
-  --versionId      Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.
-  -h, --help       Show CLI help
-```
-
-_See code: [src\commands\orchestrator\basemodel\get.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/get.ts)_
-
-
-## `bf orchestrator:basemodel:list`
-
-Lists all Orchestrator base model versions
-
-```
-USAGE
-  $ bf orchestrator:basemodel:list
-
-OPTIONS
-  -r, --raw        Optional. Raw output
-  -h, --help       Show CLI help
-```
-
-_See code: [src\commands\orchestrator\basemodel\list.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/basemodel/list.ts)_
-
-## `bf orchestrator:interactive`
-
-Returns score of given utterance using previously created orchestrator examples
-
-```
-USAGE
-    $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
-
-OPTIONS
-  -d, --debug                     Print debugging information during execution.
-  -h, --help                      Orchestrator 'interactive' command help.
-  -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
-                                  This argument is optional users can use the 'interactive' command
-                                  to start an Orchestrator snapshot from scratch. The 'n' commandlet
-                                  can save the utterance labels into a snapshot (.blu) file.
-  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out                   Directory where analysis and output files will be placed.
-  --fullEmbeddings                                Optional flag to run on full embeddings instead of compact embeddings.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
-
-DESCRIPTION
-
-  The 'interactive' command is an interactive session that a user can access an Orchestrator model in real-time
-  doing following:
-    1) Predict the intent of an input utterance using the 'p' commandlet.
-    2) Analyze a model example set, by executing the 'v' (validation) commandlet and produce an evaluation
-       report in real-time.
-    3) Add, remove, or change the intents of an input utterace using the 'a', 'r', and 'c' commandlets,
-       respectively. Users can reference a validation report and choose an ambiguous, misclassified, or
-       low-confidence utterance and change their intent labels.
-    4) Remove some labels completely from the model example set using the 'rl' commandlet.
-    5) Create a new model example set snapshot using the 'n' commandlet.
-
-  Below is a list of the commandlets that can be issued during a 'interactive' session.
-
-  Commandlets: h, q, d, s, u, cu, i, ci, ni, cni, q, p, v,
-               vd, va, vm, vl, vat, vlt, vmt, vut, a, r, c, rl, n
-    h   - print this help message
-    q   - quit
-    d   - display utterance, intent label array inputs, Orchestrator config,
-          and the label-index map
-    s   - show label-utterance statistics of the model examples
-    u   - enter a new utterance and save it as the "current" utterance input
-    cu  - clear the "current" utterance input
-    i   - enter an intent and add it to the "current" intent label array input
-          (can be an index for retrieving a label from the label-index map)
-    ci  - clear the "current" intent label array input
-    ni  - enter an intent and add it to the "new" intent label array input
-          (can be an index for retrieving a label from the label-index map)
-    cni - clear the "new" intent label array input
-    f   - find the "current" utterance if it is already in the model example set
-    p   - make a prediction on the "current" utterance input
-    v   - validate the model and save analyses (validation report) to
-          "experiment_predicting_va\orchestrator_predicting_set_summary.html"
-    vd  - reference a validation Duplicates report
-          (previously generated by the "v" command) and enter an index
-          for retrieving utterance/intents into "current"
-    va  - reference a validation Ambiguous report
-          (previously generated by the "v" command) and enter an index
-          for retrieving utterance/intents into "current"
-    vm  - reference a validation Misclassified report and enter an index
-          (previously generated by the "v" command)
-          for retrieving utterance/intents into "current"
-    vl  - reference a validation LowConfidence report
-          (previously generated by the "v" command) and enter an index
-          for retrieving utterance/intents into "current"
-    vat - enter a new validation-report ambiguous closeness threshold
-    vlt - enter a new validation-report low-confidence threshold
-    vmt - enter a new multi-label threshold
-    vut - enter a new unknown-label threshold
-    a   - add the "current" utterance and intent labels to the model example set
-    r   - remove the "current" utterance and intent labels from the model example set
-    c   - remove the "current" utterance's intent labels and then
-          add it with the "new" intent labels to the model example set
-    rl  - remove the "current" intent labels from the model example set
-    n   - create a new snapshot of model examples and save it to
-          "experiment_predicting_va\orchestrator_predicting_training_set.blu"
-
-EXAMPLE
-
-      $ bf orchestrator:interactive --out=resources\data\Columnar\PredictOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu
-
-      Notice that inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
-      among other hyper parameters. Here is an example: 
-      {
-        "LoadModel": true,
-        "VocabFile": "vocab.json",
-        "MergeFile": "merges.txt",
-        "ModelFile": "traced_model.onnx",
-        "Version": "1.0.0-pretrained.20200729.microsoft.dte.en.onnx"
-      }
-
-
-```
-
-_See code: [src\commands\orchestrator\interactive.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/interactive.ts)_
-
-## `bf orchestrator:test`
-
-Test utterance/label samples from an input file and create an evaluation report
-
-```
-USAGE
-  $ bf orchestrator:test
-
-OPTIONS
-  -d, --debug                     Print debugging information during execution.
-  -h, --help                      Orchestrator 'test' command help.
-  -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out                   Directory where analysis and output files will be placed.
-  -t, --test=test                 Path to a test file, or comma-separated paths to
-                                  a collection of test files -- most uselful for crosss-valiaton.
-  --fullEmbeddings                                Optional flag to test on full embeddings instead of compact embeddings.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
-
-DESCRIPTION
-  The 'test' command can test an Orchestrator model and example set on an input utterance/intent file.
-
-EXAMPLE
-```
-_See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
 <!-- commandsstop -->
