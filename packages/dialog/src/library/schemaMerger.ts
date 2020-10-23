@@ -866,7 +866,7 @@ export class SchemaMerger {
                 for (const importedDir of await fs.readdir(this.imports)) {
                     const importPath = ppath.join(this.imports, importedDir)
                     // On a mac .DS_STORE throws an error if you try to glob it so ensure directory
-                    if (!processed.has(importedDir) && (await fs.lstat(importPath)).isDirectory) {
+                    if (!processed.has(importedDir) && (await fs.lstat(importPath)).isDirectory()) {
                         for (const path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '**')))) {
                             const {unchanged} = await hash.isUnchanged(path)
                             if (unchanged) {
