@@ -1,7 +1,7 @@
 
 > # Intent definitions
 
-## AskForUserName
+# AskForUserName
 - {userName=vishwac}
 - I'm {userName=vishwac}
 - call me {userName=vishwac}
@@ -10,53 +10,53 @@
 - you can call me {userName=vishwac}
 
 
-## Buy chocolate
+# Buy chocolate
 - I would like to buy some kit kat
 - I want some twix
 - can I get some m&m
 
 
-## CommunicationPreference
+# CommunicationPreference
 - set phone call as my communication preference
 - I prefer to receive text message
 
 
-## CreateAlarm
+# CreateAlarm
 - create an alarm for 7AM
 - create an alarm
 - set an alarm for 7AM next thursday
 
 
-## DeleteAlarm
+# DeleteAlarm
 - delete the {alarmTime} alarm
 - remove the {alarmTime} alarm
 
 
-## Greeting
+# Greeting
 - Hi
 - Good morning
 - Good evening
 - Hello
 
 
-## Help
+# Help
 - can you help
 - please help
 - I need help
 - help
 
 
-## None
+# None
 - who is your ceo?
 - santa wants a blue ribbon
 
 
-## setThermostat
+# setThermostat
 - Please set {deviceTemperature=thermostat to 72}
 - Set {deviceTemperature={customDevice=owen} to 72}
 
 
-## testIntent
+# testIntent
 - I need a flight from {datetimeV2:fromDate=tomorrow} and returning on {datetimeV2:toDate=next thursday}
 
 
@@ -129,7 +129,7 @@ $units:[temperature]
 > # QnA pairs
 
 > Source: custom editorial
-## ? get me your ceo info
+# ? get me your ceo info
 - Who is your ceo?
 
 ```markdown
@@ -137,7 +137,7 @@ Vishwac
 ```
 
 > Source: custom editorial
-## ? How do I change the default message
+# ? How do I change the default message
 
 ```markdown
 You can change the default message if you use the QnAMakerDialog.
@@ -145,7 +145,7 @@ See [this link](https://docs.botframework.com/en-us/azure-bot-service/templates/
 ```
 
 > Source: custom editorial
-## ? How do I programmatically update my KB?
+# ? How do I programmatically update my KB?
 
 ```markdown
 You can use our REST apis to manage your KB.
@@ -153,7 +153,7 @@ You can use our REST apis to manage your KB.
 ```
 
 > Source: custom editorial
-## ? I need coffee
+# ? I need coffee
 - Where can I get coffee?
 
 
@@ -165,7 +165,7 @@ You can get coffee in our Seattle store at 1 pike place, Seattle, WA
 ```
 
 > Source: custom editorial
-## ? I need coffee
+# ? I need coffee
 - Where can I get coffee?
 
 
@@ -177,7 +177,7 @@ You can get coffee in our Portland store at 52 marine drive, Portland, OR
 ```
 
 > Source: custom editorial
-## ? ludown cli
+# ? ludown cli
 - What is Ludown?
 - where can i get more information about ludown cli?
 

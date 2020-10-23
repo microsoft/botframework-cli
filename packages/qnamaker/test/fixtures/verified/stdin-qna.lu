@@ -1,7 +1,7 @@
 > # QnA pairs
 
 > Source: custom editorial
-## ? How do I change the default message
+# ? How do I change the default message
 
 ```markdown
 You can change the default message if you use the QnAMakerDialog.
@@ -10,7 +10,7 @@ See [this link](https://docs.botframework.com/en-us/azure-bot-service/templates/
 ```
 
 > Source: custom editorial
-## ? How do I programmatically update my KB?
+# ? How do I programmatically update my KB?
 
 ```markdown
 You can use our REST apis to manage your KB.
@@ -19,7 +19,7 @@ You can use our REST apis to manage your KB.
 ```
 
 > Source: custom editorial
-## ? Who is your ceo?
+# ? Who is your ceo?
 - get me your ceo info
 
 ```markdown
@@ -28,7 +28,7 @@ Vishwac
 ```
 
 > Source: custom editorial
-## ? Where can I get coffee?
+# ? Where can I get coffee?
 - I need coffee
 
 
@@ -41,7 +41,7 @@ You can get coffee in our Seattle store at 1 pike place, Seattle, WA
 ```
 
 > Source: custom editorial
-## ? Where can I get coffee?
+# ? Where can I get coffee?
 - I need coffee
 
 
@@ -54,7 +54,7 @@ You can get coffee in our Portland store at 52 marine drive, Portland, OR
 ```
 
 > Source: custom editorial
-## ? What is Ludown?
+# ? What is Ludown?
 - ludown cli
 - where can i get more information about ludown cli?
 

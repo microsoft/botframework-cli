@@ -10,7 +10,7 @@
 > # Intent definitions
 
 > Utterance passed in this intent: 4/4
-## AcceptEventEntry
+# AcceptEventEntry
 > PASS. Predicted intent: AcceptEventEntry(0.9898117)
 > PASS. Predicted entities: accept {@Meals=dinner}
 - accept {@Meals=dinner}
@@ -26,7 +26,7 @@
 
 
 > Utterance passed in this intent: 1/1
-## CreateCalendarEntry
+# CreateCalendarEntry
 > PASS. Predicted intent: CreateCalendarEntry(0.99999994)
 > PASS. Predicted entities: create a meeting with {@OutLook=tom34@outlook.com}
 - create a meeting with {@OutLook=tom34@outlook.com}
