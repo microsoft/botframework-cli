@@ -8,6 +8,7 @@ const fs = require('fs-extra')
 const path = require('path')
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class LuisCrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
@@ -44,8 +45,8 @@ export default class LuisCrossTrain extends Command {
         flags.out = path.join(process.cwd(), 'cross-trained')
       }
 
-      await this.writeFiles(trainedResult.luResult, flags.out, flags.force)
-      await this.writeFiles(trainedResult.qnaResult, flags.out, flags.force)
+      await this.writeFiles(trainedResult.luResult, flags.out, flags.force, fileExtEnum.LUFile)
+      await this.writeFiles(trainedResult.qnaResult, flags.out, flags.force, fileExtEnum.QnAFile)
     } catch (err) {
       if (err instanceof exception) {
         throw new CLIError(err.text)
@@ -54,7 +55,7 @@ export default class LuisCrossTrain extends Command {
     }
   }
 
-  async writeFiles(fileIdToLuResourceMap: any, out: string, force: boolean) {
+  async writeFiles(fileIdToLuResourceMap: any, out: string, force: boolean, fileExt: any) {
     if (fileIdToLuResourceMap) {
       let newFolder
       if (out) {
@@ -74,9 +75,9 @@ export default class LuisCrossTrain extends Command {
           if (newFolder) {
             const fileName = path.basename(fileId)
             const newFileId = path.join(newFolder, fileName)
-            validatedPath = utils.validatePath(newFileId, '', force)
+            validatedPath = utils.validatePath(newFileId + fileExt, '', force)
           } else {
-            validatedPath = utils.validatePath(fileId, '', force)
+            validatedPath = utils.validatePath(fileId + fileExt, '', force)
           }
 
           await fs.writeFile(validatedPath, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')

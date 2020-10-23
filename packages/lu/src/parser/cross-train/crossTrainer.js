@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-const helpers = require('../utils/helpers')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const luParser = require('../lufile/luParser')
 const SectionOperator = require('../lufile/sectionOperator')
@@ -38,7 +37,6 @@ module.exports = {
 
       const crossTrainConfig = fileHelper.getConfigObject(
         configObject,
-        options.configId,
         options.intentName || '_Interruption',
         options.verbose || true)
 
@@ -46,10 +44,10 @@ module.exports = {
       const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
 
       // parse lu content to LUResource object
-      let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose, importResolver)
+      let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose, importResolver, fileExtEnum.LUFile)
 
       // parse qna content to LUResource object
-      let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, importResolver)
+      let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, importResolver, fileExtEnum.QnAFile)
 
       if (!allLuEmpty) {
         // construct resource tree to build the father-children relationship among lu files
@@ -181,8 +179,7 @@ const mergeRootInterruptionToLeaves = function (rootResource, result, qnaFileToR
   for (const child of rootResource.children) {
     let childResource = result.get(child.target)
     if (childResource && childResource.visited === undefined) {
-      let rootQnaFileId = rootResource.id.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.LUFile + '$'), helpers.FileExtTypeEnum.QnAFile)
-      rootQnaFileId = Array.from(qnaFileToResourceMap.keys()).find(x => x.toLowerCase() === rootQnaFileId)
+      const rootQnaFileId = Array.from(qnaFileToResourceMap.keys()).find(x => x.toLowerCase() === rootResource.id.toLowerCase())
       const rootQnaResource = qnaFileToResourceMap.get(rootQnaFileId)
       const newChildResource = mergeFatherInterruptionToChild(rootResource, rootQnaResource, childResource, intentName)
       result.set(child.target, newChildResource)
@@ -356,12 +353,11 @@ const extractIntentUtterances = function(resource, intentName) {
 const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName, allLuEmpty) {
   try {
     for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
-      let luObjectId = qnaObjectId.toLowerCase().replace(new RegExp(helpers.FileExtTypeEnum.QnAFile + '$'), helpers.FileExtTypeEnum.LUFile)
       let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
       const culture = fileHelper.getCultureFromPath(qnaObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
-      luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === luObjectId)
+      const luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId.toLowerCase())
       if (luObjectId) {
         const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName, allLuEmpty)
         luFileIdToResourceMap.set(luObjectId, luResource)
@@ -506,16 +502,17 @@ const qnaAddMetaData = function (qnaResource, fileName) {
  * @param {luObject[]} objectArray the lu or qna object list to be parsed
  * @param {boolean} verbose indicate to enable log messages or not
  * @param {any} importResolver import Resolver when resolving import files
+ * @param {any} fileExt file extension to indicate the file is .lu or .qna format 
  * @returns {Map<string, LUResource>} map of file id and luResource
  * @throws {exception} throws errors
  */
-const parseAndValidateContent = async function (objectArray, verbose, importResolver) {
+const parseAndValidateContent = async function (objectArray, verbose, importResolver, fileExt) {
   let fileIdToResourceMap = new Map()
   let allEmpty = true
   for (const object of objectArray) {    
     let fileContent = object.content
     if (object.content && object.content !== '') {
-      if (object.id.toLowerCase().endsWith(fileExtEnum.LUFile)) {
+      if (fileExt === fileExtEnum.LUFile) {
         let result = await LuisBuilderVerbose.build([object], verbose, undefined, importResolver)
         let luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
