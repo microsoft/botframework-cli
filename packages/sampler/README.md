@@ -42,7 +42,7 @@ Display Sampler CLI available commands
 
 ```
 USAGE
-  $ bf sampler
+  $ bf sampler -h
 
 OPTIONS
   -h, --help  Sampler commands help
@@ -59,10 +59,11 @@ USAGE
   $ bf sampler:sampling -h
 
 OPTIONS
+  -f, --force                               [Default: false] Force overwrites files if they already exist.
   -h, --help                                Orchestrator 'assess' command help.
   -i, --in=in                               Path to lu file or folder that contains lu files. Default to current working directory.
   -o, --out=out                             Path where sampled lu files will be placed. Default to current working directory.
-  --maxImbalanceRatio=maxImbalanceRatio     [Default: 10 Max imbalance ratio for sampling.
+  --maxImbalanceRatio=maxImbalanceRatio     [Default: 10] Max imbalance ratio for sampling.
   --maxUtteranceAllowed=maxUtteranceAllowed [Default: 15000] Max utterances allowed after samping.
   --sampleSize=sampleSize                   [Default: 2] sample size.
 
