@@ -19,7 +19,6 @@ describe('orchestrator:basemodel:get', () => {
   test
   .stdout()
   .command(['orchestrator:basemodel:get', '--help'])
-  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Gets Orchestrator base model');
   });
@@ -27,7 +26,6 @@ describe('orchestrator:basemodel:get', () => {
   test
   .stdout()
   .command(['orchestrator:basemodel:list', '--help'])
-  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Lists all Orchestrator base model versions');
   });
