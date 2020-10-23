@@ -277,12 +277,14 @@ The "test" command can operate in three modes:
       a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
   2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
       on a previously generated .blu snapshot file.
-  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and create an evaluation report,
-      there is no need for a base model.
+  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and
+      create an evaluation report. There is no need for a base model.
 
-The 'test' mode is activated if there is a '--test' parameter set for a test file. Please see below for detailed help message for this mode.
-The 'assessment' mode is activated if there is a '--prediction' parameter set for a prediction. Please see below for detailed help messahe for this mode.
-If there is no '--test' or '--prediction' parameters, then 'evaluation' mode. 
+The 'test' mode is activated if there is a '--test' parameter set for a test file.
+Please see below for detailed help message for this mode.
+The 'assessment' mode is activated if there is a '--prediction' parameter set for a prediction.
+Please see below for detailed help messahe for this mode.
+If there is no '--test' or '--prediction' parameters, then "test" command runs on the 'evaluation' mode. 
 
 Notice that the input specificaed by the '--in' parameter may be different from mode to mode.
 

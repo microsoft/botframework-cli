@@ -11,7 +11,7 @@ describe('orchestrator:test', () => {
   .stdout()
   .command(['orchestrator:test', '--help'])
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Test command can operate in three modes');
+    expect(ctx.stdout).to.contain('The "test" command can operate in three modes');
   });
 
   test

@@ -9,7 +9,7 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorQuery extends Command {
-  static description: string = 'Query the Orchestrator models';
+  static description: string = 'Query a Orchestrator model and a snapshot/train file';
 
   static examples: Array<string> = [`
     $ bf orchestrator:query --in=./path/to/snapshot/file --query=hi --model=./path/to/model/directory`]

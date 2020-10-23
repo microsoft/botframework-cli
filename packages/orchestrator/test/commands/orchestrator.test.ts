@@ -16,6 +16,7 @@ describe('orchestrator', () => {
     .to.contain('orchestrator:create')
     .to.contain('orchestrator:build')
     .to.contain('orchestrator:test')
+    .to.contain('orchestrator:query')
     .to.contain('orchestrator:interactive')
     .to.contain('orchestrator:basemodel');
   });
@@ -30,6 +31,7 @@ describe('orchestrator', () => {
     .to.contain('orchestrator:create')
     .to.contain('orchestrator:build')
     .to.contain('orchestrator:test')
+    .to.contain('orchestrator:query')
     .to.contain('orchestrator:interactive')
     .to.contain('orchestrator:basemodel');
   });

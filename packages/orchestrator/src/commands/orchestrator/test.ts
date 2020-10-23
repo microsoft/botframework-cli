@@ -9,8 +9,10 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
-  static description: string = `
-  The "test" command can operate in three modes:
+  static description: string = `The "test" command can operate in three modes: test, evaluation, assessment.
+  If given a "--test" argument, then this command runs on the "test" mode.
+  If not, but given a "--prediction" argument, then this command runs on the "assessment" mode.
+  Otherwise, this command runs the "evaluation" mode.
   1) Test mode: test a collection of utterance/label samples loaded from an input file against
           a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
   2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
