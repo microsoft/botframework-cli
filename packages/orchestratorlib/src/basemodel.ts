@@ -74,7 +74,7 @@ export class OrchestratorBaseModel {
       if (onProgress) {
         onProgress('OrchestratorNlr.getModelAsync(): extracting...');
       }
-      await Zip.unpack(modelZipPath, baseModelPath, (err: Error) => {
+      Zip.unpack(modelZipPath, baseModelPath, (err: Error) => {
         if (err === null) {
           if (onProgress) {
             onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
