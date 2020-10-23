@@ -14,7 +14,7 @@ export default class OrchestratorBaseModelList extends Command {
     raw: flags.boolean({char: 'r', description: 'Optional. Raw output', default: false}),
   }
 
-  async run() {
+  async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelList);
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;

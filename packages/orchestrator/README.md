@@ -128,7 +128,7 @@ EXAMPLE
        $ bf orchestrator:create 
        $ bf orchestrator:create --in ./path/to/file/
        $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
+       $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/base/model/directory
 ```
 
 _See code: [src\commands\orchestrator\create.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/create.ts)_
@@ -269,6 +269,29 @@ EXAMPLE
 ```
 
 _See code: [src\commands\orchestrator\interactive.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/interactive.ts)_
+
+## `bf orchestrator:query`
+
+Query Orchestrator base model and a snapshot/train file.
+
+```
+USAGE
+  $ bf orchestrator:query
+
+OPTIONS
+  -d, --debug
+  -h, --help         Orchestrator query command help
+  -i, --in=in        Path to previously created Orchestrator snapshot (.blu file).
+  -q, --query=query  Query string to predict.
+  -m, --model=model  Path to Orchestrator base model directory.
+  
+EXAMPLE
+       $ bf orchestrator:query --in ./path/to/blufile/ --query /query/string/to/predict 
+       $ bf orchestrator:query --in ./path/to/blufile/ --query /query/string/to/predict --model ./path/to/base/model/directory
+```
+
+_See code: [src\commands\orchestrator\query.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/query.ts)_
+
 
 ## `bf orchestrator:test`
 

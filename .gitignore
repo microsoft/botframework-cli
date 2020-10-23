@@ -91,3 +91,6 @@ model_dte_roberta_for_test_command
 **/vocab.txt
 **/merges.txt
 **/model/**/license.md
+**/**assessment**.html
+**/**assessment**.txt
+

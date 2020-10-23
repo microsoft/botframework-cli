@@ -11,12 +11,6 @@ import {OrchestratorSettings} from '../../utils/settings';
 export default class OrchestratorCreate extends Command {
   static description: string = 'Creates Orchestrator example file from .lu/.qna files, which represent bot modules';
 
-  static examples: Array<string> = [`
-    $ bf orchestrator:create 
-    $ bf orchestrator:create --in ./path/to/file/
-    $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/
-    $ bf orchestrator:create --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory`]
-
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),
     out: flags.string({char: 'o', description: 'Path where generated orchestrator snapshot file will be placed. Default to current working directory.'}),

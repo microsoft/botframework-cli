@@ -9,20 +9,20 @@ import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorQuery extends Command {
-  static description: string = 'Query a Orchestrator model and a snapshot/train file';
+  static description: string = 'Query Orchestrator base model and a snapshot/train file';
 
   static examples: Array<string> = [`
-    $ bf orchestrator:query --in=./path/to/snapshot/file --query=hi --model=./path/to/model/directory`]
+    $ bf orchestrator:query --in=./path/to/snapshot/file --query=hi --model=./path/to/base/model/directory`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
-    query: flags.string({char: 'q', description: 'query.'}),
+    in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator snapshot (.blu file).'}),
+    query: flags.string({char: 'q', description: 'Query string to predict.'}),
     // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: 'Directory or hosting Orchestrator config and base model files.'}),
-    ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
+    model: flags.string({char: 'm', description: 'Path to Orchestrator base model directory.'}),
+    ambiguousClosenessThreshold: flags.string({char: 'a', description: `Optional. Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
+    lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Optional. Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
+    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Optional. Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Optional. Unknown label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),

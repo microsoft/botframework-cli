@@ -1,0 +1,15 @@
+/*!
+ * Copyright (c) Microsoft Corporation. All rights reserved.
+ * Licensed under the MIT License.
+ */
+
+import {expect, test} from '@oclif/test';
+
+describe('orchestrator:query', () => {
+  test
+  .stdout()
+  .command(['orchestrator:query', '--help'])
+  .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
+    expect(ctx.stdout).to.contain('Query Orchestrator base model and a snapshot/train file');
+  });
+});

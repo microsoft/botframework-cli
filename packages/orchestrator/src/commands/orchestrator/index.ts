@@ -12,7 +12,8 @@ export default class OrchestratorIndex extends Command {
     help: flags.help({char: 'h', description: 'Orchestrator commands help'}),
   }
 
-  async run(): Promise<void> {
+  async run(): Promise<number> {
     this._help();
+    return 0;
   }
 }

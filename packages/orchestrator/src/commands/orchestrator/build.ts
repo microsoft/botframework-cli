@@ -23,7 +23,7 @@ export default class OrchestratorBuild extends Command {
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
 
-  async run() {
+  async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
     const input: string = flags.in ? path.resolve(flags.in) : '';
     const cwd: string = process.cwd();

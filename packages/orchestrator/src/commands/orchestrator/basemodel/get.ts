@@ -18,7 +18,7 @@ export default class OrchestratorBaseModelGet extends Command {
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
   }
 
-  async run() {
+  async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
     const output: string = flags.out || `${cwd}/model`;
