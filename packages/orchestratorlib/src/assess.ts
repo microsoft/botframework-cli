@@ -6,8 +6,8 @@
 import * as path from 'path';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {Label}  from './label';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -64,6 +64,8 @@ export class OrchestratorAssess {
       'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFileConfiguration, false);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
     const groundTruthSetUtteranceLabelsMap: Map<string, Set<string>> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
@@ -118,6 +120,8 @@ export class OrchestratorAssess {
       'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(predictionFileConfiguration, false);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
     const predictionSetUtteranceLabelsMap: Map<string, Set<string>> =
       predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap;
     const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> =
@@ -143,7 +147,7 @@ export class OrchestratorAssess {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
         utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap},
       groundTruthSetLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction set');
     const predictionSetLabels: string[] =
       [...predictionSetUtteranceLabelsMap.values()].reduce(
         (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
@@ -154,7 +158,7 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction-set duplicate utterance/label pairs=${predictionSetUtteranceLabelDuplicateMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set unique utterances=${predictionSetUtteranceLabelsMap.size}`);
     // if (predictionSetUtteranceLabelsMap.size <= 0) {
-    //   Utility.debuggingThrow('there is no example, something wrong?');
+    //   Utility.debuggingThrow('There is no example, something wrong?');
     // }
     const predictionSetEntityLabels: string[] =
       [...predictionSetUtteranceEntityLabelsMap.values()].reduce(
@@ -219,8 +223,8 @@ export class OrchestratorAssess {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -312,8 +316,8 @@ export class OrchestratorAssess {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;

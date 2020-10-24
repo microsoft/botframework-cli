@@ -9,9 +9,11 @@ import * as path from 'path';
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {BinaryConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrix} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
+// import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+// import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
 import {Example} from './example';
@@ -207,6 +209,10 @@ export class Utility {
   even though a test instance might be labeled with a large ground-truth label set.
   `;
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- utility functions
+  // -------------------------------------------------------------------------
+
   // eslint-disable-next-line max-params
   public static processUtteranceMultiLabelTsv(
     lines: string[],
@@ -310,6 +316,10 @@ export class Utility {
     return '';
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- assessment report with Label objects
+  // -------------------------------------------------------------------------
+
   // eslint-disable-next-line max-params
   public static generateAssessmentLabelObjectEvaluationReport(
     groundTruthSetLabels: string[],
@@ -365,8 +375,8 @@ export class Utility {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -462,8 +472,8 @@ export class Utility {
         'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -637,8 +647,8 @@ export class Utility {
         'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -657,8 +667,8 @@ export class Utility {
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -718,8 +728,8 @@ export class Utility {
       'stringArray': string[];
       'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -728,21 +738,23 @@ export class Utility {
     const confusionMatrix: MultiLabelObjectConfusionMatrix = new MultiLabelObjectConfusionMatrix(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
-    const multiLabelConfusionMatrixExact: MultiLabelConfusionMatrixExact = new MultiLabelConfusionMatrixExact(
+    const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact = new MultiLabelObjectConfusionMatrixExact(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
-    const multiLabelConfusionMatrixSubset: MultiLabelConfusionMatrixSubset = new MultiLabelConfusionMatrixSubset(
+    const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset = new MultiLabelObjectConfusionMatrixSubset(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
     for (const predictionLabelStructure of predictionLabelStructureArray) {
       if (predictionLabelStructure) {
         confusionMatrix.addInstanceByLabelObjects(predictionLabelStructure.labels, predictionLabelStructure.labelsPredicted);
+        multiLabelObjectConfusionMatrixExact.addInstanceByLabelObjects(predictionLabelStructure.labels, predictionLabelStructure.labelsPredicted);
+        multiLabelObjectConfusionMatrixSubset.addInstanceByLabelObjects(predictionLabelStructure.labels, predictionLabelStructure.labelsPredicted);
       }
     }
     return Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(
       confusionMatrix,
-      multiLabelConfusionMatrixExact, // ---- NOTE ---- not calculated for entity labels.
-      multiLabelConfusionMatrixSubset, // ---- NOTE ---- not calculated for entity labels.
+      multiLabelObjectConfusionMatrixExact,
+      multiLabelObjectConfusionMatrixSubset,
       labelArrayAndMap);
   }
 
@@ -840,6 +852,10 @@ export class Utility {
     return microConfusionMatrix;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- assessment report with string labels
+  // -------------------------------------------------------------------------
+
   // eslint-disable-next-line max-params
   public static generateAssessmentEvaluationReportFiles(
     stringArray: string[],
@@ -915,8 +931,8 @@ export class Utility {
           'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -1012,8 +1028,8 @@ export class Utility {
         'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -1081,8 +1097,8 @@ export class Utility {
         'predictingMisclassifiedUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -1101,8 +1117,8 @@ export class Utility {
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -1162,8 +1178,8 @@ export class Utility {
       'stringArray': string[];
       'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -1172,37 +1188,37 @@ export class Utility {
     const confusionMatrix: MultiLabelConfusionMatrix = new MultiLabelConfusionMatrix(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
-    const multiLabelConfusionMatrixExact: MultiLabelConfusionMatrixExact = new MultiLabelConfusionMatrixExact(
+    const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact = new MultiLabelObjectConfusionMatrixExact(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
-    const multiLabelConfusionMatrixSubset: MultiLabelConfusionMatrixSubset = new MultiLabelConfusionMatrixSubset(
+    const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset = new MultiLabelObjectConfusionMatrixSubset(
       labelArrayAndMap.stringArray,
       labelArrayAndMap.stringMap);
     for (const predictionStructure of predictionStructureArray) {
       if (predictionStructure) {
         confusionMatrix.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
-        multiLabelConfusionMatrixExact.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
-        multiLabelConfusionMatrixSubset.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
+        multiLabelObjectConfusionMatrixExact.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
+        multiLabelObjectConfusionMatrixSubset.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
       }
     }
     return Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(
       confusionMatrix,
-      multiLabelConfusionMatrixExact,
-      multiLabelConfusionMatrixSubset,
+      multiLabelObjectConfusionMatrixExact,
+      multiLabelObjectConfusionMatrixSubset,
       labelArrayAndMap);
   }
 
   // eslint-disable-next-line complexity
   public static generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(
     confusionMatrix: IConfusionMatrix,
-    multiLabelConfusionMatrixExact: MultiLabelConfusionMatrixExact,
-    multiLabelConfusionMatrixSubset: MultiLabelConfusionMatrixSubset,
+    multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact,
+    multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset,
     labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -1690,7 +1706,7 @@ export class Utility {
       'averageFalseNegatives': number;
       'averageSupport': number;
       'total': number;
-    } = multiLabelConfusionMatrixExact.getMacroAverageMetrics([]);
+    } = multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]);
     if (exactMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineExactMacroAggregate: any[] = [
         Utility.ColumnNameMultiLabelExactAggregate,
@@ -1723,7 +1739,7 @@ export class Utility {
       'averageFalseNegatives': number;
       'averageSupport': number;
       'total': number;
-    } = multiLabelConfusionMatrixSubset.getMacroAverageMetrics([]);
+    } = multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]);
     if (subsetMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineSubsetMacroAggregate: any[] = [
         Utility.ColumnNameMultiLabelSubsetAggregate,
@@ -1748,23 +1764,23 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getMicroAverageMetrics())=${JSON.stringify(confusionMatrix.getMicroAverageMetrics([]))}`);
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getMacroAverageMetrics([]))}`);
     Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixExact.getMicroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixExact.getMicroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixExact.getMacroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixExact.getMacroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixExact.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixExact.getWeightedMacroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()         =${multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives() =${multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getFalseNegatives()=${multiLabelConfusionMatrixExact.getBinaryConfusionMatrix().getFalseNegatives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()         =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives() =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalseNegatives()=${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalseNegatives()}`);
     Utility.debuggingLog('Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), finished generating {MODEL_EVALUATION} content');
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixSubset.getMicroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixSubset.getMicroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixSubset.getMacroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixSubset.getMacroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelConfusionMatrixSubset.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelConfusionMatrixSubset.getWeightedMacroAverageMetrics([]))}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()         =${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives() =${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives()}`);
-    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()=${multiLabelConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics([]))}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()         =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives() =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives()}`);
+    Utility.debuggingLog(`Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()=${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalseNegatives()}`);
     Utility.debuggingLog('Utility.generateAssessmentConfusionMatrixMetricsAndHtmlTableWithConfusionMatrices(), finished generating {MODEL_EVALUATION} content');
     // -----------------------------------------------------------------------
     const confusionMatrixAverageMetricsHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
@@ -1778,8 +1794,8 @@ export class Utility {
     // -----------------------------------------------------------------------
     return {
       confusionMatrix,
-      multiLabelConfusionMatrixExact,
-      multiLabelConfusionMatrixSubset,
+      multiLabelObjectConfusionMatrixExact,
+      multiLabelObjectConfusionMatrixSubset,
       predictingConfusionMatrixOutputLines,
       confusionMatrixMetricsHtml,
       confusionMatrixAverageMetricsHtml,
@@ -1879,8 +1895,8 @@ export class Utility {
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -1925,8 +1941,8 @@ export class Utility {
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -1970,8 +1986,8 @@ export class Utility {
           scoringLowConfidenceUtterancesSimpleArrays: []},
         confusionMatrixAnalysis: {
           confusionMatrix: new MultiLabelConfusionMatrix([], new Map<string, number>()),
-          multiLabelConfusionMatrixExact: new MultiLabelConfusionMatrixExact([], new Map<string, number>()),
-          multiLabelConfusionMatrixSubset: new MultiLabelConfusionMatrixSubset([], new Map<string, number>()),
+          multiLabelObjectConfusionMatrixExact: new MultiLabelObjectConfusionMatrixExact([], new Map<string, number>()),
+          multiLabelObjectConfusionMatrixSubset: new MultiLabelObjectConfusionMatrixSubset([], new Map<string, number>()),
           predictingConfusionMatrixOutputLines: [],
           confusionMatrixMetricsHtml: '',
           confusionMatrixAverageMetricsHtml: '',
@@ -2040,7 +2056,7 @@ export class Utility {
     dataSetLabels: string[],
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
-    ambiguousCloseness: number,
+    ambiguousClosenessThreshold: number,
     lowConfidenceScoreThreshold: number,
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): {
@@ -2078,8 +2094,8 @@ export class Utility {
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -2153,8 +2169,8 @@ export class Utility {
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -2163,7 +2179,7 @@ export class Utility {
       evaluationReportLabelUtteranceStatistics.evaluationSummary,
       evaluationReportLabelUtteranceStatistics.labelArrayAndMap,
       predictionScoreStructureArray,
-      ambiguousCloseness,
+      ambiguousClosenessThreshold,
       lowConfidenceScoreThreshold,
       unknownLabelPredictionThreshold);
     Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.generateEvaluationReportAnalyses()');
@@ -2334,7 +2350,7 @@ export class Utility {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
     predictionScoreStructureArray: PredictionScoreStructure[],
-    ambiguousCloseness: number,
+    ambiguousClosenessThreshold: number,
     lowConfidenceScoreThreshold: number,
     unknownLabelPredictionThreshold: number): {
       'evaluationSummary': string;
@@ -2352,8 +2368,8 @@ export class Utility {
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -2366,7 +2382,7 @@ export class Utility {
       'scoringAmbiguousUtteranceSimpleArrays': string[][];
     } = Utility.generateAmbiguousStatisticsAndHtmlTable(
       predictionScoreStructureArray,
-      ambiguousCloseness,
+      ambiguousClosenessThreshold,
       unknownLabelPredictionThreshold);
     evaluationSummary = evaluationSummary.replace(
       '{AMBIGUOUS}', ambiguousAnalysis.scoringAmbiguousUtterancesArraysHtml);
@@ -2395,8 +2411,8 @@ export class Utility {
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -2595,8 +2611,8 @@ export class Utility {
       'stringArray': string[];
       'stringMap': Map<string, number>;}): {
       'confusionMatrix': IConfusionMatrix;
-      'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-      'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+      'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+      'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
       'predictingConfusionMatrixOutputLines': string[][];
       'confusionMatrixMetricsHtml': string;
       'confusionMatrixAverageMetricsHtml': string;
@@ -2681,7 +2697,7 @@ export class Utility {
 
   public static generateAmbiguousStatisticsAndHtmlTable(
     predictionScoreStructureArray: PredictionScoreStructure[],
-    ambiguousCloseness: number,
+    ambiguousClosenessThreshold: number,
     unknownLabelPredictionThreshold: number): {
       'scoringAmbiguousUtterancesArrays': string[][];
       'scoringAmbiguousUtterancesArraysHtml': string;
@@ -2695,7 +2711,7 @@ export class Utility {
         const scoreArray: number[] = predictionScoreStructure.scoreArray;
         const scoreArrayAmbiguous: number[][] = scoreArray.map(
           (x: number, index: number) => [x, index, Math.abs((predictedScore - x) / predictedScore)]).filter(
-          (x: number[]) => ((x[2] < ambiguousCloseness) && (x[2] > 0))).map(
+          (x: number[]) => ((x[2] < ambiguousClosenessThreshold) && (x[2] > 0))).map(
           (x: number[]) => [x[1], x[0], x[2]]);
         if (scoreArrayAmbiguous.length > 0) {
           const labelsScoreStructureHtmlTable: string = predictionScoreStructure.labelsScoreStructureHtmlTable;
@@ -2896,6 +2912,10 @@ export class Utility {
     return microConfusionMatrix;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- data structure manipulation
+  // -------------------------------------------------------------------------
+
   public static reverseUniqueKeyedArray(input: Map<string, Set<string>>): Map<string, Set<string>> {
     const reversed: Map<string, Set<string>> = new Map<string, Set<string>>();
     for (const key of input.keys()) {
@@ -2912,6 +2932,10 @@ export class Utility {
     }
     return reversed;
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- UNKNOWN label processing
+  // -------------------------------------------------------------------------
 
   public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
     utteranceLabels: {
@@ -3055,6 +3079,10 @@ export class Utility {
     return lines.join('\n');
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- utility function to dump data arrays to a TSV file
+  // -------------------------------------------------------------------------
+
   // eslint-disable-next-line max-params
   public static storeDataArraysToTsvFile(
     outputFilename: string,
@@ -3090,6 +3118,10 @@ export class Utility {
       return '';
     }
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- data structure to string/html output
+  // -------------------------------------------------------------------------
 
   // eslint-disable-next-line max-params
   public static concatenateDataArrayToDelimitedString(
@@ -3332,6 +3364,10 @@ export class Utility {
     return outputContent;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- argment max
+  // -------------------------------------------------------------------------
+
   public static getIndexesOnMaxOrEntriesOverThreshold(
     inputArray: number[],
     threshold: number):
@@ -3402,6 +3438,10 @@ export class Utility {
     return {indexMax, max};
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- is a data structure empty
+  // -------------------------------------------------------------------------
+
   public static isEmptyAnyKeyGenericArrayMap(
     anyKeyGenericSetMap: Map<any, any[]>): boolean {
     return !(anyKeyGenericSetMap &&
@@ -3446,12 +3486,9 @@ export class Utility {
     return !(input && input.length > 0);
   }
 
-  public static round(input: number, digits: number = 10000): number {
-    if (digits > 0) {
-      input = Math.round(input * digits) / digits;
-    }
-    return input;
-  }
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- example management
+  // -------------------------------------------------------------------------
 
   public static examplesToUtteranceLabelMaps(
     examples: any,
@@ -3491,6 +3528,10 @@ export class Utility {
     return exampleStructureArray;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- score array processing
+  // -------------------------------------------------------------------------
+
   public static scoreResultsToArray(
     results: any,
     labelIndexMap: Map<string, number>,
@@ -3518,6 +3559,10 @@ export class Utility {
     }
     return scoreResultArray;
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- data structure processing
+  // -------------------------------------------------------------------------
 
   public static buildStringIdNumberValueDictionaryFromUniqueStringArray(
     inputStringArray: string[]): Map<string, number> {
@@ -3638,6 +3683,10 @@ export class Utility {
     return stringKeyLabelSetMap;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- label management
+  // -------------------------------------------------------------------------
+
   public static addUniqueLabel(newLabel: string, labels: Set<string>): boolean {
     try {
       if (labels.has(newLabel)) {
@@ -3684,10 +3733,9 @@ export class Utility {
     return false;
   }
 
-  public static countMapValues(inputStringToStringArrayMap: Map<string, Set<string>>): number {
-    return [...inputStringToStringArrayMap.entries()].reduce(
-      (accumulant: number,  value: [string, Set<string>]) => accumulant + value[1].size, 0);
-  }
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- JSON functions
+  // -------------------------------------------------------------------------
 
   public static jsonStringifyInLine(
     value: any): string {
@@ -3700,6 +3748,10 @@ export class Utility {
     space: string | number = 4): string {
     return JSON.stringify(value, replacer, space);
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- file system IO
+  // -------------------------------------------------------------------------
 
   public static loadFile(
     filename: string,
@@ -3795,6 +3847,15 @@ export class Utility {
     return entryname;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- data structure functions
+  // -------------------------------------------------------------------------
+
+  public static countMapValues(inputStringToStringArrayMap: Map<string, Set<string>>): number {
+    return [...inputStringToStringArrayMap.entries()].reduce(
+      (accumulant: number,  value: [string, Set<string>]) => accumulant + value[1].size, 0);
+  }
+
   public static carefullyAccessStringMap(stringMap: Map<string, number>, key: string): number {
     if (stringMap === undefined) {
       Utility.debuggingThrow(
@@ -3859,6 +3920,10 @@ export class Utility {
     return true;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- string processing functions
+  // -------------------------------------------------------------------------
+
   public static cleanStringOnTabs(input: string, replacement: string = ' '): string {
     return input.replace(/[\t]+/gm, replacement);
   }
@@ -3871,9 +3936,28 @@ export class Utility {
     return input.replace(/[\r\n\t,]+/gm, replacement);
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- number processing
+  // -------------------------------------------------------------------------
+
+  public static round(input: number, digits: number = 10000): number {
+    if (digits > 0) {
+      input = Math.round(input * digits) / digits;
+    }
+    return input;
+  }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- output processing
+  // -------------------------------------------------------------------------
+
   public static getBolded(input: any): string {
     return `<b>${input}</b>`;
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- console IO
+  // -------------------------------------------------------------------------
 
   public static writeToConsole(outputContents: string) {
     const output: string = JSON.stringify(outputContents, null, 2);
@@ -3892,6 +3976,10 @@ export class Utility {
   public static writeLineToConsoleStderr(outputContents: string) {
     process.stderr.write(`${outputContents}\n`);
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- debugging
+  // -------------------------------------------------------------------------
 
   public static debuggingLog(
     message: any): string {

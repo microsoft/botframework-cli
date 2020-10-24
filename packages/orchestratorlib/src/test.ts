@@ -6,8 +6,8 @@
 import * as path from 'path';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {PredictionScoreStructure}  from './predictionscorestructure';
 
@@ -54,7 +54,7 @@ export class OrchestratorTest {
       Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
     baseModelPath = path.resolve(baseModelPath);
-    const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
+    const ambiguousClosenessThreshold: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
@@ -62,7 +62,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`testPath=${testPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
-    Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
+    Utility.debuggingLog(`ambiguousClosenessThreshold=${ambiguousClosenessThreshold}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
@@ -104,6 +104,8 @@ export class OrchestratorTest {
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
+    // Utility.debuggingLog(`OrchestratorTest.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
+    // Utility.debuggingLog(`OrchestratorTest.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(processedUtteranceLabelsMap, snapshotSetLabelSet);
     const utteranceLabelsMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelsMap;
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = processedUtteranceLabelsMap.utteranceLabelDuplicateMap;
@@ -113,7 +115,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`OrchestratorTest.runAsync(), number of unique utterances=${utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorTest.runAsync(), number of duplicate utterance/label pairs=${utteranceLabelDuplicateMap.size}`);
     if (utteranceLabelsMap.size <= 0) {
-      Utility.debuggingThrow('there is no example, something wrong?');
+      Utility.debuggingThrow('There is no example, something wrong?');
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis reports.
@@ -156,8 +158,8 @@ export class OrchestratorTest {
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -172,7 +174,7 @@ export class OrchestratorTest {
       snapshotSetLabels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
-      ambiguousCloseness,
+      ambiguousClosenessThreshold,
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold);

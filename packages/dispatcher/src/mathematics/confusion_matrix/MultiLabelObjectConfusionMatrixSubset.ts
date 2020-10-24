@@ -17,10 +17,14 @@ import { Utility } from "../../utility/Utility";
 export class MultiLabelObjectConfusionMatrixSubset
 extends MultiLabelObjectConfusionMatrixWithBinaryBase {
 
+    protected labelObjectHasTrueNegative: boolean = false;
+
     constructor(
         labels: string[],
-        labelMap: Map<string, number>) {
+        labelMap: Map<string, number>,
+        labelObjectHasTrueNegative: boolean = false) {
         super(labels, labelMap);
+        this.labelObjectHasTrueNegative = labelObjectHasTrueNegative;
     }
 
     public addInstanceByLabelObjects(
@@ -29,37 +33,64 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
         value: number = 1): void {
         this.validateLabelObjects(groundTrueLabels);
         this.validateLabelObjects(predictedLabels);
-        for (const predictedLabel of predictedLabels) {
-            let predictedIsInGroundTruth: boolean = false;
-            for (const groundTrueLabel of groundTrueLabels) {
-                if (predictedLabel.equals(groundTrueLabel)) {
-                    predictedIsInGroundTruth = true;
-                    break;
+        if (Utility.isEmptyGenericArray(predictedLabels)) {
+            if (Utility.isEmptyGenericArray(groundTrueLabels)) {
+                if (this.labelObjectHasTrueNegative) {
+                    this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
                 }
-            }
-            const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
-            if (predictedIsInGroundTruth) {
-                this.getBinaryConfusionMatrices()[predictedLabelId].addToTruePositives(value, false);
             } else {
-                this.getBinaryConfusionMatrices()[predictedLabelId].addToFalsePositives(value, false);
+                this.getBinaryConfusionMatrix().addToFalseNegatives(value, true);
+            }
+            return;
+        }
+        let isPredictionSubsetOfGroundTruthLabels: boolean = true;
+        for (const predictedLabel of predictedLabels) {
+            if (!this.isLabelObjectInArray(groundTrueLabels, predictedLabel)) {
+                isPredictionSubsetOfGroundTruthLabels = false;
+                break;
             }
         }
-        for (const groundTrueLabel of groundTrueLabels) {
-            let groundTruthIsInPredicted: boolean = false;
-            for (const predictedLabel of predictedLabels) {
-                if (groundTrueLabel.equals(predictedLabel)) {
-                    groundTruthIsInPredicted = true;
-                    break;
-                }
-            }
-            const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
-            if (!groundTruthIsInPredicted) {
-                this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);
-            }
+        if (isPredictionSubsetOfGroundTruthLabels) {
+            this.getBinaryConfusionMatrix().addToTruePositives(value, true);
+        } else {
+            this.getBinaryConfusionMatrix().addToFalsePositives(value, true);
         }
-        for (let labelId: number = 0; labelId < this.getNumberLabels(); labelId++) {
-            this.getBinaryConfusionMatrices()[labelId].calculateDerivedCells();
-        }
+        // ---- NOTE-FOR-REFERENCE ---- for (const predictedLabel of predictedLabels) {
+        // ---- NOTE-FOR-REFERENCE ----     let predictedIsInGroundTruth: boolean = false;
+        // ---- NOTE-FOR-REFERENCE ----     for (const groundTrueLabel of groundTrueLabels) {
+        // ---- NOTE-FOR-REFERENCE ----         if (predictedLabel.equals(groundTrueLabel)) {
+        // ---- NOTE-FOR-REFERENCE ----             predictedIsInGroundTruth = true;
+        // ---- NOTE-FOR-REFERENCE ----             break;
+        // ---- NOTE-FOR-REFERENCE ----         }
+        // ---- NOTE-FOR-REFERENCE ----     }
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----     const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
+        // ---- NOTE-FOR-REFERENCE ----     if (predictedIsInGroundTruth) {
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[predictedLabelId].addToTruePositives(value, false);
+        // ---- NOTE-FOR-REFERENCE ----     } else {
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[predictedLabelId].addToFalsePositives(value, false);
+        // ---- NOTE-FOR-REFERENCE ----     }
+        // ---- NOTE-FOR-REFERENCE ---- }
+        // ---- NOTE-FOR-REFERENCE ---- for (const groundTrueLabel of groundTrueLabels) {
+        // ---- NOTE-FOR-REFERENCE ----     let groundTruthIsInPredicted: boolean = false;
+        // ---- NOTE-FOR-REFERENCE ----     for (const predictedLabel of predictedLabels) {
+        // ---- NOTE-FOR-REFERENCE ----         if (groundTrueLabel.equals(predictedLabel)) {
+        // ---- NOTE-FOR-REFERENCE ----             groundTruthIsInPredicted = true;
+        // ---- NOTE-FOR-REFERENCE ----             break;
+        // ---- NOTE-FOR-REFERENCE ----         }
+        // ---- NOTE-FOR-REFERENCE ----     }
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----     const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
+        // ---- NOTE-FOR-REFERENCE ----     if (!groundTruthIsInPredicted) {
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);
+        // ---- NOTE-FOR-REFERENCE ----     }
+        // ---- NOTE-FOR-REFERENCE ---- }
+        // ---- NOTE-FOR-REFERENCE ---- for (let labelId: number = 0; labelId < this.getNumberLabels(); labelId++) {
+        // ---- NOTE-FOR-REFERENCE ----     this.getBinaryConfusionMatrices()[labelId].calculateDerivedCells();
+        // ---- NOTE-FOR-REFERENCE ---- }
     }
 
     public addInstanceByLabelIndexes(

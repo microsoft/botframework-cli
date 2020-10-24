@@ -6,26 +6,28 @@
 import {LabelResolver} from './labelresolver';
 import {Orchestrator} from './orchestrator';
 import {OrchestratorAssess} from './assess';
+import {OrchestratorBaseModel} from './basemodel';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
 // import {OrchestratorFineTune} from './finetune';
-import {OrchestratorBaseModel} from './basemodel';
-import {OrchestratorPredict} from './predict';
-import {OrchestratorTest} from './test';
 import {OrchestratorHelper} from './orchestratorhelper';
+import {OrchestratorPredict} from './predict';
+import {OrchestratorQuery} from './query';
+import {OrchestratorTest} from './test';
 import {Utility} from './utility';
 
 export {
   LabelResolver,
   Orchestrator,
   OrchestratorAssess,
+  OrchestratorBaseModel,
   OrchestratorBuild,
   OrchestratorCreate,
   OrchestratorEvaluate,
   // OrchestratorFineTune,
-  OrchestratorBaseModel,
   OrchestratorPredict,
+  OrchestratorQuery,
   OrchestratorTest,
   OrchestratorHelper,
   Utility,

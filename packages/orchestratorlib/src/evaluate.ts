@@ -6,8 +6,8 @@
 import * as path from 'path';
 
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelType} from './labeltype';
 import {PredictionScoreStructure}  from './predictionscorestructure';
@@ -50,14 +50,14 @@ export class OrchestratorEvaluate {
     } else {
       baseModelPath = '';
     }
-    const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
+    const ambiguousClosenessThreshold: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
-    Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
+    Utility.debuggingLog(`ambiguousClosenessThreshold=${ambiguousClosenessThreshold}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
@@ -102,7 +102,7 @@ export class OrchestratorEvaluate {
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {
-      Utility.debuggingThrow('there is no example, something wrong?');
+      Utility.debuggingThrow('There is no example, something wrong?');
     }
     Utility.examplesToUtteranceLabelMaps(examples, utteranceLabelsMap, utteranceLabelDuplicateMap);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), examples.length=${examples.length}`);
@@ -173,8 +173,8 @@ export class OrchestratorEvaluate {
           'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
         'confusionMatrixAnalysis': {
           'confusionMatrix': IConfusionMatrix;
-          'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-          'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+          'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+          'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
           'predictingConfusionMatrixOutputLines': string[][];
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
@@ -189,7 +189,7 @@ export class OrchestratorEvaluate {
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
-      ambiguousCloseness,
+      ambiguousClosenessThreshold,
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold);

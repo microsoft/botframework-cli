@@ -196,7 +196,10 @@ export class LabelResolver {
                   length: spanLength}}]});
             // eslint-disable-next-line max-depth
             if (success) {
-              Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+              // eslint-disable-next-line max-depth
+              if (Utility.toPrintDetailedDebuggingLogToConsole) {
+                Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+              }
             } else {
               Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
             }

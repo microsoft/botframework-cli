@@ -78,15 +78,14 @@ export class OrchestratorBaseModel {
       await seven.extractFull(modelZipPath, baseModelPath).then(() => {
         if (onProgress) {
           onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
-
-          Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
-          fs.unlinkSync(modelZipPath);
-          Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): cleaned up .7z file: ${modelZipPath}`);
-          if (onFinish) {
-            onFinish('OrchestratorNlr.getModelAsync(): rom OrchestratorNlr.getModelAsync() calling onFinish()');
-          }
-          Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling OrchestratorNlr.getModelAsync()');
         }
+        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
+        fs.unlinkSync(modelZipPath);
+        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): cleaned up .7z file: ${modelZipPath}`);
+        if (onFinish) {
+          onFinish('OrchestratorNlr.getModelAsync(): From OrchestratorNlr.getModelAsync() calling onFinish()');
+        }
+        Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling OrchestratorNlr.getModelAsync()');
       });
       Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling fileStream.on()');
     } catch (error) {

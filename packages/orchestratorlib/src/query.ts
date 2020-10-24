@@ -38,7 +38,7 @@ export class OrchestratorQuery {
       Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorQuery.runAsync()`);
     }
     baseModelPath = path.resolve(baseModelPath);
-    const ambiguousCloseness: number = ambiguousClosenessThresholdParameter;
+    const ambiguousClosenessThreshold: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThreshold: number = unknownLabelPredictionThresholdParameter;
@@ -46,7 +46,7 @@ export class OrchestratorQuery {
     Utility.debuggingLog(`query=${queryConfiguration}`);
     // Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
-    Utility.debuggingLog(`ambiguousCloseness=${ambiguousCloseness}`);
+    Utility.debuggingLog(`ambiguousClosenessThreshold=${ambiguousClosenessThreshold}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);

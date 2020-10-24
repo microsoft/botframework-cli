@@ -8,8 +8,8 @@ import * as path from 'path';
 import * as readline from 'readline';
 
 import {DictionaryMapUtility, IConfusionMatrix} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixExact} from '@microsoft/bf-dispatcher';
-import {MultiLabelConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
+import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -69,7 +69,7 @@ export class OrchestratorPredict {
 
   protected baseModelPath: string = '';
 
-  protected ambiguousCloseness: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
+  protected ambiguousClosenessThreshold: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
 
   protected lowConfidenceScoreThreshold: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
 
@@ -146,8 +146,8 @@ export class OrchestratorPredict {
         'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
-        'multiLabelConfusionMatrixExact': MultiLabelConfusionMatrixExact;
-        'multiLabelConfusionMatrixSubset': MultiLabelConfusionMatrixSubset;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
@@ -201,7 +201,7 @@ export class OrchestratorPredict {
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.baseModelPath = baseModelPath;
-    this.ambiguousCloseness = ambiguousClosenessThresholdParameter;
+    this.ambiguousClosenessThreshold = ambiguousClosenessThresholdParameter;
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
@@ -448,7 +448,7 @@ export class OrchestratorPredict {
   }
 
   public commandLetD(): number {
-    console.log(`> Ambiguous closeness:           ${this.ambiguousCloseness}`);
+    console.log(`> Ambiguous closeness:           ${this.ambiguousClosenessThreshold}`);
     console.log(`> Low-confidence closeness:      ${this.lowConfidenceScoreThreshold}`);
     console.log(`> Multi-label threshold:         ${this.multiLabelPredictionThreshold}`);
     console.log(`> Unknown-label threshold:       ${this.unknownLabelPredictionThreshold}`);
@@ -614,7 +614,7 @@ export class OrchestratorPredict {
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
-      this.ambiguousCloseness,
+      this.ambiguousClosenessThreshold,
       this.lowConfidenceScoreThreshold,
       this.multiLabelPredictionThreshold,
       this.unknownLabelPredictionThreshold);
@@ -821,12 +821,12 @@ export class OrchestratorPredict {
 
   public commandLetVATwithEntry(entry: string): number {
     const ambiguousClosenessThresholdParameter: string = entry;
-    const ambiguousCloseness: number = Number(ambiguousClosenessThresholdParameter);
-    if (Number.isNaN(ambiguousCloseness)) {
+    const ambiguousClosenessThreshold: number = Number(ambiguousClosenessThresholdParameter);
+    if (Number.isNaN(ambiguousClosenessThreshold)) {
       Utility.debuggingLog(`The input "${ambiguousClosenessThresholdParameter}" is not a number.`);
       return -1;
     }
-    this.ambiguousCloseness = ambiguousCloseness;
+    this.ambiguousClosenessThreshold = ambiguousClosenessThreshold;
     return 0;
   }
 

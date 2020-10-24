@@ -5,8 +5,12 @@
 
 import * as path from 'path';
 
+// require('fast-text-encoding');
+
 import {Label} from './label';
+// import {LabelType} from './labeltype';
 import {LabelResolver} from './labelresolver';
+// import {Example} from './example';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
@@ -44,9 +48,29 @@ export class OrchestratorCreate {
       'utteranceEntityLabelsMap': Map<string, Label[]>;
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
       await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
+    // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
+    // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
     LabelResolver.addExamples(processedUtteranceLabelsMap);
+    // ---- NOTE-FOR-DEBUGGING ---- const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), JSON.stringify(labels)=${JSON.stringify(labels)}`);
+    // ---- NOTE-FOR-DEBUGGING ---- const examples: any = LabelResolver.getExamples();
+    // ---- NOTE-FOR-DEBUGGING ---- const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
+    // ---- NOTE-FOR-DEBUGGING ---- for (const example of exampleStructureArray) {
+    // ---- NOTE-FOR-DEBUGGING ----   const labels: Label[] = example.labels;
+    // ---- NOTE-FOR-DEBUGGING ----   if (labels.length > 1) {
+    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog(`utterance=${example.text}`);
+    // ---- NOTE-FOR-DEBUGGING ----   } else {
+    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog('');
+    // ---- NOTE-FOR-DEBUGGING ----   }
+    // ---- NOTE-FOR-DEBUGGING ----   for (const label of labels) {
+    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog(`label=${label.name}`);
+    // ---- NOTE-FOR-DEBUGGING ----   }
+    // ---- NOTE-FOR-DEBUGGING ---- }
 
     const snapshot: any = LabelResolver.createSnapshot();
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshot=${snapshot}`);
+    // ---- NOTE-FOR-DEBUGGING ---- const snapshotInString: string = (new TextDecoder()).decode(snapshot);
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshotInString=${snapshotInString}`);
 
     const outPath: string = OrchestratorHelper.getOutputPath(outputPath, inputPathConfiguration);
     const resolvedFilePath: string = OrchestratorHelper.writeToFile(outPath, snapshot);
