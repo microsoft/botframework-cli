@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Utility} from './utility';
-const Zip: any = require('7zip-min');
+const Zip: any = require('node-7z-forall');
 const fetch: any = require('node-fetch');
 
 export class OrchestratorBaseModel {
@@ -71,14 +71,13 @@ export class OrchestratorBaseModel {
         onProgress('OrchestratorNlr.getModelAsync(): model downloaded...');
       }
       Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
+      const seven: any = new Zip();
       if (onProgress) {
         onProgress('OrchestratorNlr.getModelAsync(): extracting...');
       }
-      Zip.unpack(modelZipPath, baseModelPath, (err: Error) => {
-        if (err === null) {
-          if (onProgress) {
-            onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
-          }
+      await seven.extractFull(modelZipPath, baseModelPath).then(() => {
+        if (onProgress) {
+          onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
 
           Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
           fs.unlinkSync(modelZipPath);
@@ -87,12 +86,6 @@ export class OrchestratorBaseModel {
             onFinish('OrchestratorNlr.getModelAsync(): rom OrchestratorNlr.getModelAsync() calling onFinish()');
           }
           Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling OrchestratorNlr.getModelAsync()');
-        } else {
-          Utility.debuggingLog('OrchestratorNlr.getModelAsync(): failed extracting base model.');
-          if (onFinish) {
-            onFinish('OrchestratorNlr.getModelAsync(): failed extracting base model.');
-          }
-          throw err;
         }
       });
       Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling fileStream.on()');
