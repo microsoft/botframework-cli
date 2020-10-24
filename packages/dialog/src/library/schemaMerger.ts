@@ -1680,8 +1680,8 @@ export class SchemaMerger {
     private sortImplementations(): void {
         for (this.currentKind in this.definitions) {
             const definition = this.definitions[this.currentKind]
-            if (this.isInterface(definition) && definition.oneOf) {
-                definition.oneOf = definition.oneOf.sort((a: any, b: any) => a.title.localeCompare(b.title))
+            if (this.isInterface(this.currentKind) && definition.oneOf) {
+                definition.oneOf = definition.oneOf.sort((a: any, b: any) => (a.$ref || a.type).localeCompare(b.$ref || b.type))
             }
         }
     }

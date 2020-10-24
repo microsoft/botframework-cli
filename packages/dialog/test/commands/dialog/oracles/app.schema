@@ -27,12 +27,12 @@
       "description": "Recognizer interface.",
       "oneOf": [
         {
+          "$ref": "#/definitions/Recognizer"
+        },
+        {
           "type": "string",
           "title": "Reference to IRecognizer",
           "description": "Reference to IRecognizer .dialog file."
-        },
-        {
-          "$ref": "#/definitions/Recognizer"
         }
       ]
     },
