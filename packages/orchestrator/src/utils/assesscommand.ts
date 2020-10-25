@@ -18,6 +18,7 @@ export default class OrchestratorAssessCommand extends Command {
     in: flags.string({char: 'i', description: 'Path to a ground-truth label file, or comma-separated paths to a collection of files -- most uselful for crosss-valiaton.'}),
     prediction: flags.string({char: 't', description: 'Path to a prediction label file, or comma-separated paths to a collection of files -- most uselful for crosss-valiaton.'}),
     out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
+    obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -38,7 +39,8 @@ export default class OrchestratorAssessCommand extends Command {
 
     try {
       await Orchestrator.assessAsync(
-        inputPathConfiguration, predictionPathConfiguration, outputPath);
+        inputPathConfiguration, predictionPathConfiguration, outputPath,
+        flags.obfuscate);
     } catch (error) {
       throw (new CLIError(error));
     }

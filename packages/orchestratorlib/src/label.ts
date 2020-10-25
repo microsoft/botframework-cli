@@ -6,6 +6,9 @@
 import {LabelType} from './labeltype';
 import {Span} from './span';
 
+import {CryptoUtility} from '@microsoft/bf-dispatcher';
+// import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 export class Label {
   public static newIntentLabel(label: string, spanOffset: number = 0, spanLength: number = 0): Label {
     return new Label(LabelType.Intent, label, new Span(spanOffset, spanLength));
@@ -41,8 +44,45 @@ export class Label {
     this.span = span;
   }
 
+  public toOutputString(toObfuscate: boolean = false): string {
+    if (toObfuscate) {
+      return this.toObfuscatedString();
+    }
+    return this.toSimpleString();
+  }
+
   public toSimpleString(): string {
     return `${this.name}-${this.labeltype}-${this.span.offset}-${this.span.length}`;
+  }
+
+  public toObfuscatedString(): string {
+    const nameObfuscated: string = CryptoUtility.getStringObfuscated(this.name);
+    const offsetObfuscated: number = CryptoUtility.getNumberObfuscated(this.span.offset);
+    const lengthObfuscated: number = CryptoUtility.getNumberObfuscated(this.span.length);
+    return `${nameObfuscated}-${this.labeltype}-${offsetObfuscated}-${lengthObfuscated}`;
+  }
+
+  public static outputNumber(input: number, toObfuscate: boolean = false): number {
+    if (toObfuscate) {
+      return CryptoUtility.getNumberObfuscated(input);
+    }
+    return input;
+  }
+
+  public static outputString(input: string, toObfuscate: boolean = false): string {
+    if (toObfuscate) {
+      return Label.obfuscatedString(input);
+    }
+    return input;
+  }
+
+  public static simpleString(input: string): string {
+    return input;
+  }
+
+  public static obfuscatedString(input: string): string {
+    const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
+    return inputObfuscated;
   }
 
   public toObject(): {

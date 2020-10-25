@@ -22,8 +22,10 @@ import {LabelType} from './labeltype';
 import {PredictionScoreStructure} from './predictionscorestructure';
 // import {Span} from './span';
 
-import {UtilityLabelResolver} from './utilitylabelresolver';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 import {Utility} from './utility';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 
 /* eslint-disable no-console */
 export class OrchestratorPredict {
@@ -60,8 +62,11 @@ export class OrchestratorPredict {
   static readonly questionForMultiLabelPredictionThreshold: string =
     'Please enter a threshold for multi-label prediction > ';
 
-  static readonly questionForunknownLabelPredictionThreshold: string =
+  static readonly questionForUnknownLabelPredictionThreshold: string =
     'Please enter a threshold for unknow label prediction > ';
+
+  static readonly questionForObfuscateEvaluationReport: string =
+    'Please enter true/false for obfuscating lables/utterances in evaluation report > ';
 
   protected inputPath: string = '';
 
@@ -78,6 +83,8 @@ export class OrchestratorPredict {
   protected unknownLabelPredictionThreshold: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
 
   protected fullEmbeddings: boolean = false;
+
+  protected obfuscateEvaluationReport: boolean = false;
 
   protected snapshotFile: string = '';
 
@@ -166,7 +173,8 @@ export class OrchestratorPredict {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    fullEmbeddings: boolean = false) {
+    fullEmbeddings: boolean = false,
+    obfuscateEvaluationReport: boolean = false) {
     // ---- NOTE ---- process arguments
     // if (Utility.isEmptyString(inputPath)) {
     //   Utility.debuggingThrow(`Please provide path to an input .blu file, CWD=${process.cwd()}, from OrchestratorPredict.constructor()`);
@@ -198,6 +206,7 @@ export class OrchestratorPredict {
     Utility.debuggingLog(`multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
+    Utility.debuggingLog(`obfuscateEvaluationReport=${obfuscateEvaluationReport}`);
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.baseModelPath = baseModelPath;
@@ -206,6 +215,7 @@ export class OrchestratorPredict {
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThresholdParameter;
     this.fullEmbeddings = fullEmbeddings;
+    this.obfuscateEvaluationReport = obfuscateEvaluationReport;
     // ---- NOTE ---- load the snapshot set
     this.snapshotFile = this.inputPath;
     if (this.snapshotFile) {
@@ -250,27 +260,27 @@ export class OrchestratorPredict {
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to create a LabelResolver object');
     if (Utility.exists(this.snapshotFile)) {
       // ---- NOTE ---- create a LabelResolver object.
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call LabelResolver.createAsync()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
       await LabelResolver.createAsync(this.baseModelPath,);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.createAsync()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call OrchestratorHelper.getSnapshotFromFile()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call OrchestratorHelper.getSnapshotFromFile()');
       const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(this.snapshotFile);
       Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
       Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling OrchestratorHelper.getSnapshotFromFile()');
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call LabelResolver.addSnapshot()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling OrchestratorHelper.getSnapshotFromFile()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.addSnapshot()');
       await LabelResolver.addSnapshot(snapshot);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.addSnapshot()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.addSnapshot()');
     } else {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
       await LabelResolver.createAsync(this.baseModelPath);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling LabelResolver.createAsync()');
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.createAsync()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
-      Utility.debuggingLog('OrchestratorPredict.runAsync(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
+      Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     }
     Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after creating a LabelResolver object');
   }
@@ -281,7 +291,8 @@ export class OrchestratorPredict {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    fullEmbeddings: boolean = false): Promise<number> {
+    fullEmbeddings: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<number> {
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
       baseModelPath,
       inputPath,
@@ -290,7 +301,8 @@ export class OrchestratorPredict {
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      fullEmbeddings);
+      fullEmbeddings,
+      obfuscateEvaluationReport);
     // ---- NOTE ---- create a LabelResolver object.
     await orchestratorPredict.buildLabelResolver();
     // ---- NOTE ---- enter the command loop.
@@ -373,6 +385,9 @@ export class OrchestratorPredict {
       // eslint-disable-next-line no-await-in-loop
       case 'vut': await this.commandLetVUT(question);
         break;
+      // eslint-disable-next-line no-await-in-loop
+      case 'vo': await this.commandLetVO(question);
+        break;
       case 'a': this.commandLetA();
         break;
       case 'r': this.commandLetR();
@@ -397,7 +412,7 @@ export class OrchestratorPredict {
 
   public commandLetH(): number {
     console.log('  Commandlets: h, q, d, s, u, cu, i, ci, ni, cni, q, p, v,');
-    console.log('               vd, va, vm, vl, vat, vlt, vmt, vut, a, r, c, rl, n');
+    console.log('               vd, va, vm, vl, vat, vlt, vmt, vut, vo, a, r, c, rl, n');
     console.log('    h   - print this help message');
     console.log('    q   - quit');
     console.log('    d   - display utterance, intent label array inputs, Orchestrator config,');
@@ -431,6 +446,8 @@ export class OrchestratorPredict {
     console.log('    vlt - enter a new validation-report low-confidence threshold');
     console.log('    vmt - enter a new multi-label threshold');
     console.log('    vut - enter a new unknown-label threshold');
+    console.log('    vo  - enter a boolean for obfuscating labels/utterances or not in evaluation reports');
+    console.log('          generated by the "v" command');
     console.log('    a   - add the "current" utterance and intent labels to the model example set');
     console.log('    r   - remove the "current" utterance and intent labels from the model example set');
     console.log('    c   - remove the "current" utterance\'s intent labels and then ');
@@ -452,6 +469,7 @@ export class OrchestratorPredict {
     console.log(`> Low-confidence closeness:      ${this.lowConfidenceScoreThreshold}`);
     console.log(`> Multi-label threshold:         ${this.multiLabelPredictionThreshold}`);
     console.log(`> Unknown-label threshold:       ${this.unknownLabelPredictionThreshold}`);
+    console.log(`> Obfuscation flag:              ${this.obfuscateEvaluationReport}`);
     const labelResolverConfig: any = LabelResolver.getConfigJson();
     console.log(`> Orchestrator configuration:    ${labelResolverConfig}`);
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
@@ -605,6 +623,8 @@ export class OrchestratorPredict {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
     // ---- NOTE ---- integrated step to produce analysis reports.
+    Utility.toObfuscateLabelTextInReportUtility = this.obfuscateEvaluationReport;
+    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = this.obfuscateEvaluationReport;
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("true")');
     UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(true);
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
@@ -861,7 +881,7 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVUT(question: any): Promise<number> {
-    return this.commandLetVUTwithEntry(await question(OrchestratorPredict.questionForunknownLabelPredictionThreshold));
+    return this.commandLetVUTwithEntry(await question(OrchestratorPredict.questionForUnknownLabelPredictionThreshold));
   }
 
   public commandLetVUTwithEntry(entry: string): number {
@@ -872,6 +892,17 @@ export class OrchestratorPredict {
       return -1;
     }
     this.unknownLabelPredictionThreshold = unknownLabelPredictionThreshold;
+    return 0;
+  }
+
+  public async commandLetVO(question: any): Promise<number> {
+    return this.commandLetVOwithEntry(await question(OrchestratorPredict.questionForObfuscateEvaluationReport));
+  }
+
+  public commandLetVOwithEntry(entry: string): number {
+    const obfuscateEvaluationReportParameter: string = entry;
+    const obfuscateEvaluationReport: boolean = UtilityDispatcher.toBoolean(obfuscateEvaluationReportParameter);
+    this.obfuscateEvaluationReport = obfuscateEvaluationReport;
     return 0;
   }
 

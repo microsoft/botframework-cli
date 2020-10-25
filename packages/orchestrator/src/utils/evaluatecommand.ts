@@ -23,6 +23,7 @@ export default class OrchestratorEvaluateCommand extends Command {
     multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
+    obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -88,7 +89,8 @@ export default class OrchestratorEvaluateCommand extends Command {
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
         unknownLabelPredictionThresholdParameter,
-        flags.fullEmbeddings);
+        flags.fullEmbeddings,
+        flags.obfuscate);
     } catch (error) {
       throw (new CLIError(error));
     }

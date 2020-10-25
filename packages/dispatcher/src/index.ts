@@ -109,5 +109,6 @@ export { SoftmaxRegressionSparse } from "./model/supervised/classifier/neural_ne
 
 export { Utility } from "./utility/Utility";
 export { ListArrayUtility } from "./utility/ListArrayUtility";
+export { CryptoUtility } from "./utility/CryptoUtility";
 
-export default {};
+// export default {};

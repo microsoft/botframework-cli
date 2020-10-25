@@ -18,7 +18,7 @@ import {UnitTestHelper} from './utility.test';
 describe('Test Suite - test', () => {
   it('Test.0000 OrchestratorTest.runAsync()-Roberta', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
     Utility.debuggingLog('Downloading an NLR model for unit test');
@@ -90,7 +90,7 @@ describe('Test Suite - test', () => {
 
   it('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
     Utility.debuggingLog('Downloading an NLR model for unit test');

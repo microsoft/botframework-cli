@@ -14,6 +14,7 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import {PredictionLabelStructure} from './predictionlabelstructure';
 import {PredictionStructure} from './predictionstructure';
 
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
 export class OrchestratorAssess {
@@ -28,7 +29,8 @@ export class OrchestratorAssess {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string): Promise<void> {
+    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments --------------------------------------
     if (Utility.isEmptyString(inputPathConfiguration)) {
@@ -43,6 +45,8 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`inputPath=${inputPathConfiguration}`);
     Utility.debuggingLog(`predictionPath=${predictionPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
+    Utility.toObfuscateLabelTextInReportUtility = obfuscateEvaluationReport;
+    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = obfuscateEvaluationReport;
     // ---- NOTE ---- load the ground truth set ------------------------------
     const groundTruthFileConfiguration: string = inputPathConfiguration;
     if (Utility.isEmptyString(groundTruthFileConfiguration)) {

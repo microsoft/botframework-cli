@@ -35,7 +35,8 @@ export default class OrchestratorTest extends Command {
     lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
     multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
-    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
+    fullEmbeddings: flags.boolean({description: 'Optional flag to test on full embeddings instead of compact embeddings.'}),
+    obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -113,10 +114,12 @@ export default class OrchestratorTest extends Command {
           lowConfidenceScoreThresholdParameter,
           multiLabelPredictionThresholdParameter,
           unknownLabelPredictionThresholdParameter,
-          flags.fullEmbeddings);
+          flags.fullEmbeddings,
+          flags.obfuscate);
       } else if (predictionPathConfiguration) {
         await Orchestrator.assessAsync(
-          inputPathConfiguration, predictionPathConfiguration, outputPathConfiguration);
+          inputPathConfiguration, predictionPathConfiguration, outputPathConfiguration,
+          flags.obfuscate);
       } else {
         await Orchestrator.evaluateAsync(
           inputPathConfiguration, outputPathConfiguration, baseModelPath,
@@ -124,7 +127,8 @@ export default class OrchestratorTest extends Command {
           lowConfidenceScoreThresholdParameter,
           multiLabelPredictionThresholdParameter,
           unknownLabelPredictionThresholdParameter,
-          flags.fullEmbeddings);
+          flags.fullEmbeddings,
+          flags.obfuscate);
       }
     } catch (error) {
       throw (new CLIError(error));

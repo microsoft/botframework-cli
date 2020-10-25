@@ -36,7 +36,8 @@ export class OrchestratorEvaluate {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    fullEmbeddings: boolean = false): Promise<void> {
+    fullEmbeddings: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPath)) {
@@ -62,6 +63,9 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
+    Utility.debuggingLog(`obfuscateEvaluationReport=${obfuscateEvaluationReport}`);
+    Utility.toObfuscateLabelTextInReportUtility = obfuscateEvaluationReport;
+    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = obfuscateEvaluationReport;
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPath;

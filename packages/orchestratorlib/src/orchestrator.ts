@@ -42,14 +42,16 @@ export class Orchestrator {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    fullEmbedding: boolean = false): Promise<void> {
+    fullEmbedding: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorEvaluate.runAsync(
       inputPath, outputPath, baseModelPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      fullEmbedding);
+      fullEmbedding,
+      obfuscateEvaluationReport);
   }
 
   /*
@@ -80,14 +82,16 @@ export class Orchestrator {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    fullEmbedding: boolean = false): Promise<void> {
+    fullEmbedding: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
       baseModelPath, inputPath, outputPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      fullEmbedding);
+      fullEmbedding,
+      obfuscateEvaluationReport);
   }
 
   // eslint-disable-next-line max-params
@@ -97,14 +101,16 @@ export class Orchestrator {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    fullEmbedding: boolean = false): Promise<void> {
+    fullEmbedding: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorTest.runAsync(
       baseModelPath, inputPathConfiguration, testPathConfiguration, outputPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      fullEmbedding);
+      fullEmbedding,
+      obfuscateEvaluationReport);
   }
 
   // eslint-disable-next-line max-params
@@ -126,8 +132,10 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async assessAsync(
-    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string): Promise<void> {
+    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorAssess.runAsync(
-      inputPathConfiguration, predictionPathConfiguration, outputPath);
+      inputPathConfiguration, predictionPathConfiguration, outputPath,
+      obfuscateEvaluationReport);
   }
 }

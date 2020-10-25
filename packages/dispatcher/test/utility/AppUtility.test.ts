@@ -12,7 +12,7 @@ import { Utility } from "../../src/utility/Utility";
 
 import { UnitTestHelper } from "./Utility.test";
 
-describe("Test Suite - utility/app_utility", () => {
+describe("Test Suite - utility/AppUtility", () => {
     it("Test.0000 exampleFunctionUtilityWithFilename()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());

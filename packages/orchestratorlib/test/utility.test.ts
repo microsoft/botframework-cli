@@ -16,6 +16,10 @@ import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 
 export class UnitTestHelper {
+  public static getDefaultFunctionalTestTimeout(): number {
+    return 1000000;
+  }
+
   public static getDefaultUnitTestTimeout(): number {
     return 80000;
   }

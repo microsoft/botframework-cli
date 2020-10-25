@@ -16,8 +16,8 @@ import {LabelType} from './labeltype';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
-import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 
 export class OrchestratorTest {
   public static readonly testingSetScoresOutputFilename: string = 'orchestrator_testing_set_scores.txt';
@@ -38,7 +38,8 @@ export class OrchestratorTest {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    fullEmbeddings: boolean = false): Promise<void> {
+    fullEmbeddings: boolean = false,
+    obfuscateEvaluationReport: boolean = false): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPathConfiguration)) {
@@ -67,6 +68,9 @@ export class OrchestratorTest {
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
+    Utility.debuggingLog(`obfuscateEvaluationReport=${obfuscateEvaluationReport}`);
+    Utility.toObfuscateLabelTextInReportUtility = obfuscateEvaluationReport;
+    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = obfuscateEvaluationReport;
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPathConfiguration;

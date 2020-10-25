@@ -6,6 +6,7 @@
 import {PredictionScoreStructure} from './predictionscorestructure';
 
 import {LabelType} from './labeltype';
+import {Label} from './label';
 import {Result} from './result';
 
 import {LabelResolver} from './labelresolver';
@@ -13,6 +14,8 @@ import {LabelResolver} from './labelresolver';
 import {Utility} from './utility';
 
 export class UtilityLabelResolver {
+  public static toObfuscateLabelTextInReportUtilityLabelResolver: boolean = true;
+
   public static resetLabelResolverSettingIgnoreSameExample(
     ignoreSameExample: boolean = true,
     resetAll: boolean = false): any {
@@ -89,8 +92,11 @@ export class UtilityLabelResolver {
         }
         const labels: string[] = utteranceLabels[1];
         const labelsIndexes: number[] = labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
-        const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(labels);
-        const labelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('label', labels);
+        const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+          labels.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+        const labelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+          'label',
+          labels.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), before calling score(), utterance=${utterance}`);
         }
@@ -129,8 +135,11 @@ export class UtilityLabelResolver {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedIndexes)=${JSON.stringify(labelsPredictedIndexes)}`);
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredicted)=${JSON.stringify(labelsPredicted)}`);
         }
-        const labelsPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(labelsPredicted);
-        const labelsPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('label', labelsPredicted);
+        const labelsPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+          labelsPredicted.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+        const labelsPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+          'label',
+          labelsPredicted.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedConcatenated)="${JSON.stringify(labelsPredictedConcatenated)}"`);
         }
@@ -142,6 +151,7 @@ export class UtilityLabelResolver {
           scoreResultArray,
           labelsPredictedIndexes,
           unknownLabelPredictionThreshold,
+          UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);
@@ -152,6 +162,7 @@ export class UtilityLabelResolver {
           scoreResultArray,
           labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x)),
           unknownLabelPredictionThreshold,
+          UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
           '',
           ['Label', 'Score', 'Closest Example'],
           ['30%', '10%', '60%']);

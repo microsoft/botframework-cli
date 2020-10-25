@@ -36,6 +36,8 @@ export class Utility {
 
   public static toPrintDetailedDebuggingLogToConsole: boolean = false;
 
+  public static toObfuscateLabelTextInReportUtility: boolean = true;
+
   public static NumberOfInstancesPerProgressDisplayBatch: number = 1000; // 10000;
 
   public static readonly DefaultAmbiguousClosenessThresholdParameter: number = 0.2; // ---- Close to the correct top prediction within 20% of the score.
@@ -463,7 +465,7 @@ export class Utility {
       groundTruthSetUtteranceEntityLabelsMap,
       predictionSetUtteranceEntityLabelsMap);
     // ---- NOTE ---- generate evaluation report.
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateEvaluationReportAnalyses()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateAssessmentLabelObjectEvaluationReportAnalyses()');
     const evaluationReportAnalyses: {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
@@ -485,7 +487,7 @@ export class Utility {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), evaluationReportAnalyses.evaluationSummary=\n${evaluationReportAnalyses.evaluationSummary}`);
     }
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.generateEvaluationReportAnalyses()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.generateAssessmentLabelObjectEvaluationReportAnalyses()');
     // ---- NOTE ---- debugging ouput.
     // if (Utility.toPrintDetailedDebuggingLogToConsole) {
     //   Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray)}`);
@@ -513,7 +515,12 @@ export class Utility {
       groundTruthSetUtteranceEntityLabelsMap,
       predictionSetUtteranceEntityLabelsMap);
     const spuriousPredictionArrays: [string, string][] = spuriousPredictions.map(
-      (spuriousPrediction: [string, Label[]]) => [spuriousPrediction[0], Utility.concatenateDataArrayToHtmlTable('Label', spuriousPrediction[1].map((x: Label) => x.toSimpleString()))]);
+      (spuriousPrediction: [string, Label[]]) => [
+        Label.outputString(spuriousPrediction[0], Utility.toObfuscateLabelTextInReportUtility),
+        Utility.concatenateDataArrayToHtmlTable(
+          'Label',
+          spuriousPrediction[1].map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility))),
+      ]);
     // ---- NOTE ---- generate spurious report.
     const spuriousPredictionHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Spurious utterance and label pairs',
@@ -521,7 +528,8 @@ export class Utility {
       ['Utterance', 'Label']);
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCES summary from template.
     evaluationSummary = evaluationSummary.replace(
-      '{SPURIOUS_UTTERANCES}', spuriousPredictionHtml);
+      '{SPURIOUS_UTTERANCES}',
+      spuriousPredictionHtml);
     return {
       evaluationSummary,
       spuriousPredictions};
@@ -594,11 +602,17 @@ export class Utility {
     const labelsUtterancesStatisticsHtml: string =
       labelStatisticsAndHtmlTable.labelStatisticsHtml + utteranceStatisticsAndHtmlTable.utteranceStatisticsHtml;
     evaluationSummary = evaluationSummary.replace(
-      evaluationSummaryTagEntityLabelUtteranceStatistics, labelsUtterancesStatisticsHtml);
+      evaluationSummaryTagEntityLabelUtteranceStatistics,
+      labelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagEntityLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
     const utterancesMultiLabelArrays: [string, string][] = [...utteranceEntityLabelsMap.entries()].filter(
-      (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [x[0], Utility.concatenateDataArrayToHtmlTable('Label', x[1].map((x: Label) => x.toSimpleString()))]);
+      (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [
+      Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
+      Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        x[1].map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility))),
+    ]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
       utterancesMultiLabelArrays,
@@ -612,7 +626,8 @@ export class Utility {
     const duplicateStatisticsHtml: string =
       utterancesMultiLabelArraysHtml + utteranceLabelDuplicateHtml;
     evaluationSummary = evaluationSummary.replace(
-      evaluationSummaryTagUtteranceDuplicates, duplicateStatisticsHtml);
+      evaluationSummaryTagUtteranceDuplicates,
+      duplicateStatisticsHtml);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagUtteranceDuplicates} content`);
     // ---- NOTE ---- return
     return {
@@ -662,7 +677,8 @@ export class Utility {
     } = Utility.generateAssessmentLabelObjectMisclassifiedStatisticsAndHtmlTable(
       predictionLabelStructureArray);
     evaluationSummary = evaluationSummary.replace(
-      '{MIS_CLASSIFICATION}', misclassifiedAnalysis.predictingMisclassifiedUtterancesArraysHtml);
+      '{MIS_CLASSIFICATION}',
+      misclassifiedAnalysis.predictingMisclassifiedUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportAnalyses(), finished generating {MIS_CLASSIFICATION} content');
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
@@ -697,10 +713,10 @@ export class Utility {
     const predictingMisclassifiedUtterancesSimpleArrays: string[][] = [];
     for (const predictionLabelStructure of predictionLabelStructureArray.filter((x: PredictionLabelStructure) => x.hasMisclassified())) {
       if (predictionLabelStructure) {
-        const labelsPredictionStructureHtmlTable: string = predictionLabelStructure.labelsConcatenated; // ---- NOTE-PLACE-HOLDER ---- may need more elaborate output
-        const predictedPredictionStructureHtmlTable: string = predictionLabelStructure.labelsPredictedConcatenated; // ---- NOTE-PLACE-HOLDER ---- may need more elaborate output
+        const labelsPredictionStructureHtmlTable: string = predictionLabelStructure.labelsConcatenatedToHtmlTable; // ==== .labelsConcatenated; // ---- NOTE ---- simple concatenated or table output
+        const predictedPredictionStructureHtmlTable: string = predictionLabelStructure.labelsPredictedConcatenatedToHtmlTable; // ==== .labelsPredictedConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictingMisclassifiedUtterancesArray: string[] = [
-          predictionLabelStructure.utterance,
+          Label.outputString(predictionLabelStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsPredictionStructureHtmlTable,
           predictedPredictionStructureHtmlTable,
         ];
@@ -708,7 +724,7 @@ export class Utility {
         const labelsConcatenated: string = predictionLabelStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionLabelStructure.labelsPredictedConcatenated;
         const predictingMisclassifiedUtterancesSimpleArray: string[] = [
-          predictionLabelStructure.utterance,
+          Label.outputString(predictionLabelStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -787,15 +803,23 @@ export class Utility {
       if (predictionSetUtteranceLabelsMap.has(utterance)) {
         predictionSetLabels = predictionSetUtteranceLabelsMap.get(utterance) as Label[];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
-      const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(groundTruthSetLabels.map((x: Label) => x.toSimpleString()));
-      const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', groundTruthSetLabels.map((x: Label) => x.toSimpleString()));
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map(
+        (x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+      const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+        groundTruthSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+      const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        groundTruthSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
-      const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(predictionSetLabels.map((x: Label) => x.toSimpleString()));
-      const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', predictionSetLabels.map((x: Label) => x.toSimpleString()));
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map(
+        (x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+      const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+        predictionSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+      const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        predictionSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
       }
@@ -866,7 +890,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile()');
     Utility.storeDataArraysToTsvFile(
       labelsOutputFilename,
-      stringArray.map((x: string) => [x]));
+      stringArray.map((x: string) => [Label.outputString(x, Utility.toObfuscateLabelTextInReportUtility)]));
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), finished calling Utility.storeDataArraysToTsvFile()');
     // ---- NOTE ---- produce the evaluation summary file.
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), ready to call Utility.dumpFile()');
@@ -1019,7 +1043,7 @@ export class Utility {
       groundTruthSetUtteranceLabelsMap,
       predictionSetUtteranceLabelsMap);
     // ---- NOTE ---- generate evaluation report.
-    Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), ready to call Utility.generateEvaluationReportAnalyses()');
+    Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), ready to call Utility.generateAssessmentEvaluationReportAnalyses()');
     const evaluationReportAnalyses: {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
@@ -1041,7 +1065,7 @@ export class Utility {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentEvaluationReport(), evaluationReportAnalyses.evaluationSummary=\n${evaluationReportAnalyses.evaluationSummary}`);
     }
-    Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), finished calling Utility.generateEvaluationReportAnalyses()');
+    Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), finished calling Utility.generateAssessmentEvaluationReportAnalyses()');
     // ---- NOTE ---- debugging ouput.
     // if (Utility.toPrintDetailedDebuggingLogToConsole) {
     //   Utility.debuggingLog(`Utility.generateAssessmentEvaluationReport(), JSON.stringify(labelArrayAndMap.stringArray)=${JSON.stringify(evaluationReportGroundTruthSetLabelUtteranceStatistics.labelArrayAndMap.stringArray)}`);
@@ -1077,7 +1101,8 @@ export class Utility {
       ['Utterance', 'Label']);
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCES summary from template.
     evaluationSummary = evaluationSummary.replace(
-      '{SPURIOUS_UTTERANCES}', spuriousPredictionHtml);
+      '{SPURIOUS_UTTERANCES}',
+      spuriousPredictionHtml);
     return {
       evaluationSummary,
       spuriousPredictions};
@@ -1112,7 +1137,8 @@ export class Utility {
     } = Utility.generateAssessmentMisclassifiedStatisticsAndHtmlTable(
       predictionStructureArray);
     evaluationSummary = evaluationSummary.replace(
-      '{MIS_CLASSIFICATION}', misclassifiedAnalysis.predictingMisclassifiedUtterancesArraysHtml);
+      '{MIS_CLASSIFICATION}',
+      misclassifiedAnalysis.predictingMisclassifiedUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportAnalyses(), finished generating {MIS_CLASSIFICATION} content');
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
@@ -1147,10 +1173,10 @@ export class Utility {
     const predictingMisclassifiedUtterancesSimpleArrays: string[][] = [];
     for (const predictionStructure of predictionStructureArray.filter((x: PredictionStructure) => (x.isMisclassified()))) {
       if (predictionStructure) {
-        const labelsPredictionStructureHtmlTable: string = predictionStructure.labelsConcatenated; // ---- NOTE-PLACE-HOLDER ---- may need more elaborate output
-        const predictedPredictionStructureHtmlTable: string = predictionStructure.labelsPredictedConcatenated; // ---- NOTE-PLACE-HOLDER ---- may need more elaborate output
+        const labelsPredictionStructureHtmlTable: string = predictionStructure.labelsConcatenatedToHtmlTable; // ==== .labelsConcatenated; // ---- NOTE ---- simple concatenated or table output
+        const predictedPredictionStructureHtmlTable: string = predictionStructure.labelsPredictedConcatenatedToHtmlTable; // ==== .labelsPredictedConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictingMisclassifiedUtterancesArray: string[] = [
-          predictionStructure.utterance,
+          Label.outputString(predictionStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsPredictionStructureHtmlTable,
           predictedPredictionStructureHtmlTable,
         ];
@@ -1158,7 +1184,7 @@ export class Utility {
         const labelsConcatenated: string = predictionStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionStructure.labelsPredictedConcatenated;
         const predictingMisclassifiedUtterancesSimpleArray: string[] = [
-          predictionStructure.utterance,
+          Label.outputString(predictionStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -1241,7 +1267,7 @@ export class Utility {
       const support: number = binaryConfusionMatrices[i].getSupport();
       const total: number = binaryConfusionMatrices[i].getTotal();
       const predictingConfusionMatrixOutputLine: any[] = [
-        label,
+        Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility),
         precision,
         recall,
         f1,
@@ -1832,19 +1858,29 @@ export class Utility {
       if (predictionSetUtteranceLabelsMap.has(utterance)) {
         predictionSetLabels = [...(predictionSetUtteranceLabelsMap.get(utterance) as Set<string>)];
       }
-      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
-      const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(groundTruthSetLabels);
-      const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', groundTruthSetLabels);
+      const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map(
+        (x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
+      const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+        groundTruthSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+      const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        groundTruthSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
-      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
-      const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(predictionSetLabels);
-      const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', predictionSetLabels);
+      const predictionSetLabelsIndexes: number[] = predictionSetLabels.map(
+        (x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
+      const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+        predictionSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+      const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        predictionSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
       }
-      const labelsPredictionEvaluation: number = Utility.evaluateMultiLabelSubsetPrediction(groundTruthSetLabels, predictionSetLabels);
+      const labelsPredictionEvaluation: number = Utility.evaluateMultiLabelSubsetPrediction(
+        groundTruthSetLabels,
+        predictionSetLabels);
       predictionStructureArray.push(new PredictionStructure(
         utterance,
         labelsPredictionEvaluation, // ---- NOTE ---- misclassification cases are evaluated using the multi-label subset logic.
@@ -2013,35 +2049,35 @@ export class Utility {
     evaluationSetPredictionJsonContentFilename: string,
     evaluationSetSummaryOutputFilename: string): void {
     // ---- NOTE ---- output the labels by their index order to a file.
-    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile(), filename=${labelsOutputFilename}`);
+    Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile(), filename=${labelsOutputFilename}`);
     Utility.storeDataArraysToTsvFile(
       labelsOutputFilename,
-      stringArray.map((x: string) => [x]));
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.storeDataArraysToTsvFile()');
+      stringArray.map((x: string) => [Label.outputString(x, Utility.toObfuscateLabelTextInReportUtility)]));
+    Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.storeDataArraysToTsvFile()');
     // ---- NOTE ---- produce a score TSV file.
-    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.storeDataArraysToTsvFile(), filename=${evaluationSetScoreOutputFilename}`);
+    Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile(), filename=${evaluationSetScoreOutputFilename}`);
     Utility.storeDataArraysToTsvFile(
       evaluationSetScoreOutputFilename,
       scoreOutputLines);
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finishing calling Utility.storeDataArraysToTsvFile');
+    Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finishing calling Utility.storeDataArraysToTsvFile');
     // ---- NOTE ---- produce the evaluation summary file.
-    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetGroundTruthJsonContentFilename}`);
+    Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.dumpFile(), filename=${evaluationSetGroundTruthJsonContentFilename}`);
     Utility.dumpFile(
       evaluationSetGroundTruthJsonContentFilename,
       groundTruthJsonContent);
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.dumpFile()');
+    Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.dumpFile()');
     // ---- NOTE ---- produce the evaluation summary file.
-    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetPredictionJsonContentFilename}`);
+    Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.dumpFile(), filename=${evaluationSetPredictionJsonContentFilename}`);
     Utility.dumpFile(
       evaluationSetPredictionJsonContentFilename,
       predictionJsonContent);
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.dumpFile()');
+    Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.dumpFile()');
     // ---- NOTE ---- produce the evaluation summary file.
-    Utility.debuggingLog(`Utility.generateEvaluationReport(), ready to call Utility.dumpFile(), filename=${evaluationSetSummaryOutputFilename}`);
+    Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.dumpFile(), filename=${evaluationSetSummaryOutputFilename}`);
     Utility.dumpFile(
       evaluationSetSummaryOutputFilename,
       evaluationSummary);
-    Utility.debuggingLog('Utility.generateEvaluationReport(), finished calling Utility.dumpFile()');
+    Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.dumpFile()');
   }
 
   // eslint-disable-next-line max-params
@@ -2312,11 +2348,17 @@ export class Utility {
     const labelsUtterancesStatisticsHtml: string =
       labelStatisticsAndHtmlTable.labelStatisticsHtml + utteranceStatisticsAndHtmlTable.utteranceStatisticsHtml;
     evaluationSummary = evaluationSummary.replace(
-      evaluationSummaryTagIntentUtteranceStatistics, labelsUtterancesStatisticsHtml);
+      evaluationSummaryTagIntentUtteranceStatistics,
+      labelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagIntentUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
     const utterancesMultiLabelArrays: [string, string][] = [...utteranceLabelsMap.entries()].filter(
-      (x: [string, Set<string>]) => x[1].size > 1).map((x: [string, Set<string>]) => [x[0], Utility.concatenateDataArrayToHtmlTable('Label', [...x[1]])]);
+      (x: [string, Set<string>]) => x[1].size > 1).map((x: [string, Set<string>]) => [
+      Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
+      Utility.concatenateDataArrayToHtmlTable(
+        'Label',
+        [...x[1]].map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility))),
+    ]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
       utterancesMultiLabelArrays,
@@ -2330,7 +2372,8 @@ export class Utility {
     const duplicateStatisticsHtml: string =
       utterancesMultiLabelArraysHtml + utteranceLabelDuplicateHtml;
     evaluationSummary = evaluationSummary.replace(
-      evaluationSummaryTagUtteranceDuplicates, duplicateStatisticsHtml);
+      evaluationSummaryTagUtteranceDuplicates,
+      duplicateStatisticsHtml);
     Utility.debuggingLog(`Utility.generateEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagUtteranceDuplicates} content`);
     // ---- NOTE ---- return
     return {
@@ -2385,7 +2428,8 @@ export class Utility {
       ambiguousClosenessThreshold,
       unknownLabelPredictionThreshold);
     evaluationSummary = evaluationSummary.replace(
-      '{AMBIGUOUS}', ambiguousAnalysis.scoringAmbiguousUtterancesArraysHtml);
+      '{AMBIGUOUS}',
+      ambiguousAnalysis.scoringAmbiguousUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateEvaluationReportAnalyses(), finished generating {AMBIGUOUS} content');
     // ---- NOTE ---- generate misclassified HTML.
     const misclassifiedAnalysis: {
@@ -2395,7 +2439,8 @@ export class Utility {
     } = Utility.generateMisclassifiedStatisticsAndHtmlTable(
       predictionScoreStructureArray);
     evaluationSummary = evaluationSummary.replace(
-      '{MIS_CLASSIFICATION}', misclassifiedAnalysis.scoringMisclassifiedUtterancesArraysHtml);
+      '{MIS_CLASSIFICATION}',
+      misclassifiedAnalysis.scoringMisclassifiedUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateEvaluationReportAnalyses(), finished generating {MIS_CLASSIFICATION} content');
     // ---- NOTE ---- generate low-confidence HTML.
     const lowConfidenceAnalysis: {
@@ -2406,7 +2451,8 @@ export class Utility {
       predictionScoreStructureArray,
       lowConfidenceScoreThreshold);
     evaluationSummary = evaluationSummary.replace(
-      '{LOW_CONFIDENCE}', lowConfidenceAnalysis.scoringLowConfidenceUtterancesArraysHtml);
+      '{LOW_CONFIDENCE}',
+      lowConfidenceAnalysis.scoringLowConfidenceUtterancesArraysHtml);
     Utility.debuggingLog('Utility.generateEvaluationReportAnalyses(), finished generating {LOW_CONFIDENCE} content');
     // ---- NOTE ---- produce confusion matrix result.
     const confusionMatrixAnalysis: {
@@ -2439,13 +2485,19 @@ export class Utility {
     for (const predictionScoreStructure of predictionScoreStructureArray) {
       if (predictionScoreStructure) {
         const scoreArray: number[] = predictionScoreStructure.scoreResultArray.map((x: Result) => x.score);
-        const labelConcatenated: string = Utility.concatenateDataArrayToDelimitedString(predictionScoreStructure.labels);
-        // ---- NOTE-NOT-USED ---- const labelConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', predictionScoreStructure.labels);
-        const labelPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(predictionScoreStructure.labelsPredicted);
-        // ---- NOTE-NOT-USED ---- const labelPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable('Label', predictionScoreStructure.labelsPredicted);
+        const labelConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+          predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        // ---- NOTE-NOT-USED ---- const labelConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        // ---- NOTE-NOT-USED ----   'Label',
+        // ---- NOTE-NOT-USED ----   predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        const labelPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
+          predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        // ---- NOTE-NOT-USED ---- const labelPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
+        // ---- NOTE-NOT-USED ----   'Label',
+        // ---- NOTE-NOT-USED ----    predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
         const scoreArrayConcatenated: string = scoreArray.join('\t');
         const scoreOutputLine: string[] = [
-          predictionScoreStructure.utterance,
+          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelConcatenated,
           labelPredictedConcatenated,
           scoreArrayConcatenated,
@@ -2489,8 +2541,8 @@ export class Utility {
             'text': string;
           }>;
         } = {
-          text: predictionScoreStructure.utterance,
-          intents: predictionScoreStructure.labels,
+          text: Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          intents: predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)),
           entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
         };
         predictionScoreStructureJsons.push(groundTruthJson);
@@ -2547,7 +2599,7 @@ export class Utility {
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   'score': number;
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Intent).map((x: Result) => {
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   return {
-        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     intent: x.label.name,
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     intent: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     score: x.score,
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   };
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- });
@@ -2556,7 +2608,7 @@ export class Utility {
           'score': number;
         }> = predictionScoreStructure.scoreResultArray.map((x: Result) => {
           return {
-            intent: x.label.name,
+            intent: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
             score: x.score,
           };
         });
@@ -2567,9 +2619,9 @@ export class Utility {
           'score': number;
         }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Entity).map((x: Result) => {
           return {
-            entity: x.label.name,
-            startPos: x.label.getStartPos(),
-            endPos: x.label.getStartPos(),
+            entity: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
+            startPos: Label.outputNumber(x.label.getStartPos(), Utility.toObfuscateLabelTextInReportUtility),
+            endPos: Label.outputNumber(x.label.getStartPos(), Utility.toObfuscateLabelTextInReportUtility),
             score: x.score,
           };
         });
@@ -2593,8 +2645,8 @@ export class Utility {
             'score': number;
           }>;
         } = {
-          text: predictionScoreStructure.utterance,
-          intents: predictionScoreStructure.labelsPredicted,
+          text: Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          intents: predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)),
           entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
           intent_scores: intentResultScoreArray,
           entity_scores: entityResultScoreArray, // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
@@ -2639,14 +2691,14 @@ export class Utility {
         const labelsScoreStructureHtmlTable: string = predictionScoreStructure.labelsScoreStructureHtmlTable;
         const labelsPredictedConcatenated: string = predictionScoreStructure.labelsPredictedConcatenated;
         const scoringLowConfidenceUtterancesArray: any[] = [
-          predictionScoreStructure.utterance,
+          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsScoreStructureHtmlTable,
           labelsPredictedConcatenated,
         ];
         scoringLowConfidenceUtterancesArrays.push(scoringLowConfidenceUtterancesArray);
         const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
         const scoringLowConfidenceUtterancesSimpleArray: any[] = [
-          predictionScoreStructure.utterance,
+          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -2673,7 +2725,7 @@ export class Utility {
         const labelsScoreStructureHtmlTable: string = predictionScoreStructure.labelsScoreStructureHtmlTable;
         const predictedScoreStructureHtmlTable: string = predictionScoreStructure.predictedScoreStructureHtmlTable;
         const scoringMisclassifiedUtterancesArray: string[] = [
-          predictionScoreStructure.utterance,
+          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsScoreStructureHtmlTable,
           predictedScoreStructureHtmlTable,
         ];
@@ -2681,7 +2733,7 @@ export class Utility {
         const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionScoreStructure.labelsPredictedConcatenated;
         const scoringMisclassifiedUtterancesSimpleArray: string[] = [
-          predictionScoreStructure.utterance,
+          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -2719,12 +2771,13 @@ export class Utility {
           const ambiguousScoreStructureHtmlTable: string = Utility.selectedScoreStructureToHtmlTable(
             predictionScoreStructure,
             unknownLabelPredictionThreshold,
+            Utility.toObfuscateLabelTextInReportUtility,
             '',
             ['Label', 'Score', 'Closest Example'],
             ['30%', '10%', '60%'],
             scoreArrayAmbiguous.map((x: number[]) => x[0]));
           const scoringAmbiguousUtterancesArray: string[] = [
-            predictionScoreStructure.utterance,
+            Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
             labelsScoreStructureHtmlTable,
             labelsPredictedConcatenated,
             ambiguousScoreStructureHtmlTable,
@@ -2732,7 +2785,7 @@ export class Utility {
           const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
           scoringAmbiguousUtterancesArrays.push(scoringAmbiguousUtterancesArray);
           const scoringAmbiguousUtterancesSimpleArray: string[] = [
-            predictionScoreStructure.utterance,
+            Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
             labelsConcatenated,
             labelsPredictedConcatenated,
           ];
@@ -2810,7 +2863,7 @@ export class Utility {
       }).map(
       (x: [string, Set<string>], index: number) => [
         index.toString(),
-        x[0],
+        Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
         Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(),
         x[1].size.toString(),
         Utility.round(x[1].size / labelUtterancesTotal).toString(),
@@ -2827,6 +2880,7 @@ export class Utility {
   public static selectedScoreStructureToHtmlTable(
     predictionScoreStructure: PredictionScoreStructure,
     unknownLabelPredictionThreshold: number,
+    toObfuscateLabelTextInReport: boolean,
     tableDescription: string = '',
     selectedOutputDataArraryHeaders: string[] = [],
     outputDataColumnWidthSettings: string[] = [],
@@ -2838,6 +2892,7 @@ export class Utility {
       predictionScoreStructure.scoreResultArray,
       indexes,
       unknownLabelPredictionThreshold,
+      toObfuscateLabelTextInReport,
       tableDescription,
       selectedOutputDataArraryHeaders,
       outputDataColumnWidthSettings);
@@ -2848,15 +2903,24 @@ export class Utility {
     scoreResultArray: Result[],
     indexes: number[],
     unknownLabelPredictionThreshold: number,
+    toObfuscateLabelTextInReport: boolean,
     tableDescription: string = '',
     selectedOutputDataArraryHeaders: string[] = [],
     outputDataColumnWidthSettings: string[] = []): string {
     const labelsSelectedArrays: any[][] = indexes.map(
       (x: number) => {
         if ((x >= 0) && (x < scoreResultArray.length)) {
-          return [scoreResultArray[x].label.name, scoreResultArray[x].score, scoreResultArray[x].closesttext];
+          return [
+            Label.outputString(scoreResultArray[x].label.name, toObfuscateLabelTextInReport),
+            scoreResultArray[x].score,
+            Label.outputString(scoreResultArray[x].closesttext, toObfuscateLabelTextInReport),
+          ];
         }
-        return [Utility.UnknownLabel, unknownLabelPredictionThreshold, ''];
+        return [
+          Utility.UnknownLabel, // ---- NOTE ---- do we need to obfuscate UNKNOWN prediction?
+          unknownLabelPredictionThreshold,
+          '',
+        ];
       });
     const selectedScoreStructureHtmlTable: string = Utility.convertDataArraysToHtmlTable(
       tableDescription,
