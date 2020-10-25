@@ -10,15 +10,25 @@ import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
   static description: string = `The "test" command can operate in three modes: test, evaluation, assessment.
-  If given a "--test" argument, then this command runs on the "test" mode.
-  If not, but given a "--prediction" argument, then this command runs on the "assessment" mode.
-  Otherwise, this command runs the "evaluation" mode.
-  1) Test mode: test a collection of utterance/label samples loaded from an input file against
-          a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
-  2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
-          on a previously generated .blu snapshot file.
-  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and create an evaluation report,
-          there is no need for a base model.`;
+  1) Test mode: test a collection of utterance/label samples loaded from a test file against
+      a previously generated Orchestrator .blu snapshot/train file,
+      and create a detailed train/test evaluation report.
+  2) Evaluation mode: create an leave-one-out cross validation (LOOCV) evaluation report
+      on a previously generated Orchestrator .blu snapshot/train file.
+  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth labels and
+      create an evaluation report. This mode can evaluate predictions produced by
+      other NLP or machine learning systems. There is no need for an Orchestrator base model.
+      Notice that, this mode is generic and can apply to evaluate any ML systems, learners, models,
+      and scenarios if a user can carefully construct the prediction and grounf-truth files by
+      the specification detailed below.
+      Essentially the key to a NLP data instance is a text (utterance, sentence, query, document, etc.), which
+      is the basis of all the features feeding to a ML model. For other ML systems, the key to
+      a data instance can be built directly from the features and put in place of text
+      in a prediction and ground-truth file.
+
+  The 'test' mode is activated if there is a '--test' argument set for a test file.
+  The 'assessment' mode is activated if there is a '--prediction' argument set for a prediction file.
+  If there is no '--test' or '--prediction' arguments, then "test" command runs on the 'evaluation' mode.`;
 
   static examples: Array<string> = [`
     $ bf orchestrator:test --in=./path/to/snapshot/file --test=./path/to/test/file/ --out=./path/to/output/ --model=./path/to/model/directory

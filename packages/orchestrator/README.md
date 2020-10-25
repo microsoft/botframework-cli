@@ -182,13 +182,16 @@ OPTIONS
                                   can save the utterance labels into a snapshot (.blu) file.
   -m, --model=model               Directory or a config file hosting Orchestrator base model files.
   -o, --out=out                   Directory where analysis and output files will be placed.
-  --fullEmbeddings                                Optional flag to run on full embeddings instead of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances in evaluation reports or not.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+  --fullEmbeddings                                Optional flag to run on full embeddings instead
+                                                  of compact embeddings.
+  --obfuscate                                     Optional flag to obfuscate labels and utterances
+                                                  in evaluation reports or not.
+  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
+      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
+      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
+  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -298,27 +301,35 @@ _See code: [src\commands\orchestrator\query.ts](https://github.com/microsoft/bot
 
 ## `bf orchestrator:test`
 
-The "test" command can operate in three modes:
-  1) Test mode: test a collection of utterance/label samples loaded from an input file against
-      a previously generated .blu snapshot/train file, and create a detailed train/test evaluation report.
-  2) Evaluation mode: create an Orchestrator leave-one-out cross validation (LOOCV) evaluation report
-      on a previously generated .blu snapshot file.
-  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth and
-      create an evaluation report. There is no need for a base model.
+The "test" command can operate in three modes: test, evaluation, assessment.
+  1) Test mode: test a collection of utterance/label samples loaded from a test file against
+      a previously generated Orchestrator .blu snapshot/train file,
+      and create a detailed train/test evaluation report.
+  2) Evaluation mode: create an leave-one-out cross validation (LOOCV) evaluation report
+      on a previously generated Orchestrator .blu snapshot/train file.
+  3) Assessment mode: assess a collection of utterance/label predictions against their ground-truth labels and
+      create an evaluation report. This mode can evaluate predictions produced by
+      other NLP or machine learning systems. There is no need for an Orchestrator base model.
+      Notice that, this mode is generic and can apply to evaluate any ML systems, learners, models,
+      and scenarios if a user can carefully construct the prediction and grounf-truth files by
+      the specification detailed below.
+      Essentially the key to a NLP data instance is a text (utterance, sentence, query, document, etc.), which
+      is the basis of all the features feeding to a ML model. For other ML systems, the key to
+      a data instance can be built directly from the features and put in place of text
+      in a prediction and ground-truth file.
 
-The 'test' mode is activated if there is a '--test' parameter set for a test file.
-Please see below for detailed help message for this mode.
-The 'assessment' mode is activated if there is a '--prediction' parameter set for a prediction.
-Please see below for detailed help messahe for this mode.
-If there is no '--test' or '--prediction' parameters, then "test" command runs on the 'evaluation' mode. 
+  The 'test' mode is activated if there is a '--test' argument set for a test file.
+  The 'assessment' mode is activated if there is a '--prediction' argument set for a prediction file.
+  If there is no '--test' or '--prediction' arguments, then "test" command runs on the 'evaluation' mode.
 
-Notice that the input specificaed by the '--in' parameter may be different from mode to mode.
+  Please see below for detailed help messages on arguments and requirements for the three modes.
+  Notice that the input specified by the '--in' parameter may be different from mode to mode.
 
 _See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
 
 # `bf orchestrator:test -- test mode`
 
-Test utterance/label samples from an input file and create an evaluation report
+Test utterance/label samples from an input file and create an evaluation report.
 
 ```
 USAGE
@@ -332,25 +343,30 @@ OPTIONS
   -o, --out=out                   Directory where analysis and output files will be placed.
   -t, --test=test                 Path to a test file, or comma-separated paths to
                                   a collection of test files -- most uselful for crosss-valiaton.
-  --fullEmbeddings                                Optional flag to test on full embeddings instead of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances in evaluation reports or not.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+  --fullEmbeddings                                Optional flag to run on full embeddings instead
+                                                  of compact embeddings.
+  --obfuscate                                     Optional flag to obfuscate labels and utterances
+                                                  in evaluation reports or not.
+  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
+      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
+      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
+  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
   The 'test' mode can test an Orchestrator model and example snapshot set against a test utterance/intent file.
-  It will generate an evaluation report. Please refer to the 'evaluation' mode for details.
+  It will generate evaluation reports and auxiliary files.
+  This mode is activated if a "--test" argument is provided to the "test" command.
+  Please refer to the 'evaluation' mode for details of the evaluation report.
 
 EXAMPLE
 
       $ bf orchestrator:test --out=resources\data\Columnar\TestOutput --model=resources\data\Columnar\ModelConfig --in=resources\data\Columnar\Email.blu --test=resources\data\Columnar\EmailTest.txt
 
       Notice that the ModelConfig folder is created by the 'bf orchestrator:basemodel:get' command.
-      Inside the ".../ModelConfig" directory, there is a "config.json" that specifies downloaded base model files
+      Inside the ".../ModelConfig" directory, there is a "config.json" that specifies a downloaded base model files
       among other hyper parameters. Here is an example: 
       {
         "VocabFile": "vocab.txt",
@@ -368,7 +384,9 @@ _See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botf
 
 # `bf orchestrator:test -- evaluation mode`
 
-Create Orchestrator leave-one-out cross validation (LOOCV) evaluation report on a previously generated .blu file
+Create leave-one-out cross validation (LOOCV) evaluation reports and axuiliary files on
+a previously generated Orchestrator .blu snapshot file.
+This mode is activated if there is no "--test" or "--prediction" arguments provided to the "test" commands.
 
 ```
 USAGE
@@ -379,13 +397,16 @@ OPTIONS
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
-  --fullEmbeddings                                Optional flag to evaluate on full embeddings instead of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances in evaluation reports or not.
-  -a, --ambiguousclosenessthreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowconfidencescorethreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multilabelpredictionthreshold=threshold   Optional plural/multi-label prediction threshold, default to 1,
-            i.e., only max-score intents are predicted.
-  -u, --unknownlabelpredictionthreshold=threshold Optional unknown label threshold, default to 0.3.
+  --fullEmbeddings                                Optional flag to run on full embeddings instead
+                                                  of compact embeddings.
+  --obfuscate                                     Optional flag to obfuscate labels and utterances
+                                                  in evaluation reports or not.
+  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
+      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
+      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
+  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -393,14 +414,14 @@ DESCRIPTION
   on a model and its example snapshot set. It also generates a detailed evaluation report
   with the following sections:
 
-  >  Intent/utterancce Statistics - intent and utterance statistics and distributions.
-  >  Duplicates - tables of utterance with multiple intents and exact utterance/intent duplicates.
-  >  Ambiguous - ambiguous predictions that there are some other intent predictions whose
-     scores are close to the correctly predicted intents. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
-     the correctly predicted intent score, then the prediction itself is considered "ambiguous."
-  >  Misclassified - utterance's intent labels were not scored the highest.
-  >  Low Confidence - utterance intent labels are scored the highest, but they are lower than a threshold.
-     This threshold can be configured through the "lowconfidencescorethreshold" parameter, the default is 0.5.
+  >  Intent/utterancce Statistics - label and utterance statistics and distributions.
+  >  Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
+  >  Ambiguous - ambiguous predictions that there are some other label predictions whose
+     scores are close to the correctly predicted labels. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
+     the correctly predicted label score, then the prediction itself is considered "ambiguous."
+  >  Misclassified - utterance's label labels were not scored the highest.
+  >  Low Confidence - utterance label labels are scored the highest, but they are lower than a threshold.
+     This threshold can be configured through the "lowConfidenceScoreThreshold" parameter, the default is 0.5.
   >  Metrics - test confisuon matrix metrics. Please reference the "assess" command description for details.
 
 EXAMPLE
@@ -431,6 +452,7 @@ _See code: [src\commands\orchestrator\test.ts](https://github.com/microsoft/botf
 Create an evaluation report on assessing prediction against ground-truth instances.
 This command can execute an independent assessment of a prediction set against a ground-truth set,
 it does not require a base model that other Orchestrator commands may need.
+This mode is activated if a "--prediction" argument is provided to the "test" command.
 
 ```
 USAGE
@@ -505,8 +527,8 @@ DESCRIPTION
 
 INPUT
 
-  The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TSV or a JSON array format.
-  The TSV file format only supports intent labels and it must have 2 columns, 'labels' and 'utterance',
+  The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TXT, TSV or a JSON array format.
+  The TXT file format only supports intent labels and it must have 2 columns, 'labels' and 'utterance',
   sepatated by a TAB. The 'labels' column can contains multiple labels delimited by camma.
 
   For entitiy labels, a user can choose LU, LUIS, or a JSON array format
