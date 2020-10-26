@@ -59,7 +59,7 @@ describe('luis:application:create', () => {
   .command(['luis:application:create', '--endpoint', 'undefined', '--name', 'orange_app', '--subscriptionKey', uuidv1(), '--culture', 'en-us', '--description', 'test description', '--versionId', '0.04'])
   .exit(1)
   .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
-    expect(ctx.stderr).to.contain('Failed to create app: Error: connect ECONNREFUSED')
+    expect(ctx.stderr).to.contain('Failed to create app: Error:')
   })
 
 })

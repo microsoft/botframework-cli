@@ -56,7 +56,7 @@ describe('luis:version:rename', () => {
   .command(['luis:version:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--versionId', '0.1', '--newVersionId', '0.2'])
   .exit(1)
   .it('fails to rename application version and displays an error message if the endpoint is undefined', ctx => {
-    expect(ctx.stderr).to.contain('Failed to rename app version: Error: connect ECONNREFUSED')
+    expect(ctx.stderr).to.contain('Failed to rename app version: Error')
   })
 
 })
