@@ -6,7 +6,7 @@ const os = require('os');
 const { insertParametersFromObject } = require('../insertParametersFromObject');
 const deriveParamsFromPath = require('../deriveParamsFromPath');
 const packageJSON = require('./../../package');
-
+const axios = require('axios');
 const nodeFetch = require('node-fetch');
 
 global.fetch = function (...args) {
@@ -103,7 +103,17 @@ class ServiceBase {
             if (body)
                 console.log(body);
         }
-        return fetch(URL, { headers, method, body });
+        // return fetch(URL, { headers, method, body });
+ 
+        return axios({     
+            method,
+            url: URL,
+            headers,
+            data: body
+        });        
+  
+
+
     }
 
     /**

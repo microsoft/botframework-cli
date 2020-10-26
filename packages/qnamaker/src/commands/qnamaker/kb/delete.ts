@@ -29,7 +29,7 @@ export default class QnamakerKbDelete extends Command {
 
     if (!flags.force) {
       let kbResult = await new Knowledgebase().getKnowledgebaseDetails(input.config)
-      let kb = await JSON.parse(await kbResult.text())
+      let kb = kbResult.data
       let answer = await cli.confirm(`Are you sure you would like to delete ${kb.name} [${kb.id}]? (y/n)`)
       if (!answer) {
         this.log('operation canceled')
