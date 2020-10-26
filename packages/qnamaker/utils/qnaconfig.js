@@ -56,9 +56,9 @@ const config = {
             });
             
             if (opResult.error)
-                throw new Error(JSON.stringify(opResult.error, null, 4));
+                throw new Error(JSON.stringify(opResult.data.error, null, 4));
 
-            result = await opResult.json();
+            result = opResult.data;
             cli.action.start(result.operationState)
 
             if (result.operationState === 'Failed'){
