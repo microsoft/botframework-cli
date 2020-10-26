@@ -15,6 +15,7 @@ import {MultiLabelObjectConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+import {CryptoUtility} from '@microsoft/bf-dispatcher';
 
 import {Example} from './example';
 import {Label} from './label';
@@ -516,10 +517,10 @@ export class Utility {
       predictionSetUtteranceEntityLabelsMap);
     const spuriousPredictionArrays: [string, string][] = spuriousPredictions.map(
       (spuriousPrediction: [string, Label[]]) => [
-        Label.outputString(spuriousPrediction[0], Utility.toObfuscateLabelTextInReportUtility),
+        Utility.outputStringUtility(spuriousPrediction[0]),
         Utility.concatenateDataArrayToHtmlTable(
           'Label',
-          spuriousPrediction[1].map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility))),
+          spuriousPrediction[1].map((x: Label) => Utility.outputLabelStringUtility(x))),
       ]);
     // ---- NOTE ---- generate spurious report.
     const spuriousPredictionHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
@@ -608,10 +609,10 @@ export class Utility {
     // ---- NOTE ---- generate duplicate report.
     const utterancesMultiLabelArrays: [string, string][] = [...utteranceEntityLabelsMap.entries()].filter(
       (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [
-      Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
+      Utility.outputStringUtility(x[0]),
       Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        x[1].map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility))),
+        x[1].map((x: Label) => Utility.outputLabelStringUtility(x))),
     ]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
@@ -716,7 +717,7 @@ export class Utility {
         const labelsPredictionStructureHtmlTable: string = predictionLabelStructure.labelsConcatenatedToHtmlTable; // ==== .labelsConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictedPredictionStructureHtmlTable: string = predictionLabelStructure.labelsPredictedConcatenatedToHtmlTable; // ==== .labelsPredictedConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictingMisclassifiedUtterancesArray: string[] = [
-          Label.outputString(predictionLabelStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionLabelStructure.utterance),
           labelsPredictionStructureHtmlTable,
           predictedPredictionStructureHtmlTable,
         ];
@@ -724,7 +725,7 @@ export class Utility {
         const labelsConcatenated: string = predictionLabelStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionLabelStructure.labelsPredictedConcatenated;
         const predictingMisclassifiedUtterancesSimpleArray: string[] = [
-          Label.outputString(predictionLabelStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionLabelStructure.utterance),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -806,20 +807,20 @@ export class Utility {
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map(
         (x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-        groundTruthSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+        groundTruthSetLabels.map((x: Label) => Utility.outputLabelStringUtility(x)));
       const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        groundTruthSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+        groundTruthSetLabels.map((x: Label) => Utility.outputLabelStringUtility(x)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
       const predictionSetLabelsIndexes: number[] = predictionSetLabels.map(
         (x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
       const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-        predictionSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+        predictionSetLabels.map((x: Label) => Utility.outputLabelStringUtility(x)));
       const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        predictionSetLabels.map((x: Label) => x.toOutputString(Utility.toObfuscateLabelTextInReportUtility)));
+        predictionSetLabels.map((x: Label) => Utility.outputLabelStringUtility(x)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
       }
@@ -890,7 +891,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile()');
     Utility.storeDataArraysToTsvFile(
       labelsOutputFilename,
-      stringArray.map((x: string) => [Label.outputString(x, Utility.toObfuscateLabelTextInReportUtility)]));
+      stringArray.map((x: string) => [Utility.outputStringUtility(x)]));
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), finished calling Utility.storeDataArraysToTsvFile()');
     // ---- NOTE ---- produce the evaluation summary file.
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), ready to call Utility.dumpFile()');
@@ -1176,7 +1177,7 @@ export class Utility {
         const labelsPredictionStructureHtmlTable: string = predictionStructure.labelsConcatenatedToHtmlTable; // ==== .labelsConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictedPredictionStructureHtmlTable: string = predictionStructure.labelsPredictedConcatenatedToHtmlTable; // ==== .labelsPredictedConcatenated; // ---- NOTE ---- simple concatenated or table output
         const predictingMisclassifiedUtterancesArray: string[] = [
-          Label.outputString(predictionStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionStructure.utterance),
           labelsPredictionStructureHtmlTable,
           predictedPredictionStructureHtmlTable,
         ];
@@ -1184,7 +1185,7 @@ export class Utility {
         const labelsConcatenated: string = predictionStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionStructure.labelsPredictedConcatenated;
         const predictingMisclassifiedUtterancesSimpleArray: string[] = [
-          Label.outputString(predictionStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionStructure.utterance),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -1267,7 +1268,7 @@ export class Utility {
       const support: number = binaryConfusionMatrices[i].getSupport();
       const total: number = binaryConfusionMatrices[i].getTotal();
       const predictingConfusionMatrixOutputLine: any[] = [
-        Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility),
+        Utility.outputStringUtility(label),
         precision,
         recall,
         f1,
@@ -1861,20 +1862,20 @@ export class Utility {
       const groundTruthSetLabelsIndexes: number[] = groundTruthSetLabels.map(
         (x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
       const groundTruthSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-        groundTruthSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        groundTruthSetLabels.map((label: string) => Utility.outputStringUtility(label)));
       const groundTruthSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        groundTruthSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        groundTruthSetLabels.map((label: string) => Utility.outputStringUtility(label)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing groundTruthSetLabelsIndexes, utterance=${utterance}`);
       }
       const predictionSetLabelsIndexes: number[] = predictionSetLabels.map(
         (x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
       const predictionSetLabelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-        predictionSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        predictionSetLabels.map((label: string) => Utility.outputStringUtility(label)));
       const predictionSetLabelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        predictionSetLabels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        predictionSetLabels.map((label: string) => Utility.outputStringUtility(label)));
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessMultiLabelIntentPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
       }
@@ -2052,7 +2053,7 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile(), filename=${labelsOutputFilename}`);
     Utility.storeDataArraysToTsvFile(
       labelsOutputFilename,
-      stringArray.map((x: string) => [Label.outputString(x, Utility.toObfuscateLabelTextInReportUtility)]));
+      stringArray.map((x: string) => [Utility.outputStringUtility(x)]));
     Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.storeDataArraysToTsvFile()');
     // ---- NOTE ---- produce a score TSV file.
     Utility.debuggingLog(`Utility.generateEvaluationReportFiles(), ready to call Utility.storeDataArraysToTsvFile(), filename=${evaluationSetScoreOutputFilename}`);
@@ -2354,10 +2355,10 @@ export class Utility {
     // ---- NOTE ---- generate duplicate report.
     const utterancesMultiLabelArrays: [string, string][] = [...utteranceLabelsMap.entries()].filter(
       (x: [string, Set<string>]) => x[1].size > 1).map((x: [string, Set<string>]) => [
-      Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
+      Utility.outputStringUtility(x[0]),
       Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        [...x[1]].map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility))),
+        [...x[1]].map((label: string) => Utility.outputStringUtility(label))),
     ]);
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
@@ -2486,18 +2487,18 @@ export class Utility {
       if (predictionScoreStructure) {
         const scoreArray: number[] = predictionScoreStructure.scoreResultArray.map((x: Result) => x.score);
         const labelConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-          predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+          predictionScoreStructure.labels.map((label: string) => Utility.outputStringUtility(label)));
         // ---- NOTE-NOT-USED ---- const labelConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         // ---- NOTE-NOT-USED ----   'Label',
-        // ---- NOTE-NOT-USED ----   predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        // ---- NOTE-NOT-USED ----   predictionScoreStructure.labels.map((label: string) => Utility.outputStringUtility(label)));
         const labelPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-          predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+          predictionScoreStructure.labelsPredicted.map((label: string) => Utility.outputStringUtility(label)));
         // ---- NOTE-NOT-USED ---- const labelPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
         // ---- NOTE-NOT-USED ----   'Label',
-        // ---- NOTE-NOT-USED ----    predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)));
+        // ---- NOTE-NOT-USED ----    predictionScoreStructure.labelsPredicted.map((label: string) => Utility.outputStringUtility(label)));
         const scoreArrayConcatenated: string = scoreArray.join('\t');
         const scoreOutputLine: string[] = [
-          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionScoreStructure.utterance),
           labelConcatenated,
           labelPredictedConcatenated,
           scoreArrayConcatenated,
@@ -2541,8 +2542,8 @@ export class Utility {
             'text': string;
           }>;
         } = {
-          text: Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
-          intents: predictionScoreStructure.labels.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)),
+          text: Utility.outputStringUtility(predictionScoreStructure.utterance),
+          intents: predictionScoreStructure.labels.map((label: string) => Utility.outputStringUtility(label)),
           entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
         };
         predictionScoreStructureJsons.push(groundTruthJson);
@@ -2599,7 +2600,7 @@ export class Utility {
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   'score': number;
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Intent).map((x: Result) => {
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   return {
-        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     intent: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
+        // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     intent: Utility.outputStringUtility(x.label.name),
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----     score: x.score,
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ----   };
         // ---- NOTE-A-BUG-THAT-LabelType-is-not-set ---- });
@@ -2608,7 +2609,7 @@ export class Utility {
           'score': number;
         }> = predictionScoreStructure.scoreResultArray.map((x: Result) => {
           return {
-            intent: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
+            intent: Utility.outputStringUtility(x.label.name),
             score: x.score,
           };
         });
@@ -2619,9 +2620,9 @@ export class Utility {
           'score': number;
         }> = predictionScoreStructure.scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Entity).map((x: Result) => {
           return {
-            entity: Label.outputString(x.label.name, Utility.toObfuscateLabelTextInReportUtility),
-            startPos: Label.outputNumber(x.label.getStartPos(), Utility.toObfuscateLabelTextInReportUtility),
-            endPos: Label.outputNumber(x.label.getStartPos(), Utility.toObfuscateLabelTextInReportUtility),
+            entity: Utility.outputStringUtility(x.label.name),
+            startPos: Utility.outputNumberUtility(x.label.getStartPos()),
+            endPos: Utility.outputNumberUtility(x.label.getStartPos()),
             score: x.score,
           };
         });
@@ -2645,8 +2646,8 @@ export class Utility {
             'score': number;
           }>;
         } = {
-          text: Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
-          intents: predictionScoreStructure.labelsPredicted.map((label: string) => Label.outputString(label, Utility.toObfuscateLabelTextInReportUtility)),
+          text: Utility.outputStringUtility(predictionScoreStructure.utterance),
+          intents: predictionScoreStructure.labelsPredicted.map((label: string) => Utility.outputStringUtility(label)),
           entities: [], // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
           intent_scores: intentResultScoreArray,
           entity_scores: entityResultScoreArray, // ---- NOTE-TODO-FOR-FUTURE-ENTITY-LABEL-AND-PREDICTION ----
@@ -2691,14 +2692,14 @@ export class Utility {
         const labelsScoreStructureHtmlTable: string = predictionScoreStructure.labelsScoreStructureHtmlTable;
         const labelsPredictedConcatenated: string = predictionScoreStructure.labelsPredictedConcatenated;
         const scoringLowConfidenceUtterancesArray: any[] = [
-          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionScoreStructure.utterance),
           labelsScoreStructureHtmlTable,
           labelsPredictedConcatenated,
         ];
         scoringLowConfidenceUtterancesArrays.push(scoringLowConfidenceUtterancesArray);
         const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
         const scoringLowConfidenceUtterancesSimpleArray: any[] = [
-          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionScoreStructure.utterance),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -2725,7 +2726,7 @@ export class Utility {
         const labelsScoreStructureHtmlTable: string = predictionScoreStructure.labelsScoreStructureHtmlTable;
         const predictedScoreStructureHtmlTable: string = predictionScoreStructure.predictedScoreStructureHtmlTable;
         const scoringMisclassifiedUtterancesArray: string[] = [
-          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionScoreStructure.utterance),
           labelsScoreStructureHtmlTable,
           predictedScoreStructureHtmlTable,
         ];
@@ -2733,7 +2734,7 @@ export class Utility {
         const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
         const labelsPredictedConcatenated: string = predictionScoreStructure.labelsPredictedConcatenated;
         const scoringMisclassifiedUtterancesSimpleArray: string[] = [
-          Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+          Utility.outputStringUtility(predictionScoreStructure.utterance),
           labelsConcatenated,
           labelsPredictedConcatenated,
         ];
@@ -2777,7 +2778,7 @@ export class Utility {
             ['30%', '10%', '60%'],
             scoreArrayAmbiguous.map((x: number[]) => x[0]));
           const scoringAmbiguousUtterancesArray: string[] = [
-            Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+            Utility.outputStringUtility(predictionScoreStructure.utterance),
             labelsScoreStructureHtmlTable,
             labelsPredictedConcatenated,
             ambiguousScoreStructureHtmlTable,
@@ -2785,7 +2786,7 @@ export class Utility {
           const labelsConcatenated: string = predictionScoreStructure.labelsConcatenated;
           scoringAmbiguousUtterancesArrays.push(scoringAmbiguousUtterancesArray);
           const scoringAmbiguousUtterancesSimpleArray: string[] = [
-            Label.outputString(predictionScoreStructure.utterance, Utility.toObfuscateLabelTextInReportUtility),
+            Utility.outputStringUtility(predictionScoreStructure.utterance),
             labelsConcatenated,
             labelsPredictedConcatenated,
           ];
@@ -2863,7 +2864,7 @@ export class Utility {
       }).map(
       (x: [string, Set<string>], index: number) => [
         index.toString(),
-        Label.outputString(x[0], Utility.toObfuscateLabelTextInReportUtility),
+        Utility.outputStringUtility(x[0]),
         Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(),
         x[1].size.toString(),
         Utility.round(x[1].size / labelUtterancesTotal).toString(),
@@ -2911,9 +2912,9 @@ export class Utility {
       (x: number) => {
         if ((x >= 0) && (x < scoreResultArray.length)) {
           return [
-            Label.outputString(scoreResultArray[x].label.name, toObfuscateLabelTextInReport),
+            Utility.outputStringUtility(scoreResultArray[x].label.name),
             scoreResultArray[x].score,
-            Label.outputString(scoreResultArray[x].closesttext, toObfuscateLabelTextInReport),
+            Utility.outputStringUtility(scoreResultArray[x].closesttext),
           ];
         }
         return [
@@ -3795,6 +3796,46 @@ export class Utility {
       throw error;
     }
     return false;
+  }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- Obfuscation
+  // -------------------------------------------------------------------------
+
+  public static outputLabelStringUtility(input: Label): string {
+    return input.toOutputString(Utility.toObfuscateLabelTextInReportUtility);
+  }
+
+  public static outputNumberUtility(input: number): number {
+    return Utility.outputNumber(input, Utility.toObfuscateLabelTextInReportUtility);
+  }
+
+  public static outputNumber(input: number, toObfuscate: boolean = false): number {
+    if (toObfuscate) {
+      return Utility.obfuscateNumber(input);
+    }
+    return input;
+  }
+
+  public static obfuscateNumber(input: number): number {
+    const inputObfuscated: number = CryptoUtility.getNumberObfuscated(input);
+    return inputObfuscated;
+  }
+
+  public static outputStringUtility(input: string): string {
+    return Utility.outputString(input, Utility.toObfuscateLabelTextInReportUtility);
+  }
+
+  public static outputString(input: string, toObfuscate: boolean = false): string {
+    if (toObfuscate) {
+      return Utility.obfuscateString(input);
+    }
+    return input;
+  }
+
+  public static obfuscateString(input: string): string {
+    const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
+    return inputObfuscated;
   }
 
   // -------------------------------------------------------------------------

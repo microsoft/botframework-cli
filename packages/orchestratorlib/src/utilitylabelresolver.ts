@@ -6,7 +6,6 @@
 import {PredictionScoreStructure} from './predictionscorestructure';
 
 import {LabelType} from './labeltype';
-import {Label} from './label';
 import {Result} from './result';
 
 import {LabelResolver} from './labelresolver';
@@ -93,10 +92,10 @@ export class UtilityLabelResolver {
         const labels: string[] = utteranceLabels[1];
         const labelsIndexes: number[] = labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
         const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-          labels.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+          labels.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         const labelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
           'label',
-          labels.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+          labels.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), before calling score(), utterance=${utterance}`);
         }
@@ -136,10 +135,10 @@ export class UtilityLabelResolver {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredicted)=${JSON.stringify(labelsPredicted)}`);
         }
         const labelsPredictedConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
-          labelsPredicted.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+          labelsPredicted.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         const labelsPredictedConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
           'label',
-          labelsPredicted.map((label: string) => Label.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
+          labelsPredicted.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver)));
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), JSON.stringify(labelsPredictedConcatenated)="${JSON.stringify(labelsPredictedConcatenated)}"`);
         }

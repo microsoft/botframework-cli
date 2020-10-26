@@ -6,7 +6,7 @@
 import {LabelType} from './labeltype';
 import {Span} from './span';
 
-import {CryptoUtility} from '@microsoft/bf-dispatcher';
+import {Utility} from './utility';
 // import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export class Label {
@@ -56,33 +56,10 @@ export class Label {
   }
 
   public toObfuscatedString(): string {
-    const nameObfuscated: string = CryptoUtility.getStringObfuscated(this.name);
-    const offsetObfuscated: number = CryptoUtility.getNumberObfuscated(this.span.offset);
-    const lengthObfuscated: number = CryptoUtility.getNumberObfuscated(this.span.length);
+    const nameObfuscated: string = Utility.obfuscateString(this.name);
+    const offsetObfuscated: number = Utility.obfuscateNumber(this.span.offset);
+    const lengthObfuscated: number = Utility.obfuscateNumber(this.span.length);
     return `${nameObfuscated}-${this.labeltype}-${offsetObfuscated}-${lengthObfuscated}`;
-  }
-
-  public static outputNumber(input: number, toObfuscate: boolean = false): number {
-    if (toObfuscate) {
-      return CryptoUtility.getNumberObfuscated(input);
-    }
-    return input;
-  }
-
-  public static outputString(input: string, toObfuscate: boolean = false): string {
-    if (toObfuscate) {
-      return Label.obfuscatedString(input);
-    }
-    return input;
-  }
-
-  public static simpleString(input: string): string {
-    return input;
-  }
-
-  public static obfuscatedString(input: string): string {
-    const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
-    return inputObfuscated;
   }
 
   public toObject(): {
