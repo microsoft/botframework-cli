@@ -9,16 +9,15 @@ export default {
   async get(
     url: string,
     subscriptionKey: string) {
-
     const resp = await httpRequest(
-      subscriptionKey, 
+      subscriptionKey,
       {
-        method: "GET",
+        method: 'GET',
         url,
         headers
       })
 
-    return resp.data;
+    return resp.data
 
   },
 
@@ -27,67 +26,59 @@ export default {
     subscriptionKey: string,
     body: any,
     extraHeaders = {}) {
-
     headers = {...headers, ...extraHeaders}
 
     const resp = await httpRequest(
-      subscriptionKey, 
+      subscriptionKey,
       {
-        method: "POST",
+        method: 'POST',
         url,
         data: body,
         headers
-      });
-    
-     return resp.data
+      })
+
+    return resp.data
   },
 
   async put(
     url: string,
     subscriptionKey: string,
     body: any) {
-
     const resp = await httpRequest(
-      subscriptionKey, 
+      subscriptionKey,
       {
-        method: "PUT",
+        method: 'PUT',
         url,
         data: body,
         headers
-      });
-    
+      })
+
     return isJSON(resp.data) ? resp.data : {code: 'Success'}
   },
 
   async delete(
     url: string,
     subscriptionKey: string) {
-
     const resp = await httpRequest(
-      subscriptionKey, 
+      subscriptionKey,
       {
-        method: "DELETE",
+        method: 'DELETE',
         url,
         headers
-      });
+      })
     return isJSON(resp.data) ? resp.data : {code: 'Success'}
   }
 }
 
-const httpRequest = async function(subscriptionKey: string, config: any){
+const httpRequest = async function (subscriptionKey: string, config: any) {
   setSubscriptionKey(subscriptionKey)
   try {
-    return await axios(config);   
+    return await axios(config)
   } catch (error) {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       throw Error(error.response.data.error.message)
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-      // http.ClientRequest in node.js
-      throw Error(error.request)
     } else {
       // Something happened in setting up the request that triggered an Error
       throw Error(error.message)
@@ -99,7 +90,6 @@ const httpRequest = async function(subscriptionKey: string, config: any){
 const setSubscriptionKey = function (subscriptionKey: string) {
   headers['Ocp-Apim-Subscription-Key'] = subscriptionKey
 }
-
 
 /* tslint:disable:no-unused */
 const isJSON = function (jsonObject: any) {
