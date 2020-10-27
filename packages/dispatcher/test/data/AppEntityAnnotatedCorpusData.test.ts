@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data/AppEntityAnnotatedCorpusData", () => {
     it("Test.0000 exampleFunctionData", function() {
-        Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.eac";
         process.argv.push("--filename");
