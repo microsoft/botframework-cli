@@ -74,6 +74,10 @@ export class OrchestratorPredict {
 
   protected baseModelPath: string = '';
 
+  protected cliCmmandId: string = '';
+
+  protected trackEventFunction: any;
+
   protected ambiguousClosenessThreshold: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
 
   protected lowConfidenceScoreThreshold: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
@@ -169,6 +173,8 @@ export class OrchestratorPredict {
   /* eslint-disable complexity */
   constructor(
     baseModelPath: string, inputPath: string, outputPath: string,
+    cliCmmandId: string,
+    trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -210,6 +216,8 @@ export class OrchestratorPredict {
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.baseModelPath = baseModelPath;
+    this.cliCmmandId = cliCmmandId;
+    this.trackEventFunction = trackEventFunction;
     this.ambiguousClosenessThreshold = ambiguousClosenessThresholdParameter;
     this.lowConfidenceScoreThreshold = lowConfidenceScoreThresholdParameter;
     this.multiLabelPredictionThreshold = multiLabelPredictionThresholdParameter;
@@ -287,6 +295,8 @@ export class OrchestratorPredict {
 
   public static async runAsync(
     baseModelPath: string, inputPath: string, outputPath: string,
+    cliCmmandId: string,
+    trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -297,6 +307,8 @@ export class OrchestratorPredict {
       baseModelPath,
       inputPath,
       outputPath,
+      cliCmmandId,
+      trackEventFunction,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
@@ -313,6 +325,10 @@ export class OrchestratorPredict {
     // ---- NOTE ---- need to dynamically create an 'interactive' object
     // ---- NOTE ---- and call close() when it's not needed, otherwise this resource cannot be
     // ---- NOTE ---- properly disposed of and a unit test on this object will hang.
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {callee: 'commandLetLoop'});
+    } catch (error) {
+    }
     const interactive: readline.Interface = readline.createInterface(process.stdin, process.stdout);
     const question: any = function (prefix: string) {
       return new Promise((resolve: any, _reject: any) => {
@@ -411,6 +427,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetH(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetH'});
+    } catch (error) {
+    }
     console.log('  Commandlets: h, q, d, s, u, cu, i, ci, ni, cni, q, p, v,');
     console.log('               vd, va, vm, vl, vat, vlt, vmt, vut, vo, a, r, c, rl, n');
     console.log('    h   - print this help message');
@@ -465,6 +485,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetD(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetD'});
+    } catch (error) {
+    }
     console.log(`> Ambiguous closeness:           ${this.ambiguousClosenessThreshold}`);
     console.log(`> Low-confidence closeness:      ${this.lowConfidenceScoreThreshold}`);
     console.log(`> Multi-label threshold:         ${this.multiLabelPredictionThreshold}`);
@@ -480,6 +504,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetS(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetS'});
+    } catch (error) {
+    }
     this.currentUtteranceLabelsMap = new Map<string, Set<string>>();
     this.currentUtteranceLabelDuplicateMap = new Map<string, Set<string>>();
     const examples: any = LabelResolver.getExamples();
@@ -519,24 +547,44 @@ export class OrchestratorPredict {
   }
 
   public async commandLetU(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetU'});
+    } catch (error) {
+    }
     return this.commandLetUwithEntry(await question(OrchestratorPredict.questionForUtterance));
   }
 
   public commandLetUwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetUwithEntry'});
+    } catch (error) {
+    }
     this.currentUtterance = entry;
     return 0;
   }
 
   public commandLetCU(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetCU'});
+    } catch (error) {
+    }
     this.currentUtterance = '';
     return 0;
   }
 
   public async commandLetI(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetI'});
+    } catch (error) {
+    }
     return this.commandLetIwithEntry(await question(OrchestratorPredict.questionForCurrentIntentLabel));
   }
 
   public commandLetIwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetIwithEntry'});
+    } catch (error) {
+    }
     let label: string = entry;
     label = label.trim();
     const errorMessage: string = Utility.parseInputLabelEntryIntoInputLabelContainerArray(
@@ -551,15 +599,27 @@ export class OrchestratorPredict {
   }
 
   public commandLetCI(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetCI'});
+    } catch (error) {
+    }
     this.currentIntentLabels = [];
     return 0;
   }
 
   public async commandLetNI(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetNI'});
+    } catch (error) {
+    }
     return this.commandLetNIwithEntry(await question(OrchestratorPredict.questionForNewIntentLabel));
   }
 
   public commandLetNIwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commacommandLetNIwithEntryndLetNI'});
+    } catch (error) {
+    }
     let label: string = entry;
     label = label.trim();
     const errorMessage: string = Utility.parseInputLabelEntryIntoInputLabelContainerArray(
@@ -574,11 +634,19 @@ export class OrchestratorPredict {
   }
 
   public commandLetCNI(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetCNI'});
+    } catch (error) {
+    }
     this.newIntentLabels = [];
     return 0;
   }
 
   public commandLetF(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetF'});
+    } catch (error) {
+    }
     if (this.currentUtteranceLabelsMap.size <= 0) {
       console.log('ERROR: Please run \'s\' commandlet first scanning the model snapshot for querying');
       return -1;
@@ -596,6 +664,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetP(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetP'});
+    } catch (error) {
+    }
     if (Utility.isEmptyString(this.baseModelPath)) {
       console.log('> No model is loaded, cannot make a prediction.');
     }
@@ -609,6 +681,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetV(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetV'});
+    } catch (error) {
+    }
     // ---- NOTE ---- process the snapshot set.
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -672,10 +748,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVD(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVD'});
+    } catch (error) {
+    }
     return this.commandLetVDwithEntry(await question(OrchestratorPredict.questionForUtteranceLabelsFromDuplicates));
   }
 
   public commandLetVDwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVDwithEntry'});
+    } catch (error) {
+    }
     if (!this.currentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
@@ -713,10 +797,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVA(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVA'});
+    } catch (error) {
+    }
     return this.commandLetVAwithEntry(await question(OrchestratorPredict.questionForUtteranceLabelsFromAmbiguous));
   }
 
   public commandLetVAwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVAwithEntry'});
+    } catch (error) {
+    }
     if (!this.currentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
@@ -754,10 +846,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVM(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVM'});
+    } catch (error) {
+    }
     return this.commandLetVMwithEntry(await question(OrchestratorPredict.questionForUtteranceLabelsFromMisclassified));
   }
 
   public commandLetVMwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVMwithEntry'});
+    } catch (error) {
+    }
     if (!this.currentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
@@ -795,10 +895,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVL(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVL'});
+    } catch (error) {
+    }
     return this.commandLetVLwithEntry(await question(OrchestratorPredict.questionForUtteranceLabelsFromLowConfidence));
   }
 
   public commandLetVLwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVLwithEntry'});
+    } catch (error) {
+    }
     if (!this.currentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
@@ -836,10 +944,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVAT(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVAT'});
+    } catch (error) {
+    }
     return this.commandLetVATwithEntry(await question(OrchestratorPredict.questionForAmbiguousThreshold));
   }
 
   public commandLetVATwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVATwithEntry'});
+    } catch (error) {
+    }
     const ambiguousClosenessThresholdParameter: string = entry;
     const ambiguousClosenessThreshold: number = Number(ambiguousClosenessThresholdParameter);
     if (Number.isNaN(ambiguousClosenessThreshold)) {
@@ -851,10 +967,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVLT(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVLT'});
+    } catch (error) {
+    }
     return this.commandLetVLTwithEntry(await question(OrchestratorPredict.questionForLowConfidenceThreshold));
   }
 
   public commandLetVLTwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVLTwithEntry'});
+    } catch (error) {
+    }
     const lowConfidenceScoreThresholdParameter: string = entry;
     const lowConfidenceScoreThreshold: number = Number(lowConfidenceScoreThresholdParameter);
     if (Number.isNaN(lowConfidenceScoreThreshold)) {
@@ -866,10 +990,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVMT(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVMT'});
+    } catch (error) {
+    }
     return this.commandLetVMTwithEntry(await question(OrchestratorPredict.questionForMultiLabelPredictionThreshold));
   }
 
   public commandLetVMTwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVMTwithEntry'});
+    } catch (error) {
+    }
     const multiLabelPredictionThresholdParameter: string = entry;
     const multiLabelPredictionThreshold: number = Number(multiLabelPredictionThresholdParameter);
     if (Number.isNaN(multiLabelPredictionThreshold)) {
@@ -881,10 +1013,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVUT(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVUT'});
+    } catch (error) {
+    }
     return this.commandLetVUTwithEntry(await question(OrchestratorPredict.questionForUnknownLabelPredictionThreshold));
   }
 
   public commandLetVUTwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVUTwithEntry'});
+    } catch (error) {
+    }
     const unknownLabelPredictionThresholdParameter: string = entry;
     const unknownLabelPredictionThreshold: number = Number(unknownLabelPredictionThresholdParameter);
     if (Number.isNaN(unknownLabelPredictionThreshold)) {
@@ -896,10 +1036,18 @@ export class OrchestratorPredict {
   }
 
   public async commandLetVO(question: any): Promise<number> {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVO'});
+    } catch (error) {
+    }
     return this.commandLetVOwithEntry(await question(OrchestratorPredict.questionForObfuscateEvaluationReport));
   }
 
   public commandLetVOwithEntry(entry: string): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetVOwithEntry'});
+    } catch (error) {
+    }
     const obfuscateEvaluationReportParameter: string = entry;
     const obfuscateEvaluationReport: boolean = UtilityDispatcher.toBoolean(obfuscateEvaluationReportParameter);
     this.obfuscateEvaluationReport = obfuscateEvaluationReport;
@@ -907,6 +1055,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetA(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetA'});
+    } catch (error) {
+    }
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
@@ -923,6 +1075,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetR(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetR'});
+    } catch (error) {
+    }
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
@@ -939,6 +1095,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetC(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetC'});
+    } catch (error) {
+    }
     const exampleToRemove: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
@@ -966,6 +1126,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetRL(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetRL'});
+    } catch (error) {
+    }
     if (Utility.isEmptyStringArray(this.currentIntentLabels)) {
       console.log('ERROR: "Current" intent label array is empty.');
       return -1;
@@ -982,6 +1146,10 @@ export class OrchestratorPredict {
   }
 
   public commandLetN(): number {
+    try {
+      this.trackEventFunction(`${this.cliCmmandId}`, {commandLet: 'commandLetN'});
+    } catch (error) {
+    }
     const snapshot: any = LabelResolver.createSnapshot();
     Utility.dumpFile(this.getPredictingSetSnapshotFilename(), snapshot);
     Utility.debuggingLog(`Snapshot written to ${this.getPredictingSetSnapshotFilename()}`);

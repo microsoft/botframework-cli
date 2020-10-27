@@ -29,6 +29,8 @@ describe('Test Suite - the "predict" command', () => {
       baseModelPath,
       inputPath,
       outputPath,
+      'unit-test',
+      null,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,

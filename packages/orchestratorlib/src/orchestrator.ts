@@ -78,6 +78,8 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async predictAsync(
     baseModelPath: string, inputPath: string, outputPath: string,
+    cliCmmandId: string,
+    trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
@@ -86,6 +88,8 @@ export class Orchestrator {
     obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
       baseModelPath, inputPath, outputPath,
+      cliCmmandId,
+      trackEventFunction,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,

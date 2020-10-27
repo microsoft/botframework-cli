@@ -74,6 +74,8 @@ export default class OrchestratorInteractive extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
     UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
 
+    Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
+
     Utility.debuggingLog(`OrchestratorInteractive.run(): inputPath=${inputPath}`);
     Utility.debuggingLog(`OrchestratorInteractive.run(): outputPath=${outputPath}`);
     Utility.debuggingLog(`OrchestratorInteractive.run(): baseModelPath=${baseModelPath}`);
@@ -85,6 +87,8 @@ export default class OrchestratorInteractive extends Command {
     try {
       await Orchestrator.predictAsync(
         baseModelPath, inputPath, outputPath,
+        this.id as string,
+        this.trackEvent,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
