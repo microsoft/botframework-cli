@@ -67,16 +67,20 @@ export function exampleFunctionData(): EntityAnnotatedCorpusData {
     // ---- NOTE-TODO-PLACEHOLDER ---- }
     const linesToSkip: number = +args.linesToSkip;
     Utility.debuggingLog(
-        `filename=${filename}`);
+        `exampleFunctionData(): filename=${filename}`);
     // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
     // ---- NOTE-TODO-PLACEHOLDER ----     `outputFilenamePrefix=${outputFilenamePrefix}`);
     const entityAnnotatedCorpusContent: string = Utility.loadFile(filename);
+    Utility.debuggingLog(
+        `exampleFunctionData(): after calling Utility.loadFile(), filename=${filename}`);
     const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
         EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
             entityAnnotatedCorpusContent,
             new NgramSubwordFeaturizer(),
             linesToSkip,
             true);
+    Utility.debuggingLog(
+        `exampleFunctionData(): after calling EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(), filename=${filename}`);
     // ---- NOTE-TODO-PLACEHOLDER ---- entityAnnotatedCorpusData.dumpLuLuisJsonStructureInLuFormat(
     // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".lu");
     // ---- NOTE-TODO-PLACEHOLDER ---- entityAnnotatedCorpusData.dumpLuLuisJsonStructure(
