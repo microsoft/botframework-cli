@@ -293,7 +293,8 @@ const mergeInterruptionIntent = function (fromUtterances, toResource, intentName
 
       // add section here
       // not add the interruption intent if original file is empty
-      if (toResource.content.Content !== '') {
+      // here empty means there are no model related sections exception information section
+      if (toResource.content.Sections.filter(s => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
         toResource.content = new SectionOperator(toResource.content).addSection(newFileContent)
       }
     }

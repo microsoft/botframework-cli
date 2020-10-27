@@ -944,4 +944,52 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get(path.join(rootDir, "dia1.en-us")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION).length, 3)
     assert.isTrue(qnaResult.get(path.join(rootDir, "dia1.en-us")).Sections.filter(s => s.SectionType === sectionTypes.QNASECTION)[1].Body.includes(`# ? common_question${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=dia1${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}this is common answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}`))
   })
+
+  it('luis:cross training can get expected result when a lu file is section emtpy', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content: `> this is comments
+      # dia1_trigger
+      - trigger dial1`,
+      id: 'main'})
+
+    qnaContentArray.push({
+      content:
+        `# ?user guide
+
+        **Filters:**
+        - aa=bb
+        
+        \`\`\`
+            Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\`
+        
+        # ?tell joke
+        \`\`\`
+            tell a funny joke
+        \`\`\``,
+      id: 'main'}
+    )
+
+    luContentArray.push({
+      content: `> !# @app.name = my luis application`,
+      id: 'dia1'}
+    )
+
+    let crossTrainConfig = {
+      'main': {
+        'rootDialog': true,
+        'triggers': {
+          'dia1_trigger': 'dia1'
+        }
+      }
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+
+    assert.equal(luResult.get('dia1').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
+  })
 })
