@@ -17,14 +17,11 @@ import { Utility } from "../../utility/Utility";
 export class MultiLabelObjectConfusionMatrixSubset
 extends MultiLabelObjectConfusionMatrixWithBinaryBase {
 
-    protected labelObjectHasTrueNegative: boolean = false;
-
     constructor(
         labels: string[],
         labelMap: Map<string, number>,
-        labelObjectHasTrueNegative: boolean = false) {
-        super(labels, labelMap);
-        this.labelObjectHasTrueNegative = labelObjectHasTrueNegative;
+        populateTrueNegatives: boolean) {
+        super(labels, labelMap, populateTrueNegatives);
     }
 
     public addInstanceByLabelObjects(
@@ -35,7 +32,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
         this.validateLabelObjects(predictedLabels);
         if (Utility.isEmptyGenericArray(predictedLabels)) {
             if (Utility.isEmptyGenericArray(groundTrueLabels)) {
-                if (this.labelObjectHasTrueNegative) {
+                if (this.doesPopulateTrueNegatives()) {
                     this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
                 }
             } else {
@@ -101,7 +98,9 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
         this.validateLabelIds(predictedLabelIds);
         if (Utility.isEmptyNumberArray(predictedLabelIds)) {
             if (Utility.isEmptyNumberArray(groundTrueLabelIds)) {
-                this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
+                if (this.doesPopulateTrueNegatives()) {
+                    this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
+                }
             } else {
                 this.getBinaryConfusionMatrix().addToFalseNegatives(value, true);
             }

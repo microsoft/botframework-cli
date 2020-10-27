@@ -7,7 +7,8 @@ import { IConfusionMatrix } from "./IConfusionMatrix";
 
 import { Label } from "../../label_structure/Label";
 
-export interface ILabelObjectConfusionMatrix extends IConfusionMatrix {
+export interface ILabelObjectConfusionMatrix
+extends IConfusionMatrix {
     validateLabelObject(
         label: Label,
         throwIfNotLegal: boolean): boolean;

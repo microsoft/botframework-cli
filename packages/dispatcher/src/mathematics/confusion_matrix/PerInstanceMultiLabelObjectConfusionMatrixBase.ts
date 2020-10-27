@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import { IMultiLabelObjectConfusionMatrix } from "./IMultiLabelObjectConfusionMatrix";
-import { MultiLabelConfusionMatrixBase } from "./MultiLabelConfusionMatrixBase";
+import { IPerInstanceMultiLabelObjectConfusionMatrix } from "./IPerInstanceMultiLabelObjectConfusionMatrix";
+import { PerInstanceMultiLabelConfusionMatrixBase } from "./PerInstanceMultiLabelConfusionMatrixBase";
 
 import { Label } from "../../label_structure/Label";
 
@@ -12,23 +12,26 @@ import {DictionaryMapUtility} from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
 
-export abstract class MultiLabelObjectConfusionMatrixBase
-extends MultiLabelConfusionMatrixBase
-implements IMultiLabelObjectConfusionMatrix {
+export abstract class PerInstanceMultiLabelObjectConfusionMatrixBase
+extends PerInstanceMultiLabelConfusionMatrixBase
+implements IPerInstanceMultiLabelObjectConfusionMatrix {
 
     constructor(
+        numberInstances: number,
         labels: string[],
         labelMap: Map<string, number>,
         populateTrueNegatives: boolean) {
-        super(labels, labelMap, populateTrueNegatives);
+        super(numberInstances, labels, labelMap, populateTrueNegatives);
     }
 
     public abstract addInstanceByLabelIndexes(
+        instanceIndex: number,
         groundTrueLabelIds: number[],
         predictedLabelIds: number[],
         value: number): void;
 
     public abstract addInstanceByLabelObjects(
+        instanceIndex: number,
         groundTrueLabels: Label[],
         predictedLabels: Label[],
         value: number): void;
@@ -61,14 +64,6 @@ implements IMultiLabelObjectConfusionMatrix {
     public isLabelObjectInArray(labels: Label[], label: Label): boolean {
         for (const labelEntry of labels) {
             if (label.equals(labelEntry)) {
-                return true;
-            }
-        }
-        return false;
-    }
-    public isLabelIdInLabelObjectArray(labels: Label[], labelId: number): boolean {
-        for (const labelEntry of labels) {
-            if (labelId === this.getLabelMap().get(labelEntry.name) as number) {
                 return true;
             }
         }

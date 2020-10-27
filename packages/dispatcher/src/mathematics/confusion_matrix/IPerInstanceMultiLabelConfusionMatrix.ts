@@ -5,19 +5,27 @@
 
 import { IConfusionMatrix } from "./IConfusionMatrix";
 
-export interface IMultiLabelConfusionMatrix
+export interface IPerInstanceMultiLabelConfusionMatrix
 extends IConfusionMatrix {
+
+    getNumberInstances(): number;
 
     doesPopulateTrueNegatives(): boolean;
 
     addInstanceByLabelIndexes(
+        instanceIndex: number,
         groundTrueLabelIds: number[],
         predictedLabelIds: number[],
         value: number): void;
     addInstanceByLabels(
+        instanceIndex: number,
         groundTrueLabels: string[],
         predictedLabels: string[],
         value: number): void;
+
+    validateInstanceId(
+        instanceIndex: number,
+        throwIfNotLegal: boolean): boolean;
 
     validateLabelIds(
         labelIds: number[],

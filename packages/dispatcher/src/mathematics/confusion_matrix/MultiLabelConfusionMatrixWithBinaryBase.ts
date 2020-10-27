@@ -19,8 +19,9 @@ extends MultiLabelConfusionMatrixBase {
 
     constructor(
         labels: string[],
-        labelMap: Map<string, number>) {
-        super(labels, labelMap);
+        labelMap: Map<string, number>,
+        populateTrueNegatives: boolean) {
+        super(labels, labelMap, populateTrueNegatives);
         this.reset();
     }
 

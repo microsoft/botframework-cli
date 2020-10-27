@@ -62,6 +62,14 @@ export { MultiLabelObjectConfusionMatrixExact } from "./mathematics/confusion_ma
 export { MultiLabelObjectConfusionMatrixSubset } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixSubset";
 export { MultiLabelObjectConfusionMatrixWithBinaryArrayBase } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixWithBinaryArrayBase";
 export { MultiLabelObjectConfusionMatrixWithBinaryBase } from "./mathematics/confusion_matrix/MultiLabelObjectConfusionMatrixWithBinaryBase";
+export { IPerInstanceMultiLabelConfusionMatrix } from "./mathematics/confusion_matrix/IPerInstanceMultiLabelConfusionMatrix";
+export { IPerInstanceMultiLabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/IPerInstanceMultiLabelObjectConfusionMatrix";
+export { PerInstanceMultiLabelConfusionMatrix } from "./mathematics/confusion_matrix/PerInstanceMultiLabelConfusionMatrix";
+export { PerInstanceMultiLabelConfusionMatrixBase } from "./mathematics/confusion_matrix/PerInstanceMultiLabelConfusionMatrixBase";
+export { PerInstanceMultiLabelConfusionMatrixWithBinaryArrayBase } from "./mathematics/confusion_matrix/PerInstanceMultiLabelConfusionMatrixWithBinaryArrayBase";
+export { PerInstanceMultiLabelObjectConfusionMatrix } from "./mathematics/confusion_matrix/PerInstanceMultiLabelObjectConfusionMatrix";
+export { PerInstanceMultiLabelObjectConfusionMatrixBase } from "./mathematics/confusion_matrix/PerInstanceMultiLabelObjectConfusionMatrixBase";
+export { PerInstanceMultiLabelObjectConfusionMatrixWithBinaryArrayBase } from "./mathematics/confusion_matrix/PerInstanceMultiLabelObjectConfusionMatrixWithBinaryArrayBase";
 
 export { IMathematicsHelper } from "./mathematics/mathematics_helper/IMathematicsHelper";
 export { MathematicsHelper } from "./mathematics/mathematics_helper/MathematicsHelper";

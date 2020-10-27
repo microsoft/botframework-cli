@@ -8,7 +8,8 @@ import { ILabelObjectConfusionMatrix } from "./ILabelObjectConfusionMatrix";
 
 import { Label } from "../../label_structure/Label";
 
-export interface ISingleLabelObjectConfusionMatrix extends ISingleLabelConfusionMatrix, ILabelObjectConfusionMatrix {
+export interface ISingleLabelObjectConfusionMatrix
+extends ISingleLabelConfusionMatrix, ILabelObjectConfusionMatrix {
 
     addInstanceByLabelObject(
         groundTrueLabel: Label,

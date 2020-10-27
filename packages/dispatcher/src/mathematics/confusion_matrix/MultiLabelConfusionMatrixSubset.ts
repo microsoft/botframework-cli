@@ -17,8 +17,9 @@ extends MultiLabelConfusionMatrixWithBinaryBase {
 
     constructor(
         labels: string[],
-        labelMap: Map<string, number>) {
-        super(labels, labelMap);
+        labelMap: Map<string, number>,
+        populateTrueNegatives: boolean) {
+        super(labels, labelMap, populateTrueNegatives);
     }
 
     public addInstanceByLabelIndexes(
@@ -29,7 +30,9 @@ extends MultiLabelConfusionMatrixWithBinaryBase {
         this.validateLabelIds(predictedLabelIds);
         if (Utility.isEmptyNumberArray(predictedLabelIds)) {
             if (Utility.isEmptyNumberArray(groundTrueLabelIds)) {
-                this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
+                if (this.doesPopulateTrueNegatives()) {
+                    this.getBinaryConfusionMatrix().addToTrueNegatives(value, true);
+                }
             } else {
                 this.getBinaryConfusionMatrix().addToFalseNegatives(value, true);
             }

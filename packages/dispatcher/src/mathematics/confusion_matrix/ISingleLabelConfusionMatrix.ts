@@ -5,7 +5,8 @@
 
 import { IConfusionMatrix } from "./IConfusionMatrix";
 
-export interface ISingleLabelConfusionMatrix extends IConfusionMatrix {
+export interface ISingleLabelConfusionMatrix
+extends IConfusionMatrix {
 
     addInstanceByLabelIndex(
         groundTrueLabelId: number,

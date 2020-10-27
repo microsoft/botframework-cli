@@ -49,6 +49,10 @@ export class Utility {
 
   public static readonly DefaultUnknownLabelPredictionThresholdParameter: number = 0.3; // ---- Unknown prediction if score is lower than the threshold.
 
+  public static StringLabelConfusionMatrixToIncludeTrueNegatives: boolean = true;
+
+  public static ObjectLabelConfusionMatrixToIncludeTrueNegatives: boolean = false;
+
   public static readonly UnknownLabel: string = 'UNKNOWN';
 
   public static readonly UnknownLabelSet: Set<string> = new Set<string>(['', 'NONE', 'NULL', Utility.UnknownLabel]);
@@ -119,7 +123,9 @@ export class Utility {
   for the top 25% test labels.
   `;
 
-  public static readonly ColumnNameSummationMicroAverage: string = `Summation ${Utility.ColumnNameMicroAverageRaw}`;
+  public static readonly ColumnNameSummationMicroAverageRaw: string = `Summation ${Utility.ColumnNameMicroAverageRaw}`;
+
+  public static readonly ColumnNameSummationMicroAverage: string = Utility.getBolded(Utility.ColumnNameSummationMicroAverageRaw);
 
   public static readonly DescriptionSummationMicroAverage: string = `
   The metrics in this row are a little bit different from those of ${Utility.ColumnNameMicroAverage}.
@@ -191,7 +197,7 @@ export class Utility {
   public static readonly DescriptionMultiLabelExactAggregate: string = `
   This evaluation package supports multi-label instances and predictions.
   In another word, a test instance can be labeled and predicted with more than
-  one labels. The above metrics so far are calculated "per instance label," i.e., an instance can contribute to
+  one labels. The above metrics so far are calculated "per label," i.e., an instance can contribute to
   multiple positive predictions on different labels, thus the above metrics can encourage a model to predict more than one labels per test instances
   that may achieve better evaluation results.
   To counter such a behavior, metrics in this row are "per instance," i.e., an instance can only contribute to one positive prediction. 
@@ -389,7 +395,7 @@ export class Utility {
     // ---- NOTE ---- load the assessment evaluation summary template.
     const evaluationSummary: string = AssessmentLabelSummaryTemplateHtml.html;
     // ---- NOTE ---- generate evaluation report for the ground-truth set.
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateEvaluationReportLabelUtteranceStatistics()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportGroundTruthSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
       'labelArrayAndMap': {
@@ -419,9 +425,9 @@ export class Utility {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportGroundTruthSetLabelUtteranceStatistics.evaluationSummary}`);
     }
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.evaluationReportGroundTruthSetLabelUtteranceStatistics()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- generate evaluation report for the prediction set.
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.evaluationReportGroundTruthSetLabelUtteranceStatistics()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportPredictionSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
       'labelArrayAndMap': {
@@ -451,7 +457,7 @@ export class Utility {
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReport(), evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary=\n${evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary}`);
     }
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.generateEvaluationReportLabelUtteranceStatistics()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), finished calling Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- produce prediction evaluation
     const predictionLabelStructureArray: PredictionLabelStructure[] = Utility.assessLabelObjectPredictions(
       groundTruthSetUtteranceEntityLabelsMap,
@@ -754,13 +760,16 @@ export class Utility {
     } {
     const confusionMatrix: MultiLabelObjectConfusionMatrix = new MultiLabelObjectConfusionMatrix(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.ObjectLabelConfusionMatrixToIncludeTrueNegatives);
     const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact = new MultiLabelObjectConfusionMatrixExact(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.ObjectLabelConfusionMatrixToIncludeTrueNegatives);
     const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset = new MultiLabelObjectConfusionMatrixSubset(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.ObjectLabelConfusionMatrixToIncludeTrueNegatives);
     for (const predictionLabelStructure of predictionLabelStructureArray) {
       if (predictionLabelStructure) {
         confusionMatrix.addInstanceByLabelObjects(predictionLabelStructure.labels, predictionLabelStructure.labelsPredicted);
@@ -878,7 +887,7 @@ export class Utility {
   }
 
   // -------------------------------------------------------------------------
-  // ---- NOTE ---- assessment report with string labels
+  // ---- NOTE ---- generate assessment report files
   // -------------------------------------------------------------------------
 
   // eslint-disable-next-line max-params
@@ -900,6 +909,10 @@ export class Utility {
       evaluationSummary);
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReportFiles(), finished calling Utility.dumpFile()');
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- assessment report with string labels
+  // -------------------------------------------------------------------------
 
   // eslint-disable-next-line max-params
   public static generateAssessmentEvaluationReport(
@@ -1214,13 +1227,16 @@ export class Utility {
     } {
     const confusionMatrix: MultiLabelConfusionMatrix = new MultiLabelConfusionMatrix(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.StringLabelConfusionMatrixToIncludeTrueNegatives);
     const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact = new MultiLabelObjectConfusionMatrixExact(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.StringLabelConfusionMatrixToIncludeTrueNegatives);
     const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset = new MultiLabelObjectConfusionMatrixSubset(
       labelArrayAndMap.stringArray,
-      labelArrayAndMap.stringMap);
+      labelArrayAndMap.stringMap,
+      Utility.StringLabelConfusionMatrixToIncludeTrueNegatives);
     for (const predictionStructure of predictionStructureArray) {
       if (predictionStructure) {
         confusionMatrix.addInstanceByLabelIndexes(predictionStructure.labelsIndexes, predictionStructure.labelsPredictedIndexes);
@@ -1525,8 +1541,8 @@ export class Utility {
       Utility.ColumnNameSummationMicroAverage,
       Utility.round(summationMicroAverageMetrics.summationPrecision),
       Utility.round(summationMicroAverageMetrics.summationRecall),
-      Utility.round(summationMicroAverageMetrics.summationF1Score),
-      Utility.round(summationMicroAverageMetrics.summationAccuracy),
+      Utility.getBolded(Utility.round(summationMicroAverageMetrics.summationF1Score)),
+      Utility.getBolded(Utility.round(summationMicroAverageMetrics.summationAccuracy)),
       Utility.round(summationMicroAverageMetrics.summationTruePositives),
       Utility.round(summationMicroAverageMetrics.summationFalsePositives),
       Utility.round(summationMicroAverageMetrics.summationTrueNegatives),
@@ -1897,6 +1913,10 @@ export class Utility {
     return predictionStructureArray;
   }
 
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- generate empty evaluation reports
+  // -------------------------------------------------------------------------
+
   public static generateEmptyEvaluationReport(): {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
@@ -2022,9 +2042,9 @@ export class Utility {
           scoringLowConfidenceUtterancesArraysHtml: '',
           scoringLowConfidenceUtterancesSimpleArrays: []},
         confusionMatrixAnalysis: {
-          confusionMatrix: new MultiLabelConfusionMatrix([], new Map<string, number>()),
-          multiLabelObjectConfusionMatrixExact: new MultiLabelObjectConfusionMatrixExact([], new Map<string, number>()),
-          multiLabelObjectConfusionMatrixSubset: new MultiLabelObjectConfusionMatrixSubset([], new Map<string, number>()),
+          confusionMatrix: new MultiLabelConfusionMatrix([], new Map<string, number>(), Utility.StringLabelConfusionMatrixToIncludeTrueNegatives),
+          multiLabelObjectConfusionMatrixExact: new MultiLabelObjectConfusionMatrixExact([], new Map<string, number>(), Utility.StringLabelConfusionMatrixToIncludeTrueNegatives),
+          multiLabelObjectConfusionMatrixSubset: new MultiLabelObjectConfusionMatrixSubset([], new Map<string, number>(), Utility.StringLabelConfusionMatrixToIncludeTrueNegatives),
           predictingConfusionMatrixOutputLines: [],
           confusionMatrixMetricsHtml: '',
           confusionMatrixAverageMetricsHtml: '',
@@ -2036,6 +2056,10 @@ export class Utility {
     };
     return evaluationOutput;
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- generate evaluation report files
+  // -------------------------------------------------------------------------
 
   // eslint-disable-next-line max-params
   public static generateEvaluationReportFiles(
@@ -2080,6 +2104,10 @@ export class Utility {
       evaluationSummary);
     Utility.debuggingLog('Utility.generateEvaluationReportFiles(), finished calling Utility.dumpFile()');
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- generate evaluation report
+  // -------------------------------------------------------------------------
 
   // eslint-disable-next-line max-params
   public static generateEvaluationReport(
@@ -2912,9 +2940,9 @@ export class Utility {
       (x: number) => {
         if ((x >= 0) && (x < scoreResultArray.length)) {
           return [
-            Utility.outputStringUtility(scoreResultArray[x].label.name),
+            Utility.outputString(scoreResultArray[x].label.name, toObfuscateLabelTextInReport),
             scoreResultArray[x].score,
-            Utility.outputStringUtility(scoreResultArray[x].closesttext),
+            Utility.outputString(scoreResultArray[x].closesttext, toObfuscateLabelTextInReport),
           ];
         }
         return [

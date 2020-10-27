@@ -19,8 +19,9 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
 
     constructor(
         labels: string[],
-        labelMap: Map<string, number>) {
-        super(labels, labelMap);
+        labelMap: Map<string, number>,
+        populateTrueNegatives: boolean) {
+        super(labels, labelMap, populateTrueNegatives);
     }
 
     public addInstanceByLabelObjects(
@@ -30,13 +31,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
         this.validateLabelObjects(groundTrueLabels);
         this.validateLabelObjects(predictedLabels);
         for (const predictedLabel of predictedLabels) {
-            let predictedIsInGroundTruth: boolean = false;
-            for (const groundTrueLabel of groundTrueLabels) {
-                if (predictedLabel.equals(groundTrueLabel)) {
-                    predictedIsInGroundTruth = true;
-                    break;
-                }
-            }
+            const predictedIsInGroundTruth: boolean = this.isLabelObjectInArray(groundTrueLabels, predictedLabel);
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- if (predictedLabel.name === "served_dish") {
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----     Utility.debuggingLog(
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         "==== XXXXX=DEBUG=XXXXX ==== " +
@@ -51,13 +46,7 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
             }
         }
         for (const groundTrueLabel of groundTrueLabels) {
-            let groundTruthIsInPredicted: boolean = false;
-            for (const predictedLabel of predictedLabels) {
-                if (groundTrueLabel.equals(predictedLabel)) {
-                    groundTruthIsInPredicted = true;
-                    break;
-                }
-            }
+            const groundTruthIsInPredicted: boolean = this.isLabelObjectInArray(predictedLabels, groundTrueLabel);
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- if (groundTrueLabel.name === "served_dish") {
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----     Utility.debuggingLog(
             // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         "==== XXXXX=DEBUG=XXXXX ==== " +
@@ -67,6 +56,15 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
             if (!groundTruthIsInPredicted) {
                 const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
                 this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);
+            }
+        }
+        if (this.doesPopulateTrueNegatives()) {
+            for (let labelId: number = 0; labelId < this.getNumberLabels(); labelId++) {
+                const labelIdIsInGroundTruth: boolean = this.isLabelIdInLabelObjectArray(groundTrueLabels, labelId);
+                const labelIdIsInPredicted: boolean = this.isLabelIdInLabelObjectArray(predictedLabels, labelId);
+                if (!labelIdIsInGroundTruth && !labelIdIsInPredicted) {
+                    this.getBinaryConfusionMatrices()[labelId].addToTrueNegatives(value, false);
+                }
             }
         }
         for (let labelId: number = 0; labelId < this.getNumberLabels(); labelId++) {
@@ -93,7 +91,9 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
                 if (isInPredictedLabelIds) {
                     this.getBinaryConfusionMatrices()[labelId].addToFalsePositives(value, false);
                 } else {
-                    this.getBinaryConfusionMatrices()[labelId].addToTrueNegatives(value, false);
+                    if (this.doesPopulateTrueNegatives()) {
+                        this.getBinaryConfusionMatrices()[labelId].addToTrueNegatives(value, false);
+                    }
                 }
             }
         }

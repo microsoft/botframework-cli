@@ -3,15 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
+import { IPerInstanceMultiLabelConfusionMatrix } from "./IPerInstanceMultiLabelConfusionMatrix";
 import { ILabelObjectConfusionMatrix } from "./ILabelObjectConfusionMatrix";
 
 import { Label } from "../../label_structure/Label";
 
-export interface IMultiLabelObjectConfusionMatrix
-extends IMultiLabelConfusionMatrix, ILabelObjectConfusionMatrix {
+export interface IPerInstanceMultiLabelObjectConfusionMatrix
+extends IPerInstanceMultiLabelConfusionMatrix, ILabelObjectConfusionMatrix {
 
     addInstanceByLabelObjects(
+        instanceIndex: number,
         groundTrueLabels: Label[],
         predictedLabels: Label[],
         value: number): void;
