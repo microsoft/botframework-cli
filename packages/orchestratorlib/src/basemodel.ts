@@ -81,6 +81,7 @@ export class OrchestratorBaseModel {
           'close', async () => {
             Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): entering on('close') : ${modelZipPath}`);
             if (onFinish) {
+              Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): entering onFinish() : ${modelZipPath}`);
               await onFinish('OrchestratorBaseModel.getModelAsync(): calling onFinish()');
             }
             Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): on('close') extracting zip file from ${modelZipPath} to ${baseModelPath}`);
