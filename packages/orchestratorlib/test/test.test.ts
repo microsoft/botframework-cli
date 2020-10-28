@@ -21,13 +21,15 @@ describe('Test Suite - test', () => {
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
-    Utility.debuggingLog('Downloading an NLR model for unit test');
+    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Roberta: downloading an NLR model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
-    Utility.debuggingLog('Triggering Test.0000 OrchestratorTest.runAsync()-Roberta');
+    const modelConfig: string = Utility.loadFile(`${baseModelPath}/config.json`);
+    Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Roberta: modelConfig=${modelConfig}`);
+    Utility.debuggingLog('Test.0000 OrchestratorTest.runAsync()-Roberta');
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
     const testPath: string = './resources/data/Columnar/EmailTest.txt';
@@ -93,13 +95,15 @@ describe('Test Suite - test', () => {
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
-    Utility.debuggingLog('Downloading an NLR model for unit test');
+    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: downloading an NLR model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       nlrId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
-    Utility.debuggingLog('Triggering Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
+    const modelConfig: string = Utility.loadFile(`${baseModelPath}/config.json`);
+    Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: modelConfig=${modelConfig}`);
+    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_bert.blu';
     const testPath: string = './resources/data/Columnar/EmailTest.txt';
