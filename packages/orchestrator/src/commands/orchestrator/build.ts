@@ -25,6 +25,11 @@ export default class OrchestratorBuild extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
+    const flagsKeys: string[] = Object.keys(flags);
+    if (Utility.isEmptyStringArray(flagsKeys)) {
+      this._help();
+    }
+
     const input: string = flags.in ? path.resolve(flags.in) : '';
     const cwd: string = process.cwd();
     let output: string = path.resolve(flags.out || cwd);

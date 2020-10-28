@@ -24,6 +24,11 @@ export default class OrchestratorCreate extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
+    const flagsKeys: string[] = Object.keys(flags);
+    if (Utility.isEmptyStringArray(flagsKeys)) {
+      this._help();
+    }
+
     const cwd: string = process.cwd();
     const input: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;

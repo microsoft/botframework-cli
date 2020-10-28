@@ -36,8 +36,8 @@ export default class OrchestratorTest extends Command {
     $ bf orchestrator:test --in=./path/to/snapshot/file --out=./path/to/output/folder/ [--model=./path/to/model/directory]`]
 
   static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to a previously created Orchestrator .blu file.'}),
-    out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
+    in: flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator .blu file.'}),
+    out: flags.string({char: 'o', description: '(required) Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: 'Optional directory for hosting Orchestrator config and base model files, not needed for the "assessment" mode.'}),
     test: flags.string({char: 't', description: 'Optional path to a test file. This option enable the "test" mode.'}),
     prediction: flags.string({char: 'p', description: 'Optional path to a prediction label file, or comma-separated paths to a collection of (e.g., crosss-valiaton) files.'}),
@@ -53,6 +53,10 @@ export default class OrchestratorTest extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorTest);
+    const flagsKeys: string[] = Object.keys(flags);
+    if (Utility.isEmptyStringArray(flagsKeys)) {
+      this._help();
+    }
 
     const inputPathConfiguration: string = flags.in;
     const outputPathConfiguration: string = flags.out;
@@ -69,56 +73,52 @@ export default class OrchestratorTest extends Command {
       predictionPathConfiguration = path.resolve(predictionPathConfiguration);
     }
 
-    let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
-    let lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
-    let multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
-    let unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-    if (flags.ambiguousClosenessThreshold) {
-      ambiguousClosenessThresholdParameter = Number(flags.ambiguousClosenessThreshold);
-      if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
-        Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-        return -1;
-      }
-    }
-    if (flags.lowConfidenceScoreThreshold) {
-      lowConfidenceScoreThresholdParameter = Number(flags.lowConfidenceScoreThreshold);
-      if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
-        Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-        return -1;
-      }
-    }
-    if (flags.multiLabelPredictionThreshold) {
-      multiLabelPredictionThresholdParameter = Number(flags.multiLabelPredictionThreshold);
-      if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
-        Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
-        return -1;
-      }
-    }
-    if (flags.unknownLabelPredictionThreshold) {
-      unknownLabelPredictionThresholdParameter = Number(flags.unknownLabelPredictionThreshold);
-      if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
-        Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
-        return -1;
-      }
-    }
-
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
-    UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
-
-    Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
-
-    Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): baseModelPath=${baseModelPath}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
-    Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${flags.fullEmbeddings}`);
-
     try {
+      let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
+      let lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
+      let multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
+      let unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
+      if (flags.ambiguousClosenessThreshold) {
+        ambiguousClosenessThresholdParameter = Number(flags.ambiguousClosenessThreshold);
+        if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
+          Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+        }
+      }
+      if (flags.lowConfidenceScoreThreshold) {
+        lowConfidenceScoreThresholdParameter = Number(flags.lowConfidenceScoreThreshold);
+        if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
+          Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+        }
+      }
+      if (flags.multiLabelPredictionThreshold) {
+        multiLabelPredictionThresholdParameter = Number(flags.multiLabelPredictionThreshold);
+        if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
+          Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
+        }
+      }
+      if (flags.unknownLabelPredictionThreshold) {
+        unknownLabelPredictionThresholdParameter = Number(flags.unknownLabelPredictionThreshold);
+        if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
+          Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
+        }
+      }
+      Utility.toPrintDebuggingLogToConsole = flags.debug;
+      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${flags.fullEmbeddings}`);
       if (testPath) {
         await Orchestrator.testAsync(
           baseModelPath, inputPathConfiguration, testPath, outputPathConfiguration,
