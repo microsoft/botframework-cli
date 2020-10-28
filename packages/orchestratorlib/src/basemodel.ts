@@ -77,20 +77,20 @@ export class OrchestratorBaseModel {
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
       try {
         // eslint-disable-next-line new-cap
-        fs.createReadStream(modelZipPath).pipe(unzip.Extract({path: baseModelPath}));
+        fs.createReadStream(modelZipPath).pipe(unzip.Extract({path: baseModelPath})).on(
+          'close', () => {
+            Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): entering on('close') : ${modelZipPath}`);
+            if (onFinish) {
+              onFinish('OrchestratorBaseModel.getModelAsync(): calling onFinish()');
+            }
+            Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): on('close') extracting zip file from ${modelZipPath} to ${baseModelPath}`);
+            fs.unlinkSync(modelZipPath);
+            Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): cleaned up the zip file: ${modelZipPath}`);
+            Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): finished');
+          });
       } catch (error) {
         Utility.debuggingThrow(`FAILED to unzip ${modelZipPath}, modelUrl=${modelUrl}, baseModelPath=${baseModelPath}, error=${error}`);
       }
-      if (onProgress) {
-        onProgress('OrchestratorBaseModel.getModelAsync(): cleaning up...');
-      }
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
-      fs.unlinkSync(modelZipPath);
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): cleaned up the zip file: ${modelZipPath}`);
-      if (onFinish) {
-        onFinish('OrchestratorBaseModel.getModelAsync(): From OrchestratorBaseModel.getModelAsync() calling onFinish()');
-      }
-      Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): finished');
     } catch (error) {
       throw error;
     }
