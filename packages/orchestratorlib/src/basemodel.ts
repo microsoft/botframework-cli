@@ -78,10 +78,10 @@ export class OrchestratorBaseModel {
       try {
         // eslint-disable-next-line new-cap
         fs.createReadStream(modelZipPath).pipe(unzip.Extract({path: baseModelPath})).on(
-          'close', () => {
+          'close', async () => {
             Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): entering on('close') : ${modelZipPath}`);
             if (onFinish) {
-              onFinish('OrchestratorBaseModel.getModelAsync(): calling onFinish()');
+              await onFinish('OrchestratorBaseModel.getModelAsync(): calling onFinish()');
             }
             Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): on('close') extracting zip file from ${modelZipPath} to ${baseModelPath}`);
             fs.unlinkSync(modelZipPath);
