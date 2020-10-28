@@ -36,7 +36,7 @@
     "@types/fs-extra": "~8.1.0",
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
-    "node-7z-forall": "^1.0.8",
+    "unzip-stream": "^0.3.1",
     "fast-text-encoding": "^1.0.3"
   },
   "devDependencies": {

@@ -4,21 +4,12 @@
  */
 
 import {expect, test} from '@oclif/test';
-import {Orchestrator} from '@microsoft/bf-orchestrator';
-const sinon: any = require('sinon');
 
 describe('orchestrator:interactive', () => {
-  beforeEach(() => {
-    sinon.stub(Orchestrator, 'predictAsync');
-  });
-
-  afterEach(() => {
-    sinon.restore();
-  });
-
   test
   .stdout()
   .command(['orchestrator:interactive', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Real-time interaction with Orchestrator model and analysis. Can return score of given utterance using previously created orchestrator examples');
   });

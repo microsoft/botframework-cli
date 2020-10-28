@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import * as fs from 'fs';
+import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Utility} from './utility';
-const Zip: any = require('node-7z-forall');
+const unzip: any = require('unzip-stream');
 const fetch: any = require('node-fetch');
 
 export class OrchestratorBaseModel {
@@ -22,8 +22,8 @@ export class OrchestratorBaseModel {
       if (baseModelPath.length === 0) {
         throw new Error('ERROR: please provide path to Orchestrator model');
       }
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): nlrId=${nlrId}`);
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): nlrId=${nlrId}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): baseModelPath=${baseModelPath}`);
 
       const versions: any = await OrchestratorBaseModel.getVersionsAsync();
       onProgress('Downloading model...');
@@ -58,36 +58,37 @@ export class OrchestratorBaseModel {
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
       fs.mkdirSync(baseModelPath, {recursive: true});
+      modelUrl = modelUrl.substr(0, modelUrl.length - 2) + 'zip';
+      // modelUrl = 'https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.zip';
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const modelZipPath: string = path.join(baseModelPath, fileName);
       const response: any = await fetch(modelUrl);
-      Utility.debuggingLog('OrchestratorNlr.getModelAsync(): calling  await response.arrayBuffer()');
+      Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling  await response.arrayBuffer()');
       const arrayBuffer: ArrayBuffer = await response.arrayBuffer();
       const uint8Array: Uint8Array = new Uint8Array(arrayBuffer);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  await response.arrayBuffer(), arrayBuffer.byteLength=${arrayBuffer.byteLength}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  await response.arrayBuffer(), uint8Array.byteLength=${uint8Array.byteLength}`);
       fs.writeFileSync(modelZipPath, uint8Array);
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished calling  await response.arrayBuffer(), arrayBuffer.byteLength=${arrayBuffer.byteLength}`);
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished calling  await response.arrayBuffer(), uint8Array.byteLength=${uint8Array.byteLength}`);
       if (onProgress) {
-        onProgress('OrchestratorNlr.getModelAsync(): model downloaded...');
+        onProgress('OrchestratorBaseModel.getModelAsync(): model downloaded...');
       }
-      Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
-      const seven: any = new Zip();
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
+      try {
+        // eslint-disable-next-line new-cap
+        fs.createReadStream(modelZipPath).pipe(unzip.Extract({path: baseModelPath}));
+      } catch (error) {
+        Utility.debuggingThrow(`FAILED to unzip ${modelZipPath}, modelUrl=${modelUrl}, baseModelPath=${baseModelPath}, error=${error}`);
+      }
       if (onProgress) {
-        onProgress('OrchestratorNlr.getModelAsync(): extracting...');
+        onProgress('OrchestratorBaseModel.getModelAsync(): cleaning up...');
       }
-      await seven.extractFull(modelZipPath, baseModelPath).then(() => {
-        if (onProgress) {
-          onProgress('OrchestratorNlr.getModelAsync(): cleaning up...');
-        }
-        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
-        fs.unlinkSync(modelZipPath);
-        Utility.debuggingLog(`OrchestratorNlr.getModelAsync(): cleaned up .7z file: ${modelZipPath}`);
-        if (onFinish) {
-          onFinish('OrchestratorNlr.getModelAsync(): From OrchestratorNlr.getModelAsync() calling onFinish()');
-        }
-        Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling OrchestratorNlr.getModelAsync()');
-      });
-      Utility.debuggingLog('OrchestratorNlr.getModelAsync(): finished calling fileStream.on()');
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished extracting model file: ${modelUrl} and extracted to ${baseModelPath}`);
+      fs.unlinkSync(modelZipPath);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): cleaned up the zip file: ${modelZipPath}`);
+      if (onFinish) {
+        onFinish('OrchestratorBaseModel.getModelAsync(): From OrchestratorBaseModel.getModelAsync() calling onFinish()');
+      }
+      Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): finished');
     } catch (error) {
       throw error;
     }

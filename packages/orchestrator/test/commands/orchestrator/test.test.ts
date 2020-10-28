@@ -4,12 +4,12 @@
  */
 
 import {expect, test} from '@oclif/test';
-// import {Orchestrator} from '@microsoft/bf-orchestrator';
 
 describe('orchestrator:test', () => {
   test
   .stdout()
   .command(['orchestrator:test', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('The "test" command can operate in three modes');
   });

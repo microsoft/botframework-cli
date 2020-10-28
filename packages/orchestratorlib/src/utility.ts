@@ -15,6 +15,7 @@ import {MultiLabelObjectConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+// ---- TO-REFACTOR ----
 import {CryptoUtility} from '@microsoft/bf-dispatcher';
 
 import {Example} from './example';
@@ -37,6 +38,7 @@ export class Utility {
 
   public static toPrintDetailedDebuggingLogToConsole: boolean = false;
 
+  // ---- TO-REFACTOR ----
   public static toObfuscateLabelTextInReportUtility: boolean = true;
 
   public static NumberOfInstancesPerProgressDisplayBatch: number = 1000; // 10000;
@@ -57,6 +59,7 @@ export class Utility {
 
   public static readonly UnknownLabelSet: Set<string> = new Set<string>(['', 'NONE', 'NULL', Utility.UnknownLabel]);
 
+  // ---- TO-REFACTOR ----
   public static readonly ColumnNameMicroAverageRaw: string = 'Micro-Average';
 
   public static readonly ColumnNameMicroAverage: string = Utility.getBolded(Utility.ColumnNameMicroAverageRaw);
@@ -217,7 +220,7 @@ export class Utility {
   Of course, this subset rule can discourage a model from predicting more than one labels (one is the safest strategy),
   even though a test instance might be labeled with a large ground-truth label set.
   `;
-
+  // ---- TO-REMOVE
   // -------------------------------------------------------------------------
   // ---- NOTE ---- utility functions
   // -------------------------------------------------------------------------
@@ -3829,7 +3832,7 @@ export class Utility {
   // -------------------------------------------------------------------------
   // ---- NOTE ---- Obfuscation
   // -------------------------------------------------------------------------
-
+  // ---- To-REMOVE ----
   public static outputLabelStringUtility(input: Label): string {
     return input.toOutputString(Utility.toObfuscateLabelTextInReportUtility);
   }
@@ -3865,6 +3868,7 @@ export class Utility {
     const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
     return inputObfuscated;
   }
+  // ---- TO-REMOVE
 
   // -------------------------------------------------------------------------
   // ---- NOTE ---- JSON functions
