@@ -58,7 +58,9 @@ export class OrchestratorBaseModel {
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
       fs.mkdirSync(baseModelPath, {recursive: true});
-      modelUrl = modelUrl.substr(0, modelUrl.length - 2) + 'zip';
+      if (modelUrl.endsWith('7z')) {
+        modelUrl = modelUrl.substr(0, modelUrl.length - 2) + 'zip';
+      }
       // modelUrl = 'https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.zip';
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const modelZipPath: string = path.join(baseModelPath, fileName);
