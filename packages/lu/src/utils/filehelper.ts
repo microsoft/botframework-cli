@@ -5,12 +5,15 @@
 
 import {readTextFile} from './textfilereader'
 import Lu = require('../parser/lu/lu')
+import QnA = require('../parser/lu/qna')
 const exception = require('./../parser/utils/exception')
 const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
+const fileExtEnum = require('./../parser/utils/helpers').FileExtTypeEnum
 const LUOptions = require('./../parser/lu/luOptions')
+const QnAOptions = require('./../parser/lu/qnaOptions')
 const luParser = require('./../parser/lufile/luParser')
 const LUSectionTypes = require('./../parser/utils/enums/lusectiontypes')
 const globby = require('globby')
@@ -211,10 +214,15 @@ async function getConfigFile(input: string): Promise<string> {
   return defaultConfigFile
 }
 
-export function getParsedObjects(contents: {id: string, content: string}[]) {
+export function getParsedObjects(contents: {id: string, content: string}[], extType: string) {
   const parsedObjects = contents.map(content => {
-    const opts = new LUOptions(content.id)
-    return new Lu(content.content, opts)
+    if (extType === fileExtEnum.LUFile) {
+      const opts = new LUOptions(content.id)
+      return new Lu(content.content, opts)
+    } else {
+      const opts = new QnAOptions(content.id)
+      return new QnA(content.content, opts)
+    }
   })
 
   return parsedObjects

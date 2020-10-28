@@ -293,7 +293,8 @@ const mergeInterruptionIntent = function (fromUtterances, toResource, intentName
 
       // add section here
       // not add the interruption intent if original file is empty
-      if (toResource.content.Content !== '') {
+      // here empty means there are no model related sections exception information section
+      if (toResource.content.Sections.filter(s => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
         toResource.content = new SectionOperator(toResource.content).addSection(newFileContent)
       }
     }
@@ -511,12 +512,15 @@ const parseAndValidateContent = async function (objectArray, verbose, importReso
   let allEmpty = true
   for (const object of objectArray) {    
     let fileContent = object.content
+    let objectId = object.id
     if (object.content && object.content !== '') {
       if (fileExt === fileExtEnum.LUFile) {
+        if (!object.id.endsWith(fileExtEnum.LUFile)) object.id += fileExtEnum.LUFile
         let result = await LuisBuilderVerbose.build([object], verbose, undefined, importResolver)
         let luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } else {
+        if (!object.id.endsWith(fileExtEnum.QnAFile)) object.id += fileExtEnum.QnAFile
         let result = await qnaBuilderVerbose.build([object], verbose, importResolver)
         fileContent = result.parseToQnAContent()
       }
@@ -540,7 +544,7 @@ const parseAndValidateContent = async function (objectArray, verbose, importReso
       }
     }
 
-    fileIdToResourceMap.set(object.id, resource)
+    fileIdToResourceMap.set(objectId, resource)
   }
 
   return {fileIdToResourceMap, allEmpty}
@@ -548,8 +552,8 @@ const parseAndValidateContent = async function (objectArray, verbose, importReso
 
 const pretreatment = function (luContents, qnaContents) {
    // Parse lu and qna objects
-   let luObjectArray = fileHelper.getParsedObjects(luContents)
-   let qnaObjectArray = fileHelper.getParsedObjects(qnaContents)
+   let luObjectArray = fileHelper.getParsedObjects(luContents, fileExtEnum.LUFile)
+   let qnaObjectArray = fileHelper.getParsedObjects(qnaContents, fileExtEnum.QnAFile)
 
    return {luObjectArray, qnaObjectArray}
 }
