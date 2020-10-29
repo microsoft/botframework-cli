@@ -9,7 +9,7 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
-import {Label}  from './label';
+import {Label}  from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {PredictionLabelStructure} from './predictionlabelstructure';
 import {PredictionStructure} from './predictionstructure';

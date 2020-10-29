@@ -18,17 +18,17 @@ import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 // ---- TO-REFACTOR ----
 import {CryptoUtility} from '@microsoft/bf-dispatcher';
 
-import {Example} from './example';
-import {Label} from './label';
-import {LabelType} from './labeltype';
+import {Example} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {PredictionLabelStructure} from './predictionlabelstructure';
 import {PredictionStructure} from './predictionstructure';
 import {PredictionScoreStructure} from './predictionscorestructure';
-import {PredictionType} from './predictiontype';
-import {PredictionTypeArrayOutputIndex} from './predictiontype';
-import {Result} from './result';
-import {Span} from './span';
+import {PredictionType} from '@microsoft/bf-dispatcher';
+import {PredictionTypeArrayOutputIndex} from '@microsoft/bf-dispatcher';
+import {Result} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
 
 import {AssessmentLabelSummaryTemplateHtml} from './resources/assessment-label-summary-template-html';
 import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-template-html';

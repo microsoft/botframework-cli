@@ -3,21 +3,19 @@
  * Licensed under the MIT License.
  */
 
-import assert = require('assert');
+import assert = require("assert");
 
-import {} from 'mocha';
+import {Label} from "../../src/label_structure/Label";
+import {LabelType} from "../../src/label_structure/LabelType";
+import {Span} from "../../src/label_structure/Span";
+import {Utility} from "../../src/utility/Utility";
+import {UnitTestHelper} from "../utility/Utility.test";
 
-import {Label} from '../src/label';
-import {LabelType} from '../src/labeltype';
-import {Span} from '../src/span';
-import {Utility} from '../src/utility';
-import {UnitTestHelper} from './utility.test';
-
-describe('Test Suite - label', () => {
-  it('Test.0000 Label - constructor()', function () {
+describe("Test Suite - label", () => {
+  it("Test.0000 Label - constructor()", function() {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-    const label: Label = new Label(LabelType.Intent, 'label', new Span(0, 0));
+    const label: Label = new Label(LabelType.Intent, "label", new Span(0, 0));
     Utility.debuggingLog(`label=${Utility.jsonStringify(label)}`);
     const labelObject: {
       name: string;
@@ -27,10 +25,9 @@ describe('Test Suite - label', () => {
           length: number;
       };
     } = label.toObject();
-    assert.ok(label.name === 'label');
+    assert.ok(label.name === "label");
     assert.ok(label.labeltype === LabelType.Intent);
     assert.ok(labelObject.span.offset === 0);
     assert.ok(labelObject.span.length === 0);
   });
 });
-

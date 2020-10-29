@@ -3,16 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import assert = require('assert');
+import assert = require("assert");
 
-import {} from 'mocha';
+import {LabelType} from "../../src/label_structure/LabelType";
+import {Utility} from "../../src/utility/Utility";
+import {UnitTestHelper} from "../utility/Utility.test";
 
-import {LabelType} from '../src/labeltype';
-import {Utility} from '../src/utility';
-import {UnitTestHelper} from './utility.test';
-
-describe('Test Suite - labeltype', () => {
-  it('Test.0000 LabelType - constructor()', function () {
+describe("Test Suite - labeltype", () => {
+  it("Test.0000 LabelType - constructor()", function() {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const labelType: LabelType = LabelType.Intent;
@@ -20,4 +18,3 @@ describe('Test Suite - labeltype', () => {
     assert.ok(labelType === 1);
   });
 });
-

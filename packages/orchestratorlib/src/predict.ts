@@ -14,13 +14,13 @@ import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
-import {Example} from './example';
-// import {Label} from './label';
-import {LabelType} from './labeltype';
+import {Example} from '@microsoft/bf-dispatcher';
+// import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
 // import {OrchestratorHelper} from './orchestratorhelper';
-// import {Result} from './result';
+// import {Result} from '@microsoft/bf-dispatcher';
 import {PredictionScoreStructure} from './predictionscorestructure';
-// import {Span} from './span';
+// import {Span} from '@microsoft/bf-dispatcher';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 

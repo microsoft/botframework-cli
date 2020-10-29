@@ -8,11 +8,11 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
-import {LabelType} from './labeltype';
-import {Label} from './label';
-import {Span} from './span';
-import {ScoreEntity} from './scoreentity';
-import {ScoreIntent} from './scoreintent';
+import {LabelType} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
+import {ScoreEntity} from '@microsoft/bf-dispatcher';
+import {ScoreIntent} from '@microsoft/bf-dispatcher';
 import {Utility} from './utility';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 

@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Label} from './label';
+import {Label} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';

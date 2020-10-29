@@ -5,8 +5,8 @@
 
 import {PredictionScoreStructure} from './predictionscorestructure';
 
-import {LabelType} from './labeltype';
-import {Result} from './result';
+import {LabelType} from '@microsoft/bf-dispatcher';
+import {Result} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
 

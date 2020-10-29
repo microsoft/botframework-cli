@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {PredictionType} from './predictiontype';
+import {PredictionType} from '@microsoft/bf-dispatcher';
 
 export class PredictionStructure {
   // eslint-disable-next-line max-params

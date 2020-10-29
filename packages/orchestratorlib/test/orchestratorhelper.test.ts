@@ -9,11 +9,9 @@ import {} from 'mocha';
 
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
-// import {LabelType} from '../src/labeltype';
-import {Label} from '../src/label';
-// import {Span} from '../src/span';
-import {ScoreEntity} from '../src/scoreentity';
-import {ScoreIntent} from '../src/scoreintent';
+import {Label} from '@microsoft/bf-dispatcher';
+import {ScoreEntity} from '@microsoft/bf-dispatcher';
+import {ScoreIntent} from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';

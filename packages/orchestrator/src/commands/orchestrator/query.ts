@@ -15,7 +15,6 @@ export default class OrchestratorQuery extends Command {
     $ bf orchestrator:query --in=./path/to/snapshot/file --query=hi --model=./path/to/base/model/directory`]
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
     in: flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator snapshot (.blu file).'}),
     query: flags.string({char: 'q', description: '(required) Query string to predict.'}),
     // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
@@ -26,6 +25,7 @@ export default class OrchestratorQuery extends Command {
     unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Optional. Unknown label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     debug: flags.boolean({char: 'd'}),
+    help: flags.help({char: 'h'}),
   }
 
   async run(): Promise<number> {

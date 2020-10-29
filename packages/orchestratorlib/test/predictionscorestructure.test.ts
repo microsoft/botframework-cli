@@ -7,10 +7,10 @@ import assert = require('assert');
 
 import {} from 'mocha';
 
-import {Label} from '../src/label';
-import {LabelType} from '../src/labeltype';
-import {Span} from '../src/span';
-import {Result} from '../src/result';
+import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
+import {Result} from '@microsoft/bf-dispatcher';
 import {PredictionScoreStructure} from '../src/predictionscorestructure';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';

@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import {Label} from './label';
-import {PredictionTypeArrayOutputIndex} from './predictiontype';
+import {Label} from '@microsoft/bf-dispatcher';
+import {PredictionTypeArrayOutputIndex} from '@microsoft/bf-dispatcher';
 
 export class PredictionLabelStructure {
   // eslint-disable-next-line max-params

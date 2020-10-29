@@ -7,10 +7,8 @@ import * as path from 'path';
 
 // require('fast-text-encoding');
 
-import {Label} from './label';
-// import {LabelType} from './labeltype';
+import {Label} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
-// import {Example} from './example';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';

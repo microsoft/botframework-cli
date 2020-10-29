@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Result}  from './result';
+import {Result}  from '@microsoft/bf-dispatcher';
 
 import {PredictionStructure}  from './predictionstructure';
 

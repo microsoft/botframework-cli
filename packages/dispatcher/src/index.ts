@@ -37,6 +37,22 @@ export { TMapStringKeyGenericArrays } from "./data_structure/TMapStringKeyGeneri
 export { TMapStringKeyGenericSet } from "./data_structure/TMapStringKeyGenericSet";
 export { TMapStringKeyGenericValue } from "./data_structure/TMapStringKeyGenericValue";
 
+export { Example } from "./label_structure/Example";
+export { Label } from "./label_structure/Label";
+export { LabelStructureUtility } from "./label_structure/LabelStructureUtility";
+export { LabelType } from "./label_structure/LabelType";
+export { PredictionType } from "./label_structure/PredictionType";
+export { PredictionTypeArrayOutputIndex } from "./label_structure/PredictionType";
+export { Result } from "./label_structure/Result";
+export { Score } from "./label_structure/Score";
+export { ScoreEntity } from "./label_structure/ScoreEntity";
+export { ScoreEntityUtterancePrediction } from "./label_structure/ScoreEntityUtterancePrediction";
+export { ScoreIntent } from "./label_structure/ScoreIntent";
+export { ScoreIntentUtterancePrediction } from "./label_structure/ScoreIntentUtterancePrediction";
+export { ScoreLabel } from "./label_structure/ScoreLabel";
+export { ScoreLabelUtterancePrediction } from "./label_structure/ScoreLabelUtterancePrediction";
+export { Span } from "./label_structure/Span";
+
 export { mainConfusionMatrix } from "./mathematics/confusion_matrix/AppConfusionMatrix";
 export { mainConfusionMatrixFunction } from "./mathematics/confusion_matrix/AppConfusionMatrix";
 export { BinaryConfusionMatrix } from "./mathematics/confusion_matrix/BinaryConfusionMatrix";

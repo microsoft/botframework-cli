@@ -11,8 +11,8 @@ import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {PredictionScoreStructure}  from './predictionscorestructure';
 
-import {Label} from './label';
-import {LabelType} from './labeltype';
+import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
