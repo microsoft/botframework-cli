@@ -32,6 +32,10 @@ export class UnitTestHelper {
     return true;
   }
 
+  public static getIgnoreFlag(): boolean {
+    return false;
+  }
+
   public static async downloadModelFileForTest(
     nlrId: string,
     baseModelPath: string,

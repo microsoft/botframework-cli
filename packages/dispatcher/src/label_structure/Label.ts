@@ -6,6 +6,8 @@
 import {LabelType} from "./LabelType";
 import {Span} from "./Span";
 
+import {Utility} from "../utility/Utility";
+
 export class Label {
     public static newIntentLabel(label: string, spanOffset: number = 0, spanLength: number = 0): Label {
         return Label.newLabel(LabelType.Intent, label, spanOffset, spanLength);
@@ -53,8 +55,22 @@ export class Label {
         this.span = span;
     }
 
+    public toOutputString(toObfuscate: boolean = false): string {
+        if (toObfuscate) {
+            return this.toObfuscatedString();
+        }
+        return this.toSimpleString();
+      }
+
     public toSimpleString(): string {
         return `${this.name}-${this.labeltype}-${this.span.offset}-${this.span.length}`;
+    }
+
+    public toObfuscatedString(): string {
+        const nameObfuscated: string = Utility.obfuscateString(this.name);
+        const offsetObfuscated: number = Utility.obfuscateNumber(this.span.offset);
+        const lengthObfuscated: number = Utility.obfuscateNumber(this.span.length);
+        return `${nameObfuscated}-${this.labeltype}-${offsetObfuscated}-${lengthObfuscated}`;
     }
 
     public toObject(): {

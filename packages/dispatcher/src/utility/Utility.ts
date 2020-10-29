@@ -7,11 +7,15 @@ import * as path from "path";
 import * as fs from "fs";
 import * as md5 from "ts-md5";
 
+import { Label } from "../label_structure/Label";
 import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
+import { CryptoUtility } from "./CryptoUtility";
 
 export class Utility {
 
     public static toPrintDebuggingLogToConsole: boolean = false;
+
+    public static toObfuscateLabelTextInReportUtility: boolean = true;
 
     public static epsilon: number = 0.0001;
     public static epsilonRough: number = 0.01;
@@ -2849,6 +2853,69 @@ export class Utility {
         quantiles.push(sortedValueCountPairArray[sortedValueCountPairArray.length -  1][0]);
         return quantiles;
     }
+
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- number processing
+    // -----------------------------------------------------------------------
+
+    public static round(input: number, digits: number = 10000): number {
+        if (digits > 0) {
+        input = Math.round(input * digits) / digits;
+        }
+        return input;
+    }
+
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- output processing
+    // -----------------------------------------------------------------------
+
+    public static getBolded(input: any): string {
+        return `<b>${input}</b>`;
+    }
+
+    // -------------------------------------------------------------------------
+    // ---- NOTE ---- Obfuscation
+    // -------------------------------------------------------------------------
+
+    public static outputLabelStringUtility(input: Label): string {
+        return input.toOutputString(Utility.toObfuscateLabelTextInReportUtility);
+    }
+
+    public static outputNumberUtility(input: number): number {
+        return Utility.outputNumber(input, Utility.toObfuscateLabelTextInReportUtility);
+    }
+
+    public static outputNumber(input: number, toObfuscate: boolean = false): number {
+        if (toObfuscate) {
+        return Utility.obfuscateNumber(input);
+        }
+        return input;
+    }
+
+    public static obfuscateNumber(input: number): number {
+        const inputObfuscated: number = CryptoUtility.getNumberObfuscated(input);
+        return inputObfuscated;
+    }
+
+    public static outputStringUtility(input: string): string {
+        return Utility.outputString(input, Utility.toObfuscateLabelTextInReportUtility);
+    }
+
+    public static outputString(input: string, toObfuscate: boolean = false): string {
+        if (toObfuscate) {
+        return Utility.obfuscateString(input);
+        }
+        return input;
+    }
+
+    public static obfuscateString(input: string): string {
+        const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
+        return inputObfuscated;
+    }
+
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- protected
+    // -----------------------------------------------------------------------
 
     protected static rngBurninIterations: number = 16384;
     protected static rngBurninDone: boolean = false;

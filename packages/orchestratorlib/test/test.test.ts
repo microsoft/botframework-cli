@@ -4,7 +4,7 @@
  */
 
 // import assert = require('assert');
-/* ---- DISABLE-FOR-NOW ----
+
 import {} from 'mocha';
 
 import * as path from 'path';
@@ -17,6 +17,9 @@ import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - test', () => {
   it('Test.0000 OrchestratorTest.runAsync()-Roberta', async function (): Promise<void> {
+    if (UnitTestHelper.getIgnoreFlag()) {
+      return;
+    }
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
@@ -91,6 +94,9 @@ describe('Test Suite - test', () => {
   });
 
   it('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer', async function (): Promise<void> {
+    if (UnitTestHelper.getIgnoreFlag()) {
+      return;
+    }
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
@@ -164,4 +170,4 @@ describe('Test Suite - test', () => {
       });
   });
 });
-*/
+

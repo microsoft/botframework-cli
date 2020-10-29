@@ -25,19 +25,21 @@ export default class OrchestratorAssessCommand extends Command {
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorAssessCommand);
+    const flagsKeys: string[] = Object.keys(flags);
+    if (Utility.isEmptyStringArray(flagsKeys)) {
+      this._help();
+    }
 
     const inputPathConfiguration: string = flags.in;
     const predictionPathConfiguration: string = flags.prediction;
     const outputPath: string = flags.out;
 
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
-    UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
-
-    Utility.debuggingLog(`OrchestratorAssessCommand.run(): inputPathConfiguration=${inputPathConfiguration}`);
-    Utility.debuggingLog(`OrchestratorAssessCommand.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
-    Utility.debuggingLog(`OrchestratorAssessCommand.run(): outputPath=${outputPath}`);
-
     try {
+      Utility.toPrintDebuggingLogToConsole = flags.debug;
+      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.debuggingLog(`OrchestratorAssessCommand.run(): inputPathConfiguration=${inputPathConfiguration}`);
+      Utility.debuggingLog(`OrchestratorAssessCommand.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
+      Utility.debuggingLog(`OrchestratorAssessCommand.run(): outputPath=${outputPath}`);
       await Orchestrator.assessAsync(
         inputPathConfiguration, predictionPathConfiguration, outputPath,
         flags.obfuscate);
