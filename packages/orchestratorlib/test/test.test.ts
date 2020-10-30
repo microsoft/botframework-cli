@@ -20,7 +20,7 @@ describe('Test Suite - test', () => {
     if (UnitTestHelper.getIgnoreFlag()) {
       return;
     }
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
@@ -97,7 +97,7 @@ describe('Test Suite - test', () => {
     if (UnitTestHelper.getIgnoreFlag()) {
       return;
     }
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
