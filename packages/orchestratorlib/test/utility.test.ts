@@ -40,8 +40,8 @@ export class UnitTestHelper {
     basemodelId: string,
     baseModelPath: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
-    onTest: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
-    Utility.debuggingLog('Entering UnitTestHelper.downloadModelFileForTest()');
+    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
+    Utility.debuggingLog('UnitTestHelper.downloadModelFileForTest() entering');
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), basemodelId=${basemodelId}`);
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), baseModelPath=${baseModelPath}`);
     if (!Utility.exists(baseModelPath)) {
@@ -52,15 +52,15 @@ export class UnitTestHelper {
         throw new Error(`Model info for model ${basemodelId} not found`);
       }
       const modelUrl: string = modelInfo.modelUri;
-      Utility.debuggingLog('Ready to call OrchestratorBaseModel.getModelAsync()');
+      Utility.debuggingLog('UnitTestHelper.downloadModelFileForTest(), ready to call OrchestratorBaseModel.getModelAsync()');
       await OrchestratorBaseModel.getModelAsync(
         baseModelPath,
         modelUrl,
         onProgress,
-        onTest);
-      Utility.debuggingLog('Finished calling OrchestratorBaseModel.getModelAsync()');
+        onFinish);
+      Utility.debuggingLog('UnitTestHelper.downloadModelFileForTest(), finished calling OrchestratorBaseModel.getModelAsync()');
     }
-    Utility.debuggingLog('Leaving UnitTestHelper.downloadModelFile()');
+    Utility.debuggingLog('UnitTestHelper.downloadModelFile() leaving');
   }
 }
 
