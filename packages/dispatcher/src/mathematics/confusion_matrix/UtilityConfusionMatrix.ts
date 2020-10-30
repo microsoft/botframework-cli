@@ -3,17 +3,28 @@
  * Licensed under the MIT License.
  */
 
-import { IConfusionMatrix } from "./IConfusionMatrix";
+import { Label } from "../../label_structure/Label";
+import { PredictionLabelObjectStructure } from "../../label_structure/PredictionLabelObjectStructure";
+import { PredictionLabelStringStructure } from "../../label_structure/PredictionLabelStringStructure";
+
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
+import { ConfusionMatrix } from "./ConfusionMatrix";
+import { PerInstanceMultiLabelConfusionMatrix } from "./PerInstanceMultiLabelConfusionMatrix";
+import { PerInstanceMultiLabelObjectConfusionMatrix } from "./PerInstanceMultiLabelObjectConfusionMatrix";
+import { MultiLabelConfusionMatrix } from "./MultiLabelConfusionMatrix";
+import { MultiLabelObjectConfusionMatrix } from "./MultiLabelObjectConfusionMatrix";
 import { MultiLabelObjectConfusionMatrixExact } from "./MultiLabelObjectConfusionMatrixExact";
 import { MultiLabelObjectConfusionMatrixSubset } from "./MultiLabelObjectConfusionMatrixSubset";
-import { ConfusionMatrix } from "./ConfusionMatrix";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
 
 export class UtilityConfusionMatrix {
+    public static readonly ColumnNamePerLabel: string =
+        "Per-Label";
+
+    public static readonly ColumnNamePerInstance: string =
+        "Per-Instance";
+
     public static readonly ColumnNameMicroAverageRaw: string =
         "Micro-Average";
 
@@ -23,9 +34,9 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionMicroAverage: string = `
         This metric follows the micro-average metric defined in
         <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
-        The computing process iterates through the per-label binary confusion matrices and
-        calculates the sums of per-label "#TruePositives" and per-label "Support", respectively.
-        The "Support" sum is stored in this row"s "Total" field and "#TruePositives" sum in the "#TruePositives" field.
+        The computing process iterates through an array of per-label/per-instance binary confusion matrices and
+        calculates the sums of per-label/per-instance "#TruePositives" and per-label/per-instance "Support", respectively.
+        The "Support" sum is stored in this row's "Total" field and "#TruePositives" sum in the "#TruePositives" field.
         This metric is then the ratio of the "#TruePositives" sum over "Total."
         `;
 
@@ -35,39 +46,40 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionMicroFirstQuartile: string = `
         Average (or mean) is not a <a href="https://en.wikipedia.org/wiki/Robust_statistics">robust statistics</a> that
         average can be easily influenced by outliers. Therefore, we also compute robust quantile-based metrics in this report.
-        For every metric in this row, e.g., precision, the computing process collects the per-label precision
-        metrics from the per-label binary confusion matrices, sorts them, and then expands each per-label precision by the
-        number of label supports. It then finds the first quartile of the metric from the series of metrics.
-        These first-quartiles are the metrics" lower bound
-        for the top 75% test instances.
+        For every metric in this row, e.g., precision, the computing process collects the per-label/per-instance precision
+        metrics from an array of per-label/per-instance binary confusion matrices, sorts them,
+        and then replicates each per-label/per-instance precision by the per-label support.
+        It then finds the first quartile of the metric from the expanded metric series.
+        These first-quartiles are the metrics' lower bound
+        for the top 75% expanded binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameMicroMedian: string =
         Utility.getBolded("Micro-Median");
 
     public static readonly DescriptionMicroMedian: string = `
-        Similar to the previous row, but metrics in this row focuses on median, another robust statistic.
+        Similar to the previous row, but metrics in this row are the medians, another robust statistic.
         These medians are the metrics' lower bound
-        for the top 50% test instances.
+        for the top 50% expanded binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameMicroThirdQuartile: string =
         "Micro-Third-Quartile";
 
     public static readonly DescriptionMicroThirdQuartile: string = `
-        Similar to the previous row, but metrics in this row focuses on the third quartile.
+        Similar to the previous rows, but metrics in this row are the third quartiles.
         These third-quartiles are the metrics' lower bound
-        for the top 25% test instances.
+        for the top 25% expanded binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameMacroFirstQuartile: string =
         Utility.getBolded("Macro-First-Quartile");
 
     public static readonly DescriptionMacroFirstQuartile: string = `
-        Above three quantile metrics are micro, i.e., they are calcuated on the test instance level.
-        Macro quantile metrics are calculated per label.
+        Above three quantile metrics are micro, i.e., they are calcuated on a metric series expanded by supports.
+        Macro quantile metrics are calculated on the un-expanded series of metrics.
         The first quartiles are the metrics' lower bound
-        for the top 75% test labels.
+        for the top 75% binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameMacroMedian: string =
@@ -76,7 +88,7 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionMacroMedian: string = `
         Similar to the previous row, but metrics in this row focuses on median.
         These medians are the metrics' lower bound
-        for the top 50% test labels.
+        for the top 50% expanded binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameMacroThirdQuartile: string =
@@ -85,7 +97,7 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionMacroThirdQuartile: string = `
         Similar to the previous row, but metrics in this row focuses on the third quartile.
         These third-quartiles are the metrics' lower bound
-        for the top 25% test labels.
+        for the top 25% expanded binary confusion matrix entries.
         `;
 
     public static readonly ColumnNameSummationMicroAverageRaw: string =
@@ -96,8 +108,8 @@ export class UtilityConfusionMatrix {
 
     public static readonly DescriptionSummationMicroAverage: string = `
         The metrics in this row are a little bit different from those of ${UtilityConfusionMatrix.ColumnNameMicroAverage}.
-        The computng process first sums up per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
-        metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
+        The computng process first sums up per-label/per-instance "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+        metrics, respectively, uses them to directly construct a binary confusion matrix, and calculates the other metrics, such as
         Precision, Recall, F1, Accuracy, etc.
         `;
 
@@ -110,8 +122,8 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionMacroAverage: string = `
         This metric follows the macro-average metric defined in
         <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
-        The computing process calcuates simple arithmetic means of the per-label Precision, Recall, F1, and Accuracy
-        metrics, repectively.
+        The computing process calcuates simple arithmetic means of the per-label/per-instance Precision, Recall, F1, and Accuracy
+        metrics, repectively, from a series of binary confusion matrices.
         `;
 
     public static readonly ColumnNameSummationMacroAverage: string =
@@ -119,8 +131,8 @@ export class UtilityConfusionMatrix {
 
     public static readonly DescriptionSummationMacroAverage: string = `
         The calculating process for the metrics in this row is a little bit different from ${UtilityConfusionMatrix.ColumnNameMacroAverage}.
-        It first calculates the averages of per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
-        metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
+        It first calculates the averages of per-label/per-instance "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+        metrics, respectively, uses them to directly construct a binary confusion matrix, and calculates the other metrics, such as
         Precision, Recall, F1, Accuracy, etc.
         `;
 
@@ -131,8 +143,8 @@ export class UtilityConfusionMatrix {
         The metrics in this row are similar to those of ${UtilityConfusionMatrix.ColumnNameMacroAverage}.
         However, instead of averaging over all train-set labels, metrics in this rows are the averages of test-set labels,
         i.e., labels with a positive support in the test set.
-        Even though one might expect every label (in the train set) should have some test instances, but
-        sometimes a test set might not have test instances for some train set labels.
+        Even though one might expect every label (in the train-set) should have some test instances, but
+        sometimes a test-set might just not have test instances for some train-set labels.
         "Positive-support" metrics put an focus on test-set labels.
         A test set might even contain instances whose labels are not in the train set. Those labels are renamed UNKNOWN for
         evaluation purpose.
@@ -152,7 +164,7 @@ export class UtilityConfusionMatrix {
     public static readonly DescriptionWeightedMacroAverage: string = `
         This metric follows the weighted-average metric defined in
         <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.classification_report.html">Scikit-Learn Classification Report</a>.
-        The computing process calcuates support/prevalency-weighted means of the per-label Precision, Recall, F1, and Accuracy
+        The computing process calcuates support/prevalency-weighted means of the per-label/per-instance Precision, Recall, F1, and Accuracy
         metrics, repectively.
         `;
 
@@ -161,7 +173,7 @@ export class UtilityConfusionMatrix {
 
     public static readonly DescriptionWeightedSummationMacroAverage: string = `
         The calculating process for the metrics in this row is a little bit different from ${UtilityConfusionMatrix.DescriptionWeightedMacroAverage}.
-        It first calculates the weighted averages of per-label "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
+        It first calculates the weighted averages of per-label/per-instance "#TruePositives", "#FalsePositives", "#TrueNegatives", and "#FalseNegatives"
         metrics, respectively, then constructs a binary confusion matrix, and calculates the other metrics, such as
         Precision, Recall, F1, Accuracy, etc.
         `;
@@ -170,7 +182,7 @@ export class UtilityConfusionMatrix {
         Utility.getBolded("Multi-Label Exact Aggregate");
 
     public static readonly DescriptionMultiLabelExactAggregate: string = `
-        This evaluation package supports multi-label instances and predictions.
+        This evaluation package also supports multi-label instances and predictions.
         In another word, a test instance can be labeled and predicted with more than
         one labels. The above metrics so far are calculated "per label," i.e., an instance can contribute to
         multiple positive predictions on different labels, thus the above metrics can encourage a model to predict more than one labels per test instances
@@ -194,7 +206,324 @@ export class UtilityConfusionMatrix {
         even though a test instance might be labeled with a large ground-truth label set.
         `;
 
-    // eslint-disable-next-line complexity
+    public static generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
+        predictionStructures: PredictionLabelObjectStructure[],
+        labelArrayAndMap: {
+            "stringArray": string[];
+            "stringMap": Map<string, number>;
+        },
+        toIncludeTrueNegatives: boolean = false,
+        toObfuscate: boolean = false, // ---- NOTE: most likely applicable to entity evaluation, where TF is not used.
+        quantileConfiguration: number = 4): {
+            multiLabelObjectConfusionMatrix:
+                MultiLabelObjectConfusionMatrix;
+            multiLabelObjectConfusionMatrixEvaluation: {
+                "binaryConfusionMatrices": BinaryConfusionMatrix[];
+                "confusionMatrixOutputLines": string[][];
+                "confusionMatrixMetricsHtml": string;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            multiLabelObjectConfusionMatrixExactEvaluation: {
+                "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            multiLabelObjectConfusionMatrixSubsetEvaluation: {
+                "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            perInstanceMultiLabelObjectConfusionMatrix:
+                PerInstanceMultiLabelObjectConfusionMatrix;
+            perInstanceMultiLabelObjectConfusionMatrixEvaluation: {
+                "binaryConfusionMatrices": BinaryConfusionMatrix[];
+                "confusionMatrixOutputLines": string[][];
+                "confusionMatrixMetricsHtml": string;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+        } {
+        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyArrays(labels)) {
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labels is empty");
+        // ---- NOTE-DEPRECATED ---- }
+        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyArrays(labelsPredicted)) {
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsPredicted is empty");
+        // ---- NOTE-DEPRECATED ---- }
+        const numberInstances: number = predictionStructures.length;
+        // ---- NOTE-DEPRECATED ---- if (labelsPredicted.length !== numberInstances) {
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow(`labelsPredicted.length|${labelsPredicted.length}| != numberInstances|${numberInstances}|`);
+        // ---- NOTE-DEPRECATED ---- }
+        const multiLabelObjectConfusionMatrix: MultiLabelObjectConfusionMatrix =
+            new MultiLabelObjectConfusionMatrix(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact =
+            new MultiLabelObjectConfusionMatrixExact(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset =
+            new MultiLabelObjectConfusionMatrixSubset(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const perInstanceMultiLabelObjectConfusionMatrix: PerInstanceMultiLabelObjectConfusionMatrix =
+            new PerInstanceMultiLabelObjectConfusionMatrix(
+                numberInstances,
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        for (let i = 0; i < numberInstances; i++) {
+            multiLabelObjectConfusionMatrix.addInstanceByLabelObjects(
+                predictionStructures[i].labels,
+                predictionStructures[i].labelsPredicted);
+            multiLabelObjectConfusionMatrixExact.addInstanceByLabelObjects(
+                predictionStructures[i].labels,
+                predictionStructures[i].labelsPredicted);
+            multiLabelObjectConfusionMatrixSubset.addInstanceByLabelObjects(
+                predictionStructures[i].labels,
+                predictionStructures[i].labelsPredicted);
+            perInstanceMultiLabelObjectConfusionMatrix.addInstanceByLabelObjects(
+                i,
+                predictionStructures[i].labels,
+                predictionStructures[i].labelsPredicted);
+        }
+        const multiLabelObjectConfusionMatrixEvaluation: {
+            "binaryConfusionMatrices": BinaryConfusionMatrix[];
+            "confusionMatrixOutputLines": string[][];
+            "confusionMatrixMetricsHtml": string;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+            multiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
+            labelArrayAndMap,
+            [],
+            [],
+            [],
+            UtilityConfusionMatrix.ColumnNamePerLabel + " ",
+            toObfuscate,
+            quantileConfiguration);
+        const multiLabelObjectConfusionMatrixExactEvaluation: {
+            "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
+            multiLabelObjectConfusionMatrixExact,
+            labelArrayAndMap,
+            [],
+            []);
+        const multiLabelObjectConfusionMatrixSubsetEvaluation: {
+            "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
+            multiLabelObjectConfusionMatrixSubset,
+            labelArrayAndMap,
+            [],
+            []);
+        const perInstanceMultiLabelObjectConfusionMatrixEvaluation: {
+            "binaryConfusionMatrices": BinaryConfusionMatrix[];
+            "confusionMatrixOutputLines": string[][];
+            "confusionMatrixMetricsHtml": string;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+            perInstanceMultiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
+            labelArrayAndMap,
+            [],
+            [],
+            [],
+            UtilityConfusionMatrix.ColumnNamePerInstance + " ",
+            toObfuscate,
+            quantileConfiguration);
+        return {
+            multiLabelObjectConfusionMatrix,
+            multiLabelObjectConfusionMatrixEvaluation,
+            multiLabelObjectConfusionMatrixExactEvaluation,
+            multiLabelObjectConfusionMatrixSubsetEvaluation,
+            perInstanceMultiLabelObjectConfusionMatrix,
+            perInstanceMultiLabelObjectConfusionMatrixEvaluation,
+        };
+    }
+
+    public static generateAssessmentConfusionMatrixMetricsAndHtmlTable(
+        predictionStructures: PredictionLabelStringStructure[],
+        labelArrayAndMap: {
+            "stringArray": string[];
+            "stringMap": Map<string, number>;
+        },
+        toIncludeTrueNegatives: boolean = true,
+        toObfuscate: boolean = false,
+        quantileConfiguration: number = 4): {
+            multiLabelConfusionMatrix:
+                MultiLabelConfusionMatrix;
+            multiLabelConfusionMatrixEvaluation: {
+                "binaryConfusionMatrices": BinaryConfusionMatrix[];
+                "confusionMatrixOutputLines": string[][];
+                "confusionMatrixMetricsHtml": string;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            multiLabelObjectConfusionMatrixExactEvaluation: {
+                "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            multiLabelObjectConfusionMatrixSubsetEvaluation: {
+                "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+            perInstanceMultiLabelConfusionMatrix:
+                PerInstanceMultiLabelConfusionMatrix;
+            perInstanceMultiLabelConfusionMatrixEvaluation: {
+                "binaryConfusionMatrices": BinaryConfusionMatrix[];
+                "confusionMatrixOutputLines": string[][];
+                "confusionMatrixMetricsHtml": string;
+                "confusionMatrixAverageOutputLines": string[][];
+                "confusionMatrixAverageMetricsHtml": string;
+                "confusionMatrixAverageDescriptionOutputLines": string[][];
+                "confusionMatrixAverageDescriptionMetricsHtml": string;
+            };
+        } {
+        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyNumberArrays(labelsIndexes)) {
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsIndexes is empty");
+        // ---- NOTE-DEPRECATED ---- }
+        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyNumberArrays(labelsPredictedIndexes)) {
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsPredictedIndexes is empty");
+        // ---- NOTE-DEPRECATED ---- }
+        const numberInstances: number = predictionStructures.length;
+        // ---- NOTE-DEPRECATED ---- if (labelsPredictedIndexes.length !== numberInstances) {
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow(`labelsPredictedIndexes.length|${labelsPredictedIndexes.length}| != numberInstances|${numberInstances}|`);
+        // ---- NOTE-DEPRECATED ---- }
+        const multiLabelConfusionMatrix: MultiLabelConfusionMatrix =
+            new MultiLabelConfusionMatrix(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact =
+            new MultiLabelObjectConfusionMatrixExact(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset =
+            new MultiLabelObjectConfusionMatrixSubset(
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        const perInstanceMultiLabelConfusionMatrix: PerInstanceMultiLabelConfusionMatrix =
+            new PerInstanceMultiLabelConfusionMatrix(
+                numberInstances,
+                labelArrayAndMap.stringArray,
+                labelArrayAndMap.stringMap,
+                toIncludeTrueNegatives);
+        for (let i = 0; i < numberInstances; i++) {
+            multiLabelConfusionMatrix.addInstanceByLabelIndexes(
+                predictionStructures[i].labelsIndexes,
+                predictionStructures[i].labelsPredictedIndexes);
+            multiLabelObjectConfusionMatrixExact.addInstanceByLabelIndexes(
+                predictionStructures[i].labelsIndexes,
+                predictionStructures[i].labelsPredictedIndexes);
+            multiLabelObjectConfusionMatrixSubset.addInstanceByLabelIndexes(
+                predictionStructures[i].labelsIndexes,
+                predictionStructures[i].labelsPredictedIndexes);
+            perInstanceMultiLabelConfusionMatrix.addInstanceByLabelIndexes(
+                i,
+                predictionStructures[i].labelsIndexes,
+                predictionStructures[i].labelsPredictedIndexes);
+        }
+        const multiLabelConfusionMatrixEvaluation: {
+            "binaryConfusionMatrices": BinaryConfusionMatrix[];
+            "confusionMatrixOutputLines": string[][];
+            "confusionMatrixMetricsHtml": string;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+            multiLabelConfusionMatrix.getBinaryConfusionMatrices(),
+            labelArrayAndMap,
+            [],
+            [],
+            [],
+            UtilityConfusionMatrix.ColumnNamePerLabel + " ",
+            toObfuscate,
+            quantileConfiguration);
+        const multiLabelObjectConfusionMatrixExactEvaluation: {
+            "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
+            multiLabelObjectConfusionMatrixExact,
+            labelArrayAndMap,
+            [],
+            []);
+        const multiLabelObjectConfusionMatrixSubsetEvaluation: {
+            "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
+            multiLabelObjectConfusionMatrixSubset,
+            labelArrayAndMap,
+            [],
+            []);
+        const perInstanceMultiLabelConfusionMatrixEvaluation: {
+            "binaryConfusionMatrices": BinaryConfusionMatrix[];
+            "confusionMatrixOutputLines": string[][];
+            "confusionMatrixMetricsHtml": string;
+            "confusionMatrixAverageOutputLines": string[][];
+            "confusionMatrixAverageMetricsHtml": string;
+            "confusionMatrixAverageDescriptionOutputLines": string[][];
+            "confusionMatrixAverageDescriptionMetricsHtml": string;
+        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+            perInstanceMultiLabelConfusionMatrix.getBinaryConfusionMatrices(),
+            labelArrayAndMap,
+            [],
+            [],
+            [],
+            UtilityConfusionMatrix.ColumnNamePerInstance + " ",
+            toObfuscate,
+            quantileConfiguration);
+        return {
+            multiLabelConfusionMatrix,
+            multiLabelConfusionMatrixEvaluation,
+            multiLabelObjectConfusionMatrixExactEvaluation,
+            multiLabelObjectConfusionMatrixSubsetEvaluation,
+            perInstanceMultiLabelConfusionMatrix,
+            perInstanceMultiLabelConfusionMatrixEvaluation,
+        };
+    }
+
     public static aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
         binaryConfusionMatrices: BinaryConfusionMatrix[],
         labelArrayAndMap: {
@@ -204,8 +533,9 @@ export class UtilityConfusionMatrix {
         confusionMatrixOutputLines: string[][],
         confusionMatrixAverageOutputLines: string[][],
         confusionMatrixAverageDescriptionOutputLines: string[][],
-        quantileConfiguration: number = 4,
-        obfuscate: boolean = false): {
+        columnNamePreffix: string,
+        toObfuscate: boolean = false,
+        quantileConfiguration: number = 4): {
             "binaryConfusionMatrices": BinaryConfusionMatrix[];
             "confusionMatrixOutputLines": string[][];
             "confusionMatrixMetricsHtml": string;
@@ -242,7 +572,7 @@ export class UtilityConfusionMatrix {
             const support: number = binaryConfusionMatrices[i].getSupport();
             const total: number = binaryConfusionMatrices[i].getTotal();
             const confusionMatrixOutputLine: any[] = [
-                Utility.outputString(label, obfuscate),
+                Utility.outputString(label, toObfuscate),
                 precision,
                 recall,
                 f1,
@@ -290,7 +620,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMicroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMicroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMicroAverage,
             UtilityConfusionMatrix.DescriptionMicroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -330,7 +660,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMicroQuantile1);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMicroFirstQuartile,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMicroFirstQuartile,
             UtilityConfusionMatrix.DescriptionMicroFirstQuartile,
         ]);
         const confusionMatrixOutputLineMicroQuantile2: any[] = [
@@ -357,7 +687,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMicroQuantile2);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMicroMedian,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMicroMedian,
             UtilityConfusionMatrix.DescriptionMicroMedian,
         ]);
         const confusionMatrixOutputLineMicroQuantile3: any[] = [
@@ -384,7 +714,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMicroQuantile3);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMicroThirdQuartile,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMicroThirdQuartile,
             UtilityConfusionMatrix.DescriptionMicroThirdQuartile,
         ]);
         // -----------------------------------------------------------------------
@@ -424,7 +754,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMacroQuantile1);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMacroFirstQuartile,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMacroFirstQuartile,
             UtilityConfusionMatrix.DescriptionMacroFirstQuartile,
         ]);
         const confusionMatrixOutputLineMacroQuantile2: any[] = [
@@ -451,7 +781,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMacroQuantile2);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMacroMedian,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMacroMedian,
             UtilityConfusionMatrix.DescriptionMacroMedian,
         ]);
         const confusionMatrixOutputLineMacroQuantile3: any[] = [
@@ -478,7 +808,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMacroQuantile3);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMacroThirdQuartile,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMacroThirdQuartile,
             UtilityConfusionMatrix.DescriptionMacroThirdQuartile,
         ]);
         // -----------------------------------------------------------------------
@@ -509,7 +839,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineSummationMicroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameSummationMicroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameSummationMicroAverage,
             UtilityConfusionMatrix.DescriptionSummationMicroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -540,7 +870,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameMacroAverage,
             UtilityConfusionMatrix.DescriptionMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -571,7 +901,7 @@ export class UtilityConfusionMatrix {
         ];
         confusionMatrixAverageOutputLines.push(confusionMatrixOutputLineSummationMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameSummationMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameSummationMacroAverage,
             UtilityConfusionMatrix.DescriptionSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -603,7 +933,7 @@ export class UtilityConfusionMatrix {
         confusionMatrixAverageOutputLines.push(
             confusionMatrixOutputLinePositiveSupportLabelMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNamePositiveSupportMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNamePositiveSupportMacroAverage,
             UtilityConfusionMatrix.DescriptionPositiveSupportMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -635,7 +965,7 @@ export class UtilityConfusionMatrix {
         confusionMatrixAverageOutputLines.push(
             confusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNamePositiveSupportSummationMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNamePositiveSupportSummationMacroAverage,
             UtilityConfusionMatrix.DescriptionPositiveSupportSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -663,7 +993,7 @@ export class UtilityConfusionMatrix {
         confusionMatrixAverageOutputLines.push(
             confusionMatrixOutputLineWeightedMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameWeightedMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameWeightedMacroAverage,
             UtilityConfusionMatrix.DescriptionWeightedMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -695,7 +1025,7 @@ export class UtilityConfusionMatrix {
         confusionMatrixAverageOutputLines.push(
             confusionMatrixOutputLineSummationWeightedMacroAverage);
         confusionMatrixAverageDescriptionOutputLines.push([
-            UtilityConfusionMatrix.ColumnNameWeightedSummationMacroAverage,
+            columnNamePreffix + UtilityConfusionMatrix.ColumnNameWeightedSummationMacroAverage,
             UtilityConfusionMatrix.DescriptionWeightedSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
@@ -724,7 +1054,6 @@ export class UtilityConfusionMatrix {
         // -----------------------------------------------------------------------
     }
 
-    // eslint-disable-next-line complexity
     public static aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact,
         labelArrayAndMap: {
@@ -732,9 +1061,7 @@ export class UtilityConfusionMatrix {
             "stringMap": Map<string, number>;
         },
         confusionMatrixAverageOutputLines: string[][],
-        confusionMatrixAverageDescriptionOutputLines: string[][],
-        quantileConfiguration: number = 4,
-        obfuscate: boolean = false): {
+        confusionMatrixAverageDescriptionOutputLines: string[][]): {
             "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
             "confusionMatrixAverageOutputLines": string[][];
             "confusionMatrixAverageMetricsHtml": string;
@@ -814,7 +1141,6 @@ export class UtilityConfusionMatrix {
         // -----------------------------------------------------------------------
     }
 
-    // eslint-disable-next-line complexity
     public static aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset,
         labelArrayAndMap: {
@@ -822,9 +1148,7 @@ export class UtilityConfusionMatrix {
             "stringMap": Map<string, number>;
         },
         confusionMatrixAverageOutputLines: string[][],
-        confusionMatrixAverageDescriptionOutputLines: string[][],
-        quantileConfiguration: number = 4,
-        obfuscate: boolean = false): {
+        confusionMatrixAverageDescriptionOutputLines: string[][]): {
             "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
             "confusionMatrixAverageOutputLines": string[][];
             "confusionMatrixAverageMetricsHtml": string;

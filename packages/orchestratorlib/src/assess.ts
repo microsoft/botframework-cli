@@ -11,8 +11,9 @@ import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {Label}  from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from './orchestratorhelper';
-import {PredictionLabelStructure} from './predictionlabelstructure';
-import {PredictionStructure} from './predictionstructure';
+
+import {PredictionLabelObjectStructure} from '@microsoft/bf-dispatcher';
+import {PredictionLabelStringStructure} from '@microsoft/bf-dispatcher';
 
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
@@ -233,7 +234,7 @@ export class OrchestratorAssess {
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
           'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-      'predictionStructureArray': PredictionStructure[];
+      'predictionLabelStringStructureArray': PredictionLabelStringStructure[];
     } =
     Utility.generateAssessmentEvaluationReport(
       groundTruthSetLabels,
@@ -326,7 +327,7 @@ export class OrchestratorAssess {
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
           'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-      'predictionLabelStructureArray': PredictionLabelStructure[];
+      'predictionLabelObjectStructureArray': PredictionLabelObjectStructure[];
     } =
     Utility.generateAssessmentLabelObjectEvaluationReport(
       groundTruthSetEntityLabels,

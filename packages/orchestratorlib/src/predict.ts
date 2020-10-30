@@ -15,12 +15,9 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
 import {Example} from '@microsoft/bf-dispatcher';
-// import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
-// import {OrchestratorHelper} from './orchestratorhelper';
-// import {Result} from '@microsoft/bf-dispatcher';
-import {PredictionScoreStructure} from './predictionscorestructure';
-// import {Span} from '@microsoft/bf-dispatcher';
+
+import {PredictionScoreLabelStringStructure} from '@microsoft/bf-dispatcher';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -163,7 +160,7 @@ export class OrchestratorPredict {
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
         'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-    'predictionScoreStructureArray': PredictionScoreStructure[];
+    'predictionScoreLabelStringStructureArray': PredictionScoreLabelStringStructure[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
     'predictionJsonContent': string;

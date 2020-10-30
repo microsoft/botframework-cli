@@ -10,7 +10,8 @@ import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
 import {LabelType} from '@microsoft/bf-dispatcher';
-import {PredictionScoreStructure}  from './predictionscorestructure';
+
+import {PredictionScoreLabelStringStructure} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -183,7 +184,7 @@ export class OrchestratorEvaluate {
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
           'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-      'predictionScoreStructureArray': PredictionScoreStructure[];
+      'predictionScoreLabelStringStructureArray': PredictionScoreLabelStringStructure[];
       'scoreOutputLines': string[][];
       'groundTruthJsonContent': string;
       'predictionJsonContent': string;

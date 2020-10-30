@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {PredictionScoreStructure} from './predictionscorestructure';
+import {PredictionScoreLabelStringStructure} from '@microsoft/bf-dispatcher';
 
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Result} from '@microsoft/bf-dispatcher';
@@ -79,10 +79,10 @@ export class UtilityLabelResolver {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
     multiLabelPredictionThreshold: number,
-    unknownLabelPredictionThreshold: number): PredictionScoreStructure[] {
+    unknownLabelPredictionThreshold: number): PredictionScoreLabelStringStructure[] {
     // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;
     // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
-    const predictionScoreStructureArray: PredictionScoreStructure[] = [];
+    const predictionScoreLabelStringStructureArray: PredictionScoreLabelStringStructure[] = [];
     for (const utteranceLabels of utteranceLabelsPairArray) {
       if (utteranceLabels) {
         const utterance: string = utteranceLabels[0];
@@ -168,7 +168,7 @@ export class UtilityLabelResolver {
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.score(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
         }
-        predictionScoreStructureArray.push(new PredictionScoreStructure(
+        predictionScoreLabelStringStructureArray.push(new PredictionScoreLabelStringStructure(
           utterance,
           labelsPredictedEvaluation,
           labels,
@@ -178,8 +178,8 @@ export class UtilityLabelResolver {
           labelsPredicted,
           labelsPredictedConcatenated,
           labelsPredictedConcatenatedToHtmlTable,
-          labelsPredictedScore,
           labelsPredictedIndexes,
+          labelsPredictedScore,
           labelsPredictedClosestText,
           scoreResultArray,
           scoreArray,
@@ -217,6 +217,6 @@ export class UtilityLabelResolver {
         }
       }
     }
-    return predictionScoreStructureArray;
+    return predictionScoreLabelStringStructureArray;
   }
 }
