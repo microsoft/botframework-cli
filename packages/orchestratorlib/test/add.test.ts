@@ -8,7 +8,7 @@ import * as path from 'path';
 const sinon: any = require('sinon');
 
 import {LabelResolver} from '../src/labelresolver';
-// import {OrchestratorNlr} from '../src/nlr';
+// import {OrchestratorBaseModel} from '../src/basemodel';
 // import {OrchestratorAdd} from '../src/add';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 // import {Utility} from '../src/utility';

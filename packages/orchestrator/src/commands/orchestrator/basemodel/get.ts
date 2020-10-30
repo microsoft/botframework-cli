@@ -22,7 +22,7 @@ export default class OrchestratorBaseModelGet extends Command {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
     const output: string = flags.out || `${cwd}/model`;
-    const nlrId: any = flags.versionId || '';
+    const basemodelId: any = flags.versionId || '';
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
@@ -32,16 +32,16 @@ export default class OrchestratorBaseModelGet extends Command {
       OrchestratorSettings.init(cwd, output, '', cwd);
       await Orchestrator.baseModelGetAsync(
         OrchestratorSettings.ModelPath,
-        nlrId,
+        basemodelId,
         (message: any) => {
           if (flags.verbose) {
             this.log(message);
           }
         },
         (message: any) => {
-          this.log(`Model ${nlrId} downloaded to ${output}`);
+          this.log(`Model ${basemodelId} downloaded to ${output}`);
           if (flags.debug) {
-            Utility.debuggingLog(`Base model ${nlrId} downloaded to ${output} with message ${message}`);
+            Utility.debuggingLog(`Base model ${basemodelId} downloaded to ${output} with message ${message}`);
           }
         });
 

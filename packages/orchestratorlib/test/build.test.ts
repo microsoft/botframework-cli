@@ -11,14 +11,14 @@ import {UnitTestHelper} from './utility.test';
 
 import assert = require('assert');
 import * as path from 'path';
-const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
+const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
 const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
 
 describe('OrchestratorBuildTests', () => {
   beforeEach(async () => {
-    Utility.debuggingLog('Downloading an NLR model for unit test');
+    Utility.debuggingLog('Downloading a base nerual network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
-      nlrId,
+      basemodelId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);

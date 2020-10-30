@@ -12,7 +12,7 @@ const fetch: any = require('node-fetch');
 export class OrchestratorBaseModel {
   public static async getAsync(
     baseModelPath: string,
-    nlrId: string = '',
+    basemodelId: string = '',
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     try {
@@ -22,7 +22,7 @@ export class OrchestratorBaseModel {
       if (baseModelPath.length === 0) {
         throw new Error('ERROR: please provide path to Orchestrator model');
       }
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): nlrId=${nlrId}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): basemodelId=${basemodelId}`);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): baseModelPath=${baseModelPath}`);
 
       const versions: any = await OrchestratorBaseModel.getVersionsAsync();
@@ -31,17 +31,17 @@ export class OrchestratorBaseModel {
         throw new Error('ERROR: failed getting nlr_versions.json');
       }
 
-      if (nlrId === '') {
-        nlrId = OrchestratorBaseModel.getDefaultModelId(versions);
+      if (basemodelId === '') {
+        basemodelId = OrchestratorBaseModel.getDefaultModelId(versions);
       }
 
-      if (nlrId === '') {
+      if (basemodelId === '') {
         throw new Error('ERROR: no default model found');
       }
 
-      const modelInfo: any = versions.models[nlrId];
+      const modelInfo: any = versions.models[basemodelId];
       if (!modelInfo) {
-        throw new Error(`ERROR: Model info for model ${nlrId} not found`);
+        throw new Error(`ERROR: Model info for model ${basemodelId} not found`);
       }
 
       const modelUrl: string = modelInfo.modelUri;

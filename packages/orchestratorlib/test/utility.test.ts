@@ -37,28 +37,28 @@ export class UnitTestHelper {
   }
 
   public static async downloadModelFileForTest(
-    nlrId: string,
+    basemodelId: string,
     baseModelPath: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onTest: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
     Utility.debuggingLog('Entering UnitTestHelper.downloadModelFileForTest()');
-    Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), nlrId=${nlrId}`);
+    Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), basemodelId=${basemodelId}`);
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), baseModelPath=${baseModelPath}`);
     if (!Utility.exists(baseModelPath)) {
       const nlrVersions: string = OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json'));
       const nlrModels: any = JSON.parse(nlrVersions);
-      const modelInfo: any = nlrModels.models[nlrId];
+      const modelInfo: any = nlrModels.models[basemodelId];
       if (!modelInfo) {
-        throw new Error(`Model info for model ${nlrId} not found`);
+        throw new Error(`Model info for model ${basemodelId} not found`);
       }
       const modelUrl: string = modelInfo.modelUri;
-      Utility.debuggingLog('Ready to call OrchestratorNlr.getModelAsync()');
+      Utility.debuggingLog('Ready to call OrchestratorBaseModel.getModelAsync()');
       await OrchestratorBaseModel.getModelAsync(
         baseModelPath,
         modelUrl,
         onProgress,
         onTest);
-      Utility.debuggingLog('Finished calling OrchestratorNlr.getModelAsync()');
+      Utility.debuggingLog('Finished calling OrchestratorBaseModel.getModelAsync()');
     }
     Utility.debuggingLog('Leaving UnitTestHelper.downloadModelFile()');
   }

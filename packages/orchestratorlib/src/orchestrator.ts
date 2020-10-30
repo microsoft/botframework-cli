@@ -61,10 +61,10 @@ export class Orchestrator {
   */
   public static async baseModelGetAsync(
     baseModelPath: string,
-    nlrId: string,
+    basemodelId: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
     onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
-    await OrchestratorBaseModel.getAsync(baseModelPath, nlrId, onProgress, onFinish);
+    await OrchestratorBaseModel.getAsync(baseModelPath, basemodelId, onProgress, onFinish);
   }
 
   public static async baseModelListAsync(): Promise<string> {

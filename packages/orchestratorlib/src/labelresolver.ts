@@ -28,7 +28,7 @@ export class LabelResolver {
     Utility.debuggingLog(`LabelResolver.loadNlrAsync(): baseModelPath=${baseModelPath}`);
     LabelResolver.Orchestrator = new oc.Orchestrator();
     if (!Utility.isEmptyString(baseModelPath)) {
-      Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading NLR..');
+      Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading basemodel..');
       if (await LabelResolver.Orchestrator.loadAsync(baseModelPath) === false) {
         throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${baseModelPath}")!`);
       }

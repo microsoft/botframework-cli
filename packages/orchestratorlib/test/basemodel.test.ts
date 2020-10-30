@@ -12,7 +12,7 @@ import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 import assert = require('assert');
 
-describe('OrchestratorNlrTests', () => {
+describe('OrchestratorBaseModelTests', () => {
   let nlrVersions: any;
   beforeEach(() => {
     nlrVersions = JSON.parse(OrchestratorHelper.readFile(path.resolve('./test/fixtures/nlr_versions.json')));
@@ -46,13 +46,13 @@ describe('OrchestratorNlrTests', () => {
         "pretrained.20201024.microsoft.dte.00.12.roberta.en.onnx": {
           "releaseDate": "09/24/2020",
           "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx.7z",
-          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer Roberta per-token NLR",
+          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer Roberta per-token basemodel",
           "minSDKVersion": "4.10.0"
         },
         "pretrained.20200924.microsoft.dte.00.12.en.onnx": {
           "releaseDate": "09/24/2020",
           "modelUri": "https://models.botframework.com/models/dte/onnx/pretrained.20200924.microsoft.dte.00.12.en.onnx.7z",
-          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer BERT per-token NLR",
+          "description": "Bot Framework SDK release 4.10 - English Onnx V1.4 12-layer BERT per-token basemodel",
           "minSDKVersion": "4.10.0"
         }
       }

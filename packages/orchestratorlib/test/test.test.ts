@@ -22,11 +22,11 @@ describe('Test Suite - test', () => {
     }
     Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
-    const nlrId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
+    const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.12.roberta.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_roberta_12l');
-    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Roberta: downloading an NLR model for unit test');
+    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Roberta: downloading a base nerual network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
-      nlrId,
+      basemodelId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       async (_message: string) => {
@@ -99,11 +99,11 @@ describe('Test Suite - test', () => {
     }
     Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
-    const nlrId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
+    const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
-    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: downloading an NLR model for unit test');
+    Utility.debuggingLog('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: downloading a base nerual network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
-      nlrId,
+      basemodelId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       async (_message: string) => {

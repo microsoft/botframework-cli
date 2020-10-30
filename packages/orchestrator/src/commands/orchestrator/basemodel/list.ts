@@ -20,19 +20,19 @@ export default class OrchestratorBaseModelList extends Command {
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 
     try {
-      const nlrList: any = await Orchestrator.baseModelGetVersionsAsync();
+      const basemodelList: any = await Orchestrator.baseModelGetVersionsAsync();
       // eslint-disable-next-line no-negated-condition
       if (!flags.raw) {
         let output: any = '\n\nAvailable base models:\n\n';
-        Object.getOwnPropertyNames(nlrList.models).forEach((key: any) => {
+        Object.getOwnPropertyNames(basemodelList.models).forEach((key: any) => {
           output += `\n${key}\n`;
           output += `\t Version Id:   ${key}\n`;
-          output += `\t Release date: ${nlrList.models[key].releaseDate}\n`;
-          output += `\t Description:  ${nlrList.models[key].description}\n`;
+          output += `\t Release date: ${basemodelList.models[key].releaseDate}\n`;
+          output += `\t Description:  ${basemodelList.models[key].description}\n`;
         });
         this.log(output);
       } else {
-        this.log(JSON.stringify(nlrList, null, 2));
+        this.log(JSON.stringify(basemodelList, null, 2));
       }
     } catch (error) {
       throw (new CLIError(error));
