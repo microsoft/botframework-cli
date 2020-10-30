@@ -301,7 +301,9 @@ export class Builder {
     url: string,
     subscriptionkey: string,
     endpoint: string,
-    kbName: string) {
+    kbName: string,
+    enableHierarchicalExtraction: boolean = false,
+    defaultAnswerUsedForExtraction: string = 'More Answers') {
     const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
     const kbs = (await qnaBuildCore.getKBList()).knowledgebases
 
@@ -320,7 +322,7 @@ export class Builder {
     }
 
     // create a new kb
-    kbId = await this.createUrlKB(qnaBuildCore, url, kbName)
+    kbId = await this.createUrlKB(qnaBuildCore, url, kbName, enableHierarchicalExtraction, defaultAnswerUsedForExtraction)
 
     const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
@@ -335,7 +337,9 @@ export class Builder {
     fileUri: string,
     subscriptionkey: string,
     endpoint: string,
-    kbName: string) {
+    kbName: string,
+    enableHierarchicalExtraction: boolean = false,
+    defaultAnswerUsedForExtraction: string = 'More Answers') {
     const qnaBuildCore = new QnaBuildCore(subscriptionkey, endpoint)
     const kbs = (await qnaBuildCore.getKBList()).knowledgebases
 
@@ -354,7 +358,7 @@ export class Builder {
     }
 
     // create a new kb
-    kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName)
+    kbId = await this.createFileKB(qnaBuildCore, fileName, fileUri, kbName, enableHierarchicalExtraction, defaultAnswerUsedForExtraction)
 
     const kbJson = await qnaBuildCore.exportKB(kbId, 'Test')
     const kb = new KB(kbJson)
@@ -465,12 +469,17 @@ export class Builder {
     return kbId
   }
 
-  async createUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbName: string) {
-    const kbJson = {
+  async createUrlKB(qnaBuildCore: QnaBuildCore, url: string, kbName: string, enableHierarchicalExtraction: boolean, defaultAnswerUsedForExtraction: string) {
+    let kbJson: any = {
       name: kbName,
       qnaList: [],
       urls: [url],
-      files: []
+      files: [],
+    }
+
+    if (enableHierarchicalExtraction) {
+      kbJson.enableHierarchicalExtraction = true
+      kbJson.defaultAnswerUsedForExtraction = defaultAnswerUsedForExtraction
     }
 
     let response = await qnaBuildCore.importKB(kbJson)
@@ -481,8 +490,8 @@ export class Builder {
     return kbId
   }
 
-  async createFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbName: string) {
-    let kbJson = {
+  async createFileKB(qnaBuildCore: QnaBuildCore, fileName: string, fileUri: string, kbName: string, enableHierarchicalExtraction: boolean, defaultAnswerUsedForExtraction: string) {
+    let kbJson: any = {
       name: kbName,
       qnaList: [],
       urls: [],
@@ -490,6 +499,11 @@ export class Builder {
         fileName,
         fileUri
       }]
+    }
+
+    if (enableHierarchicalExtraction) {
+      kbJson.enableHierarchicalExtraction = true
+      kbJson.defaultAnswerUsedForExtraction = defaultAnswerUsedForExtraction
     }
 
     let response = await qnaBuildCore.importKB(kbJson)
