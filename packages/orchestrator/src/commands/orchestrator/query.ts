@@ -19,14 +19,24 @@ export default class OrchestratorQuery extends Command {
     query: flags.string({char: 'q', description: '(required) Query string to predict.'}),
     // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: '(required) Path to Orchestrator base model directory.'}),
-    ambiguousClosenessThreshold: flags.string({char: 'a', description: `Optional. Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Optional. Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Optional. Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Optional. Unknown label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
-    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
+    // fullEmbeddings: flags.boolean({description: 'Optional flag to query with full embeddings instead of compact embeddings.'}),
+    // ambiguousClosenessThreshold: flags.string({char: 'a', description: `Optional. Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
+    // lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Optional. Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
+    // multiLabelPredictionThreshold: flags.string({char: 'n', description: `Optional. Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    // unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Optional. Unknown label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
+  // ---- NOTE ---- advanced parameters removed from command line, but still can be set through environment variables.
+  //
+  // --fullEmbeddings                                Optional flag to run on full embeddings instead
+  //                                                 of compact embeddings.
+  // -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  // -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  // -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
+  //     default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
+  //     the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
+  // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorQuery);
@@ -44,36 +54,40 @@ export default class OrchestratorQuery extends Command {
     }
 
     try {
+      let fullEmbeddings: boolean = false;
+      if (process.env.fullEmbeddings) {
+        fullEmbeddings = true;
+      }
       let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
       let lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
       let multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
       let unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-      if (flags.ambiguousClosenessThreshold) {
-        ambiguousClosenessThresholdParameter = Number(flags.ambiguousClosenessThreshold);
+      if (process.env.ambiguousClosenessThreshold) {
+        ambiguousClosenessThresholdParameter = Number(process.env.ambiguousClosenessThreshold);
         if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
-          Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-          Utility.debuggingThrow(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.writeLineToConsole(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
         }
       }
-      if (flags.lowConfidenceScoreThreshold) {
-        lowConfidenceScoreThresholdParameter = Number(flags.lowConfidenceScoreThreshold);
+      if (process.env.lowConfidenceScoreThreshold) {
+        lowConfidenceScoreThresholdParameter = Number(process.env.lowConfidenceScoreThreshold);
         if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
-          Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-          Utility.debuggingThrow(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.writeLineToConsole(`low-confidence parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`low-confidence parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
         }
       }
-      if (flags.multiLabelPredictionThreshold) {
-        multiLabelPredictionThresholdParameter = Number(flags.multiLabelPredictionThreshold);
+      if (process.env.multiLabelPredictionThreshold) {
+        multiLabelPredictionThresholdParameter = Number(process.env.multiLabelPredictionThreshold);
         if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
-          Utility.debuggingThrow(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
+          Utility.writeLineToConsole(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
         }
       }
-      if (flags.unknownLabelPredictionThreshold) {
-        unknownLabelPredictionThresholdParameter = Number(flags.unknownLabelPredictionThreshold);
+      if (process.env.unknownLabelPredictionThreshold) {
+        unknownLabelPredictionThresholdParameter = Number(process.env.unknownLabelPredictionThreshold);
         if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
-          Utility.debuggingThrow(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.writeLineToConsole(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
         }
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
@@ -87,13 +101,14 @@ export default class OrchestratorQuery extends Command {
       Utility.debuggingLog(`OrchestratorQuery.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${fullEmbeddings}`);
       await Orchestrator.queryAsync(
         baseModelPath, inputPath, query, // outputPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
         unknownLabelPredictionThresholdParameter,
-        flags.fullEmbeddings);
+        fullEmbeddings);
     } catch (error) {
       Utility.debuggingLog(`OrchestratorQuery.run(): error=${error}`);
       // eslint-disable-next-line no-console

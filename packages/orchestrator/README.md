@@ -110,18 +110,12 @@ OPTIONS
   -d, --debug
   -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator create command help
-
   -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
                      to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
-
   -m, --model=model  Path to Orchestrator base model directory.
-
   -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
                      directory.
-
   --hierarchical     Add hierarchical labels based on lu/qna file name.
-
-  --fullEmbeddings   Optional flag to create full embeddings instead of compact embeddings.
 
 EXAMPLE
 
@@ -174,24 +168,14 @@ USAGE
     $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
-  -d, --debug                     Print detailed debugging information during execution.
-  -h, --help                      Orchestrator 'interactive' command help.
-  -i, --in=in                     Optional path to a previously created Orchestrator .blu file.
-                                  This argument is optional users can use the 'interactive' command
-                                  to start an Orchestrator snapshot from scratch. The 'n' commandlet
-                                  can save the utterance labels into a snapshot (.blu) file.
-  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out                   Directory where analysis and output files will be placed.
-  --fullEmbeddings                                Optional flag to run on full embeddings instead
-                                                  of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances
-                                                  in evaluation reports or not.
-  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
-      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
-      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
-  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
+  -d, --debug       Print detailed debugging information during execution.
+  -h, --help        Orchestrator 'interactive' command help.
+  -i, --in=in       Optional path to a previously created Orchestrator .blu file.
+                    This argument is optional users can use the 'interactive' command
+                    to start an Orchestrator snapshot from scratch. The 'n' commandlet
+                    can save the utterance labels into a snapshot (.blu) file.
+  -m, --model=model Directory or a config file hosting Orchestrator base model files.
+  -o, --out=out     Directory where analysis and output files will be placed.
 
 DESCRIPTION
 
@@ -336,23 +320,13 @@ USAGE
   $ bf orchestrator:test
 
 OPTIONS
-  -d, --debug                     Print detailed debugging information during execution.
-  -h, --help                      Orchestrator 'test' command help.
-  -i, --in=in                     Path to a previously created Orchestrator .blu file.
-  -m, --model=model               Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out                   Directory where analysis and output files will be placed.
-  -t, --test=test                 Path to a test file, or comma-separated paths to
-                                  a collection of test files -- most uselful for crosss-valiaton.
-  --fullEmbeddings                                Optional flag to run on full embeddings instead
-                                                  of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances
-                                                  in evaluation reports or not.
-  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
-      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
-      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
-  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
+  -d, --debug        Print detailed debugging information during execution.
+  -h, --help         Orchestrator 'test' command help.
+  -i, --in=in        Path to a previously created Orchestrator .blu file.
+  -m, --model=model  Directory or a config file hosting Orchestrator base model files.
+  -o, --out=out      Directory where analysis and output files will be placed.
+  -t, --test=test    Path to a test file, or comma-separated paths to
+                     a collection of test files -- most uselful for crosss-valiaton.
 
 DESCRIPTION
 
@@ -397,16 +371,6 @@ OPTIONS
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
-  --fullEmbeddings                                Optional flag to run on full embeddings instead
-                                                  of compact embeddings.
-  --obfuscate                                     Optional flag to obfuscate labels and utterances
-                                                  in evaluation reports or not.
-  -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
-  -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
-  -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
-      default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
-      the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
-  -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
 DESCRIPTION
 
@@ -465,7 +429,6 @@ OPTIONS
   -o, --out=out                   Directory where analysis and output files will be placed.
   -p, --prediction=prediction     Path to a prediction label file, or comma-separated paths to
                                   a collection of files -- most uselful for crosss-valiaton.
-  --obfuscate                     Optional flag to obfuscate labels and utterances in evaluation reports or not.
 
 DESCRIPTION
 

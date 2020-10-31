@@ -18,15 +18,25 @@ export default class OrchestratorInteractive extends Command {
     in: flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),
     out: flags.string({char: 'o', description: 'Optional Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: '(required) Directory or hosting Orchestrator config and base model files.'}),
-    ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    multiLabelPredictionThreshold: flags.string({char: 'n', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
-    fullEmbeddings: flags.boolean({description: 'Optional flag to run on full embeddings instead of compact embeddings.'}),
-    obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
+    // fullEmbeddings: flags.boolean({description: 'Optional flag to run on full embeddings instead of compact embeddings.'}),
+    // obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
+    // ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
+    // lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
+    // multiLabelPredictionThreshold: flags.string({char: 'n', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
+    // unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
+  // --fullEmbeddings                                Optional flag to run on full embeddings instead
+  //                                                 of compact embeddings.
+  // --obfuscate                                     Optional flag to obfuscate labels and utterances
+  //                                                 in evaluation reports or not.
+  // -a, --ambiguousClosenessThreshold=threshold     Optional ambiguous analysis threshold. Default to 0.2.
+  // -l, --lowConfidenceScoreThreshold=threshold     Optional low confidence analysis threshold. Default to 0.5.
+  // -p, --multiLabelPredictionThreshold=threshold   Optional numeral/plural/multi-label prediction threshold,
+  //     default to 1. For the default, only labels shared the same max scores are adopted as prediction. If
+  //     the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
+  // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorInteractive);
@@ -43,36 +53,44 @@ export default class OrchestratorInteractive extends Command {
     }
 
     try {
+      let fullEmbeddings: boolean = false;
+      if (process.env.fullEmbeddings) {
+        fullEmbeddings = true;
+      }
+      let obfuscate: boolean = false;
+      if (process.env.obfuscate) {
+        obfuscate = true;
+      }
       let ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
       let lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
       let multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
       let unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-      if (flags.ambiguousClosenessThreshold) {
-        ambiguousClosenessThresholdParameter = Number(flags.ambiguousClosenessThreshold);
+      if (process.env.ambiguousClosenessThreshold) {
+        ambiguousClosenessThresholdParameter = Number(process.env.ambiguousClosenessThreshold);
         if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
-          Utility.writeLineToConsole(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-          Utility.debuggingThrow(`ambiguous parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.writeLineToConsole(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
         }
       }
-      if (flags.lowConfidenceScoreThreshold) {
-        lowConfidenceScoreThresholdParameter = Number(flags.lowConfidenceScoreThreshold);
+      if (process.env.lowConfidenceScoreThreshold) {
+        lowConfidenceScoreThresholdParameter = Number(process.env.lowConfidenceScoreThreshold);
         if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
-          Utility.writeLineToConsole(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
-          Utility.debuggingThrow(`low-confidence parameter "${flags.ambiguousClosenessThreshold}" is not a number`);
+          Utility.writeLineToConsole(`low-confidence parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
+          Utility.debuggingThrow(`low-confidence parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
         }
       }
-      if (flags.multiLabelPredictionThreshold) {
-        multiLabelPredictionThresholdParameter = Number(flags.multiLabelPredictionThreshold);
+      if (process.env.multiLabelPredictionThreshold) {
+        multiLabelPredictionThresholdParameter = Number(process.env.multiLabelPredictionThreshold);
         if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
-          Utility.debuggingThrow(`multi-label threshold parameter "${flags.multiLabelPredictionThreshold}" is not a number`);
+          Utility.writeLineToConsole(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
         }
       }
-      if (flags.unknownLabelPredictionThreshold) {
-        unknownLabelPredictionThresholdParameter = Number(flags.unknownLabelPredictionThreshold);
+      if (process.env.unknownLabelPredictionThreshold) {
+        unknownLabelPredictionThresholdParameter = Number(process.env.unknownLabelPredictionThreshold);
         if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
-          Utility.debuggingThrow(`unknown threshold parameter "${flags.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.writeLineToConsole(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
         }
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
@@ -85,6 +103,8 @@ export default class OrchestratorInteractive extends Command {
       Utility.debuggingLog(`OrchestratorInteractive.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${fullEmbeddings}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): obfuscate=${obfuscate}`);
       await Orchestrator.predictAsync(
         baseModelPath, inputPath, outputPath,
         this.id as string,
@@ -93,8 +113,8 @@ export default class OrchestratorInteractive extends Command {
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
         unknownLabelPredictionThresholdParameter,
-        flags.fullEmbeddings,
-        flags.obfuscate);
+        fullEmbeddings,
+        obfuscate);
     } catch (error) {
       throw (new CLIError(error));
     }

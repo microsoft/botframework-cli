@@ -841,7 +841,9 @@ export class Utility {
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`Utility.assessLabelObjectPredictions(), finished processing predictionSetLabelsIndexes, utterance=${utterance}`);
       }
-      const labelsPredictionEvaluation: number[] = Utility.evaluateLabelObjectPrediction(groundTruthSetLabels, predictionSetLabels);
+      const labelsPredictionEvaluation: number[] = Utility.evaluateLabelObjectPrediction(
+        groundTruthSetLabels,
+        predictionSetLabels);
       predictionLabelObjectStructureArray.push(new PredictionLabelObjectStructure(
         utterance,
         labelsPredictionEvaluation,

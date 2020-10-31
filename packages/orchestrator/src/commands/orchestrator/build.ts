@@ -18,10 +18,14 @@ export default class OrchestratorBuild extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     luconfig: flags.string({description: 'Path to luconfig.json.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
-    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
+    // fullEmbeddings: flags.boolean({description: 'Optional flag to build on full embeddings instead of compact embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
+  // ---- NOTE ---- advanced parameters removed from command line, but still can be set through environment variables.
+  //
+  // --fullEmbeddings  Optional flag to create full embeddings instead
+  //                   of compact embeddings.
 
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
@@ -42,19 +46,23 @@ export default class OrchestratorBuild extends Command {
       luConfig = JSON.parse(OrchestratorHelper.readFile(luConfigPath));
     }
 
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
     if (!OrchestratorHelper.isDirectory(output)) {
       output = path.dirname(output);
     }
 
     try {
+      let fullEmbeddings: boolean = false;
+      if (process.env.fullEmbeddings) {
+        fullEmbeddings = true;
+      }
+      Utility.toPrintDebuggingLogToConsole = flags.debug;
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
         OrchestratorSettings.ModelPath,
         OrchestratorHelper.getLuInputs(input),
         isDialog,
         luConfig,
-        flags.fullEmbeddings);
+        fullEmbeddings);
       OrchestratorHelper.writeBuildOutputFiles(output, retPayload);
       const settingsFile: string = path.join(output, 'orchestrator.settings.json');
       OrchestratorHelper.writeToFile(settingsFile, JSON.stringify(retPayload.settings, null, 2));
