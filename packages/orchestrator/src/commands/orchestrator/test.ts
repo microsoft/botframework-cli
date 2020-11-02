@@ -63,6 +63,7 @@ export default class OrchestratorTest extends Command {
   //     the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
   // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
+  // eslint-disable-next-line complexity
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorTest);
     const flagsKeys: string[] = Object.keys(flags);
@@ -141,6 +142,10 @@ export default class OrchestratorTest extends Command {
       Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${fullEmbeddings}`);
       Utility.debuggingLog(`OrchestratorTest.run(): obfuscate=${obfuscate}`);
       if (testPath) {
+        try {
+          this.trackEvent(`${this.id}:test`, {callee: 'test'});
+        } catch (error) {
+        }
         await Orchestrator.testAsync(
           baseModelPath, inputPathConfiguration, testPath, outputPathConfiguration,
           ambiguousClosenessThresholdParameter,
@@ -150,10 +155,18 @@ export default class OrchestratorTest extends Command {
           fullEmbeddings,
           obfuscate);
       } else if (predictionPathConfiguration) {
+        try {
+          this.trackEvent(`${this.id}:assess`, {callee: 'assess'});
+        } catch (error) {
+        }
         await Orchestrator.assessAsync(
           inputPathConfiguration, predictionPathConfiguration, outputPathConfiguration,
           obfuscate);
       } else {
+        try {
+          this.trackEvent(`${this.id}:evaluate`, {callee: 'evaluate'});
+        } catch (error) {
+        }
         await Orchestrator.evaluateAsync(
           inputPathConfiguration, outputPathConfiguration, baseModelPath,
           ambiguousClosenessThresholdParameter,

@@ -103,8 +103,8 @@ export default class OrchestratorInteractive extends Command {
       Utility.debuggingLog(`OrchestratorInteractive.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
-      Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${fullEmbeddings}`);
-      Utility.debuggingLog(`OrchestratorTest.run(): obfuscate=${obfuscate}`);
+      Utility.debuggingLog(`OrchestratorInteractive.run(): fullEmbeddings=${fullEmbeddings}`);
+      Utility.debuggingLog(`OrchestratorInteractive.run(): obfuscate=${obfuscate}`);
       await Orchestrator.predictAsync(
         baseModelPath, inputPath, outputPath,
         this.id as string,

@@ -30,7 +30,7 @@ export class UtilityLabelResolver {
     const ignoreSameExampleObjectJson: string = Utility.jsonStringify(ignoreSameExampleObject);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExampleObjectJson=${ignoreSameExampleObjectJson}`);
     LabelResolver.setRuntimeParams(ignoreSameExampleObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 
@@ -49,15 +49,15 @@ export class UtilityLabelResolver {
     const useCompactEmbeddingsObjectJson: string = Utility.jsonStringify(useCompactEmbeddingsObject);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObjectJson=${useCompactEmbeddingsObjectJson}`);
     LabelResolver.setRuntimeParams(useCompactEmbeddingsObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 
   public static resetLabelResolverSettingKnnK(
-    knnK: boolean = true,
+    knnK: number = 1,
     resetAll: boolean = false): any {
     const knnKObject: {
-      knn_k: boolean;
+      knn_k: number;
     } = {
       knn_k: knnK,
     };
@@ -68,7 +68,7 @@ export class UtilityLabelResolver {
     const knnKObjectJson: string = Utility.jsonStringify(knnKObject);
     Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObjectJson=${knnKObjectJson}`);
     LabelResolver.setRuntimeParams(knnKObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getLabelResolverSettings(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 

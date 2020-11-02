@@ -22,13 +22,14 @@ export class OrchestratorBaseModel {
       if (baseModelPath.length === 0) {
         throw new Error('ERROR: please provide path to Orchestrator model');
       }
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): basemodelId=${basemodelId}`);
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): basemodelId=${basemodelId}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): baseModelPath=${baseModelPath}`);
 
       const versions: any = await OrchestratorBaseModel.getVersionsAsync();
+      Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): versions=${versions}`);
       onProgress('Downloading model...');
       if (!versions) {
-        throw new Error('ERROR: failed getting nlr_versions.json');
+        throw new Error('ERROR: failed getting basemodel configuration from https://aka.ms/nlrversions');
       }
 
       if (basemodelId === '') {
@@ -59,12 +60,12 @@ export class OrchestratorBaseModel {
     Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): entering');
     try {
       fs.mkdirSync(baseModelPath, {recursive: true});
-      if (modelUrl.endsWith('7z')) {
-        modelUrl = modelUrl.substr(0, modelUrl.length - 2) + 'zip';
-      }
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  modelUrl=${modelUrl}`);
       // modelUrl = 'https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.zip';
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const modelZipPath: string = path.join(baseModelPath, fileName);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  fileName=${fileName}`);
+      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  modelZipPath=${modelZipPath}`);
       const response: any = await fetch(modelUrl);
       Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling  await response.arrayBuffer()');
       const arrayBuffer: ArrayBuffer = await response.arrayBuffer();

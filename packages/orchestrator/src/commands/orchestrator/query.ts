@@ -101,7 +101,7 @@ export default class OrchestratorQuery extends Command {
       Utility.debuggingLog(`OrchestratorQuery.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
-      Utility.debuggingLog(`OrchestratorTest.run(): fullEmbeddings=${fullEmbeddings}`);
+      Utility.debuggingLog(`OrchestratorQuery.run(): fullEmbeddings=${fullEmbeddings}`);
       await Orchestrator.queryAsync(
         baseModelPath, inputPath, query, // outputPath,
         ambiguousClosenessThresholdParameter,
