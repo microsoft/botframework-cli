@@ -650,3 +650,5 @@ EXAMPLE
 _See code: [src\commands\orchestrator\test.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/test.ts)_
 
 <!-- commandsstop -->
+# Orchestrator CLI settings file
+Most of bf orchestrator commands create or update a settings file (orchestrator.json) with base model and snapshot file path so that those values could be optional for subsequent commands.  For example, after ```bf orchestrator:basemodel:get --out <BASE_MODEL_PATH>```, subsequent command (ie bf orchestrator:create) will no longer need to supply the "--model" parameter.
