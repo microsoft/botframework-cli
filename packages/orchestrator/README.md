@@ -81,7 +81,6 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator build command help
   -i, --in=in        Path to lu file or folder with lu files.
   -m, --model=model  Path to Orchestrator base model directory.
@@ -108,10 +107,9 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -f, --force        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help         Orchestrator create command help
   -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
-                     to current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
+                     to the current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
   -m, --model=model  Path to Orchestrator base model directory.
   -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
                      directory.
@@ -433,9 +431,9 @@ OPTIONS
 DESCRIPTION
 
   The "assessment" mode compares a prediction file against a ground-truth file, then
-  generates two detailed evaluation reports, one on intent prediction and the other entity, along with some
+  generates two detailed evaluation reports, one for intent prediction and the other entity, along with some
   auxiliary files.
-  The input files can be in LU, LUIS, QnA Maker, TSV, or a JSON label array formats, where are described below.
+  The input files can be in LU, LUIS, QnA Maker, TSV, or a special JSON label array format (described below).
 
   This command intends to provide a comprehensive and consistent multi-class model evaluation tool in
   order to avoid teams reporting their own inconsistent evaluation metrics, especially in a contest
@@ -445,6 +443,7 @@ DESCRIPTION
   1)  Metric - one team may report Micro-Average, Macro Average, or else. As shown below,
         there can be many ways in computing a metric average, and
         the discrepancy can be huge using different averaging formulations.
+        Sometimes the definition of a metric, say macro average, can even vary among different teams.
   2)  Datasets – even though every party tests on the same dataset source, the dataset might diverge
         after a while after some data massaging, sometimes due to processing errors or filtering logic.
         Some teams may prefer some datasets, but not others, for their particular technology or models.
@@ -462,8 +461,9 @@ DESCRIPTION
 
   The "assessment" mode aims to address these issues:
 
-  1)  Metric -- the "assess" command calculates as many average/aggregate metrics as we can think of.
-      Which metric to focus on for decision-making is up to an evaluation committee or stakeholder.
+  1)  Metric -- the "assess" command calculates many average/aggregate metrics to satisfy a variety of evaluation
+      needs and metric definitions.
+      Which metric to focus on for decision-making is up to an evaluation committee or stakeholders.
       The tool has no bias, even though each party might have its favorites for its own agenda.
   2)  Datasets -- it's necessary to create a dataset repo for the community to share
       ground-truth datasets and predictions. Again it’s up to an evaluation committee or individual party to choose the
@@ -473,10 +473,12 @@ DESCRIPTION
       in metric calculation.
   4)  Confusion matrix formulation – again, this BF evaluation package provides consistent formulation logic in
       intepreting the 4 confusion matrix cells.
-      For example, entity evaluation does not have TN.
+      For example, entity evaluation does not have TN as the combinations of entity offset and length not in
+      the ground-truth or predicted set can be limitless.
   5)  Label interpretation – again, consistent is key and this "assess" command does not silently
       ignore some test results for whatever reasons. Every test instance should contribute to
-      metric calculation unless they are spurious – due to processing mistakes by whoever prepared it. 
+      metric calculation unless they are spurious (test intent/entity name not in the training set)
+      – due to processing mistakes by whoever prepared it. 
   6)  Label processing – this BF-Orchestrator package pre-processes labels and treats
       an utterance’s empty, None, and never-seen-before labels as UNKNOWN. Since BF-Orchestrator allows
       multi-label intents for utterances, UNKNOWN is stripped if it con-exists with known labels
@@ -490,7 +492,7 @@ DESCRIPTION
 
 INPUT
 
-  The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TXT, TSV or a JSON array format.
+  The input ground-truth and predictions files can be in LU, LUIS, QnA Maker, TXT, TSV or a special JSON array format.
   The TXT file format only supports intent labels and it must have 2 columns, 'labels' and 'utterance',
   sepatated by a TAB. The 'labels' column can contains multiple labels delimited by camma.
 
