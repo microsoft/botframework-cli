@@ -13,4 +13,11 @@ describe('orchestrator:query', () => {
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
     expect(ctx.stdout).to.contain('Query Orchestrator base model and a snapshot/train file');
   });
+  test
+  .stdout()
+  .command(['orchestrator:query'])
+  .exit(1)
+  .it('should print the help contents when there is no argument', (ctx: any) => {
+    expect(ctx.stdout).to.contain('Query Orchestrator base model and a snapshot/train file');
+  });
 });

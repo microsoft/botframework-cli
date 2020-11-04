@@ -7,12 +7,12 @@ import assert = require('assert');
 
 import {} from 'mocha';
 
-import * as path from 'path';
+// import * as path from 'path';
 
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
 import {OrchestratorBaseModel} from '../src/basemodel';
-import {OrchestratorHelper} from '../src/orchestratorhelper';
+// import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 
 export class UnitTestHelper {
