@@ -1029,15 +1029,17 @@ export class OrchestratorHelper {
       OrchestratorHelper.writeToFile(snapshotFile, buildOutput.snapshot);
       Utility.debuggingLog(`Snapshot written to ${snapshotFile}`);
 
-      const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
-      this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
-      Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);
+      if (buildOutput.recognizer !== undefined) {
+        const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
+        this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
+        Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);  
 
-      const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
-      this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
-      Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
+        const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
+        this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
+        Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
+      }
 
-      if (buildOutput.recognizer !== undefined) bluPaths[baseName] = snapshotFile;
+      bluPaths[baseName] = snapshotFile;
     }
   }
 }
