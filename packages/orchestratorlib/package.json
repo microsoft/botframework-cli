@@ -32,7 +32,7 @@
     "@types/node-fetch": "~2.5.5",
     "node-fetch": "~2.6.0",
     "tslib": "^1.10.0",
-    "orchestrator-core": "4.11.0-beta.1",
+    "orchestrator-core": "4.11.0-beta.2",
     "@types/fs-extra": "~8.1.0",
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
