@@ -18,7 +18,6 @@ schedules:
     include:
     - beta
 
-variables:
 - template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
   runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
 #  version: define this in Azure, settable at queue time
