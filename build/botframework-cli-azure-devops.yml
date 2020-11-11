@@ -11,9 +11,8 @@ pool:
 pr: none
 trigger: none
 
-variables:
-  runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
 - template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
+  runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
 #  version: define this in Azure, settable at queue time
 
 stages:
