@@ -1,1 +1,2 @@
-releaseVersion: '4.12.0'
+variables:
+  releaseVersion: '4.12.0'
