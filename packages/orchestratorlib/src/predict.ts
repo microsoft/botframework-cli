@@ -487,7 +487,7 @@ export class OrchestratorPredict {
     } catch (error) {
     }
     console.log(`> Ambiguous closeness:           ${this.ambiguousClosenessThreshold}`);
-    console.log(`> Low-confidence closeness:      ${this.lowConfidenceScoreThreshold}`);
+    console.log(`> Low-confidence threshold:      ${this.lowConfidenceScoreThreshold}`);
     console.log(`> Multi-label threshold:         ${this.multiLabelPredictionThreshold}`);
     console.log(`> Unknown-label threshold:       ${this.unknownLabelPredictionThreshold}`);
     console.log(`> Obfuscation flag:              ${this.obfuscateEvaluationReport}`);
