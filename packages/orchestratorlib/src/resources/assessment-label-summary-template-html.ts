@@ -74,9 +74,6 @@ export class AssessmentLabelSummaryTemplateHtml {
             <div class="navbar-header ms-fontSize-l">
                 <span id="orchestratorName">{APP_NAME}</span>
                 <span id="orchestratorName">{MODEL_SPECIFICATION}</span>
-                <!--
-                <span><a href="https://{PORTAL_URL}/applications/{APP_ID}/versions/{VERSION}/dashboard" target="_blank">LUIS Application ID: {APP_ID}</a></span>
-                -->
             </div>
         </div>
     </nav>
@@ -84,13 +81,15 @@ export class AssessmentLabelSummaryTemplateHtml {
     <div class="container body-content" style="margin-top:60px">
         <span class="ms-fontSize-xl ms-fontWeight-semibold">Orchestrator Assessment Summary</span>
         <!--
-        <span style="float:right"><a href="https://{PORTAL_URL}/applications/{APP_ID}/versions/{VERSION}/dashboard" target="_blank">View in LUIS portal</a></span>
-        -->
-        <!--
         <div>
             <p>{EVAL_SUMMARY}</p>
-            <p>To improve orchestrator, please update the source models and retrain the orchestrator model by running the command "orchestrator refresh".</p>
         </div>
+        -->
+        <!--
+        <br />
+        <p>
+        Please reference the <a href="https://github.com/microsoft/botframework-sdk/blob/main/Orchestrator/docs/BFOrchestratorReport.md">document</a> for details.
+        </p>
         -->
         <br />
         <ul class="nav nav-pills ms-fontSize-mPlus ms-fontWeight-semibold" id="modelAnalysis" role="tablist" style="padding-bottom:10px">
