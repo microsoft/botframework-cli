@@ -72,10 +72,10 @@ export default class QnamakerKbCreate extends Command {
 
   async updateKbId(config: any) {
     let response = await new Endpointkeys().getEndpointKeys(config)
-    config.endpointKey = JSON.parse(await response.text()).primaryEndpointKey
+    config.endpointKey = response.data.primaryEndpointKey
 
     response = await new Knowledgebase().getKnowledgebaseDetails(config)
-    const kb = JSON.parse(await response.text())
+    const kb = response.data
     config.hostname = kb.hostName
 
     return kb

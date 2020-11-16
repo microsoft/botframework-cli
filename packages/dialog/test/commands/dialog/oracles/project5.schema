@@ -214,13 +214,13 @@
       "$role": "interface",
       "oneOf": [
         {
-          "type": "string"
-        },
-        {
           "$ref": "#/definitions/botframework.json/definitions/Activity",
           "required": [
             "type"
           ]
+        },
+        {
+          "type": "string"
         }
       ],
       "$package": {
@@ -234,9 +234,6 @@
       "$role": "interface",
       "oneOf": [
         {
-          "type": "string"
-        },
-        {
           "$ref": "#/definitions/Microsoft.AdaptiveDialog"
         },
         {
@@ -244,6 +241,9 @@
         },
         {
           "$ref": "#/definitions/Microsoft.SendActivity"
+        },
+        {
+          "type": "string"
         }
       ],
       "$package": {
@@ -257,10 +257,10 @@
       "$role": "interface",
       "oneOf": [
         {
-          "type": "string"
+          "$ref": "#/definitions/Microsoft.TemplateEngineLanguageGenerator"
         },
         {
-          "$ref": "#/definitions/Microsoft.TemplateEngineLanguageGenerator"
+          "type": "string"
         }
       ],
       "$package": {
@@ -274,10 +274,10 @@
       "$role": "interface",
       "oneOf": [
         {
-          "type": "string"
+          "$ref": "#/definitions/Microsoft.LuisRecognizer"
         },
         {
-          "$ref": "#/definitions/Microsoft.LuisRecognizer"
+          "type": "string"
         }
       ],
       "$package": {
@@ -295,15 +295,15 @@
       },
       "oneOf": [
         {
-          "type": "string",
-          "title": "Reference to Microsoft.ITrigger",
-          "description": "Reference to Microsoft.ITrigger .dialog file."
-        },
-        {
           "$ref": "#/definitions/Microsoft.OnCondition"
         },
         {
           "$ref": "#/definitions/Microsoft.OnIntent"
+        },
+        {
+          "type": "string",
+          "title": "Reference to Microsoft.ITrigger",
+          "description": "Reference to Microsoft.ITrigger .dialog file."
         }
       ]
     },
@@ -317,12 +317,12 @@
       },
       "oneOf": [
         {
+          "$ref": "#/definitions/Microsoft.MostSpecificSelector"
+        },
+        {
           "type": "string",
           "title": "Reference to Microsoft.ITriggerSelector",
           "description": "Reference to Microsoft.ITriggerSelector .dialog file."
-        },
-        {
-          "$ref": "#/definitions/Microsoft.MostSpecificSelector"
         }
       ]
     },

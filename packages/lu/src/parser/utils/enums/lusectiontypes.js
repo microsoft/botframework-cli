@@ -9,5 +9,6 @@ module.exports = {
     NEWENTITYSECTION: "newEntitySection",
     IMPORTSECTION: "importSection",
     MODELINFOSECTION: "modelInfoSection",
-    QNASECTION: "qnaSection"
+    QNASECTION: "qnaSection",
+    REFERENCESECTION: "referenceSection"
 };

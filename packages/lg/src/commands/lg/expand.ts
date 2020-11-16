@@ -13,6 +13,7 @@ import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as readlineSync from 'readline-sync'
+import * as lodash from 'lodash'
 
 export default class ExpandCommand extends Command {
   static description = 'Expand one or all templates in .lg file(s). Expand an inline expression.'
@@ -230,8 +231,9 @@ export default class ExpandCommand extends Command {
 
     if (expectedVariables !== undefined) {
       for (const variable of expectedVariables) {
-        if (variablesObj !== undefined && variablesObj[variable] !== undefined) {
-          result.set(variable, variablesObj[variable])
+        const evalPathResult = lodash.get(variablesObj, variable)
+        if (variablesObj !== undefined && evalPathResult !== undefined) {
+          result.set(variable, evalPathResult)
         } else if (userInputValues !== undefined && userInputValues.has(variable)) {
           result.set(variable, userInputValues.get(variable))
         } else {
@@ -247,7 +249,7 @@ export default class ExpandCommand extends Command {
     const result: any = {}
     if (variablesValue !== undefined) {
       for (const variable of variablesValue) {
-        result[variable[0]] = variable[1]
+        lodash.set(result, variable[0], variable[1])
       }
     }
 

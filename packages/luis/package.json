@@ -26,6 +26,7 @@
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/luis",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "posttest": "tslint -p test -t stylish",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
@@ -47,11 +48,12 @@
     "@oclif/errors": "~1.2.2",
     "@types/node-fetch": "~2.5.5",
     "@types/sinon": "^7.5.0",
+    "axios": "~0.21.0",
     "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.19",
     "node-fetch": "~2.6.0",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.3",
     "username": "^4.1.0"
   },
   "devDependencies": {
@@ -72,9 +74,9 @@
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "sinon": "^7.5.0",
-    "ts-node": "^8.4.1",
+    "ts-node": "^9.0.0",
     "tslint": "^5.20.1",
-    "typescript": "^3.5.3",
+    "typescript": "^4.0.3",
     "uuid": "^3.3.3"
   }
 }

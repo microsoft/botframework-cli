@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
@@ -7,11 +5,12 @@
 
 export * from './schemaTracker';
 import * as fs from 'fs-extra';
-import * as glob from 'globby';
 import * as path from 'path';
 import * as st from './schemaTracker';
+import parser from '@apidevtools/json-schema-ref-parser'
 
-let clone = require('clone')
+const clone = require('clone')
+const glob = require('globby');
 
 // Top-level dialog definition that would be found in a file.
 export class Dialog {
@@ -55,9 +54,9 @@ export class Dialog {
 // Definition of a Bot Framework component.
 export class Definition {
     // $kind definition of the component or undefined.
-    type?: st.Type
+    kind?: st.Kind
 
-    // dialog that contains definition.
+    // Dialog that contains definition.
     dialog?: Dialog
 
     // Path within the dialog that leads to the component definition.
@@ -75,10 +74,9 @@ export class Definition {
      * @param id The id of the component if present.
      * @param dialog The dialog that contains the definition. (undefined for forward reference.)
      * @param path The path within the file to the component.
-     * @param copy The id of the copied definition.
      */
-    constructor(type?: st.Type, id?: string, dialog?: Dialog, path?: string) {
-        this.type = type
+    constructor(type?: st.Kind, id?: string, dialog?: Dialog, path?: string) {
+        this.kind = type
         this.id = id
         this.dialog = dialog
         this.path = path
@@ -103,27 +101,38 @@ export class Definition {
             result = +1
         } else if (definition.dialog !== undefined && definition.path !== undefined) {
             result = -1
-        } else if (this.id !== undefined && this.type !== undefined
-            && definition.id !== undefined && definition.type !== undefined) {
+        } else if (this.id !== undefined && this.kind !== undefined
+            && definition.id !== undefined && definition.kind !== undefined) {
             if (this.id === definition.id) {
-                if (this.type === definition.type) {
+                if (this.kind === definition.kind) {
                     result = 0
                 } else {
-                    result = this.type.name.localeCompare(definition.type.name)
+                    result = this.kind.name.localeCompare(definition.kind.name)
                 }
             } else {
                 result = this.id.localeCompare(definition.id)
             }
         } else {
-            if (this.id !== undefined && this.type !== undefined) {
+            if (this.id !== undefined && this.kind !== undefined) {
                 result = -1
-            } else if (definition.id !== undefined && definition.type !== undefined) {
+            } else if (definition.id !== undefined && definition.kind !== undefined) {
                 result = +1
             } else {
                 result = -1
             }
         }
         return result
+    }
+
+    * typeMismatches(): Iterable<Definition> {
+        if (this.kind) {
+            for (let usedBy of this.usedBy) {
+                if (usedBy.kind !== this.kind &&
+                    !usedBy.kind?.implementations.includes(this.kind)) {
+                    yield usedBy
+                }
+            }
+        }
     }
 
     usedByString(): string {
@@ -138,7 +147,7 @@ export class Definition {
     }
 
     toString(): string {
-        return `${this.type}${this.locatorString()}`
+        return `${this.kind}${this.locatorString()}`
     }
 
     locatorString(): string {
@@ -163,36 +172,41 @@ export class DialogTracker {
     // Tracker for information about schemas.
     schema: st.SchemaTracker
 
+    // Default $schema
+    schemaPath: string
+
     /**
      * Map from id to the definition.
      * If there are more than one, then it is multiply defined.
-     * If any of them are missing dialog, then there is a $copy, but no definition.
      */
     idToDef: Map<string, Definition[]>
 
     // Map from a type to all instances of that type.
     typeToDef: Map<string, Definition[]>
 
-    // Definitions that are missing a $kind.
-    missingTypes: Definition[]
-
     // Top-level cogs in tracker.
     dialogs: Dialog[]
 
-    constructor(schema: st.SchemaTracker, root?: string) {
+    constructor(schema: st.SchemaTracker, root?: string, schemaPath?: string) {
         this.schema = schema
+        this.schemaPath = schemaPath || ''
         this.root = root || process.cwd()
         this.idToDef = new Map<string, Definition[]>()
         this.typeToDef = new Map<string, Definition[]>()
-        this.missingTypes = []
         this.dialogs = []
     }
 
     // Add a new Dialog file to the tracker.
     async addDialog(dialog: Dialog): Promise<void> {
         try {
-            const schemaFile = dialog.body.$schema
-            if (schemaFile) {
+            const schemaFile = dialog.body.$schema || this.schemaPath
+            if (dialog.schema() && this.schemaPath && dialog.schema() !== this.schemaPath) {
+                dialog.errors.push(new Error(`${dialog.schema()} does not match default schema ${this.schemaPath}`))
+            } else if (schemaFile) {
+                if (!this.schemaPath) {
+                    // First found schema is default
+                    this.schemaPath = schemaFile
+                }
                 let schemaPath = schemaFile
                 if (schemaPath.indexOf(':') < 2) {
                     schemaPath = path.resolve(path.dirname(dialog.file), schemaFile)
@@ -209,15 +223,12 @@ export class DialogTracker {
                     }
                 }
             } else {
-                dialog.errors.push(new Error(`${dialog} does not have a $schema.`))
+                dialog.errors.push(new Error('missing $schema.'))
             }
-            walkJSON(dialog.body, '', (elt, path) => {
-                if (elt.$kind) {
-                    let def = new Definition(this.schema.typeToType.get(elt.$kind), elt.id, dialog, path)
-                    this.addDefinition(def)
-                }
-                return false
-            })
+
+            // Create definitions and references
+            this.findDefinitionsAndReferences(dialog.body, '', dialog, undefined)
+
             // Assume we will save it and reset this when coming from file
             dialog.save = true
         } catch (e) {
@@ -231,7 +242,8 @@ export class DialogTracker {
         let dialog: Dialog
         let rel = path.relative(this.root, file)
         try {
-            dialog = new Dialog(rel, await fs.readJSON(rel))
+            const definition = await parser.dereference(await fs.readJSON(rel))
+            dialog = new Dialog(rel, definition)
             await this.addDialog(dialog)
         } catch (e) {
             // File is not valid JSON
@@ -245,7 +257,7 @@ export class DialogTracker {
 
     // Add dialog files that match patterns to tracker.
     async addDialogFiles(patterns: string[]): Promise<void> {
-        let filePaths = await glob(patterns)
+        let filePaths = await glob(patterns.map(e => e.replace(/\\/g, '/')))
         for (let filePath of filePaths) {
             await this.addDialogFile(filePath)
         }
@@ -305,7 +317,7 @@ export class DialogTracker {
                 await fs.mkdirp(dir)
                 let oldID = dialog.id()
                 delete dialog.body.$id
-                await fs.writeJSON(filePath, dialog.body, { spaces: 4 })
+                await fs.writeJSON(filePath, dialog.body, {spaces: 4})
                 dialog.file = path.relative(process.cwd(), filePath)
                 dialog.body.$id = oldID
                 dialog.save = false
@@ -320,17 +332,14 @@ export class DialogTracker {
                 yield def
             }
         }
-        for (let def of this.missingTypes) {
-            yield def
-        }
     }
 
     // Definitions that try to define the same id.
     * multipleDefinitions(): Iterable<Definition[]> {
         for (let def of this.idToDef.values()) {
             if (def.length > 1) {
-                let type = def[0].type
-                if (!def.find(d => d.type !== type)) {
+                let type = def[0].kind
+                if (!def.find(d => d.kind !== type)) {
                     yield def
                 }
             }
@@ -352,7 +361,19 @@ export class DialogTracker {
     * unusedIDs(): Iterable<Definition> {
         for (let defs of this.idToDef.values()) {
             for (let def of defs) {
-                if (def.usedBy.length === 0) {
+                if (def.usedBy.length === 0 && !def.path) {
+                    yield def
+                }
+            }
+        }
+    }
+
+    // Definitions that don't match expected kind.
+    * typeMismatches(): Iterable<Definition> {
+        for (let defs of this.idToDef.values()) {
+            for (let def of defs) {
+                let {done} = def.typeMismatches()[Symbol.iterator]().next()
+                if (!done) {
                     yield def
                 }
             }
@@ -364,8 +385,8 @@ export class DialogTracker {
      * The definition might be a forward reference.
      */
     private addDefinition(definition: Definition) {
-        if (definition.type && !this.typeToDef.has(definition.type.name)) {
-            this.typeToDef.set(definition.type.name, [])
+        if (definition.kind && !this.typeToDef.has(definition.kind.name)) {
+            this.typeToDef.set(definition.kind.name, [])
         }
         if (definition.id) {
             let add = true
@@ -373,10 +394,12 @@ export class DialogTracker {
                 // Reference already existed, check for consistency
                 // Merge if possible, otherwise add
                 for (let old of this.idToDef.get(definition.id) as Definition[]) {
-                    if (!old.dialog && !old.path && old.type === definition.type) {
+                    if (!old.dialog && !old.path &&
+                        (!old.kind || old.kind === definition.kind || definition.kind?.interfaces.includes(old.kind))) {
                         add = false
                         old.dialog = definition.dialog
                         old.path = definition.path
+                        old.kind = definition.kind
                         break
                     }
                 }
@@ -385,37 +408,33 @@ export class DialogTracker {
             }
             if (add) {
                 (this.idToDef.get(definition.id) as Definition[]).push(definition)
-                if (definition.type) {
-                    (this.typeToDef.get(definition.type.name) as Definition[]).push(definition)
-                } else {
-                    this.missingTypes.push(definition)
+                if (definition.kind) {
+                    (this.typeToDef.get(definition.kind.name) as Definition[]).push(definition)
                 }
             }
         } else {
-            if (definition.type) {
-                (this.typeToDef.get(definition.type.name) as Definition[]).push(definition)
-            } else {
-                this.missingTypes.push(definition)
+            if (definition.kind) {
+                (this.typeToDef.get(definition.kind.name) as Definition[]).push(definition)
             }
         }
     }
 
     /**
      * Add reference to a $id.
-     * @param ref Reference found in $copy.
-     * @param source Definition that contains $copy.
+     * @param id Reference to a dialog.
+     * @param dialog Dialog containing reference.
+     * @param path Path in dialog to reference.
      */
-    private addReference(ref: string, source: Definition): void {
-        let fullRef = this.expandRef(ref, source.dialog as Dialog)
-        if (!this.idToDef.has(fullRef)) {
+    private addReference(id: string, dialog: Dialog, path: string, kind: st.Kind): void {
+        if (!this.idToDef.has(id)) {
             // ID does not exist so add place holder
-            let definition = new Definition(source.type, fullRef)
+            let definition = new Definition(kind, id)
             this.addDefinition(definition)
-            this.idToDef.set(fullRef, [definition])
+            this.idToDef.set(id, [definition])
         }
-        let copyDef = (this.idToDef.get(fullRef) as Definition[])
-        for (let idDef of copyDef) {
-            idDef.usedBy.push(source)
+        let definitions = (this.idToDef.get(id) as Definition[])
+        for (let idDef of definitions) {
+            idDef.usedBy.push(new Definition(kind, undefined, dialog, path))
         }
     }
 
@@ -433,21 +452,17 @@ export class DialogTracker {
             }
             found = newDefs.length !== defs.length
         }
-        if (definition.type && this.typeToDef.has(definition.type.name)) {
-            const defs = this.typeToDef.get(definition.type.name) as Definition[]
+        if (definition.kind && this.typeToDef.has(definition.kind.name)) {
+            const defs = this.typeToDef.get(definition.kind.name) as Definition[]
             const newDefs = defs.filter(d => d.compare(definition) !== 0)
             if (newDefs.length === 0) {
-                this.typeToDef.delete(definition.type.name)
+                this.typeToDef.delete(definition.kind.name)
             } else {
-                this.typeToDef.set(definition.type.name, newDefs)
+                this.typeToDef.set(definition.kind.name, newDefs)
             }
             found = found || newDefs.length !== defs.length
-        } else {
-            // Remove from missing types
-            let newDefs = this.missingTypes.filter(d => d.compare(definition) !== 0)
-            found = found || newDefs.length !== this.missingTypes.length
-            this.missingTypes = newDefs
         }
+
         // Remove from all usedBy.
         for (let def of this.allDefinitions()) {
             def.usedBy = def.usedBy.filter(d => d.compare(definition) !== 0)
@@ -455,27 +470,32 @@ export class DialogTracker {
         return found
     }
 
-    private expandRef(ref: string, dialog: Dialog): string {
-        return ref.startsWith('#') ? `${dialog.id()}${ref}` : ref
-    }
-}
+    private findDefinitionsAndReferences(elt: any, path: string, dialog: Dialog, definition?: Definition) {
+        if (elt.$kind) {
+            // Instance of $kind, add new definition
+            const id = definition ? elt.$id : dialog.id()
+            const kind = this.schema.kindToKind.get(elt.$kind)
+            definition = new Definition(kind, id, dialog, path)
+            this.addDefinition(definition)
+        } else if (typeof elt === 'string') {
+            const kind = this.schema.expectsKind(dialog.id(), path)
+            // Reference to a $kind  
+            if (kind) {
+                this.addReference(elt, dialog, path, kind)
+            }
+        }
 
-function walkJSON(json: any, path: string, fun: (val: any, path: string) => boolean): boolean {
-    let done = fun(json, path)
-    if (!done) {
-        if (Array.isArray(json)) {
+        // Walk further into the structure
+        if (Array.isArray(elt)) {
             let i = 0
-            for (let val of json) {
-                done = walkJSON(val, `${path}[${i}]`, fun)
-                if (done) break
+            for (let val of elt) {
+                this.findDefinitionsAndReferences(val, `${path}[${i}]`, dialog, definition)
                 ++i
             }
-        } else if (typeof json === 'object') {
-            for (let val in json) {
-                done = walkJSON(json[val], `${path}/${val}`, fun)
-                if (done) break
+        } else if (typeof elt === 'object') {
+            for (let val in elt) {
+                this.findDefinitionsAndReferences(elt[val], `${path}/${val}`, dialog, definition)
             }
         }
     }
-    return done
 }

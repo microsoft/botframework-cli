@@ -87,7 +87,7 @@ describe('App/ Kb meta data information', function () {
     it ('Settings information is parsed correctly', function(done){
         let testLU = `
 > !# @app.settings.NormalizeDiacritics = true
-> !# @app.settings.NormalizePunctuation = false
+> !# @app.settings.NormalizePunctuation = True
 > !# @app.settings.UseAllTrainingData = true
 
 # test
@@ -97,7 +97,7 @@ describe('App/ Kb meta data information', function () {
                 .then(res => {
                     assert.equal(res.LUISJsonStructure.settings.length, 3);
                     assert.equal(res.LUISJsonStructure.settings[1].name, "NormalizePunctuation")
-                    assert.equal(res.LUISJsonStructure.settings[1].value, false)
+                    assert.equal(res.LUISJsonStructure.settings[1].value, true)
                     done();
                 })
                 .catch(err => done(err))
@@ -121,5 +121,97 @@ describe('App/ Kb meta data information', function () {
             .catch(err => done(err))
     })
 
+    it ('Parser instruction to handle OnAmbiguousLabels=takeFirst is handled correctly', function(done) {
+            let testLU = `
+> !# @parser.OnAmbiguousLabels = takeFirst
 
+# test
+- {@cuisineEntity=chinese cuisine}
+
+# test
+- {@cuisineEntity=chinese} cuisine
+            `;
+        parseFile.parseFile(testLU)
+            .then(res => {
+                let parsedLuis = new luis(res.LUISJsonStructure);
+                assert.equal(parsedLuis.utterances[0].entities[0].startPos, 0);
+                assert.equal(parsedLuis.utterances[0].entities[0].endPos, 14);
+                done();
+            })
+            .catch(err => done(err))
+    })
+
+    it ('Parser instruction to handle OnAmbiguousLabels=takeLast is handled correctly', function(done) {
+        let testLU = `
+> !# @parser.OnAmbiguousLabels = takeLast
+
+# test
+- {@cuisineEntity=chinese cuisine}
+
+# test
+- {@cuisineEntity=chinese} cuisine
+        `;
+    parseFile.parseFile(testLU)
+        .then(res => {
+            let parsedLuis = new luis(res.LUISJsonStructure);
+            assert.equal(parsedLuis.utterances[0].entities[0].startPos, 0);
+            assert.equal(parsedLuis.utterances[0].entities[0].endPos, 6);
+            done();
+        })
+        .catch(err => done(err))
+        })
+
+        
+        it ('Parser instruction to handle OnAmbiguousLabels=throwAnError is handled correctly', function(done) {
+                let testLU = `
+> !# @parser.OnAmbiguousLabels = throwAnError
+
+# test
+- {@cuisineEntity=chinese cuisine}
+
+# test
+- {@cuisineEntity=chinese} cuisine
+        `;
+                parseFile.parseFile(testLU)
+                        .then(res => done(res))
+                        .catch(err => done())
+        })
+
+        it ('Parser instruction to handle OnAmbiguousLabels=takeLongestLabel is handled correctly', function(done) {
+                let testLU = `
+        > !# @parser.OnAmbiguousLabels = takeLongestLabel
+        
+        # test
+        - {@cuisineEntity=chinese cuisine}
+        
+        # test
+        - {@cuisineEntity=chinese} cuisine
+                `;
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                let parsedLuis = new luis(res.LUISJsonStructure);
+                                assert.equal(parsedLuis.utterances[0].entities[0].startPos, 0);
+                                assert.equal(parsedLuis.utterances[0].entities[0].endPos, 14);
+                                done();
+                        })
+                        .catch(err => done(err))
+                })
+
+        it ('Parser defaults to OnAmbiguousLabels=takeLongestLabel', function(done) {
+                let testLU = `
+        # test
+        - {@cuisineEntity=chinese cuisine}
+        
+        # test
+        - {@cuisineEntity=chinese} cuisine
+                `;
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                let parsedLuis = new luis(res.LUISJsonStructure);
+                                assert.equal(parsedLuis.utterances[0].entities[0].startPos, 0);
+                                assert.equal(parsedLuis.utterances[0].entities[0].endPos, 14);
+                                done();
+                        })
+                        .catch(err => done(err))
+                })
 });

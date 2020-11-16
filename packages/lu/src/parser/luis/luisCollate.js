@@ -75,6 +75,7 @@ const cleanupEntities = function(luisObject) {
         if (consolidatedList.find(e => e.name == item.name) !== undefined) idxToRemove.push(idx);
     })
     idxToRemove.sort((a, b) => a-b).forEach(idx => luisObject.entities.splice(idx, 1))
+    delete luisObject.onAmbiguousLabels;
 }
 
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {

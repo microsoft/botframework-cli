@@ -1,9 +1,10 @@
+import fs from 'fs-extra'
+import rimraf from 'rimraf'
+import sinon from 'sinon'
+import uuidv1 from 'uuid/v1'
 import {expect, test} from '@oclif/test'
-const sinon = require('sinon')
-const uuidv1 = require('uuid/v1')
+
 const utils = require('../../../../src/utils/index')
-const fs = require('fs-extra')
-import * as rimraf from 'rimraf'
 
 describe('luis:version:export', () => {
 
@@ -28,6 +29,7 @@ describe('luis:version:export', () => {
   test
   .stdout()
   .command(['luis:version:export', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Exports a LUIS application to JSON format')
   })
@@ -36,6 +38,7 @@ describe('luis:version:export', () => {
   .stdout()
   .stderr()
   .command(['luis:version:export', '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'appId' missing.`)
   })
@@ -44,6 +47,7 @@ describe('luis:version:export', () => {
   .stdout()
   .stderr()
   .command(['luis:version:export', '--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1()])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'versionId' missing.`)
   })
@@ -85,6 +89,7 @@ describe('luis:version:export', () => {
   .stdout()
   .stderr()
   .command(['luis:version:export', '--appId', uuidv1(), '--out', 'xyz', '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('exports a luis app and displays a success message and the export contents in the console (since the target path provided is invalid)', ctx => {
     expect(ctx.stderr).to.contain('Target directory path doesn\'t exist:')
   })

@@ -28,7 +28,8 @@ module.exports = {
         INVALID_URI:                21,
         INVALID_REGEX_ENTITY:       22,
         INVALID_COMPOSITE_ENTITY:   23,
-        LUIS_API_CALL_FAILED:       24,
+        LUIS_BUILD_FAILED:          24,
+        QNAMAKER_BUILD_FAILED:      25,
         UNKNOWN_ERROR:              99,
         BOUNDARY_INTENTS:           501,
         BOUNDARY_PATTERNANYENTITY:  502,
@@ -49,7 +50,8 @@ module.exports = {
         BOUNDARY_FEATURE_PER_MODEL: 517,
         BOUNDARY_PARENT_ENTITY_LIMIT:518,
         BOUNDARY_TOTAL_ENTITIES_AND_ROLES:519,
-        BOUNDARY_TOTAL_CLOSED_LISTS:520
+        BOUNDARY_TOTAL_CLOSED_LISTS:520,
+        BOUNDARY_MINMUM_PHRASE_LIMIT:521
     },
     boundaryLimits: {
         MAX_NUM_INTENTS:                    500,

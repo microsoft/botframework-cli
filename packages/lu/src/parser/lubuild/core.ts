@@ -8,11 +8,10 @@ import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import fetch from 'node-fetch'
 
 const delay = require('delay')
-const retCode = require('./../utils/enums/CLI-errors')
-const exception = require('./../utils/exception')
 const Luis = require('./../luis/luis')
 
 const rateLimitErrorCode = 429
+const absoluteUrlPattern = /^https?:\/\//i
 
 export class LuBuildCore {
   private readonly client: any
@@ -26,6 +25,11 @@ export class LuBuildCore {
     this.endpoint = endpoint
     this.retryCount = retryCount
     this.retryDuration = retryDuration
+
+    // check endpoint is absolute or not
+    if (!absoluteUrlPattern.test(endpoint)) {
+      throw new Error(`Only absolute URLs are supported. "${endpoint}" is not an absolute LUIS endpoint URL.`)
+    }
 
     // new luis api client
     const creds = new CognitiveServicesCredentials(subscriptionKey)
@@ -108,12 +112,12 @@ export class LuBuildCore {
         retryCount--
         if (retryCount > 0) await delay(this.retryDuration)
       } else {
-        throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+        throw error
       }
     }
 
     if (retryCount === 0) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+      throw error
     }
 
     return messageData
@@ -150,7 +154,7 @@ export class LuBuildCore {
     }
 
     if (messageData.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, messageData.error.message))
+      throw new Error(messageData.error.message)
     }
 
     return messageData
@@ -230,12 +234,12 @@ export class LuBuildCore {
         retryCount--
         if (retryCount > 0) await delay(this.retryDuration)
       } else {
-        throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+        throw error
       }
     }
 
     if (retryCount === 0) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, error.message))
+      throw error
     }
 
     return messageData

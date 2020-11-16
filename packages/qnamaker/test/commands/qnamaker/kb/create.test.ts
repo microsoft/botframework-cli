@@ -124,6 +124,7 @@ describe('qnamaker:kb:create No input', () => {
   test
     .stderr()
     .command(['qnamaker:kb:create'])
+    .exit(1)
     .it('Creates kb qnamaker:kb:create --in', ctx => {
       expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
     })

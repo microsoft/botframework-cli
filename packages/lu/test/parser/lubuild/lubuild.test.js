@@ -7,7 +7,7 @@ const luObject = require('../../../src/parser/lu/lu')
 const luOptions = require('../../../src/parser/lu/luOptions')
 const txtfile = require('../../../src/parser/lufile/read-text-file');
 
-const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/lu-import-resolver')
+const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver')
 
 describe('builder: getActiveVersionIds function return version id sucessfully', () => {
   before(function () {
@@ -244,16 +244,148 @@ describe('builder: loadContents function can resolve import files with customize
 
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
-      [`${path.join(rootDir, "common.en-us.lu")}`],
-      "en-us",
-      "dev",
-      "westus",
-      undefined,
-      importResolver)
+      [`${path.join(rootDir, "lu-import-resolver", "common.en-us.lu")}`], {
+      culture: 'en-us',
+      importResolver: importResolver
+    })
 
-    assert.equal(result.luContents.length, 1)
-    assert.isTrue(result.luContents[0].content.includes(
-      `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}## cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}## welcome${NEWLINE}- welcome here`
+    assert.equal(result.length, 1)
+    assert.isTrue(result[0].content.includes(
+      `help${NEWLINE}- could you help${NEWLINE}- can you help me${NEWLINE}${NEWLINE}${NEWLINE}# cancel${NEWLINE}- cancel that${NEWLINE}- cancel the task${NEWLINE}- stop that${NEWLINE}${NEWLINE}${NEWLINE}# welcome${NEWLINE}- welcome here`
     ))
+  })
+})
+
+describe('builder: loadContents function can resolve import files with new import format', () => {
+  before(function () {
+    nock('https://blobstore.azurewebsites.net')
+      .get(uri => uri.includes('1.lu'))
+      .reply(200, `# cancel${NEWLINE}- cancel the task`)
+  })
+
+  it('should load contents sucessfully after resolving imports', async () => {
+    const builder = new Builder(() => { })
+    const result = await builder.loadContents(
+      [`${path.join(rootDir, "new-import-format", "a.lu")}`],
+      {culture: 'en-us'})
+
+    assert.equal(result.length, 1)
+    assert.isTrue(result[0].content.includes(
+      `# cancel${NEWLINE}- stop that${NEWLINE}- cancel the task${NEWLINE}${NEWLINE}${NEWLINE}# greeting${NEWLINE}- hello`
+    ))
+  })
+})
+
+describe('builder: loadContents function can catch invalid import exceptions successfully', () => {
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax2.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid syntax', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-syntax3.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] line 1:0 - line 1:1: syntax error: invalid input '[' detected"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] Sorry unable to open"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference2.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes("[ERROR] Sorry unable to open"))
+    }
+  })
+
+  it('should throw exception for invalid reference', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents(
+        [`${path.join(rootDir, "new-import-format", "invalid-reference3.lu")}`],
+        {culture: 'en-us'})
+
+      assert.fail("Invalid syntax exception is not thrown.")
+    } catch (e) {
+      assert.isTrue(e.text.includes("Invalid LU file") && e.text.includes(`[ERROR] URI: "https://xxxxx/1.lu" appears to be invalid.`))
+    }
+  })
+})
+
+describe('builder: build function can catch relative endpoint exception successfully', () => {
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new luObject('# Greeting')],
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'test', {
+        endpoint: 'http:fsd'
+      })
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Luis build failed: Only absolute URLs are supported. "http:fsd" is not an absolute LUIS endpoint URL.`)
+    }
+  })
+
+  it('should throw exception for non absolute endpoint', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.build(
+        [new luObject('# Greeting')],
+        'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+        'test', {
+        endpoint: 'fsd'
+      })
+
+      assert.fail("Relative endpoint exception is not thrown.")
+    } catch (e) {
+      assert.equal(e.text, `Luis build failed: Only absolute URLs are supported. "fsd" is not an absolute LUIS endpoint URL.`)
+    }
   })
 })

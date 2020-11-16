@@ -9,12 +9,12 @@
 
 > # Intent definitions
 
-## Greeting
+# Greeting
 - Hi
 - Hello
 
 
-## GetUserProfile
+# GetUserProfile
 - I'm {@userProfile={@userAge=36}} years old
 - My age is {@userProfile={@userAge=36}}
 - My name is {@userProfile={@userName={@firstName=vishwac}}}

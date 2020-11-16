@@ -20,6 +20,7 @@ describe('luis:application:rename', () => {
   test
   .stdout()
   .command(['luis:application:rename', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Renames the application and updates its description')
   })
@@ -28,6 +29,7 @@ describe('luis:application:rename', () => {
   .stdout()
   .stderr()
   .command(['luis:application:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--subscriptionKey', uuidv1(), '--description', 'test description'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain('Missing required flag:')
     expect(ctx.stderr).to.contain('--name NAME')
@@ -37,6 +39,7 @@ describe('luis:application:rename', () => {
   .stdout()
   .stderr()
   .command(['luis:application:rename', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--appId', uuidv1(), '--name', 'sample-app', '--description', 'test description'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
@@ -57,8 +60,9 @@ describe('luis:application:rename', () => {
   .stdout()
   .stderr()
   .command(['luis:application:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--description', 'test description'])
+  .exit(1)
   .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
-    expect(ctx.stderr).to.contain('Failed to rename app: TypeError: Only absolute URLs are supported\n')
+    expect(ctx.stderr).to.contain('Failed to rename app: Error:')
   })
 
 })

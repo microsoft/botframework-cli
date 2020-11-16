@@ -82,6 +82,7 @@ describe('qnamaker:convert', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-alterations.lu')}`])
+  .exit(1)
   .it('qnamaker:convert Throws when an invalid QnA Maker alteration is specified in the input .lu file', async (ctx) => {
     expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:13: Invalid list entity line, did you miss '-' at line begin")
   })
@@ -155,6 +156,7 @@ describe('qnamaker:convert file creation', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/verified/all-qna.json')}`, '--out', '/testfolder/qna.lu'])
+  .exit(1)
   .it('qnamaker:convert refresh command successfully reconstructs a markdown file from QnA input file', async (ctx) => {
     expect(ctx.stderr).to.contain('Path not found:')
   })
@@ -164,6 +166,7 @@ describe('qnamaker:convert empty file handling', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
+  .exit(1)
   .it('qnamaker:convert errors out on empty lu file', async (ctx) => {
     expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
   })
@@ -171,6 +174,7 @@ describe('qnamaker:convert empty file handling', () => {
   test
   .stderr()
   .command(['qnamaker:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
+  .exit(1)
   .it('qnamaker:convert errors out on empty json file', async (ctx) => {
     expect(ctx.stderr).to.contain('Sorry, error parsing content as QnA JSON\n')
   })

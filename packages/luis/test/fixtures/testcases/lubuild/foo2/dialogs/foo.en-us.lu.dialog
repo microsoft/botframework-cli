@@ -1,7 +1,0 @@
-{
-    "$kind": "Microsoft.LuisRecognizer",
-    "id": "LUIS_foo",
-    "applicationId": "f8c64e2a-2222-3a09-8f78-39d7adc76ec5",
-    "endpoint": "yyy",
-    "endpointKey": "zzz"
-}

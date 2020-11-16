@@ -1,342 +1,344 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "bf CLI",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/cli/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "${workspaceFolder}/packages/luis/lib/**"
-            ],
-            "args": [
-                "luis:build",
-                "--luConfig",
-                "${env:TEMP}/sandwich.out/luconfig.json"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Dialog Merge Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/dialog",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                ".*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std",
-            "outFiles": [
-                "./package/dialog/lib/**"
-            ],
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Dialog Verify Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/dialog",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                "dialog:verify.*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std",
-            "outFiles": [
-                "./package/dialog/lib/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/luis",
-            "args": [
-                "test/",
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                ".*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outFiles": [
-                "./lib/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LU Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/lu",
-            "args": [
-                "test/",
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                ".*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/lu/lib/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Build Tests",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/lu/node_modules/mocha/bin/_mocha",
-            "cwd": "${workspaceFolder}/packages/lu",
-            "args": [
-                "--timeout",
-                "999999",
-                "--colors",
-                "-g",
-                ".*luis:build.*"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/lu/lib/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "BotBuilder schema",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:merge",
-                "libraries/**/*.schema",
-                "-o",
-                "${env:TEMP}/sdk.schema",
-                "--verbose",
-                "--debug"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "BotBuilder project",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:merge",
-                "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
-                "-o",
-                "${env:TEMP}/app.schema",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "BotBuilder verify",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:verify",
-                "tests/**/*.dialog",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Bot Builder merge test schema",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:merge",
-                "libraries/**/*.schema",
-                "tests/**/*.schema",
-                "-o",
-                "tests/tests.schema",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet/"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "Runbot schema",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/dialog/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/dialog/lib/**"
-            ],
-            "args": [
-                "dialog:merge",
-                "runbot.csproj",
-                "-o",
-                "runbot.schema",
-                "--verbose"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-samples/experimental/generation/runbot/"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Build Sandwich",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "${workspaceFolder}/packages/luis/lib/**",
-                "${workspaceFolder}/packages/lu/lib/**"
-            ],
-            "args": [
-                "luis:build",
-                "--luConfig",
-                "luconfig.json",
-                "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/generate.out",
-            "sourceMaps": true
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Build Simple",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/luis/lib/**",
-                "./packages/lu/lib/**"
-            ],
-            "args": [
-                "luis:build",
-                "--luConfig",
-                "luconfig.json",
-                "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/simple.out"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Convert Sandwich",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/luis/lib/**",
-                "./packages/lu/lib/**"
-            ],
-            "args": [
-                "luis:convert",
-                "--in",
-                "en-us/sandwich.en-us.lu",
-                "--name",
-                "sandwich",
-                "-o",
-                "converted.json",
-                "--force"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/sandwich.out"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Convert Simple",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/luis/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/luis/lib/**",
-                "./packages/lu/lib/**"
-            ],
-            "args": [
-                "luis:convert",
-                "--in",
-                "en-us/simple.en-us.lu",
-                "--name",
-                "simple",
-                "-o",
-                "converted.json",
-                "--force"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${env:TEMP}/simple.out"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "LUIS Build DynamicLists",
-            "preLaunchTask": "${defaultBuildTask}",
-            "program": "${workspaceFolder}/packages/lu/bin/run",
-            "outputCapture": "std",
-            "outFiles": [
-                "./packages/lu/lib/**",
-                "./pacakges/luis/lib/**"
-            ],
-            "args": [
-                "luis:build",
-                "--in",
-                ".",
-                "--authoringKey",
-                "${env:LUIS_AUTHORING_KEY}",
-                "--botName",
-                "dynamicLists",
-                "--dialog"
-            ],
-            "internalConsoleOptions": "openOnSessionStart",
-            "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bf CLI",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["${workspaceFolder}/packages/luis/lib/**"],
+      "args": [
+        "luis:build",
+        "--luConfig",
+        "${env:TEMP}/sandwich.out/luconfig.json"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dialog Merge Tests",
+      "preLaunchTask": "${defaultBuildTask}",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--timeout",
+        "999999",
+        "--colors",
+        "-g",
+        "dialog:merge.*"
+      ],
+      "cwd": "${workspaceFolder}/packages/dialog",
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "outFiles": ["./package/dialog/lib/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dialog Verify Tests",
+      "preLaunchTask": "${defaultBuildTask}",
+      "cwd": "${workspaceFolder}/packages/dialog",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--timeout",
+        "999999",
+        "--colors",
+        "-g",
+        "dialog:verify.*"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "outFiles": ["./package/dialog/lib/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Tests",
+      "preLaunchTask": "${defaultBuildTask}",
+      "cwd": "${workspaceFolder}/packages/luis",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "test/",
+        "--timeout",
+        "999999",
+        "--colors",
+        "-g",
+        ".*"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "outFiles": ["./lib/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LU Tests",
+      "preLaunchTask": "${defaultBuildTask}",
+      "cwd": "${workspaceFolder}/packages/lu",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "test", "--", "--timeout", "999999", "--colors"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "outFiles": ["./packages/lu/lib/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Build Tests",
+      "preLaunchTask": "${defaultBuildTask}",
+      "cwd": "${workspaceFolder}/packages/lu",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--timeout",
+        "999999",
+        "--colors",
+        "-g",
+        ".*luis:build.*"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "outputCapture": "std",
+      "outFiles": ["./packages/lu/lib/**"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "BotBuilder schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": [
+        "dialog:merge",
+        "libraries/**/*.schema",
+        "-o",
+        "${env:TEMP}/sdk.schema",
+        "--verbose",
+        "--debug"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "BotBuilder project",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": [
+        "dialog:merge",
+        "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
+        "-o",
+        "${env:TEMP}/app.schema",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Adaptive Sample 08 project",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": [
+        "dialog:merge",
+        "*.csproj",
+        "--verbose",
+        "-o",
+        "${env:TEMP}/app.schema"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-samples/samples/csharp_dotnetcore/adaptive-dialog/08.todo-bot-luis-qnamaker"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "BotBuilder verify",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": ["dialog:verify", "tests/**/*.dialog", "--verbose"],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-dotnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Bot Builder merge test schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": [
+        "dialog:merge",
+        "libraries/**/*.schema",
+        "tests/**/*.schema",
+        "-o",
+        "tests/tests.schema",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-dotnet/"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Runbot schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/dialog/lib/**"],
+      "args": [
+        "dialog:merge",
+        "runbot.csproj",
+        "-o",
+        "runbot.schema",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-samples/experimental/generation/runbot/"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Build Sandwich",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/luis/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/packages/luis/lib/**",
+        "${workspaceFolder}/packages/lu/lib/**"
+      ],
+      "args": [
+        "luis:build",
+        "--luConfig",
+        "luconfig.json",
+        "--authoringKey",
+        "${env:LUIS_AUTHORING_KEY}"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${env:TEMP}/generate.out",
+      "sourceMaps": true
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Build Simple",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/luis/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "args": [
+        "luis:build",
+        "--luConfig",
+        "luconfig.json",
+        "--authoringKey",
+        "${env:LUIS_AUTHORING_KEY}"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${env:TEMP}/simple.out"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Convert Sandwich",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/luis/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "args": [
+        "luis:convert",
+        "--in",
+        "en-us/sandwich.en-us.lu",
+        "--name",
+        "sandwich",
+        "-o",
+        "converted.json",
+        "--force"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${env:TEMP}/sandwich.out"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Convert Simple",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/luis/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "args": [
+        "luis:convert",
+        "--in",
+        "en-us/simple.en-us.lu",
+        "--name",
+        "simple",
+        "-o",
+        "converted.json",
+        "--force"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${env:TEMP}/simple.out"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LUIS Build DynamicLists",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/lu/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/lu/lib/**", "./pacakges/luis/lib/**"],
+      "args": [
+        "luis:build",
+        "--in",
+        ".",
+        "--authoringKey",
+        "${env:LUIS_AUTHORING_KEY}",
+        "--botName",
+        "dynamicLists",
+        "--dialog"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../botbuilder-dotnet/tests/Microsoft.Bot.Builder.Dialogs.Adaptive.Tests/tests/LUISRecognizerTests"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "LG Expand Test",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/lg/bin/run",
+      "outputCapture": "std",
+      "outFiles": ["./packages/lg/lib/**"],
+      "args": [
+        "lg:expand",
+        "--in",
+        "accessScope.lg",
+        "--testInput",
+        "data.json",
+        "--template",
+        "GetIndex"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/packages/lg/test/fixtures/testcase"
+    }
+  ]
 }

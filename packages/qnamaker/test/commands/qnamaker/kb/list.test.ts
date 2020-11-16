@@ -72,6 +72,7 @@ describe('qnamaker:kb:list', () => {
   test
     .stderr()
     .command(['qnamaker:kb:list'])
+    .exit(1)
     .it('Prompts the user if no config passed or set in config.file', ctx => {
       expect(ctx.stderr).to.contain('Did you run bf qnamaker:init yet?')
     })

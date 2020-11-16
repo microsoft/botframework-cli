@@ -14,10 +14,6 @@ const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const Content = require('@microsoft/bf-lu').V2.LU
 const qnaOptions = require('@microsoft/bf-lu/lib/parser/lu/qnaOptions')
-const Settings = require('@microsoft/bf-lu/lib/parser/qnabuild/settings')
-const MultiLanguageRecognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/multi-language-recognizer')
-const Recognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/recognizer')
-const CrosstrainedRecognizer = require('@microsoft/bf-lu/lib/parser/qnabuild/cross-trained-recognizer')
 const Builder = require('@microsoft/bf-lu/lib/parser/qnabuild/builder').Builder
 const recognizerType = require('@microsoft/bf-lu/lib/parser/utils/enums/recognizertypes')
 
@@ -25,25 +21,25 @@ export default class QnamakerBuild extends Command {
   static description = 'Build .qna files to create or update qnamaker knowledge bases and qnamaker alterations'
 
   static examples = [`
-    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME} --dialog
+    $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
   `]
 
   static flags: any = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'qnamaker:build command help'}),
     in: flags.string({char: 'i', description: 'Source .qna file or folder'}),
     subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key'}),
     botName: flags.string({char: 'b', description: 'Bot name'}),
     region: flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog files. If not specified, knowledge base ids will be output to console'}),
+    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, knowledge base setting will be output to console'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
     fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
     suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]', default: 'multiLanguage'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided, overwrites relevant dialog file', default: false}),
+    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
+    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false}),
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
-    schema: flags.string({description: 'Defines $schema for generated .dialog files'})
+    schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
   }
 
   async run() {
@@ -105,10 +101,6 @@ export default class QnamakerBuild extends Command {
       })
 
       let qnaContents: any[] = []
-      let recognizers = new Map<string, any>()
-      let multiRecognizers = new Map<string, any>()
-      let settings: any
-      let crosstrainedRecognizers = new Map<string, any>()
       
       if ((inVal && inVal !== '') || files.length > 0) {
         if (log) this.log('Loading files...\n')
@@ -124,27 +116,24 @@ export default class QnamakerBuild extends Command {
 
         // load qna contents from qna files
         // load existing recognizers, multiRecogniers and settings or create default ones
-        const loadedResources = await builder.loadContents(files, botName, suffix, region, defaultCulture, schema)
-        qnaContents = loadedResources.qnaContents
-        recognizers = loadedResources.recognizers
-        multiRecognizers = loadedResources.multiRecognizers
-        settings = loadedResources.settings
-        crosstrainedRecognizers = loadedResources.crosstrainedRecognizers
+        qnaContents = await builder.loadContents(files, {
+          culture: defaultCulture,
+          log: log
+        })
       } else {
         // load qna content from stdin and create default recognizer, multiRecognier and settings
         if (log) this.log('Load qna content from stdin\n')
         const content = new Content(flags.stdin, new qnaOptions('stdin', true, defaultCulture, path.join(process.cwd(), 'stdin')))
         qnaContents.push(content)
-        multiRecognizers.set('stdin', new MultiLanguageRecognizer(path.join(process.cwd(), `stdin.qna.dialog`), {}))
-        settings = new Settings(path.join(process.cwd(), `qnamaker.settings.${suffix}.${region}.json`), {})
-        const recognizer = Recognizer.load(content.path, content.name, path.join(process.cwd(), `${content.name}.dialog`), settings, {})
-        recognizers.set(content.name, recognizer)
-        crosstrainedRecognizers.set('stdin', new CrosstrainedRecognizer(path.join(process.cwd(), `stdin.lu.qna.dialog`), {}))
       }
 
       // update or create and then publish qnamaker kb based on loaded resources
       if (log) this.log('Handling qnamaker knowledge bases...')
-      const dialogContents = await builder.build(qnaContents, recognizers, subscriptionKey, endpoint, botName, suffix, fallbackLocale, multiRecognizers, settings, crosstrainedRecognizers, dialog)
+      const settingsContent = await builder.build(qnaContents, subscriptionKey, botName, {
+        endpoint,
+        suffix,
+        region
+      })
 
       // get endpointKeys
       const endpointKeysInfo = await builder.getEndpointKeys(subscriptionKey, endpoint)
@@ -156,17 +145,40 @@ export default class QnamakerBuild extends Command {
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
-        const writeDone = await builder.writeDialogAssets(dialogContents, force, outputFolder)
-        if (writeDone) {
-          this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+        if (dialog) {
+          const dialogContents = await builder.generateDialogs(qnaContents, {
+            fallbackLocale,
+            schema,
+            dialog
+          })
+
+          let writeDone = await builder.writeDialogAssets(dialogContents, {
+            force,
+            out: outputFolder
+          })
+
+          if (writeDone) {
+            this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
+          } else {
+            this.log(`No changes to .dialog files in ${outputFolder}\n`)
+          }
+        }
+
+        let writeDone = await builder.writeDialogAssets(settingsContent, {
+          force,
+          out: outputFolder
+        })
+
+        if (writeDone) {    
+          this.log(`Successfully wrote settings file to ${outputFolder}\n`)      
           this.log('QnA knowledge base endpointKeys:')
           this.log(endpointKeys)
         } else {
-          this.log(`No changes to .dialog files in ${outputFolder}\n`)
+          this.log(`No changes to settings file in ${outputFolder}\n`)
         }
       } else {
         this.log('The published knowledge base setting:')
-        this.log(JSON.parse(dialogContents[dialogContents.length - 1].content).qna)
+        this.log(JSON.stringify(JSON.parse(settingsContent[0].content).qna, null, 4))
         this.log('\n')
         this.log('QnA knowledge base endpointKeys:')
         this.log(endpointKeys)

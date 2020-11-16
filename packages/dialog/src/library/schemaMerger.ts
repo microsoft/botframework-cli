@@ -3,29 +3,32 @@
  * Licensed under the MIT License.
  */
 
-import * as Validator from 'ajv'
 import * as fs from 'fs-extra'
-import * as glob from 'globby'
-import * as os from 'os'
-import * as parser from '@apidevtools/json-schema-ref-parser'
-import * as ppath from 'path'
-import {JsonPointer as ptr} from 'json-ptr'
+import * as hash from './hash'
 import * as nuget from '@snyk/nuget-semver'
+import * as os from 'os'
+import * as ppath from 'path'
 import * as xp from 'xml2js'
-let allof: any = require('json-schema-merge-allof')
-let clone: any = require('clone')
-let getUri: any = require('get-uri')
-let util: any = require('util')
-let exec: any = util.promisify(require('child_process').exec)
+import Ajv = require('ajv');
+import parser from '@apidevtools/json-schema-ref-parser'
+import {JsonPointer as ptr} from 'json-ptr'
+
+const allof = require('json-schema-merge-allof')
+const clone = require('clone')
+const getUri = require('get-uri')
+const glob = require('globby')
+const util = require('util')
+
+const exec = util.promisify(require('child_process').exec)
 
 // Walk over JSON object, stopping if true from walker.
 // Walker gets the current value, the parent object and full path to that object
 // and returns false to continue, true to stop going deeper.
 function walkJSON(elt: any, fun: (val: any, obj?: any, path?: string) => boolean, obj?: any, path?: any) {
-    let done = fun(elt, obj, path)
+    const done = fun(elt, obj, path)
     if (!done) {
         if (typeof elt === 'object' || Array.isArray(elt)) {
-            for (let key in elt) {
+            for (const key in elt) {
                 walkJSON(elt[key], fun, elt, pathName(path, key))
             }
         }
@@ -38,9 +41,9 @@ function pathName(path: string | undefined, extension: string): string {
 
 // Get JSON from a URI.
 async function getJSON(uri: string): Promise<any> {
-    let stream = await getUri(uri)
+    const stream = await getUri(uri)
     let data = ''
-    for await (let chunk of stream) {
+    for await (const chunk of stream) {
         data += chunk.toString()
     }
     return JSON.parse(data)
@@ -58,12 +61,17 @@ function normalize(path: string): string {
     return ppath.normalize(path)
 }
 
+// Replace backslash with forward slash for glob
+function forwardSlashes(input: string): string {
+    return input.replace(/\\/g, '/')
+}
+
 // Deep merge of JSON objects
 function mergeObjects(obj1: any, obj2: any): any {
-    let target = {};
-    let merger = (obj: any) => {
-        for (let prop in obj) {
-            let val = obj[prop]
+    const target = {}
+    const merger = (obj: any) => {
+        for (const prop in obj) {
+            const val = obj[prop]
             if (typeof val === 'object' && val !== null && !Array.isArray(val)) {
                 target[prop] = mergeObjects(target[prop], val)
             } else {
@@ -73,44 +81,36 @@ function mergeObjects(obj1: any, obj2: any): any {
     }
     merger(obj1)
     merger(obj2)
-    let finalTarget = {}
-    for (let key of Object.keys(target).sort()) {
+    const finalTarget = {}
+    for (const key of Object.keys(target).sort()) {
         finalTarget[key] = target[key]
     }
     return finalTarget
 }
 
 // Build a tree of component (project or package) references in order to compute a topological sort.
-class Component {
-    // Name of component
-    public name: string
-
-    // Version of component
-    public version: string
-
-    // Path to component
-    public path: string
+class ComponentNode {
+    // Component metadata information
+    public metadata: Component
 
     // Explicit patterns
     public explictPatterns: string[] = []
 
-    // Parent components
-    private readonly parents: Component[] = []
-
     // Child components
-    private readonly children: Component[] = []
+    private readonly children: ComponentNode[] = []
+
+    // Parent components
+    private readonly parents: ComponentNode[] = []
 
     // Track if processed
     private processed = false
 
-    constructor(path?: string, name?: string, version?: string) {
-        this.path = path || ''
-        this.name = name || ''
-        this.version = version || ''
+    constructor(component?: Component) {
+        this.metadata = component ?? {path: '', name: '', version: ''} as Component
     }
 
     // Add a child component
-    public addChild(component: Component): Component {
+    public addChild(component: ComponentNode): ComponentNode {
         component.parents.push(this)
         this.children.push(component)
         return component
@@ -118,17 +118,17 @@ class Component {
 
     // Return the topological sort of DAG rooted in component.
     // Sort has all parents in bread-first order before any child.
-    public sort(): Component[] {
-        let sort: Component[] = []
-        let remaining: Component[] = [this]
+    public sort(): ComponentNode[] {
+        const sort: ComponentNode[] = []
+        let remaining: ComponentNode[] = [this]
         while (remaining.length > 0) {
-            let newRemaining: Component[] = []
-            for (let component of remaining) {
+            const newRemaining: ComponentNode[] = []
+            for (const component of remaining) {
                 if (component.allParentsProcessed()) {
                     if (!component.processed) {
                         sort.push(component)
                         component.processed = true
-                        for (let child of component.children) {
+                        for (const child of component.children) {
                             newRemaining.push(child)
                         }
                     }
@@ -141,25 +141,36 @@ class Component {
         return sort
     }
 
-    public patterns(extensions: string[]): string[] {
+    public patterns(extensions: string[], negativePatterns: string[], imports: string): string[] {
         let patterns = this.explictPatterns
-        if (patterns.length === 0 && this.path) {
+        if (patterns.length === 0 && this.metadata.path) {
             patterns = []
-            let root = ppath.dirname(this.path)
-            for (let extension of extensions) {
-                patterns.push(ppath.join(root, `**/*${extension}`))
-                if (this.path.includes('package.json')) {
-                    patterns.push(`!${ppath.join(root, `node_modules/**/*${extension}`)}`)
-                }
+            const root = ppath.dirname(this.metadata.path)
+            for (const extension of extensions) {
+                patterns.push(ppath.join(root, '**', `*${extension}`))
             }
+            if (this.metadata.path.endsWith('package.json')) {
+                patterns.push(`!${ppath.join(root, 'node_modules', '**')}`)
+            } else if (this.metadata.path.endsWith('.csproj')) {
+                patterns.push(`!${ppath.join(root, 'bin', '**')}`)
+            }
+            patterns.push(`!${imports}`)
+            patterns.push(`!${ppath.join(root, 'test', '**')}`)
+            patterns.push(`!${ppath.join(root, 'tests', '**')}`)
+            patterns = [...patterns, ...negativePatterns]
         }
         return patterns
     }
 
+    // Test to see if root component
+    public isRoot(): boolean {
+        return this.parents.length === 0 || (this.parents.length === 1 && this.parents[0].parents.length === 0)
+    }
+
     // Check to see if this component is a parent of another component
-    public isParent(node: Component): boolean {
+    public isParent(node: ComponentNode): boolean {
         let found = false
-        for (let child of this.children) {
+        for (const child of this.children) {
             if (child === node) {
                 found = true
                 break
@@ -175,12 +186,17 @@ class Component {
 
     // Test to see if component is a C# project
     public isCSProject(): boolean {
-        return this.path.endsWith('.csproj')
+        return this.metadata.path.endsWith('.csproj')
+    }
+
+    // Test to see if first-level component
+    public isTopComponent(): boolean {
+        return this.parents.find(p => p.parents.length > 0 && p.isRoot()) !== undefined
     }
 
     // Test to see if all parents are processed which means you can be added to sort.
     private allParentsProcessed(): boolean {
-        for (let parent of this.parents) {
+        for (const parent of this.parents) {
             if (!parent.processed) {
                 return false
             }
@@ -191,16 +207,175 @@ class Component {
 
 interface PathComponent {
     path: string
-    component: Component
+    node: ComponentNode
+}
+
+/**
+ * Interface for imported assets to be copied.
+ */
+export interface Import {
+    /**
+     * New definition for file as utf-8.  
+     * For .lg/.lu/.qna is a string and for .dialog a serialized JSON object.
+     */
+    definition: string,
+
+    /**
+     * Output path for writing file.
+     */
+    path: string
+}
+
+/**
+ * Normalized information extracted from language native package components.
+ * This involves some mapping and normalization as described for each property.
+ * For NPM some nuget keywords can be used as a package.json extension and are marked below.
+ * 
+ * Nuget ignored attributes:
+ *   title (not used by nuget UI)
+ *   owners (doesn't seem relevant)
+ *   licenseUrl (deprecated)
+ *   iconUrl (deprecated)
+ *   summary (deprecated)
+ *   requireLicenseAcceptance (we always require)
+ * 
+ * NPM ignored attributes:
+ *   contributors (not relevant)
+ *   bugs (should be off project page)
+ */
+export interface Component {
+    /** 
+     * Package name.
+     * Nuget: id
+     * NPM: name
+     */
+    name: string
+
+    /** 
+     * Version.
+     * Nuget: version
+     * NPM: version
+     */
+    version: string
+
+    /** 
+     * Path to component definition. 
+     */
+    path: string
+
+    /** 
+     * Description of component.
+     * Nuget: description
+     * NPM: description
+     */
+    description: string
+
+    /** 
+     * Release notes for component.
+     * Nuget: releaseNotes
+     * NPM: releaseNotes extension
+     */
+    releaseNotes: string
+
+    /** 
+     * Authors of component.
+     * Nuget: break authors on comma
+     * NPM: author string and if structured {name} {email} {url}
+     */
+    authors: string[]
+
+    /** 
+     * Keywords describing component.
+     * Nuget: tags broken on space
+     * NPM: keywords
+     */
+    keywords: string[]
+
+    /** 
+     * Icon for component. 
+     * Nuget: relative path to icon in package
+     * NPM: icon extension
+     */
+    icon: string
+
+    /** 
+     * Repository containing component source.
+     * Nuget: repository.url (dropping type, branch, commit)
+     * NPM: repository string or respository.url (dropping type)
+     */
+    repository: string
+
+    /** 
+     * License information for component.
+     * Nuget: license
+     * NPM: license
+     */
+    license: string
+
+    /** 
+     * Locale id for component.
+     * Nuget: language
+     * NPM: language extension
+     */
+    language: string
+
+    /** 
+     * Copyright information.
+     * Nuget: copyright
+     * NPM: copyright extension
+     */
+    copyright: string
+
+    /** 
+     * True if includes .schema/.uischema file. 
+     */
+    includesSchema: boolean
+
+    /** 
+     * True if includes exports. 
+     */
+    includesExports: boolean
+}
+
+/**
+ * Interface describing changes made to import components.
+ */
+export interface Imports {
+    /**
+     * Files to add because they are new or the old file has not changed since last imported.
+     */
+    added: Import[],
+
+    /**
+     * Files to delete because they are no longer in the original components.
+     */
+    deleted: string[],
+
+    /**
+     * Files that were unchanged.
+     */
+    unchanged: string[],
+
+    /**
+     * Files where a component has a new definition and the old imported definition has been changed.
+     */
+    conflicts: Import[]
+
+    /** 
+     * Normalized description of top-level components installed in project. 
+     */
+    components: Component[]
 }
 
 /**
  * This class will find and merge component .schema files into a validated custom schema.
  */
-export default class SchemaMerger {
+export class SchemaMerger {
     // Input parameters
     private readonly patterns: string[]
     private output: string
+    private readonly imports: string
+    private readonly checkOnly: boolean
     private readonly verbose: boolean
     private readonly log: any
     private readonly warn: any
@@ -210,19 +385,22 @@ export default class SchemaMerger {
     private readonly debug: boolean | undefined
     private nugetRoot = ''    // Root where nuget packages are found
 
+    // Negative patterns found in input globs
+    private readonly negativePatterns: string[]
+
     // Track packages that have been processed
     private readonly packages = new Set()
 
     // Component tree
-    private readonly root = new Component()
-    private readonly parents: Component[] = []
-    private components: Component[] = []
+    private readonly root = new ComponentNode()
+    private readonly parents: ComponentNode[] = []
+    private components: ComponentNode[] = []
 
     // Files
     private readonly files: Map<string, Map<string, PathComponent[]>> = new Map<string, Map<string, PathComponent[]>>()
 
     // Validator for checking schema
-    private readonly validator = new Validator()
+    private readonly validator = new Ajv()
 
     // $schema that defines allowed component .schema
     private metaSchemaId = ''
@@ -256,70 +434,76 @@ export default class SchemaMerger {
     /**
      * Merger to combine component .schema and .uischema files to make a custom schema.
      * @param patterns Glob patterns for the .csproj or packge.json files to combine.
-     * @param output The output file to create or empty string to use default.
+     * @param output The output schema file to create or empty string to use default.
+     * @param imports The output directory for imports.
+     * @param checkOnly Check only--do not write files.
      * @param verbose True to show files as processed.
      * @param log Logger for informational messages.
      * @param warn Logger for warning messages.
      * @param error Logger for error messages.
      * @param extensions Extensions to analyze for loader.
-     * @param schema Path to merged .schema is doin
+     * @param schema Path to merged .schema to only merge .uischema.
      * @param debug Generate debug output.
      * @param nugetRoot Root directory for nuget packages.  (Useful for testing.)
      */
-    public constructor(patterns: string[], output: string, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
-        this.patterns = patterns
+    public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
+        this.patterns = patterns.map(forwardSlashes)
+        this.negativePatterns = this.patterns.filter(p => p.startsWith('!'))
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
+        this.imports = imports ?? ppath.join(ppath.dirname(this.output), 'imported')
+        this.checkOnly = checkOnly
         this.verbose = verbose
         this.log = log
         this.warn = warn
         this.error = error
-        this.extensions = extensions || ['.schema', '.lu', '.lg', '.qna', '.dialog', '.uischema']
+        this.extensions = extensions ?? ['.schema', '.lu', '.lg', '.qna', '.dialog', '.uischema']
         this.schemaPath = schema
         this.debug = debug
-        this.nugetRoot = nugetRoot || ''
+        this.nugetRoot = nugetRoot ?? ''
     }
 
     /** 
      * Verify and merge component .schema and .uischema together into a single .schema and .uischema.
      * Also ensures that for C# all declarative assets are output to <project>/Generated/<component>.
-     * Returns true if successful.
+     * Returns import changes if successful otherwise u.
      */
-    public async merge(): Promise<boolean> {
+    public async merge(): Promise<Imports | undefined> {
+        let imports: Imports | undefined
         try {
             this.log('Finding component files')
-            await this.expandPackages(await glob(this.patterns.map(p => p.replace(/\\/g, '/'))))
-            this.analyze()
-            let schema = await this.mergeSchemas()
+            await this.expandPackages(await glob(this.patterns))
+            await this.analyze()
+            const schema = await this.mergeSchemas()
             this.log('')
             await this.mergeUISchemas(schema)
             this.log('')
-            await this.copyAssets()
+            imports = await this.copyAssets()
         } catch (e) {
             this.mergingError(e)
         }
         if (this.failed) {
             this.error('*** Could not merge components ***')
         }
-        return !this.failed
+        return imports
     }
 
     // Push a child on the current parent and make it the new parent
-    private pushParent(path: string, name?: string, version?: string): Component {
-        let component = new Component(path, name, version)
-        let child = this.currentParent().addChild(component)
+    private pushParent(component: Component): ComponentNode {
+        const node = new ComponentNode(component)
+        const child = this.currentParent().addChild(node)
         this.parents.push(child)
-        this.currentFile = path
-        return component
+        this.currentFile = component.path
+        return node
     }
 
     // Pop the current parent
     private popParent() {
         this.parents.pop()
-        this.currentFile = this.currentParent().path
+        this.currentFile = this.currentParent().metadata.path
     }
 
     // Return the current parent
-    private currentParent(): Component {
+    private currentParent(): ComponentNode {
         return this.parents[this.parents.length - 1]
     }
 
@@ -337,7 +521,7 @@ export default class SchemaMerger {
         if (this.schemaPath) {
             // Passed in merged schema
             this.currentFile = this.schemaPath
-            let schema = await fs.readJSON(this.schemaPath)
+            const schema = await fs.readJSON(this.schemaPath)
             this.currentFile = schema.$schema
             this.metaSchema = await getJSON(schema.$schema)
             this.validator.addSchema(this.metaSchema, 'componentSchema')
@@ -347,17 +531,19 @@ export default class SchemaMerger {
         }
 
         // Delete existing output
-        let outputPath = ppath.resolve(this.output + '.schema')
-        await fs.remove(this.output + '.schema')
-        await fs.remove(this.output + '.schema.final')
-        await fs.remove(this.output + '.schema.expanded')
+        const outputPath = ppath.resolve(this.output + '.schema')
+        if (!this.checkOnly) {
+            await fs.remove(this.output + '.schema')
+            await fs.remove(this.output + '.schema.final')
+            await fs.remove(this.output + '.schema.expanded')
+        }
 
-        let componentPaths: PathComponent[] = []
-        let schemas = this.files.get('.schema')
+        const componentPaths: PathComponent[] = []
+        const schemas = this.files.get('.schema')
         if (schemas) {
-            for (let pathComponents of schemas.values()) {
+            for (const pathComponents of schemas.values()) {
                 // Just take first definition if multiple ones
-                let pathComponent = pathComponents[0]
+                const pathComponent = pathComponents[0]
                 if (pathComponent.path !== outputPath) {
                     componentPaths.push(pathComponent)
                 }
@@ -368,9 +554,9 @@ export default class SchemaMerger {
             return
         }
         this.log('Parsing component .schema files')
-        for (let componentPath of componentPaths) {
+        for (const componentPath of componentPaths) {
             try {
-                let path = componentPath.path
+                const path = componentPath.path
                 this.currentFile = path
                 this.vlog(`Parsing ${path}`)
                 let component = await fs.readJSON(path)
@@ -380,7 +566,7 @@ export default class SchemaMerger {
                     this.relativeToAbsoluteRefs(component, path)
                     if (component.$ref) {
                         // Expand top-level $ref to support testing
-                        let ref = await getJSON(component.$ref)
+                        const ref = await getJSON(component.$ref)
                         component = {...ref, ...component}
                         delete component.$ref
                     }
@@ -402,16 +588,16 @@ export default class SchemaMerger {
                         this.validateSchema(component)
                     }
                     delete component.$schema
-                    if (componentPath.component.name && componentPath.component.version) {
+                    if (componentPath.node.metadata.name && componentPath.node.metadata.version) {
                         // Only include versioned components
                         component.$package = {
-                            name: componentPath.component.name,
-                            version: componentPath.component.version
+                            name: componentPath.node.metadata.name,
+                            version: componentPath.node.metadata.version
                         }
                     }
-                    let filename = ppath.basename(path)
-                    let kind = filename.substring(0, filename.lastIndexOf('.'))
-                    let fullPath = ppath.resolve(path)
+                    const filename = ppath.basename(path)
+                    const kind = filename.substring(0, filename.lastIndexOf('.'))
+                    const fullPath = ppath.resolve(path)
                     if (this.source[kind] && this.source[kind] !== fullPath) {
                         this.parsingError(`Redefines ${kind} from ${this.source[kind]}`)
                     }
@@ -435,7 +621,7 @@ export default class SchemaMerger {
         this.expandInterfaces()
         this.addComponentProperties()
         this.sortImplementations()
-        let oneOf = Object.keys(this.definitions)
+        const oneOf = Object.keys(this.definitions)
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
             .sort()
             .map(kind => {
@@ -448,8 +634,8 @@ export default class SchemaMerger {
         if (!this.failed) {
             this.currentFile = this.output + '.schema'
             this.currentKind = ''
-            let finalDefinitions: any = {}
-            for (let key of Object.keys(this.definitions).sort()) {
+            const finalDefinitions: any = {}
+            for (const key of Object.keys(this.definitions).sort()) {
                 finalDefinitions[key] = this.definitions[key]
             }
             let finalSchema: any = {
@@ -476,12 +662,15 @@ export default class SchemaMerger {
             this.verifySchema(finalSchema)
             if (!this.failed) {
                 // Verify all refs work
-                let start = process.hrtime()
+                const start = process.hrtime.bigint()
                 fullSchema = await parser.dereference(clone(finalSchema))
-                let end = process.hrtime(start)[1] / 1000000000
-                this.vlog(`Expanding all $ref took ${end} seconds`)
-                this.log(`Writing ${this.currentFile}`)
-                await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
+                const end = process.hrtime.bigint()
+                const elapsed = Number(end - start) / 1000000000
+                this.vlog(`Expanding all $ref took ${elapsed} seconds`)
+                if (!this.checkOnly) {
+                    this.log(`Writing ${this.currentFile}`)
+                    await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
+                }
             }
         }
         return fullSchema
@@ -492,10 +681,12 @@ export default class SchemaMerger {
      * Does extensive error checking and validation against the schema.
      */
     private async mergeUISchemas(schema: any): Promise<void> {
-        await fs.remove(this.output + '.uischema')
+        if (!this.checkOnly) {
+            await fs.remove(this.output + '.uischema')
+        }
 
-        let uiSchemas = this.files.get('.uischema')
-        let result = {}
+        const uiSchemas = this.files.get('.uischema')
+        const result = {}
         if (uiSchemas) {
             if (!schema || this.failed) {
                 this.error('Error must have a merged .schema to merge .uischema files')
@@ -506,11 +697,11 @@ export default class SchemaMerger {
             if (this.schemaPath) {
                 this.log(`Using merged schema ${this.schemaPath}`)
             }
-            let outputName = ppath.basename(this.output)
-            for (let [fileName, componentPaths] of uiSchemas.entries()) {
+            const outputName = ppath.basename(this.output)
+            for (const [fileName, componentPaths] of uiSchemas.entries()) {
                 // Skip files that match output .uischema
                 if (!fileName.startsWith(outputName + '.')) {
-                    let [kindName, localeName] = this.kindAndLocale(fileName, schema)
+                    const [kindName, localeName] = this.kindAndLocale(fileName, schema)
                     let locale = result[localeName]
                     if (!locale) {
                         locale = result[localeName] = {}
@@ -520,16 +711,16 @@ export default class SchemaMerger {
                     if (componentPaths.length > 1) {
                         this.vlog(`Merging into ${kindName}.${localeName}`)
                     }
-                    for (let componentPath of componentPaths.reverse()) {
+                    for (const componentPath of componentPaths.reverse()) {
                         try {
-                            let path = componentPath.path
+                            const path = componentPath.path
                             this.currentFile = path
                             if (componentPaths.length > 1) {
                                 this.vlog(`  Merging ${this.currentFile}`)
                             } else {
                                 this.vlog(`Parsing ${this.currentFile}`)
                             }
-                            let component = await fs.readJSON(path)
+                            const component = await fs.readJSON(path)
                             if (!component.$schema) {
                                 this.missingSchemaError()
                             } else if (!this.metaUISchema) {
@@ -553,7 +744,7 @@ export default class SchemaMerger {
                         }
                     }
 
-                    let kindDef = schema?.definitions[kindName]
+                    const kindDef = schema?.definitions[kindName]
                     if (!kindDef) {
                         this.uiError(kindName)
                     } else {
@@ -563,11 +754,16 @@ export default class SchemaMerger {
                 }
             }
             if (!this.failed) {
-                for (let locale of Object.keys(result)) {
-                    let uischema = {$schema: this.metaUISchemaId, ...result[locale]}
+                for (const locale of Object.keys(result)) {
+                    const uischema = {$schema: this.metaUISchemaId}
+                    for (const key of Object.keys(result[locale]).sort()) {
+                        uischema[key] = result[locale][key]
+                    }
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
-                    this.log(`Writing ${this.currentFile}`)
-                    await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
+                    if (!this.checkOnly) {
+                        this.log(`Writing ${this.currentFile}`)
+                        await fs.writeJSON(this.currentFile, uischema, this.jsonOptions)
+                    }
                 }
             }
         }
@@ -577,7 +773,7 @@ export default class SchemaMerger {
         let kindName = ppath.basename(filename, '.uischema')
         let locale = ''
         if (!schema.definitions[kindName]) {
-            let split = kindName.lastIndexOf('.')
+            const split = kindName.lastIndexOf('.')
             if (split >= 0) {
                 locale = kindName.substring(split + 1)
                 kindName = kindName.substring(0, split)
@@ -586,38 +782,109 @@ export default class SchemaMerger {
         return [kindName, locale]
     }
 
-    // For C# copy all assets into generated/<package>/
-    private async copyAssets(): Promise<void> {
-        if (!this.failed && !this.schemaPath) {
-            let isCS = false
-            for (let component of this.components) {
-                if (component.path.endsWith('.csproj') || component.path.endsWith('.nuspec')) {
-                    isCS = true
-                    break
-                }
-            }
-            if (isCS) {
-                let generatedPath = ppath.join(ppath.dirname(this.output), 'generated')
-                this.log(`Copying C# package assets to ${generatedPath}`)
-                for (let files of this.files.values()) {
-                    for (let componentPaths of files.values()) {
-                        for (let componentPath of componentPaths) {
-                            let component = componentPath.component
-                            let path = componentPath.path
-                            // Don't copy .schema/.uischema so that we don't pick-up in project
-                            if (!component.isCSProject() && !path.endsWith('.schema') && !path.endsWith('.uischema')) {
-                                // Copy package files to output
-                                let relativePath = ppath.relative(ppath.dirname(component.path), path)
-                                let outputPath = ppath.join(generatedPath, componentPath.component.name, relativePath)
-                                this.vlog(`Copying ${path} to ${outputPath}`)
-                                await fs.ensureDir(ppath.dirname(outputPath))
-                                await fs.copyFile(path, outputPath)
+    // Copy all exported assets into imported assets
+    private async copyAssets(): Promise<Imports | undefined> {
+        const imports: Imports | undefined = this.failed ? undefined : {
+            added: [], deleted: [], unchanged: [], conflicts: [],
+            components: []
+        }
+        if (imports && !this.schemaPath) {
+            this.log(`Copying exported assets to ${this.imports}`)
+            const processed = new Set<string>()
+            for (const component of this.components) {
+                if (!component.isRoot()) {
+                    const exported = ppath.join(ppath.dirname(component.metadata.path), 'exported')
+                    if (component.isTopComponent()) {
+                        imports.components.push(component.metadata)
+                    }
+                    processed.add(component.metadata.name)
+
+                    if (await fs.pathExists(exported)) {
+                        const used = new Set<string>()
+                        const imported = ppath.join(this.imports, component.metadata.name)
+                        this.vlog(`Copying ${exported} to ${imported}`)
+                        component.metadata.includesExports = true
+
+                        // Copy all exported files
+                        for (const path of await glob(forwardSlashes(ppath.join(exported, '**')))) {
+                            const destination = ppath.join(imported, ppath.relative(exported, path))
+                            used.add(forwardSlashes(destination))
+                            let msg = `Copy ${path} to ${destination}`
+                            try {
+                                let copy = true
+                                const info: Import = {definition: await hash.addHash(path), path: destination}
+                                const {unchanged, embeddedHash} = await hash.isUnchanged(destination)
+                                if (hash.embeddedHash(path, info.definition) === embeddedHash) {
+                                    // Import is based on last export
+                                    this.vlog(`Unchanged ${destination}`)
+                                    imports.unchanged.push(destination)
+                                    copy = false
+                                } else if (unchanged) {
+                                    // Destination has not changed, but export has
+                                    this.vlog(msg)
+                                    imports.added.push(info)
+                                } else {
+                                    // Destination and export have changed
+                                    this.warn(`Warning copied conflicting ${path} to ${destination}`)
+                                    imports.conflicts.push(info)
+                                }
+                                msg = ''
+                                if (copy && !this.checkOnly) {
+                                    await fs.ensureDir(ppath.dirname(destination))
+                                    await fs.writeFile(destination, info.definition)
+                                }
+                            } catch (e) {
+                                if (msg) {
+                                    this.log(msg)
+                                }
+                                this.mergingError(e)
+                            }
+                        }
+
+                        // Delete removed files
+                        for (const path of await glob(forwardSlashes(ppath.join(imported, '**')))) {
+                            if (!used.has(path)) {
+                                const {unchanged} = await hash.isUnchanged(path)
+                                if (unchanged) {
+                                    imports.deleted.push(path)
+                                    this.vlog(`Delete ${path}`)
+                                } else {
+                                    imports.conflicts.push({definition: '', path})
+                                    this.warn(`Warning deleted modified ${path}`)
+                                }
+                                if (!this.checkOnly) {
+                                    await fs.remove(path)
+                                }
                             }
                         }
                     }
                 }
             }
+
+            // Identify previously imported components that are not there any more
+            if (await fs.pathExists(this.imports)) {
+                for (const importedDir of await fs.readdir(this.imports)) {
+                    const importPath = ppath.join(this.imports, importedDir)
+                    // On a mac .DS_STORE throws an error if you try to glob it so ensure directory
+                    if (!processed.has(importedDir) && (await fs.lstat(importPath)).isDirectory()) {
+                        for (const path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '**')))) {
+                            const {unchanged} = await hash.isUnchanged(path)
+                            if (unchanged) {
+                                imports.deleted.push(path)
+                                this.vlog(`Delete ${path}`)
+                            } else {
+                                imports.conflicts.push({definition: '', path})
+                                this.warn(`Warning deleted modified ${path}`)
+                            }
+                        }
+                        if (!this.checkOnly) {
+                            await fs.remove(ppath.join(this.imports, importedDir))
+                        }
+                    }
+                }
+            }
         }
+        return imports
     }
 
     // Given schema properties object and ui schema properties object, check to ensure 
@@ -626,18 +893,18 @@ export default class SchemaMerger {
         if (uiProps) {
             if (Array.isArray(uiProps)) {
                 // Validate order entries against schema
-                for (let prop of uiProps) {
+                for (const prop of uiProps) {
                     if (prop !== '*') {
-                        let newSchema = this.propertyDefinition(schema, prop)
+                        const newSchema = this.propertyDefinition(schema, prop)
                         if (!newSchema) {
                             this.uiError(`${path}.${prop}`)
                         }
                     }
                 }
             } else {
-                for (let [prop, uiProp] of Object.entries(uiProps)) {
-                    let newPath = `${path}.${prop}`
-                    let newSchema = this.propertyDefinition(schema, prop)
+                for (const [prop, uiProp] of Object.entries(uiProps)) {
+                    const newPath = `${path}.${prop}`
+                    const newSchema = this.propertyDefinition(schema, prop)
                     if (!newSchema) {
                         this.uiError(newPath)
                     } else {
@@ -661,8 +928,8 @@ export default class SchemaMerger {
             } else if (schema.type === 'array') {
                 return typeof schema.items === 'object' ? this.propertyDefinition(schema.items, property) : undefined
             } else if (schema.anyOf) {
-                for (let choice of schema.anyOf) {
-                    let def = this.propertyDefinition(choice, property)
+                for (const choice of schema.anyOf) {
+                    const def = this.propertyDefinition(choice, property)
                     if (def) {
                         return def
                     }
@@ -675,7 +942,7 @@ export default class SchemaMerger {
     // Validate against component schema
     private validateSchema(schema: any): void {
         if (!this.validator.validate('componentSchema', schema)) {
-            for (let error of this.validator.errors as Validator.ErrorObject[]) {
+            for (const error of this.validator.errors as Ajv.ErrorObject[]) {
                 this.schemaError(error)
             }
             this.validator.errors = undefined
@@ -685,7 +952,7 @@ export default class SchemaMerger {
     // Validate against UI schema
     private validateUISchema(schema: any): void {
         if (!this.validator.validate('UISchema', schema)) {
-            for (let error of this.validator.errors as Validator.ErrorObject[]) {
+            for (const error of this.validator.errors as Ajv.ErrorObject[]) {
                 this.schemaError(error)
             }
             this.validator.errors = undefined
@@ -695,7 +962,7 @@ export default class SchemaMerger {
     // Convert file relative ref to absolute ref
     private toAbsoluteRef(ref: string, base: string): string {
         if (ref.startsWith('.')) {
-            ref = `file:///${ppath.resolve(ppath.dirname(base), ref).replace(/\\/g, '/')}`
+            ref = forwardSlashes(`file:///${ppath.resolve(ppath.dirname(base), ref)}`)
         }
         return ref
     }
@@ -712,26 +979,28 @@ export default class SchemaMerger {
         })
     }
 
-    // Resolver for schema: -> metaSchema
-    private schemaProtocolResolver(): any {
-        let reader = (_file: parser.FileInfo) => {
-            return JSON.stringify(this.metaSchema)
-        }
-        return {
-            resolve: {
-                defintion: {
-                    order: 1,
-                    canRead: /^schema:/i,
-                    read(file: parser.FileInfo, _callback: any, _$refs: any) {
-                        return reader(file)
-                    }
-                }
-            }
-        }
-    }
-
     private indent(): string {
         return '  '.repeat(this.parents.length)
+    }
+
+    private nuspecComponent(path: string, nuspec: any): Component {
+        const component: Component = {
+            name: nuspec.id?.[0] ?? '',
+            version: nuspec.version?.[0] ?? '',
+            path,
+            description: nuspec.description?.[0] ?? '',
+            releaseNotes: nuspec.releaseNotes?.[0] ?? '',
+            authors: nuspec.authors?.[0].split(',').map(s => s.trim()) ?? [],
+            keywords: nuspec.tags?.[0].split(' ').map(s => s.trim()) ?? [],
+            icon: nuspec.icon?.[0] ?? '',
+            repository: nuspec.repository?.[0].$?.url ?? '',
+            license: nuspec.license?.[0] ?? '',
+            language: nuspec.language?.[0] ?? '',
+            copyright: nuspec.copyright?.[0] ?? '',
+            includesSchema: false,
+            includesExports: false
+        }
+        return component
     }
 
     // Expand a .nuspec by walking its dependencies
@@ -743,25 +1012,25 @@ export default class SchemaMerger {
                 try {
                     this.packages.add(path)
                     this.vlog(`${this.indent()}Following nuget ${this.prettyPath(path)}`)
-                    let nuspec = await this.xmlToJSON(path)
-                    let md = nuspec?.package?.metadata[0]
-                    this.pushParent(path, md.id[0], md.version[0])
-                    let dependencies: any[] = []
+                    const nuspec = await this.xmlToJSON(path)
+                    const md = nuspec?.package?.metadata[0]
+                    this.pushParent(this.nuspecComponent(path, md))
+                    const dependencies: any[] = []
                     walkJSON(nuspec, val => {
                         if (val.dependencies) {
                             // NOTE: We assume first framework with dependencies has schema files.
-                            for (let groups of val.dependencies) {
+                            for (const groups of val.dependencies) {
                                 if (groups.dependency) {
                                     // Direct dependencies
-                                    for (let dependency of groups.dependency) {
+                                    for (const dependency of groups.dependency) {
                                         dependencies.push(dependency.$)
                                     }
                                     break
                                 } else if (groups.group) {
                                     // Grouped dependencies
-                                    for (let group of groups.group) {
+                                    for (const group of groups.group) {
                                         if (group.dependency) {
-                                            for (let dependency of group.dependency) {
+                                            for (const dependency of group.dependency) {
                                                 dependencies.push(dependency.$)
                                             }
                                         }
@@ -772,14 +1041,15 @@ export default class SchemaMerger {
                         }
                         return false
                     })
-                    for (let dependent of dependencies) {
+                    for (const dependent of dependencies) {
                         await this.expandNuget(dependent.id, dependent.version)
                     }
                 } finally {
                     this.popParent()
                 }
             } else if (this.debug) {
-                this.parsingWarning('  Could not find nuspec')
+                // Assume missing nuget is because of build complexities
+                this.parsingWarning('Could not find nuget')
             }
         }
     }
@@ -791,17 +1061,24 @@ export default class SchemaMerger {
             try {
                 this.currentFile = pkgPath
                 this.packages.add(pkgPath)
-                let versions: string[] = []
+                const versions: string[] = []
                 if (await fs.pathExists(pkgPath)) {
-                    for (let pkgVersion of await fs.readdir(pkgPath)) {
+                    for (const pkgVersion of await fs.readdir(pkgPath)) {
                         versions.push(pkgVersion.toLowerCase())
                     }
-                    minVersion = minVersion || '0.0.0'
                     // NOTE: The semver package does not handle more complex nuget range revisions
                     // We get an exception and will ignore those dependencies.
-                    let version = nuget.minSatisfying(versions, minVersion)
-                    pkgPath = ppath.join(pkgPath, version || '')
-                    let nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
+                    minVersion = minVersion || '0.0.0'
+                    if (minVersion.startsWith('$')) {
+                        // Deal with build variables by installing most recent version
+                        minVersion = nuget.maxSatisfying(versions, '0-1000')
+                        if (this.debug) {
+                            this.parsingWarning(`Using most recent version ${minVersion}`)
+                        }
+                    }
+                    const version = nuget.minSatisfying(versions, minVersion)
+                    pkgPath = ppath.join(pkgPath, version ?? '')
+                    const nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
                     await this.expandNuspec(nuspecPath)
                 } else if (this.debug) {
                     // Ignore any missing dependencies assuming they are from a target framework like this:
@@ -813,8 +1090,27 @@ export default class SchemaMerger {
             } catch (e) {
                 this.parsingWarning(e.message)
             } finally {
-                this.currentFile = this.currentParent().path
+                this.currentFile = this.currentParent().metadata.path
             }
+        }
+    }
+
+    private packageComponent(path: string): Component {
+        return {
+            name: '',
+            version: '',
+            path,
+            description: '',
+            releaseNotes: '',
+            authors: [],
+            keywords: [],
+            icon: '',
+            repository: '',
+            license: '',
+            language: '',
+            copyright: '',
+            includesSchema: false,
+            includesExports: false
         }
     }
 
@@ -826,32 +1122,32 @@ export default class SchemaMerger {
             try {
                 this.currentFile = this.prettyPath(path)
                 this.vlog(`${this.indent()}Following ${this.currentFile}`)
-                this.pushParent(path)
-                let json = await this.xmlToJSON(path)
+                this.pushParent(this.packageComponent(path))
+                const json = await this.xmlToJSON(path)
 
                 // Walk projects
-                let projects: string[] = []
+                const projects: string[] = []
                 walkJSON(json, elt => {
                     if (elt.ProjectReference) {
-                        for (let ref of elt.ProjectReference) {
-                            let projectPath = ppath.join(ppath.dirname(path), ref.$.Include)
+                        for (const ref of elt.ProjectReference) {
+                            const projectPath = ppath.join(ppath.dirname(path), ref.$.Include)
                             projects.push(projectPath)
                         }
                         return true
                     }
                     return false
                 })
-                for (let project of projects) {
+                for (const project of projects) {
                     await this.expandCSProj(project)
                 }
 
                 // Walk nugets
                 await this.findGlobalNuget()
                 if (this.nugetRoot !== '') {
-                    let nugetPackages: any[] = []
+                    const nugetPackages: any[] = []
                     walkJSON(json, elt => {
                         if (elt.PackageReference) {
-                            for (let pkgRef of elt.PackageReference) {
+                            for (const pkgRef of elt.PackageReference) {
                                 nugetPackages.push(pkgRef.$)
                             }
                             return true
@@ -860,14 +1156,14 @@ export default class SchemaMerger {
                     })
                     if (nugetPackages.length === 0) {
                         // Try packages.config
-                        let configPath = ppath.join(ppath.dirname(path), 'packages.config')
+                        const configPath = ppath.join(ppath.dirname(path), 'packages.config')
                         if (await fs.pathExists(configPath)) {
                             this.currentFile = this.prettyPath(configPath)
                             this.vlog(`${this.indent()}Following ${this.currentFile}`)
-                            let config = await this.xmlToJSON(configPath)
+                            const config = await this.xmlToJSON(configPath)
                             walkJSON(config, elt => {
                                 if (elt.packages?.package) {
-                                    for (let info of elt.packages.package) {
+                                    for (const info of elt.packages.package) {
                                         nugetPackages.push({Include: info.$.id, Version: info.$.version})
                                     }
                                     return true
@@ -876,7 +1172,7 @@ export default class SchemaMerger {
                             })
                         }
                     }
-                    for (let pkg of nugetPackages) {
+                    for (const pkg of nugetPackages) {
                         await this.expandNuget(pkg.Include, pkg.Version)
                     }
                 }
@@ -886,27 +1182,69 @@ export default class SchemaMerger {
         }
     }
 
+    private packageJsonComponent(path: string, pkg: any): Component {
+        const component: Component = {
+            name: pkg.name,
+            version: pkg.version,
+            path,
+            description: pkg.description ?? '',
+            releaseNotes: pkg.releaseNotes ?? '',
+            authors: [],
+            keywords: pkg.keywords ?? [],
+            icon: pkg.icon ?? '',
+            repository: '',
+            license: pkg.license ?? '',
+            language: pkg.language ?? '',
+            copyright: pkg.copyright ?? '',
+            includesSchema: false,
+            includesExports: false
+        }
+
+        if (pkg.author) {
+            let author = pkg.author
+            if (typeof author === 'object') {
+                author = `${author.name}${author.email ? `, ${author.email}` : ''}${author.url ? `, ${author.url}` : ''}`
+            }
+            component.authors.push(author)
+        }
+
+        if (pkg.repository) {
+            let repo = pkg.repository
+            if (typeof repo === 'object') {
+                repo = repo.url
+            }
+            component.repository = repo
+        }
+
+        return component
+    }
+
     private async expandPackageJson(path: string): Promise<void> {
         path = normalize(path)
         if (!this.packages.has(path)) {
             try {
                 this.packages.add(path)
                 this.vlog(`${this.indent()}Following ${this.prettyPath(path)}`)
-                let pkg = await fs.readJSON(path)
-                let component = this.pushParent(path, pkg.name, pkg.version)
-                component.name = pkg.name || component.name
-                if (pkg.dependencies) {
-                    for (let dependent of Object.keys(pkg.dependencies)) {
+                const pkg = await fs.readJSON(path)
+                const dependencies = {...pkg.dependencies, ...pkg.optionalDependencies}
+                this.pushParent(this.packageJsonComponent(path, pkg))
+                if (dependencies) {
+                    for (const dependent of Object.keys(dependencies)) {
+                        let lastDir = ''
                         let rootDir = ppath.dirname(path)
                         // Walk up parent directories to find package
-                        while (rootDir) {
-                            let dependentPath = ppath.join(rootDir, 'node_modules', dependent, 'package.json')
+                        while (rootDir !== lastDir) {
+                            const dependentPath = ppath.join(rootDir, 'node_modules', dependent, 'package.json')
                             if (await fs.pathExists(dependentPath)) {
                                 await this.expandPackageJson(dependentPath)
-                                break;
+                                break
                             } else {
+                                lastDir = rootDir
                                 rootDir = ppath.dirname(rootDir)
                             }
+                        }
+                        if (rootDir === lastDir && pkg.optionalDependencies && !(dependent in pkg.optionalDependencies)) {
+                            this.missingPackage(dependent)
                         }
                     }
                 }
@@ -919,9 +1257,9 @@ export default class SchemaMerger {
     // Build the component tree and compute the breadth-first topological sort
     private async buildComponentTree(paths: string[]): Promise<void> {
         this.parents.push(this.root)
-        for (let path of paths) {
+        for (const path of paths) {
             // We expect a package
-            let name = ppath.basename(path)
+            const name = ppath.basename(path)
             if (name.endsWith('.csproj')) {
                 // C# project
                 await this.expandCSProj(path)
@@ -941,13 +1279,13 @@ export default class SchemaMerger {
 
         if (!this.output) {
             // Figure out base app name from first project
-            for (let component of this.components) {
-                if (component.path.endsWith('.csproj')) {
-                    this.output = ppath.basename(component.path, '.csproj')
-                } else if (component.path.endsWith('.nuspec')) {
-                    this.output = ppath.basename(component.path, '.nuspec')
-                } else if (component.path.endsWith('package.json')) {
-                    this.output = ppath.basename(ppath.dirname(component.path))
+            for (const component of this.components) {
+                if (component.metadata.path.endsWith('.csproj')) {
+                    this.output = ppath.basename(component.metadata.path, '.csproj')
+                } else if (component.metadata.path.endsWith('.nuspec')) {
+                    this.output = ppath.basename(component.metadata.path, '.nuspec')
+                } else if (component.metadata.path.endsWith('package.json')) {
+                    this.output = ppath.basename(ppath.dirname(component.metadata.path))
                 }
                 if (this.output) {
                     break
@@ -959,22 +1297,22 @@ export default class SchemaMerger {
     // Build the component tree and find all resources
     private async expandPackages(paths: string[]): Promise<void> {
         await this.buildComponentTree(paths)
-        for (let component of this.components) {
-            let patterns = component.patterns(this.extensions).map(e => e.replace(/\\/g, '/'))
-            for (let path of await glob(patterns)) {
-                let ext = ppath.extname(path)
+        for (const component of this.components) {
+            const patterns = component.patterns(this.extensions, this.negativePatterns, this.imports).map(forwardSlashes)
+            for (const path of await glob(patterns)) {
+                const ext = ppath.extname(path)
                 let map = this.files.get(ext)
                 if (!map) {
                     map = new Map<string, PathComponent[]>()
                     this.files.set(ext, map)
                 }
-                let name = ppath.basename(path)
+                const name = ppath.basename(path)
                 let record = map.get(name)
                 if (!record) {
                     record = []
                     map.set(name, record)
                 }
-                record.push({path: ppath.resolve(path), component})
+                record.push({path: ppath.resolve(path), node: component})
             }
         }
     }
@@ -982,17 +1320,28 @@ export default class SchemaMerger {
     // Analyze component files to identify:
     // 1) Multiple definitions of the same file in a component. (Error)
     // 2) Multiple definitions of .schema across projects/components (Error)
-    private analyze() {
-        for (let [ext, files] of this.files.entries()) {
-            for (let [file, records] of files.entries()) {
-                let winner = records[0]
-                let same: PathComponent[] = []
-                let conflicts: PathComponent[] = []
-                for (let alt of records) {
+    private async analyze() {
+        for (const [ext, files] of this.files.entries()) {
+            for (const [file, records] of files.entries()) {
+                const winner = records[0]
+                const same: PathComponent[] = []
+                const conflicts: PathComponent[] = []
+                for (const alt of records) {
+                    if (alt.path.endsWith('.schema') || alt.path.endsWith('.uischema')) {
+                        alt.node.metadata.includesSchema = true
+                    }
                     if (alt !== winner) {
-                        if (winner.component === alt.component) {
+                        if (winner.node === alt.node) {
                             same.push(alt)
                         } else if (ext === '.schema') {
+                            // Check for same content which can happen when project and nuget from project are 
+                            // both being used.
+                            const winnerSrc = await fs.readFile(winner.path, 'utf8')
+                            const altSrc = await fs.readFile(alt.path, 'utf8')
+                            if (winnerSrc !== altSrc) {
+                                conflicts.push(alt)
+                            }
+                        } else if (ext !== '.uischema') {
                             conflicts.push(alt)
                         }
                     }
@@ -1000,9 +1349,9 @@ export default class SchemaMerger {
 
                 if (same.length > 0) {
                     this.failed = true
-                    this.error(`Error multiple definitions of ${file} in ${winner.component.name}`)
+                    this.error(`Error multiple definitions of ${file} in ${winner.node.metadata.name}`)
                     this.error(`  ${winner.path}`)
-                    for (let alt of same) {
+                    for (const alt of same) {
                         this.error(`  ${alt.path}`)
                     }
                 }
@@ -1010,9 +1359,9 @@ export default class SchemaMerger {
                 if (conflicts.length > 0) {
                     this.failed = true
                     this.error(`Error conflicting definitions of ${file}`)
-                    this.error(`  ${winner.component.name}: ${winner.path}`)
-                    for (let alt of conflicts) {
-                        this.error(`  ${alt.component.name}: ${alt.path}`)
+                    this.error(`  ${winner.node.metadata.name}: ${winner.path}`)
+                    for (const alt of conflicts) {
+                        this.error(`  ${alt.node.metadata.name}: ${alt.path}`)
                     }
                 }
             }
@@ -1035,7 +1384,7 @@ export default class SchemaMerger {
             try {
                 const {stdout} = await exec('dotnet nuget locals global-packages --list')
                 const name = 'global-packages:'
-                let start = stdout.indexOf(name)
+                const start = stdout.indexOf(name)
                 if (start > -1) {
                     this.nugetRoot = stdout.substring(start + name.length).trim()
                 }
@@ -1048,6 +1397,9 @@ export default class SchemaMerger {
     // Convert XML to JSON
     private async xmlToJSON(path: string): Promise<any> {
         let xml = (await fs.readFile(path)).toString()
+        if (xml.startsWith('\uFEFF')) {
+            xml = xml.slice(1)
+        }
         return new Promise((resolve, reject) =>
             xp.parseString(xml, (err: Error, result: any) => {
                 if (err) {
@@ -1078,8 +1430,7 @@ export default class SchemaMerger {
      * @param canOverride True if definition can override extension.
      */
     private mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
-        let extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
-
+        const extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
         if (!extension) {
             this.mergingError(`Cannot extend ${extensionName} because it is not included`)
         } else {
@@ -1093,7 +1444,7 @@ export default class SchemaMerger {
                 if (!definition.properties) {
                     definition.properties = clone(extension.properties)
                 } else {
-                    for (let property in extension.properties) {
+                    for (const property in extension.properties) {
                         if (definition.properties[property]) {
                             this.mergingError(`Redefines property ${property} from ${extensionName}`)
                         } else {
@@ -1114,7 +1465,7 @@ export default class SchemaMerger {
                 if (!Array.isArray(extension.required)) {
                     extension.required = [extension.required]
                 }
-                for (let required of extension.required) {
+                for (const required of extension.required) {
                     if (!definition.required.includes(required)) {
                         definition.required.push(required)
                     }
@@ -1144,10 +1495,10 @@ export default class SchemaMerger {
 
     // Return a list of references for a particular type of role
     private roles(definition: any, type: string): string[] {
-        let found: string[] = []
-        let addArg = (val: string) => {
-            let start = val.indexOf('(')
-            let end = val.indexOf(')')
+        const found: string[] = []
+        const addArg = (val: string) => {
+            const start = val.indexOf('(')
+            const end = val.indexOf(')')
             if (start < 0 && end < 0) {
                 found.push('')
             } else {
@@ -1159,13 +1510,13 @@ export default class SchemaMerger {
             }
         }
         if (Array.isArray(definition.$role)) {
-            for (let elt of definition.$role) {
+            for (const elt of definition.$role) {
                 if (elt.startsWith(type)) {
                     addArg(elt)
                 }
             }
         } else {
-            let elt = definition.$role
+            const elt = definition.$role
             if (definition.$role && definition.$role.startsWith(type)) {
                 addArg(elt)
             }
@@ -1175,10 +1526,10 @@ export default class SchemaMerger {
 
     // Process extensions by making sure they have been done and then merging into definition.
     private processExtension(definition: any): void {
-        let extensions = this.roles(definition, 'extends')
-        for (let extensionName of extensions) {
+        const extensions = this.roles(definition, 'extends')
+        for (const extensionName of extensions) {
             // Ensure base has been extended
-            let extension = this.definitions[extensionName]
+            const extension = this.definitions[extensionName]
             if (extension && !extension.$processed) {
                 this.processExtension(extension)
             }
@@ -1207,7 +1558,7 @@ export default class SchemaMerger {
     private processImplementations(): void {
         // Identify interfaces
         for (this.currentKind in this.definitions) {
-            let schema = this.definitions[this.currentKind]
+            const schema = this.definitions[this.currentKind]
             if (this.roles(schema, 'interface').length > 0) {
                 this.interfaces.push(this.currentKind)
             }
@@ -1215,8 +1566,8 @@ export default class SchemaMerger {
         for (this.currentKind in this.definitions) {
             if (!this.isInterface(this.currentKind)) {
                 // Expand all references and allof to make processing simpler
-                let definition = this.definitions[this.currentKind]
-                for (let interfaceName of this.roles(definition, 'implements')) {
+                const definition = this.definitions[this.currentKind]
+                for (const interfaceName of this.roles(definition, 'implements')) {
                     // Connect to interface
                     if (!this.definitions[interfaceName]) {
                         this.mergingError(`Interface ${interfaceName} is not defined`)
@@ -1233,10 +1584,10 @@ export default class SchemaMerger {
                 // Verify all $roles are valid
                 walkJSON(definition, (val, _obj, path) => {
                     if (val.$role) {
-                        let expression = this.roles(val, 'expression')
-                        let implementation = this.roles(val, 'implementation')
-                        let iface = this.roles(val, 'interface')
-                        let extension = this.roles(val, 'extends')
+                        const expression = this.roles(val, 'expression')
+                        const implementation = this.roles(val, 'implementation')
+                        const iface = this.roles(val, 'interface')
+                        const extension = this.roles(val, 'extends')
                         if (!path) {
                             if (expression.length > 0) {
                                 this.mergingError(`$role ${val.$role} is not valid for component`)
@@ -1258,12 +1609,12 @@ export default class SchemaMerger {
     private fixComponentReferences(kind: string, definition: any): void {
         walkJSON(definition, val => {
             if (val.$ref && typeof val.$ref === 'string') {
-                let ref: string = val.$ref
+                const ref: string = val.$ref
                 if (ref.startsWith('#/')) {
                     val.$ref = `#/definitions/${kind}${ref.substring(ref.indexOf('/'))}`
                 } else if (ref.startsWith('file:')) {
-                    let filename = ppath.basename(ref)
-                    let kind = filename.substring(0, filename.lastIndexOf('.'))
+                    const filename = ppath.basename(ref)
+                    const kind = filename.substring(0, filename.lastIndexOf('.'))
                     if (this.source[kind]) {
                         val.$ref = `#/definitions/${kind}`
                     }
@@ -1281,7 +1632,7 @@ export default class SchemaMerger {
                     if (this.definitions.hasOwnProperty(val.$kind)) {
                         val.$ref = '#/definitions/' + val.$kind
                     } else {
-                        this.missing(val.$kind)
+                        this.missingKind(val.$kind)
                     }
                 }
                 return false
@@ -1291,10 +1642,10 @@ export default class SchemaMerger {
 
     // Expand interface definitions to include all implementations
     private expandInterfaces(): void {
-        for (let interfaceName of this.interfaces) {
+        for (const interfaceName of this.interfaces) {
             this.currentKind = interfaceName
-            let interfaceDefinition = this.definitions[interfaceName]
-            let implementations = this.implementations[interfaceName]
+            const interfaceDefinition = this.definitions[interfaceName]
+            const implementations = this.implementations[interfaceName]
             if (implementations) {
                 if (!interfaceDefinition.oneOf) {
                     interfaceDefinition.oneOf = [
@@ -1305,7 +1656,7 @@ export default class SchemaMerger {
                         }
                     ]
                 }
-                for (let implementation of this.implementations[interfaceName]) {
+                for (const implementation of this.implementations[interfaceName]) {
                     interfaceDefinition.oneOf.push({
                         $ref: `#/definitions/${implementation}`
                     })
@@ -1319,7 +1670,7 @@ export default class SchemaMerger {
     private addComponentProperties(): void {
         for (this.currentKind in this.definitions) {
             if (!this.isInterface(this.currentKind)) {
-                let definition = this.definitions[this.currentKind]
+                const definition = this.definitions[this.currentKind]
                 this.mergeInto('component', definition, true)
                 definition.properties.$kind.const = this.currentKind
             }
@@ -1328,9 +1679,9 @@ export default class SchemaMerger {
 
     private sortImplementations(): void {
         for (this.currentKind in this.definitions) {
-            let definition = this.definitions[this.currentKind]
-            if (this.isInterface(definition) && definition.oneOf) {
-                definition.oneOf = definition.oneOf.sort((a: any, b: any) => a.title.localeCompare(b.title))
+            const definition = this.definitions[this.currentKind]
+            if (this.isInterface(this.currentKind) && definition.oneOf) {
+                definition.oneOf = definition.oneOf.sort((a: any, b: any) => (a.$ref || a.type).localeCompare(b.$ref || b.type))
             }
         }
     }
@@ -1353,9 +1704,9 @@ export default class SchemaMerger {
     // the bundled definition.  This is similar to what JSON schema 8 does.
     private async bundle(schema: any): Promise<void> {
         const current = this.currentFile
-        let sources: string[] = []
+        const sources: string[] = []
         await this.bundleFun(schema, schema, sources, '')
-        for (let source of sources) {
+        for (const source of sources) {
             this.prune(schema.definitions[source])
         }
         walkJSON(schema, elt => {
@@ -1369,7 +1720,7 @@ export default class SchemaMerger {
 
     private async bundleFun(schema: any, elt: any, sources: string[], source: string): Promise<void> {
         if (typeof elt === 'object' || Array.isArray(elt)) {
-            for (let key in elt) {
+            for (const key in elt) {
                 const val = elt[key]
                 if (key === '$ref' && typeof val === 'string') {
                     if (val.startsWith('schema:') || val.startsWith(this.metaSchemaId)) {
@@ -1385,8 +1736,8 @@ export default class SchemaMerger {
                                 schema.definitions[name] = await getJSON(path)
                                 sources.push(name)
                             }
-                            let ref = `#/definitions/${name}${pointer}`
-                            let definition: any = ptr.get(schema, ref)
+                            const ref = `#/definitions/${name}${pointer}`
+                            const definition: any = ptr.get(schema, ref)
                             if (!definition) {
                                 this.refError(elt.$ref, ref)
                             } else if (!elt.$bundled) {
@@ -1441,9 +1792,9 @@ export default class SchemaMerger {
         if (typeof elt === 'object') {
             keep = elt.$bundled
             if (!keep) {
-                for (let [key, val] of Object.entries(elt)) {
+                for (const [key, val] of Object.entries(elt)) {
                     if (typeof val === 'object' || Array.isArray(val)) {
-                        let childBundled = this.prune(val)
+                        const childBundled = this.prune(val)
                         if (!childBundled) {
                             // Prune any keys of unused structured object
                             delete elt[key]
@@ -1453,7 +1804,7 @@ export default class SchemaMerger {
                 }
             }
         } else if (Array.isArray(elt)) {
-            for (let child of elt) {
+            for (const child of elt) {
                 const childKeep = this.prune(child)
                 keep = keep || childKeep
             }
@@ -1465,10 +1816,10 @@ export default class SchemaMerger {
     private expandAllOf(bundle: any): any {
         walkJSON(bundle, val => {
             if (val.allOf && Array.isArray(val.allOf)) {
-                for (let child of val.allOf) {
+                for (const child of val.allOf) {
                     if (child.$ref) {
-                        let ref: any = ptr.get(bundle, child.$ref)
-                        for (let prop in ref) {
+                        const ref: any = ptr.get(bundle, child.$ref)
+                        for (const prop in ref) {
                             if (!child.hasOwnProperty(prop)) {
                                 child[prop] = clone(ref[prop])
                             }
@@ -1496,14 +1847,14 @@ export default class SchemaMerger {
     private verifySchema(schema: any): void {
         this.log('Verifying schema')
         this.validateSchema(schema)
-        for (let entry of schema.oneOf) {
+        for (const entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
-            let definition = schema.definitions[this.currentKind]
-            let verifyProperty = (val, path) => {
+            const definition = schema.definitions[this.currentKind]
+            const verifyProperty = (val, path) => {
                 if (val.$ref) {
                     val = clone(val)
-                    let ref: any = ptr.get(schema, val.$ref)
-                    for (let prop in ref) {
+                    const ref: any = ptr.get(schema, val.$ref)
+                    for (const prop in ref) {
                         if (!val[prop]) {
                             val[prop] = ref[prop]
                         }
@@ -1513,12 +1864,12 @@ export default class SchemaMerger {
                 if (!val.$schema) {
                     // Assume $schema is an external reference and ignore error checking
                     if (val.$kind) {
-                        let kind = schema.definitions[val.$kind]
+                        const kind = schema.definitions[val.$kind]
                         if (this.roles(kind, 'interface').length > 0) {
-                            let implementations = kind.oneOf
+                            const implementations = kind.oneOf
                             let hasImplementation = false
                             if (kind.oneOf) {
-                                for (let implementation of implementations) {
+                                for (const implementation of implementations) {
                                     if (implementation.$ref) {
                                         hasImplementation = true
                                         break
@@ -1545,13 +1896,13 @@ export default class SchemaMerger {
                     return true
                 }
                 if (val.properties && (!path || !path.endsWith('properties'))) {
-                    for (let propName in val.properties) {
+                    for (const propName in val.properties) {
                         verifyProperty(val.properties[propName], pathName(path, propName))
                     }
                 }
                 if (val.items) {
                     if (Array.isArray(val.items)) {
-                        for (let idx in val.items) {
+                        for (const idx in val.items) {
                             verifyProperty(val.items[idx], pathName(path, `items/${idx}`))
                         }
                     } else {
@@ -1559,12 +1910,12 @@ export default class SchemaMerger {
                     }
                 }
                 if (val.oneOf) {
-                    for (let idx in val.oneOf) {
+                    for (const idx in val.oneOf) {
                         verifyProperty(val.oneOf[idx], pathName(path, `oneOf/${idx}`))
                     }
                 }
                 if (val.anyOf) {
-                    for (let idx in val.anyOf) {
+                    for (const idx in val.anyOf) {
                         verifyProperty(val.anyOf[idx], pathName(path, `anyOf/${idx}`))
                     }
                 }
@@ -1572,13 +1923,14 @@ export default class SchemaMerger {
                     verifyProperty(val.additionalProperties, pathName(path, 'additionalProperties'))
                 }
                 if (val.patternProperties) {
-                    for (let pattern in val.patternProperties) {
+                    for (const pattern in val.patternProperties) {
                         verifyProperty(val.patternProperties[pattern], pathName(path, `patternProperties/${pattern}`))
                     }
                 }
                 return false
             })
         }
+        this.currentKind = ''
     }
 
     // Check to see if a kind is an interface.
@@ -1592,10 +1944,10 @@ export default class SchemaMerger {
         }
     }
 
-    // Report missing component.
-    private missing(kind: string): void {
+    // Report missing $kind.
+    private missingKind(kind: string): void {
         if (!this.missingKinds.has(kind)) {
-            this.error(`${this.currentKind}: Missing ${kind} schema file from merge`)
+            this.error(`${this.currentKind}: Error missing ${kind} schema file from merge`)
             this.missingKinds.add(kind)
             this.failed = true
         }
@@ -1608,7 +1960,7 @@ export default class SchemaMerger {
     }
 
     // Error in schema validity
-    private schemaError(err: Validator.ErrorObject): void {
+    private schemaError(err: Ajv.ErrorObject): void {
         this.error(`${this.currentFile}: ${err.dataPath} error: ${err.message}`)
         this.failed = true
     }
@@ -1620,10 +1972,10 @@ export default class SchemaMerger {
     // Error while parsing component schemas
     private parsingError(err: Error | string): void {
         let msg = typeof err === 'string' ? err : err.message
-        let posMatch = /position\s+([0-9]+)/.exec(msg)
+        const posMatch = /position\s+([0-9]+)/.exec(msg)
         if (posMatch) {
-            let file = fs.readFileSync(this.currentFile, 'utf8')
-            let pos = Number(posMatch[1])
+            const file = fs.readFileSync(this.currentFile, 'utf8')
+            const pos = Number(posMatch[1])
             msg += os.EOL + file.substring(pos - 40, pos) + '^^^' + file.substring(pos, pos + 40)
         } else {
             msg = `${this.currentFile}: ${msg}`
@@ -1643,7 +1995,7 @@ export default class SchemaMerger {
 
     // Error while merging schemas
     private mergingError(err: Error | string): void {
-        let msg = typeof err === 'string' ? err : err.message
+        const msg = typeof err === 'string' ? err : err.message
         if (this.currentKind) {
             this.error(`Error ${this.currentKind}: ${msg}`)
         } else {
@@ -1655,6 +2007,12 @@ export default class SchemaMerger {
     // Generic error message
     private uiError(path: string): void {
         this.error(`Error ${path} does not exist in schema`)
+        this.failed = true
+    }
+
+    // Report missing $kind.
+    private missingPackage(component: string): void {
+        this.error(`${this.currentFile}: Error could not find dependency ${component}`)
         this.failed = true
     }
 
