@@ -14,7 +14,7 @@
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.3",
     "read-text-file": "^1.1.0",
     "readline-sync": "^1.4.10",
     "node-fetch": "^2.1.2"
@@ -35,8 +35,8 @@
     "globby": "^10.0.2",
     "mocha": "^5.2.0",
     "nyc": "^14.1.1",
-    "ts-node": "^8.6.2",
-    "typescript": "^3.7.5",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3",
     "rimraf": "^2.6.3"
   },
   "engines": {
@@ -63,7 +63,7 @@
   "scripts": {
     "unittest": "rush test -t @microsoft/bf-lg-cli",
     "posttest": "eslint . --ext .ts --config .eslintrc",
-    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "postpack": "rimraf oclif.manifest.json",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",

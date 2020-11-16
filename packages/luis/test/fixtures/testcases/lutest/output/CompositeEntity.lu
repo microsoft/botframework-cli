@@ -10,7 +10,7 @@
 > # Intent definitions
 
 > Utterance passed in this intent: 2/2
-## AcceptEventEntry
+# AcceptEventEntry
 > PASS. Predicted intent: AcceptEventEntry(0.9554455)
 > PASS. Predicted entities: accept my meeting at {@FromDateTime={@FromDate=tomorrow} {@FromTime=10am}}
 - accept my meeting at {@FromDateTime={@FromDate=tomorrow} {@FromTime=10am}}

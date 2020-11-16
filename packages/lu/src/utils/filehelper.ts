@@ -5,12 +5,15 @@
 
 import {readTextFile} from './textfilereader'
 import Lu = require('../parser/lu/lu')
+import QnA = require('../parser/lu/qna')
 const exception = require('./../parser/utils/exception')
 const retCode = require('./../parser/utils/enums/CLI-errors')
 const fs = require('fs-extra')
 const path = require('path')
 const helpers = require('./../parser/utils/helpers')
+const fileExtEnum = require('./../parser/utils/helpers').FileExtTypeEnum
 const LUOptions = require('./../parser/lu/luOptions')
+const QnAOptions = require('./../parser/lu/qnaOptions')
 const luParser = require('./../parser/lufile/luParser')
 const LUSectionTypes = require('./../parser/utils/enums/lusectiontypes')
 const globby = require('globby')
@@ -172,7 +175,7 @@ export async function getFilesContent(input: string, extType: string) {
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{id: filePath, content}]
+    return [{id: path.basename(filePath, extType), content}]
   }
 
   if (!fileStat.isDirectory()) {
@@ -182,7 +185,7 @@ export async function getFilesContent(input: string, extType: string) {
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {id: itemPath, content}
+    return {id: path.basename(itemPath, extType), content}
   }))
 }
 
@@ -211,48 +214,48 @@ async function getConfigFile(input: string): Promise<string> {
   return defaultConfigFile
 }
 
-export function getParsedObjects(contents: {id: string, content: string}[]) {
+export function getParsedObjects(contents: {id: string, content: string}[], extType: string) {
   const parsedObjects = contents.map(content => {
-    const opts = new LUOptions(content.id)
-    return new Lu(content.content, opts)
+    if (extType === fileExtEnum.LUFile) {
+      const opts = new LUOptions(content.id)
+      return new Lu(content.content, opts)
+    } else {
+      const opts = new QnAOptions(content.id)
+      return new QnA(content.content, opts)
+    }
   })
 
   return parsedObjects
 }
 
-export function getConfigObject(configContent: any, intentName: string, verbose: boolean) {
-  let finalLuConfigObj = Object.create(null)
-  let rootLuFiles: string[] = []
-  const configFileDir = path.dirname(configContent.id)
-  const luConfigContent = configContent.content
-  if (luConfigContent && luConfigContent !== '') {
+export function getConfigObject(configObject: any, intentName: string, verbose: boolean) {
+  let finalConfigObj = Object.create(null)
+  let rootFileIds: string[] = []
+  if (configObject) {
     try {
-      const luConfigObj = JSON.parse(luConfigContent)
-      for (const rootluFilePath of Object.keys(luConfigObj)) {
-        const rootLuFileFullPath = path.resolve(configFileDir, rootluFilePath)
-        const triggerObj = luConfigObj[rootluFilePath]
+      for (const rootFileId of Object.keys(configObject)) {
+        const triggerObj = configObject[rootFileId]
         for (const triggerObjKey of Object.keys(triggerObj)) {
           if (triggerObjKey === 'rootDialog') {
             if (triggerObj[triggerObjKey]) {
-              rootLuFiles.push(rootLuFileFullPath)
+              rootFileIds.push(rootFileId)
             }
           } else if (triggerObjKey === 'triggers') {
             const triggers = triggerObj[triggerObjKey]
             for (const triggerKey of Object.keys(triggers)) {
-              const destLuFiles = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
-              for (const destLuFile of destLuFiles) {
-                const destLuFileFullPath = destLuFile && destLuFile !== '' ? path.resolve(configFileDir, destLuFile) : destLuFile
-                if (rootLuFileFullPath in finalLuConfigObj) {
-                  const finalIntentToDestLuFiles = finalLuConfigObj[rootLuFileFullPath]
-                  if (finalIntentToDestLuFiles[triggerKey]) {
-                    finalIntentToDestLuFiles[triggerKey].push(destLuFileFullPath)
+              const destFileIds = triggers[triggerKey] instanceof Array ? triggers[triggerKey] : [triggers[triggerKey]]
+              for (const destFileId of destFileIds) {
+                if (rootFileId in finalConfigObj) {
+                  let finalIntentToDestFileIds = finalConfigObj[rootFileId]
+                  if (finalIntentToDestFileIds[triggerKey]) {
+                    finalIntentToDestFileIds[triggerKey].push(destFileId)
                   } else {
-                    finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
+                    finalIntentToDestFileIds[triggerKey] = [destFileId]
                   }
                 } else {
-                  let finalIntentToDestLuFiles = Object.create(null)
-                  finalIntentToDestLuFiles[triggerKey] = [destLuFileFullPath]
-                  finalLuConfigObj[rootLuFileFullPath] = finalIntentToDestLuFiles
+                  let finalIntentToDestFileIds = Object.create(null)
+                  finalIntentToDestFileIds[triggerKey] = [destFileId]
+                  finalConfigObj[rootFileId] = finalIntentToDestFileIds
                 }
               }
             }
@@ -264,18 +267,14 @@ export function getConfigObject(configContent: any, intentName: string, verbose:
     }
   }
 
-  if (rootLuFiles.length > 0) {
-    let crossTrainConfig = {
-      rootIds: rootLuFiles,
-      triggerRules: finalLuConfigObj,
-      intentName,
-      verbose
-    }
-
-    return crossTrainConfig
-  } else {
-    throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'rootDialog property is required in config file'))
+  let crossTrainConfig = {
+    rootIds: rootFileIds,
+    triggerRules: finalConfigObj,
+    intentName,
+    verbose
   }
+
+  return crossTrainConfig
 }
 
 export function parseJSON(input: string, appType: string) {
@@ -309,15 +308,27 @@ export function getCultureFromPath(file: string): string | null {
   }
 }
 
-export function isAllFilesSectionEmpty(contents: Lu[]): boolean {
-  let isAllFilesSectionEmpty = true
+export function isFileSectionEmpty(content: any): boolean {
+  if (content === undefined) return true
+
+  let resource = luParser.parse(content.content)
+  if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
+    return false
+  }
+
+  return true
+}
+
+export function filesSectionEmptyStatus(contents: any[]) {
+  const filesSectionEmptyStatus = new Map<string, boolean>()
   for (const content of contents) {
     let resource = luParser.parse(content.content)
     if (resource.Sections.filter((s: any) => s.SectionType !== LUSectionTypes.MODELINFOSECTION).length > 0) {
-      isAllFilesSectionEmpty = false
-      break
+      filesSectionEmptyStatus.set(content.path, false)
+    } else {
+      filesSectionEmptyStatus.set(content.path, true)
     }
   }
 
-  return isAllFilesSectionEmpty
+  return filesSectionEmptyStatus
 }

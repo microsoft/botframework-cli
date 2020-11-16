@@ -12,7 +12,7 @@ describe('qnamaker:kb:replace', () => {
       .reply(204)
     
     nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
-      .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf?qnaformat=true')
+      .put('/knowledgebases/287ce749-012c-4eed-a39c-e4f8f06616cf')
       .reply(204)
   })
 
@@ -37,6 +37,7 @@ describe('qnamaker:kb:replace', () => {
   test
     .stderr()
     .command(['qnamaker:kb:replace'])
+    .exit(1)
     .it('runs qnamaker:kb:replace', ctx => {
       expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
     })

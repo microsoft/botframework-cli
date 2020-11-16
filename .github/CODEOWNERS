@@ -12,10 +12,10 @@
 # This should make it easy to add new rules without breaking existing ones.
 
 # Global rule:
-* @cleemullins @munozemilio
+* @cleemullins @munozemilio @joshgummersall
 
 /build/**                          @munozemilio
 /data/**                           @munozemilio
 /packages/**                       @munozemilio
 /scripts/**                        @munozemilio
-/specs/**                          @vishwacsena @scheyal
+/specs/**                          @scheyal

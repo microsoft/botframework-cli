@@ -114,6 +114,7 @@ describe('luis:generate:cs', () => {
       `${path.join(__dirname, '../../../fixtures/generate/invalid.json')}`,
       '--out',
       `${path.join(__dirname, '../../../fixtures/generate/results/invalid.cs')}`])
+    .exit(1)
     .it('Throws expected error if invalid JSON', async ctx => {
       expect(ctx.stderr).to.include('Invalid LUIS JSON file content.')
     })

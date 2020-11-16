@@ -3,7 +3,17 @@
   <metadata>
     <id>nuget3</id>
     <version>1.0.0</version>
-    <title>nuget2</title>
+    <title>nuget3</title>
+    <description>Nuget 3</description>
+    <authors>Chris Tom, John Mark</authors>
+    <projectUrl>http://nuget3.com</projectUrl>
+    <license>MIT</license>
+    <icon>icon.png</icon>
+    <releaseNotes>Changed metatdata</releaseNotes>
+    <language>en-us</language>
+    <tags>a good thing</tags>
+    <repository type="git" url="https://github.com" branch="main" commit="1234"/>
+    <copyright>Mine only.</copyright>
     <dependencies>
     </dependencies>
   </metadata>

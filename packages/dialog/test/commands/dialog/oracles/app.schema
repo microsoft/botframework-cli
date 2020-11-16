@@ -8,9 +8,6 @@
       "$ref": "#/definitions/Recognizer"
     },
     {
-      "$ref": "#/definitions/RecognizerTypeMismatch"
-    },
-    {
       "$ref": "#/definitions/prompt"
     },
     {
@@ -30,15 +27,12 @@
       "description": "Recognizer interface.",
       "oneOf": [
         {
-          "type": "string",
-          "title": "Reference to IRecognizer",
-          "description": "Reference to IRecognizer .dialog file."
-        },
-        {
           "$ref": "#/definitions/Recognizer"
         },
         {
-          "$ref": "#/definitions/RecognizerTypeMismatch"
+          "type": "string",
+          "title": "Reference to IRecognizer",
+          "description": "Reference to IRecognizer .dialog file."
         }
       ]
     },
@@ -89,34 +83,6 @@
           "type": "string",
           "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
           "const": "Recognizer"
-        },
-        "$designer": {
-          "title": "Designer information",
-          "type": "object",
-          "description": "Extra information for the Bot Framework Composer."
-        }
-      }
-    },
-    "RecognizerTypeMismatch": {
-      "$role": "implements(IRecognizer)",
-      "type": "object",
-      "required": [
-        "$kind"
-      ],
-      "additionalProperties": false,
-      "patternProperties": {
-        "^\\$": {
-          "title": "Tooling property",
-          "description": "Open ended property for tooling."
-        }
-      },
-      "properties": {
-        "$kind": {
-          "title": "Kind of dialog object",
-          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
-          "type": "string",
-          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$",
-          "const": "RecognizerTypeMismatch"
         },
         "$designer": {
           "title": "Designer information",

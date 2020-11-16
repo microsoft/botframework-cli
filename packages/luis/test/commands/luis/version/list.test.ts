@@ -1,9 +1,10 @@
+import fs from 'fs-extra'
+import rimraf from 'rimraf'
+import sinon from 'sinon'
+import uuidv1 from 'uuid/v1'
 import {expect, test} from '@oclif/test'
-const sinon = require('sinon')
-const uuidv1 = require('uuid/v1')
+
 const utils = require('../../../../src/utils/index')
-const fs = require('fs-extra')
-import * as rimraf from 'rimraf'
 
 describe('luis:version:list', () => {
 
@@ -28,6 +29,7 @@ describe('luis:version:list', () => {
   test
   .stdout()
   .command(['luis:version:list', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Returns application\'s versions')
   })
@@ -36,6 +38,7 @@ describe('luis:version:list', () => {
   .stdout()
   .stderr()
   .command(['luis:version:list', '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'subscriptionKey' missing.`)
   })
@@ -83,6 +86,7 @@ describe('luis:version:list', () => {
   .stdout()
   .stderr()
   .command(['luis:version:list', '--out', 'xyz', '--subscriptionKey', uuidv1(),'--appId', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com'])
+  .exit(1)
   .it('displays a list of application versions and a success message in the console (since the target path provided is invalid)', ctx => {
     expect(ctx.stderr).to.contain('Target directory path doesn\'t exist:')
   })

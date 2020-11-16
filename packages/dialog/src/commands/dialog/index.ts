@@ -4,6 +4,7 @@
  */
 
 import { Command, flags } from '@microsoft/bf-cli-command'
+export { Component, Import, Imports, SchemaMerger} from '../../library/schemaMerger'
 
 export default class DialogIndex extends Command {
     static description = 'Dialog related commands for working with .schema and .dialog files.'

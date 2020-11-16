@@ -13,6 +13,7 @@ paragraph
     | entitySection
     | newEntitySection
     | importSection
+    | referenceSection
     | qnaSection
     | modelInfoSection
     ;
@@ -170,6 +171,14 @@ importSection
 
 importDefinition
     : WS* IMPORT WS*
+    ;
+
+referenceSection
+    : referenceDefinition
+    ;
+
+referenceDefinition
+    : WS* REFERENCE WS*
     ;
 
 qnaSection

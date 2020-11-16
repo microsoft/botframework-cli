@@ -16,6 +16,7 @@ describe('luis:application:delete', () => {
   test
   .stdout()
   .command(['luis:application:delete', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Deletes a LUIS application')
   })
@@ -24,6 +25,7 @@ describe('luis:application:delete', () => {
   .stdout()
   .stderr()
   .command(['luis:application:delete', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1()])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'appId' missing.`)
   })
@@ -32,6 +34,7 @@ describe('luis:application:delete', () => {
   .stdout()
   .stderr()
   .command(['luis:application:delete', '--appId', uuidv1(), '--subscriptionKey', uuidv1()])
+  .exit(1)
   .it('displays an error if any required input parameters are missing', ctx => {
     expect(ctx.stderr).to.contain(`Required input property 'endpoint' missing.`)
   })
@@ -51,6 +54,7 @@ describe('luis:application:delete', () => {
   .stdout()
   .stderr()
   .command(['luis:application:delete', '--appId', uuidv1(), '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--force'])
+  .exit(1)
   .it('fails to delete an app and displays an error message if the endpoint is undefined', ctx => {
     expect(ctx.stderr).to.contain('Failed to delete app')
   })

@@ -13,9 +13,12 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-* [`bf dialog`](#bf-dialog)
-* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
+- [@microsoft/bf-dialog](#microsoftbf-dialog)
+- [Relevant docs](#relevant-docs)
+- [Commands](#commands)
+  - [`bf dialog`](#bf-dialog)
+  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
 ## `bf dialog`
 
@@ -29,11 +32,11 @@ OPTIONS
   -h, --help  Dialog command help
 ```
 
-_See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/index.ts)_
+_See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/index.ts)_
 
 ## `bf dialog:merge PATTERNS`
 
-Merge <kind>.schema and <kind>[.<locale>].uischema definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  For C#, ensures all nuget declarative resources are included in the same location.
+Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an "exported" directory it is copied to /<package> in the --imports directory.
 
 ```
 USAGE
@@ -43,18 +46,27 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
 
 OPTIONS
+  -c, --checkOnly        Check and do not write files.
   -h, --help             show CLI help
-  -o, --output=output    Output path and filename for merged .schema and .uischema.  Defaults to first project name.
+
+  -o, --output=output    Output path and optional filename for merged .schema and .uischema.  Defaults to first project
+                         name.
+
   -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
+
   -v, --verbose          Show verbose logging of files as they are processed.
-  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource for C#.
+
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource.
+
+  --imports=imports      Output path for imported assets.  Defaults to the directory of --out with an imported
+                         directory.
 
 EXAMPLES
   $ bf dialog:merge myProject.csproj plugins/*.nuspec
   $ bf dialog:merge package.json -o app.schema
 ```
 
-_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/merge.ts)_
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/merge.ts)_
 
 ## `bf dialog:verify PATTERNS`
 
@@ -68,9 +80,10 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .dialog files.
 
 OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose  Show verbose output
+  -h, --help           show CLI help
+  -s, --schema=schema  Default schema to use if no $schema in dialog file.
+  -v, --verbose        Show verbose output
 ```
 
-_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/verify.ts)_
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/verify.ts)_
 <!-- commandsstop -->
