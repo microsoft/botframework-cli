@@ -232,7 +232,7 @@ export class Builder {
               // find if there is a matched name with current app under current authoring key
               if (!recognizer.getAppId()) {
                 for (let app of apps) {
-                  if (app.name === currentApp.name) {
+                  if (app.name.toLowerCase() === currentApp.name.toLowerCase()) {
                     recognizer.setAppId(app.id)
                     break
                   }

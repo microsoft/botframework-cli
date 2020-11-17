@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-const fs = require('fs-extra')
 const path = require('path')
 const file = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
@@ -24,13 +23,37 @@ module.exports = {
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
     const configContent = await file.getConfigContent(config)
 
+    let importResolver = async function (_, idsToFind) {
+      let importedContents = []
+      for (let idx = 0; idx < idsToFind.length; idx++) {
+        let file = idsToFind[idx]
+        if (path.isAbsolute(file.filePath)) {
+          if (file.filePath.endsWith(fileExtEnum.LUFile)) {
+            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.LUFile))
+          } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
+            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.QnAFile))
+          }
+        } else {
+          const fileName = path.basename(file.filePath)
+          if (fileName.endsWith(fileExtEnum.LUFile)) {
+            importedContents.push(...luContents.filter(luContent => luContent.id === path.basename(fileName, fileExtEnum.LUFile)))
+          } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
+            importedContents.push(...qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile)))
+          }
+        }
+      }
+
+      return importedContents
+    }
+
     const trainedResult = await crossTrainer.crossTrain(
       luContents,
       qnaContents,
       JSON.parse(configContent.content), {
       configId: configContent.id,
       intentName,
-      verbose
+      verbose,
+      importResolver
     })
 
     return trainedResult

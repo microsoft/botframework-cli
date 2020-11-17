@@ -62,7 +62,7 @@ describe('luis:application:rename', () => {
   .command(['luis:application:rename', '--endpoint', 'undefined', '--subscriptionKey', uuidv1(), '--appId', uuidv1(), '--name', 'sample-app', '--description', 'test description'])
   .exit(1)
   .it('fails to create an app and displays an error message if the endpoint is undefined', ctx => {
-    expect(ctx.stderr).to.contain('Failed to rename app: TypeError: Only absolute URLs are supported\n')
+    expect(ctx.stderr).to.contain('Failed to rename app: Error:')
   })
 
 })

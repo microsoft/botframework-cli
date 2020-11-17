@@ -318,6 +318,38 @@ describe('luis:build not update application if no changes', () => {
     })
 })
 
+describe('luis:build not create application if kb name id only case different', () => {
+  const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, [{
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5'
+      }])
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('apps'))
+      .reply(200, {
+        name: 'test(development)-sandwich.en-us.lu',
+        id: 'f8c64e2a-8635-3a09-8f78-39d7adc76ec5',
+        activeVersion: '0.1'
+      })
+
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('export'))
+      .reply(200, existingLuisApp)
+  })
+
+  test
+    .stdout()
+    .command(['luis:build', '--in', './test/fixtures/testcases/lubuild/sandwich/lufiles/sandwich.en-us.lu', '--authoringKey', uuidv1(), '--botName', 'TEST', '--log', '--suffix', 'development'])
+    .it('should not create a luis application when an app with only case different name already existed in service', ctx => {
+      expect(ctx.stdout).to.contain('Handling applications...')
+      expect(ctx.stdout).to.contain('no changes')
+    })
+})
+
 describe('luis:build write dialog and settings assets successfully if --dialog set to multiLanguage', () => {
   const existingLuisApp = require('./../../fixtures/testcases/lubuild/sandwich/luis/test(development)-sandwich.en-us.lu.json')
   before(async function () {

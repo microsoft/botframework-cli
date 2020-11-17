@@ -7,20 +7,20 @@
 
 > # Intent definitions
 
-## dia2_trigger
+# dia2_trigger
 - book a hotel for me
 
 
-## dia3_trigger
+# dia3_trigger
 - cancel
 
 
-## local_intent
+# local_intent
 - Hello
 - Hi
 
 
-## dia1_trigger
+# dia1_trigger
 - book a flight for me
 
 
