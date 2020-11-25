@@ -28,9 +28,6 @@ fragment X: 'x' | 'X';
 fragment Y: 'y' | 'Y';
 fragment Z: 'z' | 'Z';
 
-fragment LETTER: 'a'..'z' | 'A'..'Z';
-fragment NUMBER: '0'..'9';
-
 fragment WHITESPACE
   : ' '|'\t'|'\ufeff'|'\u00a0'
   ;
@@ -169,11 +166,7 @@ NEWLINE_IN_NAME
   ;
 
 IDENTIFIER
-  : (LETTER | NUMBER | '_') (LETTER | NUMBER | '-' | '_')*
-  ;
-
-DOT
-  : '.'
+  : ~[ \t\r\n]+
   ;
 
 mode LIST_BODY_MODE;

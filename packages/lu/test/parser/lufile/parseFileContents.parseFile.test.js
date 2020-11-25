@@ -1076,4 +1076,18 @@ describe('parseFile correctly parses utterances', function () {
                         })
                         .catch(err => done(err))
         })
+
+        it ('Correctly parses intent name with special chars', function(done){
+                let testLU = `
+# test'á
+- Hello world
+`;
+                parseFile.parseFile(testLU)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.intents.length, 1);
+                                assert.equal(res.LUISJsonStructure.intents[0].name, "test'á");
+                                done();
+                        })
+                        .catch(err => done(err))
+        })
 })
