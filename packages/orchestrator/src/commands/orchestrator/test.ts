@@ -39,14 +39,9 @@ export default class OrchestratorTest extends Command {
     in: flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator .blu file.'}),
     out: flags.string({char: 'o', description: '(required) Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: 'Optional directory for hosting Orchestrator config and base model files, not needed for the "assessment" mode.'}),
+    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
     test: flags.string({char: 't', description: 'Optional path to a test file. This option enable the "test" mode.'}),
     prediction: flags.string({char: 'p', description: 'Optional path to a prediction label file, or comma-separated paths to a collection of (e.g., crosss-valiaton) files.'}),
-    // fullEmbeddings: flags.boolean({description: 'Optional flag to test on full embeddings instead of compact embeddings.'}),
-    // obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
-    // ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    // lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    // multiLabelPredictionThreshold: flags.string({char: 'n', description: `Numeral/plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    // unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -76,6 +71,10 @@ export default class OrchestratorTest extends Command {
     let baseModelPath: string = flags.model;
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
+    }
+    let entityBaseModelPath: string = flags.entityModel;
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
     }
     let testPath: string = flags.test;
     if (testPath) {
@@ -141,6 +140,7 @@ export default class OrchestratorTest extends Command {
       Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): entityBaseModelPath=${entityBaseModelPath}`);
       Utility.debuggingLog(`OrchestratorTest.run(): testPath=${testPath}`);
       Utility.debuggingLog(`OrchestratorTest.run(): predictionPathConfiguration=${predictionPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
@@ -155,7 +155,11 @@ export default class OrchestratorTest extends Command {
         } catch (error) {
         }
         await Orchestrator.testAsync(
-          baseModelPath, inputPathConfiguration, testPath, outputPathConfiguration,
+          baseModelPath,
+          inputPathConfiguration,
+          testPath,
+          outputPathConfiguration,
+          entityBaseModelPath,
           ambiguousClosenessThresholdParameter,
           lowConfidenceScoreThresholdParameter,
           multiLabelPredictionThresholdParameter,
@@ -168,7 +172,9 @@ export default class OrchestratorTest extends Command {
         } catch (error) {
         }
         await Orchestrator.assessAsync(
-          inputPathConfiguration, predictionPathConfiguration, outputPathConfiguration,
+          inputPathConfiguration,
+          predictionPathConfiguration,
+          outputPathConfiguration,
           obfuscate);
       } else {
         try {
@@ -176,7 +182,10 @@ export default class OrchestratorTest extends Command {
         } catch (error) {
         }
         await Orchestrator.evaluateAsync(
-          inputPathConfiguration, outputPathConfiguration, baseModelPath,
+          inputPathConfiguration,
+          outputPathConfiguration,
+          baseModelPath,
+          entityBaseModelPath,
           ambiguousClosenessThresholdParameter,
           lowConfidenceScoreThresholdParameter,
           multiLabelPredictionThresholdParameter,

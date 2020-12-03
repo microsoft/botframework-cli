@@ -58,9 +58,9 @@ export default class OrchestratorBuild extends Command {
       OrchestratorSettings.init(cwd, flags.model, flags.entityModel, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
         OrchestratorSettings.ModelPath,
-        OrchestratorSettings.EntityModelPath,
         OrchestratorHelper.getLuInputs(input),
         isDialog,
+        OrchestratorSettings.EntityModelPath,
         luConfig,
         fullEmbeddings);
       OrchestratorHelper.writeBuildOutputFiles(output, retPayload);

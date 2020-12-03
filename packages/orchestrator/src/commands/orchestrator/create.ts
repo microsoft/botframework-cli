@@ -49,9 +49,9 @@ export default class OrchestratorCreate extends Command {
       OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, cwd);
       await Orchestrator.createAsync(
         OrchestratorSettings.ModelPath,
-        OrchestratorSettings.EntityModelPath,
         input,
         OrchestratorSettings.SnapshotPath,
+        OrchestratorSettings.EntityModelPath,
         flags.hierarchical,
         fullEmbeddings);
       OrchestratorSettings.persist();

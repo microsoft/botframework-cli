@@ -142,6 +142,7 @@ export class LabelResolver {
     return labelResolver.setRuntimeParams(config, resetAll);
   }
 
+  // eslint-disable-next-line complexity
   public static addExamples(
     utteranceIntentEntityLabels: {
       utteranceLabelsMap: Map<string, Set<string>>;
@@ -167,9 +168,9 @@ export class LabelResolver {
         Utility.debuggingLog(`processing utterance=${utterance}`);
       }
       const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
-      // if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { labels.size: ${labels.size}, text: ${utterance} }`);
-      // }
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { labels.size: ${labels.size}, text: ${utterance} }`);
+      }
       if (labels && (labels.size > 0)) {
         for (const label of labels) {
           try {
@@ -177,9 +178,9 @@ export class LabelResolver {
             // eslint-disable-next-line max-depth
             if (success) {
               // eslint-disable-next-line max-depth
-              // if (Utility.toPrintDetailedDebuggingLogToConsole) {
-              Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { label: ${label}, text: ${utterance} }`);
-              // }
+              if (Utility.toPrintDetailedDebuggingLogToConsole) {
+                Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { label: ${label}, text: ${utterance} }`);
+              }
             } else {
               Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }`);
             }
@@ -201,9 +202,9 @@ export class LabelResolver {
         Utility.debuggingLog(`processing utterance=${utterance}`);
       }
       const labels: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];
-      // if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { labels.length: ${labels.length}, text: ${utterance} }`);
-      // }
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { labels.length: ${labels.length}, text: ${utterance} }`);
+      }
       if (labels && (labels.length > 0)) {
         for (const label of labels) {
           const entity: string = label.name;
@@ -221,9 +222,9 @@ export class LabelResolver {
             // eslint-disable-next-line max-depth
             if (success) {
               // eslint-disable-next-line max-depth
-              // if (Utility.toPrintDetailedDebuggingLogToConsole) {
-              Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
-              // }
+              if (Utility.toPrintDetailedDebuggingLogToConsole) {
+                Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+              }
             } else {
               Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
             }

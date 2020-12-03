@@ -131,8 +131,9 @@ export class OrchestratorHelper {
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
-    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // ==== NOTE-DISABLE-ENTITY-EXAMPLE ==== when it's done, change let back to const.
+    let utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    let utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
     for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
@@ -155,7 +156,18 @@ export class OrchestratorHelper {
       }
     }
     Utility.processUnknownLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
-    return {utteranceLabelsMap, utteranceLabelDuplicateMap, utteranceEntityLabelsMap, utteranceEntityLabelDuplicateMap};
+    utteranceEntityLabelsMap = new Map<string, Label[]>();
+    utteranceEntityLabelDuplicateMap = new Map<string, Label[]>();
+    return {utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap};
+    /* ==== NOTE-DISABLE-ENTITY-EXAMPLE ====
+    return {utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap};
+      */
   }
 
   /*

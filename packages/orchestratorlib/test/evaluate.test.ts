@@ -22,6 +22,7 @@ describe('Test Suite - the "evaluate" command', () => {
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
     const outputPath: string = './resources/data/Columnar/OrchestratorEvaluate_Email_roberta';
     const baseModelPath: string = '';
+    const entityBaseModelPath: string = '';
     const ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter;
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
@@ -35,6 +36,7 @@ describe('Test Suite - the "evaluate" command', () => {
       inputPath,
       outputPath,
       baseModelPath,
+      entityBaseModelPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,

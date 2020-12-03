@@ -71,6 +71,8 @@ export class OrchestratorPredict {
 
   protected baseModelPath: string = '';
 
+  protected entityBaseModelPath: string = '';
+
   protected cliCmmandId: string = '';
 
   protected trackEventFunction: any;
@@ -169,7 +171,10 @@ export class OrchestratorPredict {
   /* eslint-disable max-params */
   /* eslint-disable complexity */
   constructor(
-    baseModelPath: string, inputPath: string, outputPath: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPath: string,
+    outputPath: string,
     cliCmmandId: string,
     trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number,
@@ -188,6 +193,9 @@ export class OrchestratorPredict {
     // if (Utility.isEmptyString(baseModelPath)) {
     //   Utility.debuggingThrow('The baseModelPath argument is empty');
     // }
+    // if (Utility.isEmptyString(entityBaseModelPath)) {
+    //   Utility.debuggingThrow('The entityBaseModelPath argument is empty');
+    // }
     if (inputPath) {
       inputPath = path.resolve(inputPath);
     } else {
@@ -201,9 +209,18 @@ export class OrchestratorPredict {
     } else {
       baseModelPath = '';
     }
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
+      if (!Utility.exists(entityBaseModelPath)) {
+        Utility.debuggingThrow(`The input entity model file path "${entityBaseModelPath}" does not exist!`);
+      }
+    } else {
+      entityBaseModelPath = '';
+    }
     Utility.debuggingLog(`inputPath=${inputPath}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
+    Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
     Utility.debuggingLog(`lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
     Utility.debuggingLog(`multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
@@ -213,6 +230,7 @@ export class OrchestratorPredict {
     this.inputPath = inputPath;
     this.outputPath = outputPath;
     this.baseModelPath = baseModelPath;
+    this.entityBaseModelPath = entityBaseModelPath;
     this.cliCmmandId = cliCmmandId;
     this.trackEventFunction = trackEventFunction;
     this.ambiguousClosenessThreshold = ambiguousClosenessThresholdParameter;
@@ -266,7 +284,7 @@ export class OrchestratorPredict {
     if (Utility.exists(this.snapshotFile)) {
       // ---- NOTE ---- create a LabelResolver object.
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
-      await LabelResolver.createAsync(this.baseModelPath,);
+      await LabelResolver.createAsync(this.baseModelPath, this.entityBaseModelPath);
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.createAsync()');
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
@@ -281,7 +299,7 @@ export class OrchestratorPredict {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.addSnapshot()');
     } else {
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call LabelResolver.createAsync()');
-      await LabelResolver.createAsync(this.baseModelPath);
+      await LabelResolver.createAsync(this.baseModelPath, this.entityBaseModelPath);
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), after calling LabelResolver.createAsync()');
       Utility.debuggingLog('OrchestratorPredict.buildLabelResolver(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(this.fullEmbeddings);
@@ -291,7 +309,10 @@ export class OrchestratorPredict {
   }
 
   public static async runAsync(
-    baseModelPath: string, inputPath: string, outputPath: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPath: string,
+    outputPath: string,
     cliCmmandId: string,
     trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number,
@@ -302,6 +323,7 @@ export class OrchestratorPredict {
     obfuscateEvaluationReport: boolean = false): Promise<number> {
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
       baseModelPath,
+      entityBaseModelPath,
       inputPath,
       outputPath,
       cliCmmandId,

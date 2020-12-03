@@ -1,6 +1,6 @@
 dependencies:
-  '@microsoft/bf-cli-command': 4.12.0-dev.20201201.1253a5b
-  '@microsoft/bf-lu': 4.12.0-dev.20201201.1253a5b
+  '@microsoft/bf-cli-command': 4.12.0-dev.20201203.954f006
+  '@microsoft/bf-lu': 4.12.0-dev.20201203.954f006
   '@oclif/dev-cli': 1.25.1
   '@oclif/errors': 1.2.2
   '@oclif/test': 1.2.8
@@ -24,7 +24,7 @@ dependencies:
   nock: 11.9.1
   node-fetch: 2.6.1
   nyc: 14.1.1
-  orchestrator-core: 4.11.2-dev.20201201.e147bc7
+  orchestrator-core: 4.11.1-beta.5
   read-text-file: 1.1.0
   readline-sync: 1.4.10
   sinon: 9.2.1
@@ -198,7 +198,7 @@ packages:
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-T/y7WqPsm4n3zhT08EpB5sfdm2Kvw3gurAxr2Lr5dQeLi8ZsMlNT/Jby+ZmuuAAd1PnXYzKp+2SXgIkQIIMCUg==
-  /@microsoft/bf-cli-command/4.12.0-dev.20201201.1253a5b:
+  /@microsoft/bf-cli-command/4.12.0-dev.20201203.954f006:
     dependencies:
       '@oclif/command': 1.5.20
       '@oclif/config': 1.13.3
@@ -213,8 +213,8 @@ packages:
     engines:
       node: '>=6.0.0'
     resolution:
-      integrity: sha512-17qJrbCA3oR+WIEHZejdazuOiPNTQE4bLoBwRwysytXHTfDNZrQBZS+1FJxt6TRHyUXy1SJezh7K06/fZR8vXg==
-  /@microsoft/bf-lu/4.12.0-dev.20201201.1253a5b:
+      integrity: sha512-HgpOALA2VCunUIE6lbG4jA34gL3HmIeIpmO1yVxdWBYbT6V7R6dRCar3HqOzczRNunkSGFPJWA2Z8C9g7WACAQ==
+  /@microsoft/bf-lu/4.12.0-dev.20201203.954f006:
     dependencies:
       '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
       '@azure/ms-rest-azure-js': 2.0.1
@@ -236,7 +236,7 @@ packages:
     engines:
       node: '>=8.0.0'
     resolution:
-      integrity: sha512-QNtp+CxEqWbqmqgJHWrKi3ZzqkMWiYbOJAvx2zvTt4BUrl110iIVwNuna6iYPJJcLcE8JknSxvYcRvQuIjEWbg==
+      integrity: sha512-kSfRjU+M5ozGtlrx7r8QLjPMOmNWxDYa7dFidI/I0ZpjE6TJRh1yPfOiX/6n9PNgcX110sSyZHSyeA79t2DM9w==
   /@nodelib/fs.scandir/2.1.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.3
@@ -372,7 +372,7 @@ packages:
       integrity: sha512-yojzeEfmSxjjkAvMRj0KzspXlMjCfBzNRPkWw8ZwOSoNWoJn+OCS/m/S+yfV6BvAM4u2lTzX9Y5rCbrFIgkJLg==
   /@oclif/plugin-help/2.2.3:
     dependencies:
-      '@oclif/command': 1.5.20
+      '@oclif/command': 1.8.0
       chalk: 2.4.2
       indent-string: 4.0.0
       lodash.template: 4.5.0
@@ -3597,7 +3597,7 @@ packages:
       node: '>= 0.8.0'
     resolution:
       integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==
-  /orchestrator-core/4.11.2-dev.20201201.e147bc7:
+  /orchestrator-core/4.11.1-beta.5:
     dependencies:
       bindings: 1.2.1
       node-addon-api: 3.0.2
@@ -3607,7 +3607,7 @@ packages:
     dev: false
     requiresBuild: true
     resolution:
-      integrity: sha512-vSc7VI3Y+3/ix1gJlCESHnIllThwPjXagXwxPb+Ntvi2Rs1CNZEVLSlR6wNSUuorxXEAjPnR4u1ps4ABy+PQjw==
+      integrity: sha512-RnOuINYDD8ynK4Zy4L0YGLOxsCBJZ4mhGYXH4subU/1VM5Yh6lyjV5EmhS0U3gchqtQhOwTUusk7HerVkTSnwg==
   /os-homedir/1.0.2:
     dev: false
     engines:
@@ -5002,7 +5002,7 @@ packages:
       integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==
   /wide-align/1.1.3:
     dependencies:
-      string-width: 2.1.1
+      string-width: 1.0.2
     dev: false
     resolution:
       integrity: sha512-QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==
@@ -5171,7 +5171,7 @@ packages:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
   'file:projects/bf-dispatcher.tgz':
     dependencies:
-      '@microsoft/bf-lu': 4.12.0-dev.20201201.1253a5b
+      '@microsoft/bf-lu': 4.12.0-dev.20201203.954f006
       '@oclif/command': 1.5.20
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.25.1
@@ -5202,8 +5202,8 @@ packages:
     version: 0.0.0
   'file:projects/bf-orchestrator-cli.tgz':
     dependencies:
-      '@microsoft/bf-cli-command': 4.12.0-dev.20201201.1253a5b
-      '@microsoft/bf-lu': 4.12.0-dev.20201201.1253a5b
+      '@microsoft/bf-cli-command': 4.12.0-dev.20201203.954f006
+      '@microsoft/bf-lu': 4.12.0-dev.20201203.954f006
       '@oclif/command': 1.8.0
       '@oclif/config': 1.17.0
       '@oclif/dev-cli': 1.25.1
@@ -5237,7 +5237,7 @@ packages:
     version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
     dependencies:
-      '@microsoft/bf-lu': 4.12.0-dev.20201201.1253a5b
+      '@microsoft/bf-lu': 4.12.0-dev.20201203.954f006
       '@oclif/test': 1.2.8
       '@types/chai': 4.2.14
       '@types/fs-extra': 8.1.1
@@ -5255,7 +5255,7 @@ packages:
       nock: 11.9.1
       node-fetch: 2.6.1
       nyc: 14.1.1
-      orchestrator-core: 4.11.2-dev.20201201.e147bc7
+      orchestrator-core: 4.11.1-beta.5
       read-text-file: 1.1.0
       rimraf: 2.7.1
       sinon: 9.2.1
@@ -5266,13 +5266,13 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-sihPllqYgGlWMfP72E2atskgv8reTT8oT/jDU4Aq7zEgZZMRgCUjqwoFUmp22qjDHPWL36jNJMyFQqWj0e3OJQ==
+      integrity: sha512-f6bjtBGEH6l9GUSk4axp16w+8Ct8iF58geyEfq9gsB7G5plU0zcEoMGcrgVzpwgs0lub/81jJwZB4U4+qi2QsA==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-sampler-cli.tgz':
     dependencies:
-      '@microsoft/bf-cli-command': 4.12.0-dev.20201201.1253a5b
-      '@microsoft/bf-lu': 4.12.0-dev.20201201.1253a5b
+      '@microsoft/bf-cli-command': 4.12.0-dev.20201203.954f006
+      '@microsoft/bf-lu': 4.12.0-dev.20201203.954f006
       '@oclif/command': 1.8.0
       '@oclif/config': 1.17.0
       '@oclif/dev-cli': 1.25.1
@@ -5324,7 +5324,7 @@ specifiers:
   nock: ^11.7.0
   node-fetch: ~2.6.0
   nyc: ^14.1.1
-  orchestrator-core: beta
+  orchestrator-core: 4.11.1-beta.5
   read-text-file: ~1.1.0
   readline-sync: ^1.4.10
   sinon: ^9.0.2

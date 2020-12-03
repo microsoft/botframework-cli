@@ -113,10 +113,10 @@ export default class OrchestratorQuery extends Command {
       Utility.debuggingLog(`OrchestratorQuery.run(): fullEmbeddings=${fullEmbeddings}`);
       await Orchestrator.queryAsync(
         baseModelPath,
-        entityBaseModelPath,
         inputPath,
         query,
         // outputPath,
+        entityBaseModelPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,

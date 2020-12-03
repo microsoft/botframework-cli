@@ -48,6 +48,7 @@ describe('Test Suite - test', () => {
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     await OrchestratorTest.runAsync(
       baseModelPath,
+      '', // ---- entityBaseModelPath
       inputPath,
       testPath,
       outputPath,
@@ -125,6 +126,7 @@ describe('Test Suite - test', () => {
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     await OrchestratorTest.runAsync(
       baseModelPath,
+      '', // ---- entityBaseModelPath
       inputPath,
       testPath,
       outputPath,

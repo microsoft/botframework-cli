@@ -33,7 +33,11 @@ export class OrchestratorTest {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    baseModelPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPathConfiguration: string,
+    testPathConfiguration: string,
+    outputPath: string,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -54,7 +58,19 @@ export class OrchestratorTest {
     if (Utility.isEmptyString(baseModelPath)) {
       Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
-    baseModelPath = path.resolve(baseModelPath);
+    // if (Utility.isEmptyString(entityBaseModelPath)) {
+    //   Utility.debuggingThrow(`The entityBaseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
+    // }
+    if (baseModelPath) {
+      baseModelPath = path.resolve(baseModelPath);
+    } else {
+      baseModelPath = '';
+    }
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
+    } else {
+      entityBaseModelPath = '';
+    }
     const ambiguousClosenessThreshold: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
@@ -63,6 +79,7 @@ export class OrchestratorTest {
     Utility.debuggingLog(`testPath=${testPathConfiguration}`);
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
+    Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`ambiguousClosenessThreshold=${ambiguousClosenessThreshold}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
@@ -84,7 +101,7 @@ export class OrchestratorTest {
     const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call LabelResolver.createAsync()');
-    await LabelResolver.createAsync(baseModelPath);
+    await LabelResolver.createAsync(baseModelPath, entityBaseModelPath);
     Utility.debuggingLog('OrchestratorTest.runAsync(), after calling LabelResolver.createAsync()');
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);

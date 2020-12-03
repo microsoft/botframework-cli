@@ -27,6 +27,7 @@ describe('Test Suite - the "predict" command', () => {
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
     const orchestratorPredict: OrchestratorPredict = new OrchestratorPredict(
       baseModelPath,
+      '', // ---- entityBaseModelPath
       inputPath,
       outputPath,
       'unit-test',

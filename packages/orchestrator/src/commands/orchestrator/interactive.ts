@@ -18,12 +18,7 @@ export default class OrchestratorInteractive extends Command {
     in: flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),
     out: flags.string({char: 'o', description: 'Optional Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: '(required) Directory or hosting Orchestrator config and base model files.'}),
-    // fullEmbeddings: flags.boolean({description: 'Optional flag to run on full embeddings instead of compact embeddings.'}),
-    // obfuscate: flags.boolean({description: 'Obfuscate labels and utterances in evaluation reports or not.'}),
-    // ambiguousClosenessThreshold: flags.string({char: 'a', description: `Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    // lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    // multiLabelPredictionThreshold: flags.string({char: 'n', description: `Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    // unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Unknow label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
+    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -50,6 +45,10 @@ export default class OrchestratorInteractive extends Command {
     let baseModelPath: string = flags.model;
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
+    }
+    let entityBaseModelPath: string = flags.entityModel;
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
     }
 
     try {
@@ -107,6 +106,7 @@ export default class OrchestratorInteractive extends Command {
       Utility.debuggingLog(`OrchestratorInteractive.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): outputPath=${outputPath}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorInteractive.run(): entityBaseModelPath=${entityBaseModelPath}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
@@ -114,9 +114,12 @@ export default class OrchestratorInteractive extends Command {
       Utility.debuggingLog(`OrchestratorInteractive.run(): fullEmbeddings=${fullEmbeddings}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): obfuscate=${obfuscate}`);
       await Orchestrator.predictAsync(
-        baseModelPath, inputPath, outputPath,
+        baseModelPath,
+        inputPath,
+        outputPath,
         this.id as string,
         this.trackEvent,
+        entityBaseModelPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,
