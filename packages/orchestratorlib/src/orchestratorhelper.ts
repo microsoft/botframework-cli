@@ -501,7 +501,7 @@ export class OrchestratorHelper {
     const hasLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
     lines.shift();
     lines.forEach((line: string) => {
-      const items: string[] = line.split('\t');   
+      const items: string[] = line.split('\t');
       if (items.length < 2) {
         return;
       }
