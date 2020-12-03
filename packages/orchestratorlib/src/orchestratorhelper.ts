@@ -492,21 +492,22 @@ export class OrchestratorHelper {
 
   static tryParseQnATsvFile(
     lines: string[],
-    label: string,
+    hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>): boolean {
     if (!OrchestratorHelper.isQnATsvHeader(lines[0])) {
       return false;
     }
+    const hasLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
     lines.shift();
     lines.forEach((line: string) => {
-      const items: string[] = line.split('\t');
+      const items: string[] = line.split('\t');   
       if (items.length < 2) {
         return;
       }
       OrchestratorHelper.addNewLabelUtterance(
         items[0].trim(),
-        label,
+        hasLabel ? hierarchicalLabel : Utility.cleanStringOnSpaceCommas(items[1].trim()),
         '',
         utteranceLabelsMap,
         utteranceLabelDuplicateMap
@@ -527,7 +528,7 @@ export class OrchestratorHelper {
 
   static async parseQnaFile(
     qnaFile: string,
-    label: string,
+    hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     const fileContents: string = OrchestratorHelper.readFile(qnaFile);
@@ -538,7 +539,7 @@ export class OrchestratorHelper {
 
     const newlines: string[] = [];
     lines.forEach((line: string) => {
-      if (line.indexOf('> !# @qna.pair.source =') < 0) {
+      if (line.toLowerCase().indexOf('@qna.pair.source =') < 0) {
         newlines.push(line);
       }
     });
@@ -547,7 +548,7 @@ export class OrchestratorHelper {
     const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
     const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
     if (qnaObject) {
-      OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, label, utteranceLabelsMap, utteranceLabelDuplicateMap);
+      OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
     } else {
       throw new Error(`Failed parsing qna file ${qnaFile}`);
     }
@@ -636,15 +637,17 @@ export class OrchestratorHelper {
 
   static getQnaQuestionsAsUtterances(
     qnaObject: any,
-    label: string,
+    hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
     // Utility.debuggingLog(`OrchestratorHelper.getQnaQuestionsAsUtterances() called, qnaObject=${Utility.jsonStringify(qnaObject)}`);
-    const isNotEmptyLabel: boolean = !Utility.isEmptyString(label);
+    const hasLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
     qnaObject.kb.qnaList.forEach((e: any) => {
-      let answer: string = Utility.cleanStringOnSpaceCommas(e.answer);
-      if (isNotEmptyLabel) {
-        answer = label;
+      let answer: string;
+      if (hasLabel) {
+        answer = hierarchicalLabel;
+      } else {
+        answer = Utility.cleanStringOnSpaceCommas(e.answer);
       }
       const questions: string[] = e.questions;
       questions.forEach((q: string) => {
