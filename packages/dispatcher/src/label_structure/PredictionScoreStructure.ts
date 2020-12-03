@@ -70,7 +70,8 @@ export class PredictionScoreStructure<TL> extends PredictionStructure<TL> {
       } {
         return {
             text: this.text,
-            labelsPredictedEvaluation: this.labelsPredictedEvaluation,
+            labelsPredictedEvaluation:
+              this.predictionStructureForSingleEvaluation.labelsPredictedEvaluation,
             // ---- NOTE ---- PredictionType.TruePositive(1):TP
             // ---- NOTE ---- PredictionType.FalsePositive(2):FP
             // ---- NOTE ---- PredictionType.FalseNegative(4):FN

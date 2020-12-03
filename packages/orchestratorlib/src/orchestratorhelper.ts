@@ -1032,7 +1032,7 @@ export class OrchestratorHelper {
       if (buildOutput.recognizer !== undefined) {
         const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
         this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
-        Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);  
+        Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);
 
         const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
         this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));

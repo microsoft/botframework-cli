@@ -19,11 +19,7 @@ export default class OrchestratorQuery extends Command {
     query: flags.string({char: 'q', description: '(required) Query string to predict.'}),
     // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: '(required) Path to Orchestrator base model directory.'}),
-    // fullEmbeddings: flags.boolean({description: 'Optional flag to query with full embeddings instead of compact embeddings.'}),
-    // ambiguousClosenessThreshold: flags.string({char: 'a', description: `Optional. Ambiguous threshold, default to ${Utility.DefaultAmbiguousClosenessThresholdParameter}`}),
-    // lowConfidenceScoreThreshold: flags.string({char: 'l', description: `Optional. Low confidence threshold, default to ${Utility.DefaultLowConfidenceScoreThresholdParameter}`}),
-    // multiLabelPredictionThreshold: flags.string({char: 'n', description: `Optional. Plural/multi-label prediction threshold, default to ${Utility.DefaultMultiLabelPredictionThresholdParameter}`}),
-    // unknownLabelPredictionThreshold: flags.string({char: 'u', description: `Optional. Unknown label threshold, default to ${Utility.DefaultUnknownLabelPredictionThresholdParameter}`}),
+    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }
@@ -51,6 +47,10 @@ export default class OrchestratorQuery extends Command {
     let baseModelPath: string = flags.model;
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
+    }
+    let entityBaseModelPath: string = flags.entityModel;
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
     }
 
     try {
@@ -105,13 +105,18 @@ export default class OrchestratorQuery extends Command {
       Utility.debuggingLog(`OrchestratorQuery.run(): query=${query}`);
       // Utility.debuggingLog(`OrchestratorQuery.run(): outputPath=${outputPath}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): baseModelPath=${baseModelPath}`);
+      Utility.debuggingLog(`OrchestratorQuery.run(): entityBaseModelPath=${entityBaseModelPath}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): ambiguousClosenessThresholdParameter=${ambiguousClosenessThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): lowConfidenceScoreThresholdParameter=${lowConfidenceScoreThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): multiLabelPredictionThresholdParameter=${multiLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): unknownLabelPredictionThresholdParameter=${unknownLabelPredictionThresholdParameter}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): fullEmbeddings=${fullEmbeddings}`);
       await Orchestrator.queryAsync(
-        baseModelPath, inputPath, query, // outputPath,
+        baseModelPath,
+        entityBaseModelPath,
+        inputPath,
+        query,
+        // outputPath,
         ambiguousClosenessThresholdParameter,
         lowConfidenceScoreThresholdParameter,
         multiLabelPredictionThresholdParameter,

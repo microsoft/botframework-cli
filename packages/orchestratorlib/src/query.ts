@@ -17,7 +17,11 @@ export class OrchestratorQuery {
   // eslint-disable-next-line complexity
   // eslint-disable-next-line max-params
   public static async runAsync(
-    baseModelPath: string, inputPathConfiguration: string, queryConfiguration: string, // outputPath: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPathConfiguration: string,
+    queryConfiguration: string,
+    // outputPath: string,
     ambiguousClosenessThresholdParameter: number,
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
@@ -38,6 +42,9 @@ export class OrchestratorQuery {
       Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorQuery.runAsync()`);
     }
     baseModelPath = path.resolve(baseModelPath);
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
+    }
     const ambiguousClosenessThreshold: number = ambiguousClosenessThresholdParameter;
     const lowConfidenceScoreThreshold: number = lowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThreshold: number = multiLabelPredictionThresholdParameter;
@@ -46,6 +53,7 @@ export class OrchestratorQuery {
     Utility.debuggingLog(`query=${queryConfiguration}`);
     // Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
+    Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`ambiguousClosenessThreshold=${ambiguousClosenessThreshold}`);
     Utility.debuggingLog(`lowConfidenceScoreThreshold=${lowConfidenceScoreThreshold}`);
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
@@ -59,7 +67,11 @@ export class OrchestratorQuery {
     }
     // ---- NOTE ---- create a LabelResolver object.
     Utility.debuggingLog('OrchestratorQuery.runAsync(), ready to call LabelResolver.createAsync()');
-    await LabelResolver.createAsync(baseModelPath);
+    if (entityBaseModelPath) {
+      await LabelResolver.createAsync(baseModelPath, entityBaseModelPath);
+    } else {
+      await LabelResolver.createAsync(baseModelPath);
+    }
     Utility.debuggingLog('OrchestratorQuery.runAsync(), after calling LabelResolver.createAsync()');
     Utility.debuggingLog('OrchestratorQuery.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
@@ -78,7 +90,9 @@ export class OrchestratorQuery {
     // const snapshotSetLabelSet: Set<string> =
     //   new Set<string>(snapshotSetLabels);
     // -----------------------------------------------------------------------
-    const scoreResults: any = LabelResolver.score(queryConfiguration, LabelType.Intent);
+    const scoreResults: any = (entityBaseModelPath) ?
+      await LabelResolver.score(queryConfiguration, LabelType.All) :
+      await LabelResolver.score(queryConfiguration, LabelType.Intent);
     Utility.writeToConsole(scoreResults);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- THE END

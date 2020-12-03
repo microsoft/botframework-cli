@@ -14,11 +14,16 @@ import {Utility} from '.';
 
 export class Orchestrator {
   // eslint-disable-next-line max-params
-  public static async createAsync(baseModelPath: string, inputPathConfiguration: string, outputPath: string,
+  public static async createAsync(
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPathConfiguration: string,
+    outputPath: string,
     hierarchical: boolean = false,
     fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorCreate.runAsync(
       baseModelPath,
+      entityBaseModelPath,
       inputPathConfiguration,
       outputPath,
       hierarchical,
@@ -28,16 +33,25 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async buildAsync(
     baseModelPath: string,
+    entityBaseModelPath: string,
     inputs: any[],
     isDialog: boolean,
     luConfig: any = null,
     fullEmbedding: boolean = false): Promise<any> {
-    return OrchestratorBuild.runAsync(baseModelPath, inputs, isDialog, luConfig, fullEmbedding);
+    return OrchestratorBuild.runAsync(
+      baseModelPath,
+      entityBaseModelPath,
+      inputs,
+      isDialog,
+      luConfig,
+      fullEmbedding);
   }
 
   // eslint-disable-next-line max-params
   public static async evaluateAsync(
-    inputPath: string, outputPath: string, baseModelPath: string = '',
+    inputPath: string,
+    outputPath: string,
+    baseModelPath: string = '',
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
@@ -45,7 +59,9 @@ export class Orchestrator {
     fullEmbedding: boolean = false,
     obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorEvaluate.runAsync(
-      inputPath, outputPath, baseModelPath,
+      inputPath,
+      outputPath,
+      baseModelPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
@@ -77,7 +93,9 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async predictAsync(
-    baseModelPath: string, inputPath: string, outputPath: string,
+    baseModelPath: string,
+    inputPath: string,
+    outputPath: string,
     cliCmmandId: string,
     trackEventFunction: any,
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
@@ -87,7 +105,9 @@ export class Orchestrator {
     fullEmbedding: boolean = false,
     obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorPredict.runAsync(
-      baseModelPath, inputPath, outputPath,
+      baseModelPath,
+      inputPath,
+      outputPath,
       cliCmmandId,
       trackEventFunction,
       ambiguousClosenessThresholdParameter,
@@ -100,7 +120,10 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async testAsync(
-    baseModelPath: string, inputPathConfiguration: string, testPathConfiguration: string, outputPath: string,
+    baseModelPath: string,
+    inputPathConfiguration: string,
+    testPathConfiguration: string,
+    outputPath: string,
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
@@ -108,7 +131,10 @@ export class Orchestrator {
     fullEmbedding: boolean = false,
     obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorTest.runAsync(
-      baseModelPath, inputPathConfiguration, testPathConfiguration, outputPath,
+      baseModelPath,
+      inputPathConfiguration,
+      testPathConfiguration,
+      outputPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
@@ -119,14 +145,21 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async queryAsync(
-    baseModelPath: string, inputPathConfiguration: string, queryConfiguration: string, // outputPath: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    inputPathConfiguration: string,
+    queryConfiguration: string,
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
     fullEmbedding: boolean = false): Promise<void> {
     await OrchestratorQuery.runAsync(
-      baseModelPath, inputPathConfiguration, queryConfiguration, // outputPath,
+      baseModelPath,
+      entityBaseModelPath,
+      inputPathConfiguration,
+      queryConfiguration,
+      // outputPath,
       ambiguousClosenessThresholdParameter,
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
@@ -136,10 +169,14 @@ export class Orchestrator {
 
   // eslint-disable-next-line max-params
   public static async assessAsync(
-    inputPathConfiguration: string, predictionPathConfiguration: string, outputPath: string,
+    inputPathConfiguration: string,
+    predictionPathConfiguration: string,
+    outputPath: string,
     obfuscateEvaluationReport: boolean = false): Promise<void> {
     await OrchestratorAssess.runAsync(
-      inputPathConfiguration, predictionPathConfiguration, outputPath,
+      inputPathConfiguration,
+      predictionPathConfiguration,
+      outputPath,
       obfuscateEvaluationReport);
   }
 }

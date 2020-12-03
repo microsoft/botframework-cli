@@ -17,25 +17,38 @@ export class LabelResolver {
 
   public static LabelResolver: any;
 
-  public static async loadNlrAsync(baseModelPath: string) {
-    Utility.debuggingLog('LabelResolver.loadNlrAsync(): creating Orchestrator..');
+  public static async loadNlrAsync(baseModelPath: string, entityBaseModelPath: string = '') {
+    Utility.debuggingLog('LabelResolver.loadNlrAsync(): creating Orchestrator.');
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): baseModelPath=${baseModelPath}`);
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): entityBaseModelPath=${entityBaseModelPath}`);
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
     }
-    // if (baseModelPath.length === 0) {
-    //   throw new Error('Please provide path to Orchestrator model');
-    // }
-    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): baseModelPath=${baseModelPath}`);
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
+    }
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): baseModelPath-resolved=${baseModelPath}`);
+    Utility.debuggingLog(`LabelResolver.loadNlrAsync(): entityBaseModelPath-resolved=${entityBaseModelPath}`);
+    const hasBaseModel: boolean = !Utility.isEmptyString(baseModelPath);
+    const hasEntityBaseModel: boolean = !Utility.isEmptyString(entityBaseModelPath);
     LabelResolver.Orchestrator = new oc.Orchestrator();
-    if (!Utility.isEmptyString(baseModelPath)) {
-      Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading basemodel..');
-      if (await LabelResolver.Orchestrator.loadAsync(baseModelPath) === false) {
-        throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${baseModelPath}")!`);
+    if (hasBaseModel) {
+      if (hasEntityBaseModel) {
+        Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading intent and entity base model');
+        if (await LabelResolver.Orchestrator.loadAsync(baseModelPath, entityBaseModelPath) === false) {
+          throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${baseModelPath}, ${entityBaseModelPath}")!`);
+        }
+      } else {
+        Utility.debuggingLog('LabelResolver.loadNlrAsync(): loading intent base model');
+        if (await LabelResolver.Orchestrator.loadAsync(baseModelPath) === false) {
+          throw new Error(`Failed calling LabelResolver.Orchestrator.loadAsync("${baseModelPath}")!`);
+        }
       }
     } else if (LabelResolver.Orchestrator.load() === false) {
+      Utility.debuggingLog('LabelResolver.loadNlrAsync(): no intent or entity base model');
       throw new Error('Failed calling LabelResolver.Orchestrator.load()!');
     }
-    Utility.debuggingLog('LabelResolver.loadNlrAsync(): leaving..');
+    Utility.debuggingLog('LabelResolver.loadNlrAsync(): leaving.');
     return LabelResolver.Orchestrator;
   }
 
@@ -43,28 +56,33 @@ export class LabelResolver {
     return LabelResolver.Orchestrator.createLabelResolver();
   }
 
-  public static async createAsync(baseModelPath: string) {
-    Utility.debuggingLog(`LabelResolver.createAsync(): baseModelPath=${baseModelPath}`);
-    await LabelResolver.loadNlrAsync(baseModelPath);
-    Utility.debuggingLog('LabelResolver.createAsync(): Creating label resolver...');
+  public static async createAsync(baseModelPath: string, entityBaseModelPath: string = '') {
+    Utility.debuggingLog(`LabelResolver.createAsync(): baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`);
+    const hasEntityBaseModel: boolean = !Utility.isEmptyString(entityBaseModelPath);
+    if (hasEntityBaseModel) {
+      await LabelResolver.loadNlrAsync(baseModelPath, entityBaseModelPath);
+    } else {
+      await LabelResolver.loadNlrAsync(baseModelPath);
+    }
+    Utility.debuggingLog('LabelResolver.createAsync(): Creating label resolver.');
     LabelResolver.LabelResolver = LabelResolver.Orchestrator.createLabelResolver();
-    Utility.debuggingLog('LabelResolver.createAsync(): Finished creating label resolver...');
+    Utility.debuggingLog('LabelResolver.createAsync(): Finished creating label resolver.');
     return LabelResolver.LabelResolver;
   }
 
-  public static async createWithSnapshotAsync(baseModelPath: string, snapshotPath: string) {
-    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): baseModelPath=${baseModelPath}`);
-    await LabelResolver.loadNlrAsync(baseModelPath);
-    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): loading a snapshot...');
+  public static async createWithSnapshotAsync(baseModelPath: string, snapshotPath: string, entityBaseModelPath: string = '') {
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`);
+    await LabelResolver.loadNlrAsync(baseModelPath, entityBaseModelPath);
+    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): loading a snapshot.');
     const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotPath);
     Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
     Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
-    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): creating label resolver...');
+    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): creating label resolver.');
     LabelResolver.LabelResolver = await LabelResolver.Orchestrator.createLabelResolver(snapshot);
     if (!LabelResolver.LabelResolver) {
       throw new Error('FAILED to create a LabelResolver object');
     }
-    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): finished creating label resolver...');
+    Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): finished creating label resolver.');
     return LabelResolver.LabelResolver;
   }
 
@@ -141,7 +159,7 @@ export class LabelResolver {
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
     let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
-    Utility.debuggingLog('READY to call labelResolver.addExample() on utteranceLabelsMap utterances and labels');
+    Utility.debuggingLog(`READY to call labelResolver.addExample() on utteranceLabelsMap utterances and labels, utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     // ---- Utility.toPrintDetailedDebuggingLogToConsole = true; // ---- NOTE ---- disable after detailed tracing is done.
     // eslint-disable-next-line guard-for-in
     for (const utterance of utteranceLabelsMap.keys()) {
@@ -149,9 +167,9 @@ export class LabelResolver {
         Utility.debuggingLog(`processing utterance=${utterance}`);
       }
       const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
-      if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        Utility.debuggingLog(`processing labels.size=${labels.size}`);
-      }
+      // if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { labels.size: ${labels.size}, text: ${utterance} }`);
+      // }
       if (labels && (labels.size > 0)) {
         for (const label of labels) {
           try {
@@ -159,14 +177,14 @@ export class LabelResolver {
             // eslint-disable-next-line max-depth
             if (success) {
               // eslint-disable-next-line max-depth
-              if (Utility.toPrintDetailedDebuggingLogToConsole) {
-                Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance} }`);
-              }
+              // if (Utility.toPrintDetailedDebuggingLogToConsole) {
+              Utility.debuggingLog(`LabelResolver.addExample()-Intent: Added { label: ${label}, text: ${utterance} }`);
+              // }
             } else {
-              Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }`);
+              Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }`);
             }
           } catch (error) {
-            Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
+            Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
           }
         }
       }
@@ -176,10 +194,16 @@ export class LabelResolver {
       }
     }
     const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
-    Utility.debuggingLog('READY to call labelResolver.addExample() on utteranceEntityLabelsMap utterances and labels');
+    Utility.debuggingLog(`READY to call labelResolver.addExample() on utteranceEntityLabelsMap utterances and labels, utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     // eslint-disable-next-line guard-for-in
-    for (const utterance in utteranceEntityLabelsMap) {
+    for (const utterance of utteranceEntityLabelsMap.keys()) {
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`processing utterance=${utterance}`);
+      }
       const labels: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];
+      // if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { labels.length: ${labels.length}, text: ${utterance} }`);
+      // }
       if (labels && (labels.length > 0)) {
         for (const label of labels) {
           const entity: string = label.name;
@@ -190,21 +214,21 @@ export class LabelResolver {
               text: utterance,
               labels: [{
                 name: entity,
-                label_type: 1,
+                label_type: 2,
                 span: {
                   offset: spanOffset,
                   length: spanLength}}]});
             // eslint-disable-next-line max-depth
             if (success) {
               // eslint-disable-next-line max-depth
-              if (Utility.toPrintDetailedDebuggingLogToConsole) {
-                Utility.debuggingLog(`LabelResolver.addExample(): Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
-              }
+              // if (Utility.toPrintDetailedDebuggingLogToConsole) {
+              Utility.debuggingLog(`LabelResolver.addExample()-Entity: Added { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+              // }
             } else {
-              Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
+              Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
             }
           } catch (error) {
-            Utility.debuggingLog(`LabelResolver.addExample(): Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
+            Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
           }
         }
       }

@@ -5,15 +5,11 @@
 
 import { PredictionType } from "./PredictionType";
 
+import { Utility } from "../utility/Utility";
+
 export class PredictionStructureEssential {
 
     public text: string;
-
-    public labelsPredictedEvaluation: number;
-    // ---- NOTE ---- PredictionType.TruePositive(1):TP
-    // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-    // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-    // ---- NOTE ---- PredictionType.TrueNegative(8):TN
 
     public labelsIndexes: number[];
 
@@ -21,48 +17,56 @@ export class PredictionStructureEssential {
 
     constructor(
         text: string,
-        labelsPredictedEvaluation: number,
-        // ---- NOTE ---- PredictionType.TruePositive(1):TP
-        // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-        // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-        // ---- NOTE ---- PredictionType.TrueNegative(8):TN
         labelsIndexes: number[],
         labelsPredictedIndexes: number[]) {
         this.text = text;
-        this.labelsPredictedEvaluation = labelsPredictedEvaluation;
         this.labelsIndexes = labelsIndexes;
         this.labelsPredictedIndexes = labelsPredictedIndexes;
     }
 
     public toObjectPredictionStructureEssential(): {
         "text": string;
-        "labelsPredictedEvaluation": number;
-        // ---- NOTE ---- PredictionType.TruePositive(1):TP
-        // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-        // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-        // ---- NOTE ---- PredictionType.TrueNegative(8):TN
         "labelsIndexes": number[];
         "labelsPredictedIndexes": number[];
     } {
         return {
             text: this.text,
-            labelsPredictedEvaluation: this.labelsPredictedEvaluation,
-            // ---- NOTE ---- PredictionType.TruePositive(1):TP
-            // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-            // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-            // ---- NOTE ---- PredictionType.TrueNegative(8):TN
             labelsIndexes: this.labelsIndexes,
             labelsPredictedIndexes: this.labelsPredictedIndexes,
         };
     }
 
-    public isCorrectPrediction(): boolean {
-        return (this.labelsPredictedEvaluation === PredictionType.TruePositive) ||
-            (this.labelsPredictedEvaluation === PredictionType.TrueNegative);
+    public getNumberLabelsInIntersectBetweenGroundtruthAndPredicted(): number {
+        if (Utility.isEmptyNumberArray(this.labelsIndexes)) {
+            return 0;
+        }
+        if (Utility.isEmptyNumberArray(this.labelsPredictedIndexes)) {
+            return 0;
+        }
+        let numberLabelsInIntersectBetweenGroundtruthAndPredicted: number = 0;
+        for (const labelIndex of this.labelsIndexes) {
+            for (const labelPredictedIndex of this.labelsPredictedIndexes) {
+                if (labelIndex === labelPredictedIndex) {
+                    numberLabelsInIntersectBetweenGroundtruthAndPredicted++;
+                    break;
+                }
+            }
+        }
+        return numberLabelsInIntersectBetweenGroundtruthAndPredicted;
     }
 
-    public isMisclassified(): boolean {
-        return (this.labelsPredictedEvaluation === PredictionType.FalsePositive) ||
-            (this.labelsPredictedEvaluation === PredictionType.FalseNegative);
+    public getVennDiagramNumbersOfLabelsBetweenGroundtruthAndPredicted(): number[] {
+        const numberLabelsInIntersectBetweenGroundtruthAndPredicted: number =
+            this.getNumberLabelsInIntersectBetweenGroundtruthAndPredicted();
+        const numberLabelsInGroundtruth: number =
+            Utility.isEmptyNumberArray(this.labelsIndexes) ? 0 : this.labelsIndexes.length;
+        const numberLabelsInPredicted: number =
+            Utility.isEmptyNumberArray(this.labelsPredictedIndexes) ? 0 : this.labelsPredictedIndexes.length;
+        return [
+            numberLabelsInIntersectBetweenGroundtruthAndPredicted,
+            numberLabelsInGroundtruth - numberLabelsInIntersectBetweenGroundtruthAndPredicted,
+            numberLabelsInPredicted - numberLabelsInIntersectBetweenGroundtruthAndPredicted,
+            numberLabelsInGroundtruth + numberLabelsInPredicted - numberLabelsInIntersectBetweenGroundtruthAndPredicted,
+        ];
     }
 }

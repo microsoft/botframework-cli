@@ -14,21 +14,21 @@ export enum PredictionType {
     FalsePositive = 2,
     FalseNegative = 4,
     TrueNegative = 8,
-    TypeIError = 2,
-    TypeIIError = 4,
-    Positive = 5,
-    Negative = 10,
-    PredictedPositive = 3,
-    PredictedNegative = 12,
-    MaskPositive = 5,
-    MaskNegative = 10,
-    MaskPredictedPositive = 3,
-    MaskPredictedNegative = 12,
-    MaskCorrect = 9,
-    MaskNotCorrect = 6,
-    MaskInGroundTruth = 9,
-    MaskNotInGroundTruth = 6,
-    MaskCouldBeyondGroundTruth = 11,
+    TypeIError = 2, // ---- FP
+    TypeIIError = 4, // ---- FN
+    Positive = 5, // ---- TP & FN
+    Negative = 10, // ---- FP & TN
+    PredictedPositive = 3, // TP & FP
+    PredictedNegative = 12, // FN & TN
+    MaskPositive = 5, // ---- TP & FN
+    MaskNegative = 10, // ---- FP & TN
+    MaskPredictedPositive = 3, // TP & FP
+    MaskPredictedNegative = 12, // FN & TN
+    MaskCorrect = 9, // ---- TP & TN
+    MaskNotCorrect = 6, // ---- FP & FN
+    MaskInGroundTruth = 9, // ---- TP & TN
+    MaskNotInGroundTruth = 6, // ---- FP & FN
+    MaskCouldBeyondGroundTruth = 11, // ---- TP & FN & TN
 }
 
 export enum PredictionTypeArrayOutputIndex {

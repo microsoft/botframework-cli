@@ -20,11 +20,13 @@ export class OrchestratorBuild {
   // eslint-disable-next-line max-params
   public static async runAsync(
     baseModelPath: string,
+    entityBaseModelPath: string,
     inputs: any[],
     isDialog: boolean = false,
     luConfig: any = null,
     fullEmbeddings: boolean = false): Promise<any> {
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
+    Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`inputPath=${JSON.stringify(inputs, null, 2)}`);
     Utility.debuggingLog(`isDialog=${isDialog}`);
     Utility.debuggingLog(`luConfigFile=${JSON.stringify(luConfig, null, 2)}`);

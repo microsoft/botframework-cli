@@ -19,7 +19,7 @@ import {Utility} from "../../src/utility/Utility";
 import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - scorestructure", () => {
-  it("Test.0000 PredictionScoreLabelStringStructure - constructor()", function () {
+  it("Test.0000 PredictionScoreLabelStringStructure - constructor()", function() {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance: string = "utterance";
@@ -79,4 +79,3 @@ describe("Test Suite - scorestructure", () => {
     assert.ok(scorestructureObject.text === "utterance");
   });
 });
-

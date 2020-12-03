@@ -13,6 +13,8 @@ const ReadText: any = require('read-text-file');
 export class OrchestratorSettings {
   public static ModelPath: string;
 
+  public static EntityModelPath: string;
+
   public static SnapshotPath: string;
 
   public static SettingsPath: string;
@@ -34,12 +36,14 @@ export class OrchestratorSettings {
     }
   }
 
-  public static init(settingsDir: string, baseModelPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
+  // eslint-disable-next-line max-params
+  public static init(settingsDir: string, baseModelPath: string, entityBaseModelPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
     const settingsFile: string = path.join(settingsDir, 'orchestrator.json');
     OrchestratorSettings.SettingsPath = settingsFile;
     const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile);
     let settings: any;
     OrchestratorSettings.ModelPath = '';
+    OrchestratorSettings.EntityModelPath = '';
     OrchestratorSettings.SnapshotPath = '';
 
     if (settingsFileExists) {
@@ -57,6 +61,17 @@ export class OrchestratorSettings {
       throw new Error('Missing model path');
     } else {
       baseModelPath = settings.modelPath;
+    }
+
+    if (entityBaseModelPath) {
+      entityBaseModelPath = path.resolve(entityBaseModelPath);
+
+      if (!OrchestratorHelper.exists(entityBaseModelPath)) {
+        Utility.debuggingLog(`Invalid entity model path ${entityBaseModelPath}`);
+        throw new Error('Invalid entity model path');
+      }
+    } else {
+      entityBaseModelPath = settings.entityModelPath;
     }
 
     if (snapshotPath) {
@@ -79,6 +94,9 @@ export class OrchestratorSettings {
     }
 
     OrchestratorSettings.ModelPath = baseModelPath;
+    if (entityBaseModelPath) {
+      OrchestratorSettings.EntityModelPath = entityBaseModelPath;
+    }
     OrchestratorSettings.SnapshotPath = snapshotPath;
   }
 
@@ -87,7 +105,11 @@ export class OrchestratorSettings {
       throw new CLIError('settings not initialized.');
     }
     try {
-      const settings: any = {
+      const settings: any = (OrchestratorSettings.EntityModelPath) ? {
+        modelPath: OrchestratorSettings.ModelPath,
+        entityModelPath: OrchestratorSettings.EntityModelPath,
+        snapshotPath: OrchestratorSettings.SnapshotPath,
+      } : {
         modelPath: OrchestratorSettings.ModelPath,
         snapshotPath: OrchestratorSettings.SnapshotPath,
       };

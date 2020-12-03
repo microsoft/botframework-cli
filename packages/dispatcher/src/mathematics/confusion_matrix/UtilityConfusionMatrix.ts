@@ -4,8 +4,8 @@
  */
 
 import { Label } from "../../label_structure/Label";
-import { PredictionLabelObjectStructure } from "../../label_structure/PredictionLabelObjectStructure";
-import { PredictionLabelStringStructure } from "../../label_structure/PredictionLabelStringStructure";
+import { PredictionPluralEvaluationLabelObjectStructure } from "../../label_structure/PredictionPluralEvaluationLabelObjectStructure";
+import { PredictionPluralEvaluationLabelStringStructure } from "../../label_structure/PredictionPluralEvaluationLabelStringStructure";
 
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 import { ConfusionMatrix } from "./ConfusionMatrix";
@@ -207,7 +207,7 @@ export class UtilityConfusionMatrix {
         `;
 
     public static generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
-        predictionStructures: PredictionLabelObjectStructure[],
+        predictionStructures: PredictionPluralEvaluationLabelObjectStructure[],
         labelArrayAndMap: {
             "stringArray": string[];
             "stringMap": Map<string, number>;
@@ -366,7 +366,7 @@ export class UtilityConfusionMatrix {
     }
 
     public static generateAssessmentConfusionMatrixMetricsAndHtmlTable(
-        predictionStructures: PredictionLabelStringStructure[],
+        predictionStructures: PredictionPluralEvaluationLabelStringStructure[],
         labelArrayAndMap: {
             "stringArray": string[];
             "stringMap": Map<string, number>;

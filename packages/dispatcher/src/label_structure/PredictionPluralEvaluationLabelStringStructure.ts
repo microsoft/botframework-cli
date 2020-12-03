@@ -3,17 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import { PredictionTypeArrayOutputIndex } from "./PredictionType";
-import { PredictionStructure } from "./PredictionStructure";
+import { PredictionPluralEvaluationStructure } from "./PredictionPluralEvaluationStructure";
 import { PredictionStructureForDisplay } from "./PredictionStructureForDisplay";
 
-export class PredictionLabelStringStructure
-extends PredictionStructure<string> {
-
-    public labelsPredictedEvaluationArray: number[];
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+export class PredictionPluralEvaluationLabelStringStructure
+extends PredictionPluralEvaluationStructure<string> {
 
     constructor(
         text: string,
@@ -36,6 +30,7 @@ extends PredictionStructure<string> {
         labelsPredictedIndexes: number[]) {
         super(
             text,
+            labelsPredictedEvaluationArray,
             labelsPredictedEvaluation,
             labels,
             labelsConcatenated,
@@ -45,10 +40,9 @@ extends PredictionStructure<string> {
             labelsPredictedConcatenated,
             labelsPredictedConcatenatedToHtmlTable,
             labelsPredictedIndexes);
-        this.labelsPredictedEvaluationArray = labelsPredictedEvaluationArray;
     }
 
-    public toObjectPredictionLabelStringStructure(): {
+    public toObjectPredictionPluralEvaluationLabelStringStructure(): {
         "text": string;
         "labelsPredictedEvaluationArray": number[];
         // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
@@ -69,12 +63,12 @@ extends PredictionStructure<string> {
             text:
                 this.text,
             labelsPredictedEvaluationArray:
-                this.labelsPredictedEvaluationArray,
+                this.predictionStructureForPluralEvaluation.labelsPredictedEvaluationArray,
             // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
             // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
             // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
             labelsPredictedEvaluation:
-                this.labelsPredictedEvaluation,
+                this.predictionStructureForSingleEvaluation.labelsPredictedEvaluation,
             // ---- NOTE ---- PredictionType.TruePositive(1):TP
             // ---- NOTE ---- PredictionType.FalsePositive(2):FP
             // ---- NOTE ---- PredictionType.FalseNegative(4):FN
@@ -90,10 +84,5 @@ extends PredictionStructure<string> {
             predictionStructureForDisplay:
                 this.predictionStructureForDisplay,
         };
-    }
-
-    public hasMisclassified(): boolean {
-        return (this.labelsPredictedEvaluationArray[PredictionTypeArrayOutputIndex.IndexForFalsePositive] > 0) ||
-          (this.labelsPredictedEvaluationArray[PredictionTypeArrayOutputIndex.IndexForFalseNegative] > 0);
     }
 }

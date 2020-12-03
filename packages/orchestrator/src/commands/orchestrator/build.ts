@@ -14,11 +14,10 @@ export default class OrchestratorBuild extends Command {
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to lu file or folder with lu files.'}),
     model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
+    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
     out: flags.string({char: 'o', description: 'Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.'}),
-    // force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     luconfig: flags.string({description: 'Path to luconfig.json.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
-    // fullEmbeddings: flags.boolean({description: 'Optional flag to build on full embeddings instead of compact embeddings.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
@@ -56,9 +55,10 @@ export default class OrchestratorBuild extends Command {
         fullEmbeddings = true;
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
-      OrchestratorSettings.init(cwd, flags.model, output, cwd);
+      OrchestratorSettings.init(cwd, flags.model, flags.entityModel, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
         OrchestratorSettings.ModelPath,
+        OrchestratorSettings.EntityModelPath,
         OrchestratorHelper.getLuInputs(input),
         isDialog,
         luConfig,

@@ -3,53 +3,52 @@
  * Licensed under the MIT License.
  */
 
-// import { PredictionType } from "./PredictionType";
-import { PredictionStructureEssential } from "./PredictionStructureEssential";
-import { PredictionStructureForSingleEvaluation } from "./PredictionStructureForSingleEvaluation";
+import { Label } from "./Label";
+import { PredictionPluralEvaluationStructure } from "./PredictionPluralEvaluationStructure";
 import { PredictionStructureForDisplay } from "./PredictionStructureForDisplay";
 
-export class PredictionStructure<TL> extends PredictionStructureEssential {
-
-    public predictionStructureForSingleEvaluation: PredictionStructureForSingleEvaluation;
-
-    public predictionStructureForDisplay: PredictionStructureForDisplay;
-
-    public labels: TL[];
-
-    public labelsPredicted: TL[];
+export class PredictionPluralEvaluationLabelObjectStructure
+extends PredictionPluralEvaluationStructure<Label> {
 
     constructor(
         text: string,
+        labelsPredictedEvaluationArray: number[],
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
         labelsPredictedEvaluation: number,
         // ---- NOTE ---- PredictionType.TruePositive(1):TP
         // ---- NOTE ---- PredictionType.FalsePositive(2):FP
         // ---- NOTE ---- PredictionType.FalseNegative(4):FN
         // ---- NOTE ---- PredictionType.TrueNegative(8):TN
-        labels: TL[],
+        labels: Label[],
         labelsConcatenated: string,
         labelsConcatenatedToHtmlTable: string,
         labelsIndexes: number[],
-        labelsPredicted: TL[],
+        labelsPredicted: Label[],
         labelsPredictedConcatenated: string,
         labelsPredictedConcatenatedToHtmlTable: string,
         labelsPredictedIndexes: number[]) {
         super(
             text,
-            labelsIndexes,
-            labelsPredictedIndexes);
-        this.predictionStructureForSingleEvaluation = new PredictionStructureForSingleEvaluation(
-            labelsPredictedEvaluation);
-        this.predictionStructureForDisplay = new PredictionStructureForDisplay(
+            labelsPredictedEvaluationArray,
+            labelsPredictedEvaluation,
+            labels,
             labelsConcatenated,
             labelsConcatenatedToHtmlTable,
+            labelsIndexes,
+            labelsPredicted,
             labelsPredictedConcatenated,
-            labelsPredictedConcatenatedToHtmlTable);
-        this.labels = labels;
-        this.labelsPredicted = labelsPredicted;
+            labelsPredictedConcatenatedToHtmlTable,
+            labelsPredictedIndexes);
     }
 
-    public toObjectPredictionStructure(): {
+    public toObjectPredictionPluralEvaluationLabelObjectStructure(): {
         "text": string;
+        "labelsPredictedEvaluationArray": number[];
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
         "labelsPredictedEvaluation": number;
         // ---- NOTE ---- PredictionType.TruePositive(1):TP
         // ---- NOTE ---- PredictionType.FalsePositive(2):FP
@@ -57,13 +56,18 @@ export class PredictionStructure<TL> extends PredictionStructureEssential {
         // ---- NOTE ---- PredictionType.TrueNegative(8):TN
         "labelsIndexes": number[];
         "labelsPredictedIndexes": number[];
-        "labels": TL[];
-        "labelsPredicted": TL[];
+        "labels": Label[];
+        "labelsPredicted": Label[];
         "predictionStructureForDisplay": PredictionStructureForDisplay;
         } {
-        return {
+          return {
             text:
                 this.text,
+            labelsPredictedEvaluationArray:
+                this.predictionStructureForPluralEvaluation.labelsPredictedEvaluationArray,
+            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
             labelsPredictedEvaluation:
                 this.predictionStructureForSingleEvaluation.labelsPredictedEvaluation,
             // ---- NOTE ---- PredictionType.TruePositive(1):TP
@@ -81,13 +85,5 @@ export class PredictionStructure<TL> extends PredictionStructureEssential {
             predictionStructureForDisplay:
                 this.predictionStructureForDisplay,
         };
-    }
-
-    public isCorrectPrediction(): boolean {
-        return this.predictionStructureForSingleEvaluation.isCorrectPrediction();
-    }
-
-    public isMisclassified(): boolean {
-        return this.predictionStructureForSingleEvaluation.isMisclassified();
     }
 }
