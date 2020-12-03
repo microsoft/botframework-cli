@@ -70,7 +70,7 @@ export class OrchestratorSettings {
         Utility.debuggingLog(`Invalid entity model path ${entityBaseModelPath}`);
         throw new Error('Invalid entity model path');
       }
-    } else {
+    } else if (settingsFileExists && 'entityModelPath' in settings) {
       entityBaseModelPath = settings.entityModelPath;
     }
 
