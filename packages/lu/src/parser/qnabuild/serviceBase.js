@@ -66,7 +66,7 @@ class ServiceBase {
   commonHeaders(subscriptionKey) {
     return {
       'Content-Type': 'application/json',
-      'User-Agent': this.getUserAgent(),
+      'User-Agent': process.env['QNA_USER_AGENT'] || this.getUserAgent(),
       'Ocp-Apim-Subscription-Key': subscriptionKey
     }
   }
