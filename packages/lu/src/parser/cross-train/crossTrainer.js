@@ -424,7 +424,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   }
 
   // construct questions content
-  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q)).filter(i => !patternWithPrebuiltEntity(i))
+  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q)).filter(i => !patternWithPrebuiltEntity(i) && !questionWithBrackets(i))
   let questionsContent = dedupedQuestions.join(NEWLINE)
 
   // cross training comments
@@ -580,4 +580,10 @@ const patternWithPrebuiltEntity = function (utterance) {
   }
 
   return false
+}
+
+const questionWithBrackets = function (question) {
+  let matched = /\([^\)]*\)/g.exec(question)
+
+  return matched !== null
 }
