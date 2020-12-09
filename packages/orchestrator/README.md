@@ -9,8 +9,8 @@ This package is a plugin for @microsoft/botframework-cli.
 Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch). Create and evaluate Orchestrator model used to arbitrate across multiple bot modules such as LUIS models, QnA knowledge bases and others.
 
 ## Prerequisite
-
-- [Node.js](https://nodejs.org/) version 10.14.1 or higher
+- Supported OS: MacOS v10.14/v10.15, Ubuntu 18/20 or Windows 10
+- [Node.js](https://nodejs.org/) version 10 LTS, 12 LTS or 14 LTS
 - @microsoft/botframework-cli
 ```
 $ npm install -g @microsoft/botframework-cli
