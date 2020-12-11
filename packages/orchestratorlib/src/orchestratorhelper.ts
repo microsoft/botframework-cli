@@ -250,65 +250,72 @@ export class OrchestratorHelper {
     hierarchical: boolean): Promise<void> {
     const ext: string = path.extname(filePath);
     const hierarchicalLabel: string = OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical);
-    if (ext === '.lu') {
-      Utility.writeToConsole(`Processing ${filePath}...`);
-      await OrchestratorHelper.parseLuFile(
-        filePath,
-        hierarchicalLabel,
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap,
-        utteranceEntityLabelsMap,
-        utteranceEntityLabelDuplicateMap);
-    } else if (ext === '.qna') {
-      Utility.writeToConsole(`Processing ${filePath}...`);
-      await OrchestratorHelper.parseQnaFile(
-        filePath,
-        hierarchicalLabel,
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap);
-    } else if (ext === '.json') {
-      Utility.writeToConsole(`Processing ${filePath}...\n`);
 
-      try {
-        const rvLuis: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
+    if (ext !== '.lu' &&
+        ext !== '.json' &&
+        ext !== '.qna' &&
+        ext !== '.tsv' &&
+        ext !== '.txt' &&
+        ext !== '.blu') {
+      throw new Error(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
+    }
+
+    Utility.writeToConsole(`Processing ${filePath}...`);    
+    try {
+      switch (ext) {
+      case '.lu':
+        await OrchestratorHelper.parseLuFile(
+          filePath,
+          hierarchicalLabel,
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap,
+          utteranceEntityLabelsMap,
+          utteranceEntityLabelDuplicateMap);
+        break;
+      case '.qna':
+        await OrchestratorHelper.parseQnaFile(
+          filePath,
+          hierarchicalLabel,
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap);
+        break;
+      case '.json':
+        if (OrchestratorHelper.getIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
           OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap);
-        if (rvLuis) {
+          utteranceEntityLabelDuplicateMap)) {
           return;
         }
-        const rvJson: boolean = OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+        if (!OrchestratorHelper.getJsonIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
           OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap);
-        if (!rvJson) {
+          utteranceEntityLabelDuplicateMap)) {
           throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
         }
-      } catch (error) {
-        Utility.debuggingLog(`EXCEPTION calling getLuisIntentsEntitiesUtterances(), error=${error}`);
-        throw error;
+        break;
+      case '.tsv':
+      case '.txt':
+        OrchestratorHelper.parseTsvFile(
+          filePath,
+          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap);
+        break;
+      case '.blu':
+        OrchestratorHelper.parseTsvBluFile(
+          filePath,
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap);
+        break;
       }
-    } else if (ext === '.tsv' || ext === '.txt') {
-      Utility.writeToConsole(`Processing ${filePath}...\n`);
-      OrchestratorHelper.parseTsvFile(
-        filePath,
-        OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap);
-    } else if (ext === '.blu') { // ---- NOTE-TODO-processing-JSON-BLU-files ----
-      Utility.writeToConsole(`Processing ${filePath}...\n`);
-      OrchestratorHelper.parseTsvBluFile(
-        filePath,
-        utteranceLabelsMap,
-        utteranceLabelDuplicateMap);
-    } else {
-      throw new Error(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
+    } catch (error) {
+      throw new Error(`Failed to parse ${filePath}`);
     }
   }
 
