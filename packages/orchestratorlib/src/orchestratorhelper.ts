@@ -256,11 +256,12 @@ export class OrchestratorHelper {
         ext !== '.qna' &&
         ext !== '.tsv' &&
         ext !== '.txt' &&
-        ext !== '.blu') {
-      throw new Error(`${filePath} has invalid extension - lu, qna, json and tsv files are supported.`);
+        ext !== '.blu' &&
+        ext !== '.dispatch') {
+      throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
 
-    Utility.writeToConsole(`Processing ${filePath}...`);    
+    Utility.writeToConsole(`Processing ${filePath}...`);
     try {
       switch (ext) {
       case '.lu':
@@ -313,7 +314,13 @@ export class OrchestratorHelper {
           utteranceLabelsMap,
           utteranceLabelDuplicateMap);
         break;
-      }
+      case '.dispatch':
+        OrchestratorHelper.parseDispatchFile(
+          filePath,
+          utteranceLabelsMap,
+          utteranceLabelDuplicateMap);
+        break;
+      }   
     } catch (error) {
       throw new Error(`Failed to parse ${filePath}`);
     }
@@ -351,6 +358,18 @@ export class OrchestratorHelper {
     }
     lines.shift();
     OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utteranceLabelsMap, utteranceLabelDuplicateMap, true);
+  }
+
+  static parseDispatchFile(
+    dispatchFile: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    utteranceLabelsMap: Map<string, Set<string>>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+    const fileContents: string = OrchestratorHelper.readFile(dispatchFile);
+    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseDispatchFile()');
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const jsonDispatchSettings: any = JSON.parse(fileContents);
   }
 
   // eslint-disable-next-line max-params

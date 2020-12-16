@@ -99,7 +99,7 @@ _See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/bot
 
 ## `bf orchestrator:create`
 
-Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv files, which represent bot modules.
+Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules.
 
 ```
 USAGE

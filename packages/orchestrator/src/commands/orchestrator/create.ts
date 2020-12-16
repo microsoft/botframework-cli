@@ -10,7 +10,7 @@ import {OrchestratorSettings} from '../../utils/settings';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorCreate extends Command {
-  static description: string = 'Creates Orchestrator example file from .lu/.qna files, which represent bot modules';
+  static description: string = 'Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules';
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'The path to source label files from where orchestrator example file will be created from. Default to current working directory.'}),

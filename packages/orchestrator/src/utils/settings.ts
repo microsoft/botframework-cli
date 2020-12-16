@@ -9,6 +9,7 @@ import {OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 const ReadText: any = require('read-text-file');
+const OrchestratorSettingsFileName: string = 'orchestratorsettings.json';
 
 export class OrchestratorSettings {
   public static ModelPath: string;
@@ -38,9 +39,10 @@ export class OrchestratorSettings {
 
   // eslint-disable-next-line max-params
   public static init(settingsDir: string, baseModelPath: string, entityBaseModelPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
-    const settingsFile: string = path.join(settingsDir, 'orchestrator.json');
+    const settingsFile: string = path.join(settingsDir, OrchestratorSettingsFileName);
     OrchestratorSettings.SettingsPath = settingsFile;
-    const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile);
+    const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile) || OrchestratorHelper.exists(path.join(settingsDir, 'orchestrator.json'));
+
     let settings: any;
     OrchestratorSettings.ModelPath = '';
     OrchestratorSettings.EntityModelPath = '';
