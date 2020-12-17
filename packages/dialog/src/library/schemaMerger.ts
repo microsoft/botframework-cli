@@ -1056,8 +1056,10 @@ export class SchemaMerger {
 
     // Expand nuget package and all of its dependencies
     private async expandNuget(packageName: string, minVersion: string): Promise<void> {
+        // Linux/Mac are case sensitive and nuget/dotnet lowercase package names
+        packageName = packageName.toLowerCase()
         let pkgPath = ppath.join(this.nugetRoot, packageName)
-        if (!this.packages.has(pkgPath) && !packageName.startsWith('System')) {
+        if (!this.packages.has(pkgPath) && !packageName.startsWith('system')) {
             try {
                 this.currentFile = pkgPath
                 this.packages.add(pkgPath)

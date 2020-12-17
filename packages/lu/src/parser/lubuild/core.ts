@@ -8,7 +8,9 @@ import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
 import fetch from 'node-fetch'
 
 const delay = require('delay')
+const os = require('os')
 const Luis = require('./../luis/luis')
+const packageJSON = require('./../../../package')
 
 const rateLimitErrorCode = 429
 const absoluteUrlPattern = /^https?:\/\//i
@@ -19,6 +21,7 @@ export class LuBuildCore {
   private readonly endpoint: string
   private readonly retryCount: number
   private readonly retryDuration: number
+  private readonly headers: any
 
   constructor(subscriptionKey: string, endpoint: string, retryCount: number, retryDuration: number) {
     this.subscriptionKey = subscriptionKey
@@ -31,9 +34,23 @@ export class LuBuildCore {
       throw new Error(`Only absolute URLs are supported. "${endpoint}" is not an absolute LUIS endpoint URL.`)
     }
 
+    // set user agent
+    const luisUserAgent = process.env['LUIS_USER_AGENT'] || this.getUserAgent()
+
+    // set headers
+    this.headers = {
+      'Content-Type': 'application/json',
+      'User-Agent': luisUserAgent,
+      'Ocp-Apim-Subscription-Key': this.subscriptionKey,
+    }
+
     // new luis api client
+    const options = {
+      userAgent: luisUserAgent
+    }
+
     const creds = new CognitiveServicesCredentials(subscriptionKey)
-    this.client = new LUISAuthoringClient(creds, endpoint)
+    this.client = new LUISAuthoringClient(creds, endpoint, options)
   }
 
   public async getApplicationList() {
@@ -93,17 +110,13 @@ export class LuBuildCore {
 
     const name = `?appName=${currentApp.name}`
     const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
-    const headers = {
-      'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': this.subscriptionKey
-    }
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
       if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(currentApp)})
+        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify(currentApp)})
         messageData = await response.json()
 
         if (messageData.error === undefined) break
@@ -125,10 +138,6 @@ export class LuBuildCore {
 
   public async exportApplication(appId: string, versionId: string) {
     const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/' + versionId + '/export?format=json'
-    const headers = {
-      'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': this.subscriptionKey
-    }
 
     let messageData
     let retryCount = this.retryCount + 1
@@ -136,7 +145,7 @@ export class LuBuildCore {
     while (retryCount > 0) {
       if (error === undefined || error.statusCode === rateLimitErrorCode) {
         try {
-          const response = await fetch(url, {method: 'GET', headers})
+          const response = await fetch(url, {method: 'GET', headers: this.headers})
           messageData = await response.json()
           break
         } catch (e) {
@@ -215,17 +224,13 @@ export class LuBuildCore {
 
     const versionId = `?versionId=${options.versionId}`
     let url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/import' + versionId
-    const headers = {
-      'Content-Type': 'application/json',
-      'Ocp-Apim-Subscription-Key': this.subscriptionKey
-    }
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
       if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers, body: JSON.stringify(app)})
+        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify(app)})
         messageData = await response.json()
 
         if (messageData.error === undefined) break
@@ -427,5 +432,13 @@ export class LuBuildCore {
 
       return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
     })
+  }
+
+  private getUserAgent() {
+    const packageUserAgent = `${packageJSON.name}/${packageJSON.version}`
+    const platformUserAgent = `(${os.arch()}-${os.type()}-${os.release()}; Node.js,Version=${process.version})`
+    const userAgent = `${packageUserAgent} ${platformUserAgent}`
+
+    return userAgent
   }
 }

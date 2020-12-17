@@ -209,9 +209,9 @@
       "outFiles": ["./packages/dialog/lib/**"],
       "args": [
         "dialog:merge",
-        "runbot.csproj",
+        "RunBot.csproj",
         "-o",
-        "runbot.schema",
+        "RunBot.schema",
         "--verbose"
       ],
       "internalConsoleOptions": "openOnSessionStart",
