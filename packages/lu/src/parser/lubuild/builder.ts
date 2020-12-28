@@ -43,7 +43,7 @@ export class Builder {
       let fileCulture: string
       let fileName: string
 
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      let cultureFromPath = fileHelper.getLuisCultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))

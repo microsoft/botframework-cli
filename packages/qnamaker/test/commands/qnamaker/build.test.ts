@@ -923,3 +923,27 @@ describe('qnamaker:build throw qnamaker build failed exception successfully', ()
       expect(ctx.stderr).to.contain('Qnamaker build failed: Access denied due to invalid subscription key.')
     })
 })
+
+describe('qnamaker:build throw locale(language) not supported exception successfully', () => {
+  before(function () {
+    nock('https://westus.api.cognitive.microsoft.com')
+      .get(uri => uri.includes('qnamaker'))
+      .reply(200, {
+        knowledgebases:
+          [{
+            name: 'test(development).en-us.qna',
+            id: 'f8c64e2a-1111-3a09-8f78-39d7adc76ec5',
+            hostName: 'https://myqnamakerbot.azurewebsites.net'
+          }]
+      })
+  })
+
+  test
+    .stdout()
+    .stderr()
+    .command(['qnamaker:build', '--in', './test/fixtures/testcases/qnabuild/locale/unsupported-locale.ab-ab.qna', '--subscriptionKey', uuidv1(), '--botName', 'test', '--log', '--suffix', 'development', '--defaultCulture', 'ab-ab'])
+    .exit(1)
+    .it('should throw locale not supported exception successfully', ctx => {
+      expect(ctx.stderr).to.contain('Qnamaker build failed: ab-ab is not supported in current qnamaker service.')
+    })
+})

@@ -39,7 +39,7 @@ export class Builder {
     for (const file of files) {
       let fileCulture: string
       let fileName: string
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      let cultureFromPath = fileHelper.getQnACultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))
@@ -47,6 +47,10 @@ export class Builder {
       } else {
         fileCulture = culture
         fileName = path.basename(file, path.extname(file))
+      }
+
+      if (!fileCulture) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Culture is not set or unsupported by qnamaker service.'))
       }
 
       let fileContent = ''
