@@ -21,13 +21,13 @@ describe('orchestrator:create', () => {
   .command(['orchestrator:create', '--help'])
   .exit(1)
   .it('should print the help contents when --help is passed as an argument', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Creates Orchestrator example file from .lu/.qna files, which represent bot modules');
+    expect(ctx.stdout).to.contain('Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules');
   });
   test
   .stdout()
   .command(['orchestrator:create'])
   .exit(1)
   .it('should print the help contents when there is no argument', (ctx: any) => {
-    expect(ctx.stdout).to.contain('Creates Orchestrator example file from .lu/.qna files, which represent bot modules');
+    expect(ctx.stdout).to.contain('Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules');
   });
 });
