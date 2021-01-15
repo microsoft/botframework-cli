@@ -240,7 +240,85 @@ describe('Model as feature definitions', function () {
                 })
                 .catch(err => done(err))
         });
-        
+
+        it('phraseList can be added as a feature to an intent of same name', function(done) {
+            let luFile = `
+                # test
+                - one
+
+                @ intent test usesFeature test
+
+                @ phraselist test(interchangeable) =
+                    - one, two
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.intents.length, 1);
+                    assert.equal(res.LUISJsonStructure.intents[0].name, 'test');
+                    assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].featureName, 'test');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('phraseList can be added as a feature to an intent preferentially when there are both ml entity and phraseList of same name', function(done) {
+            let luFile = `
+                # test
+                - one
+
+                @ intent test usesFeatures abc
+
+                @ ml abc usesFeature abc
+
+                @ phraselist abc(interchangeable) =
+                    - a, b
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.intents.length, 1);
+                    assert.equal(res.LUISJsonStructure.intents[0].name, 'test');
+                    assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].featureName, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'abc');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('both phraseList and ml entity of same name can be added as a feature to an intent when using two same features', function(done) {
+            let luFile = `
+                # test
+                - one
+
+                @ intent test usesFeatures abc, abc
+
+                @ ml abc usesFeature abc
+
+                @ phraselist abc(interchangeable) =
+                    - a, b
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.intents.length, 1);
+                    assert.equal(res.LUISJsonStructure.intents[0].name, 'test');
+                    assert.equal(res.LUISJsonStructure.intents[0].features.length, 2);
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].featureName, 'abc');
+                    assert.equal(res.LUISJsonStructure.intents[0].features[1].modelName, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'abc');
+                    done();
+                })
+                .catch(err => done(err))
+        });
     });
 
     describe('Entity as feature to entity', function() {
@@ -335,6 +413,74 @@ describe('Model as feature definitions', function () {
                     assert.equal(res.LUISJsonStructure.entities[0].name, 'abc');
                     assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
                     assert.equal(res.LUISJsonStructure.entities[0].features[0].modelName, 'number');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('phraseList can be added as a feature to an entity of same name', function(done) {
+            let luFile = `
+                @ ml abc usesFeature abc
+
+                @ phraselist abc(interchangeable) =
+                    - a, b
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'abc');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('phraseList can be added as a feature to an entity preferentially when there are both ml entity and phraseList of same name', function(done) {
+            let luFile = `
+                @ ml test usesFeatures abc
+
+                @ ml abc usesFeature abc
+
+                @ phraselist abc(interchangeable) =
+                    - a, b
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities.length, 2);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, 'test');
+                    assert.equal(res.LUISJsonStructure.entities[0].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[1].name, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[1].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[1].features[0].featureName, 'abc');
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
+        it('both phraseList and ml entity of same name can be added as a feature to an entity when using two same features', function(done) {
+            let luFile = `
+                @ ml test usesFeatures abc, abc
+
+                @ ml abc usesFeature abc
+
+                @ phraselist abc(interchangeable) =
+                    - a, b
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities.length, 2);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, 'test');
+                    assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
+                    assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[0].features[1].modelName, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[1].name, 'abc');
+                    assert.equal(res.LUISJsonStructure.entities[1].features.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[1].features[0].featureName, 'abc');
                     done();
                 })
                 .catch(err => done(err))
