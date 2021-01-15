@@ -128,9 +128,6 @@ const parseFileContentsModule = {
             // parse entity section
             parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
 
-            // parse entity section
-            parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
-
             // validate simple intent section
             parseAndHandleSimpleIntentSection(parsedContent, resource, config)
 
@@ -139,11 +136,11 @@ const parseFileContentsModule = {
             }
 
         } catch(e) {
-            if (e instanceof exception) {
+            if (e instanceof exception && e.diagnostics) {
                 errors.push(...e.diagnostics)
             } else {
                 errors.push(BuildDiagnostic({
-                    message: e.message
+                    message: e.message || e.text
                 }))
             }
         }
