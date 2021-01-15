@@ -556,8 +556,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
                     // but when a ml entity and a phraseList have same name, this assumption will cause a problem in situation that
                     // users actually want to specify the ml entity as feature rather than phraseList
                     // currently we can not distinguish them in lu file, as for @ intent A usesFeature B, B can be a ml entity or a phraseList with same name
-                    // the lu format for usesFeatures defintion need to be updated if we want to totally resolve this confusion
-                    // this is a corner case and here we will prioritize phraseList
+                    // the lu format for usesFeatures defintion need to be updated if we want to resolve this confusion completely
                     let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => (item.name == feature || item.name == `${feature}(interchangeable)`) && item.type == EntityTypeEnum.PHRASELIST);
                     // if phraseList is not matched to the feature, search other non phraseList entities
                     // or this intent use multiple features with same name, e.g., @ intent A usesFeatures B, B.
@@ -620,8 +619,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
                     // but when a ml entity and a phraseList have same name, this assumption will cause a problem in situation that
                     // users actually want to specify the ml entity as feature rather than phraseList
                     // currently we can not distinguish them in lu file, as for @ ml A usesFeature B, B can be another ml entity or a phraseList with same name
-                    // the lu format for usesFeatures defintion need to be updated if we want to totally resolve this confusion
-                    // this is a corner case and here we will prioritize phraseList
+                    // the lu format for usesFeatures defintion need to be updated if we want to resolve this confusion completely
                     let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => (item.name == feature || item.name == `${feature}(interchangeable)`) && item.type == EntityTypeEnum.PHRASELIST);
                     // if phraseList is not matched to the feature, search other non phraseList entities
                     // or this intent use multiple features with same name, e.g., @ intent A usesFeatures B, B.
@@ -710,7 +708,7 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
 
                 let circularItemFound = dependencyList.find(item => item.value
                     && item.value.slice(0)[0] == item.value.slice(-1)[0].feature
-                    && item.value.slice(-1)[0].type != featureProperties.phraseListFeature);
+                    && item.value.slice(-1)[0].type !== featureProperties.phraseListFeature);
 
                     if (circularItemFound) {
                     const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.map(v => v.feature ? v.feature : v).join(' -> ')}`;
