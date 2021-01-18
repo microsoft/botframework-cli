@@ -561,11 +561,14 @@ const addIsRequiredProperty = function(item, phraseListInFinal = []) {
     (item.features || []).forEach(feature => {
         if (feature.isRequired === undefined)
             feature.isRequired = false;
-        if (feature.modelName !== undefined && phraseListInFinal.includes(feature.modelName))
-        {
+
+        if (feature.modelName !== undefined
+            && phraseListInFinal.includes(feature.modelName)
+            && !item.features.find(fea => fea.featureName == feature.modelName)) {
             feature.featureName = feature.modelName;
             delete feature.modelName;
-        }    
+        }
+
         delete feature.featureType;
         delete feature.modelType;
     });
