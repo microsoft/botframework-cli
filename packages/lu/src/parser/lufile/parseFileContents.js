@@ -1390,11 +1390,11 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                     case EntityTypeEnum.COMPOSITE:
                         let candidateChildren = [];
                         if (entity.CompositeDefinition) {
-                            entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                            entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => candidateChildren.push(item));
                         }
                         if (entity.ListBody) {
                             entity.ListBody.forEach(line => {
-                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => candidateChildren.push(item));
                             })
                         }
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.Range, false, entity.Type !== undefined, config);
@@ -1467,7 +1467,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.trim();
-        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
+        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()).filter(s => s) : undefined;
 
         // Get current tab level
         let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
@@ -1682,7 +1682,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     // add this to phraseList if it doesnt exist
     let pLValues = [];
     for (const phraseListValues of valuesList) {
-        phraseListValues.split(/[,;]/g).map(item => item.trim()).forEach(item => pLValues.push(item));
+        phraseListValues.split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => pLValues.push(item));
     }
 
     let pLEntityExists = parsedContent.LUISJsonStructure.model_features.find(item => item.name == entityName);
@@ -1902,7 +1902,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                 addNV = true;
             }
         } else {
-            line.split(/[,;]/g).forEach(item => {
+            line.split(/[,;]/g).filter(s => s.trim()).forEach(item => {
                 item = item.trim();
                 if (!nvExists || !nvExists.list) {
                     let errorMsg = `Closed list ${entityName} has synonyms list "${line}" without a normalized value.`;
