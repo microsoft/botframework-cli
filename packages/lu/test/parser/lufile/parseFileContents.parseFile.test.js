@@ -1090,4 +1090,26 @@ describe('parseFile correctly parses utterances', function () {
                         })
                         .catch(err => done(err))
         })
+
+        it ('Correctly parses entity type that is case insensitive', function(done){
+            let testLU = `
+                @ ML test
+                @ PREbuilt personName
+                @ phraseList abc(interchangeable) disabledforallmodels = 
+                    - a, b, c`;
+            parseFile.parseFile(testLU)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.entities.length, 1);
+                    assert.equal(res.LUISJsonStructure.entities[0].name, "test");
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, "personName");
+                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, "abc");
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, "a,b,c");
+                    assert.equal(res.LUISJsonStructure.model_features[0].enabledForAllModels, false);
+                    done();
+                })
+                .catch(err => done(err))
+        })
 })

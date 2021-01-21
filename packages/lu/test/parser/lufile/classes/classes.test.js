@@ -102,9 +102,9 @@ describe('Testing all classes', function() {
         });
     });
 
-    describe('uttereances class', function() {
+    describe('utterances class', function() {
         it('can create a new instance with no values passed in', function() {
-            assert.equal(new hClasses.uttereances().text, '');
+            assert.equal(new hClasses.utterances().text, '');
         });
     });
 

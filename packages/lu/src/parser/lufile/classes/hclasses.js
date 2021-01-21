@@ -23,7 +23,7 @@ const readerObj = {
             this.utterances = utterances?utterances:[]
         }
     }, 
-    uttereances: class {
+    utterances: class {
         constructor(text, intent, entities) {
             this.text = text?text:'';
             this.intent = intent?intent:''; 
