@@ -1,3 +1,4 @@
-This package is intended for Microsoft use only. It is not designed to be consumed as an independent package. 
+
+This 'orchestratorlib' package is intended to be consumed by other 'command' packages in the Botframework CLI suite, specifically 'bf-orchestrator'.
 
 Click [here](https://aka.ms/bf-orchestrator) for overview of Bot Framework Orchestrator.

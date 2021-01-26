@@ -68,13 +68,15 @@ describe('Test Suite - utility', () => {
       Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
     Utility.debuggingLog(`labelArrayAndMap.stringArray=${labelArrayAndMap.stringArray}`);
     Utility.debuggingLog(`labelArrayAndMap.stringMap=${labelArrayAndMap.stringMap}`);
-    assert.ok(labelArrayAndMap.stringArray.length === 3);
+    const stringArrayLength: number = labelArrayAndMap.stringArray.length;
+    assert.ok(stringArrayLength === 3);
     if (!(Utility.UnknownLabel in labelArrayAndMap.stringMap)) {
       labelArrayAndMap.stringArray.push(Utility.UnknownLabel);
-      labelArrayAndMap.stringMap[Utility.UnknownLabel] = labelArrayAndMap.stringArray.length - 1;
+      labelArrayAndMap.stringMap.set(Utility.UnknownLabel, labelArrayAndMap.stringArray.length - 1);
       // ---- NOTE ---- Somehow the code below cannot compile, as the compiler or linter
       // ---- NOTE ---- thought that it's a contradiction against the '=== 3' assert.
-      // ---- NOTE ---- assert.ok(labelArrayAndMap.stringArray.length === 4);
+      const stringArrayLengthNew: number = labelArrayAndMap.stringArray.length;
+      assert.ok(stringArrayLengthNew === 4);
     }
   });
 

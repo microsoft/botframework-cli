@@ -221,7 +221,7 @@ export class Utility {
   Of course, this subset rule can discourage a model from predicting more than one labels (one is the safest strategy),
   even though a test instance might be labeled with a large ground-truth label set.
   `;
-  // ---- TO-REMOVE
+  // ---- TO-REFACTOR
   // -------------------------------------------------------------------------
   // ---- NOTE ---- utility functions
   // -------------------------------------------------------------------------
@@ -3858,7 +3858,7 @@ export class Utility {
   // -------------------------------------------------------------------------
   // ---- NOTE ---- Obfuscation
   // -------------------------------------------------------------------------
-  // ---- To-REMOVE ----
+  // ---- TO-REFACTOR ----
   public static outputLabelStringUtility(input: Label): string {
     return input.toOutputString(Utility.toObfuscateLabelTextInReportUtility);
   }
@@ -3894,7 +3894,7 @@ export class Utility {
     const inputObfuscated: string = CryptoUtility.getStringObfuscated(input);
     return inputObfuscated;
   }
-  // ---- TO-REMOVE
+  // ---- TO-REFACTOR
 
   // -------------------------------------------------------------------------
   // ---- NOTE ---- JSON functions
