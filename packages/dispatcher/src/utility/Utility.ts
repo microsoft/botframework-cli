@@ -2934,5 +2934,4 @@ export class Utility {
         BigInt("0xffffffffffffffff"); // ---- NOTE: 2^64 - 1 === 18446744073709551615
     protected static xorshift128plusCycleFloatBigInt: number =
         Number(Utility.xorshift128plusCycleBigInt);
-
 }

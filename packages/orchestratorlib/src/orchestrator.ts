@@ -155,6 +155,7 @@ export class Orchestrator {
     baseModelPath: string,
     inputPathConfiguration: string,
     queryConfiguration: string,
+    // outputPath: string,
     entityBaseModelPath: string = '',
     ambiguousClosenessThresholdParameter: number = Utility.DefaultAmbiguousClosenessThresholdParameter,
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
