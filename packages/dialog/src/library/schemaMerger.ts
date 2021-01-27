@@ -17,6 +17,7 @@ const allof = require('json-schema-merge-allof')
 const clone = require('clone')
 const getUri = require('get-uri')
 const glob = require('globby')
+const semverRsort = require('semver/functions/rsort')
 const util = require('util')
 
 const exec = util.promisify(require('child_process').exec)
@@ -1055,6 +1056,30 @@ export class SchemaMerger {
         }
     }
 
+    // Convert a nuget pattern to a regexp
+    private nugetPattern(version: string): RegExp {
+        let pattern = '^'
+        for (let i = 0; i < version.length; ++i) {
+            let ch = version[i]
+            switch (ch) {
+                case '*':
+                    if (i + 1 < version.length) {
+                        pattern += `[^${version[i + 1]}]*`
+                    } else {
+                        pattern += '.*'
+                    }
+                    break
+                case '.':
+                    pattern += '\\.'
+                    break
+                default:
+                    pattern += ch
+            }
+        }
+        pattern += '$'
+        return new RegExp(pattern)
+    }
+
     // Expand nuget package and all of its dependencies
     private async expandNuget(packageName: string, minVersion: string): Promise<void> {
         // Linux/Mac are case sensitive and nuget/dotnet lowercase package names
@@ -1069,18 +1094,27 @@ export class SchemaMerger {
                     for (const pkgVersion of await fs.readdir(pkgPath)) {
                         versions.push(pkgVersion.toLowerCase())
                     }
-                    // NOTE: The semver package does not handle more complex nuget range revisions
-                    // We get an exception and will ignore those dependencies.
+                    let versionToUse: any
                     minVersion = minVersion || '0.0.0'
                     if (minVersion.startsWith('$')) {
                         // Deal with build variables by installing most recent version
-                        minVersion = nuget.maxSatisfying(versions, '0-1000')
+                        versionToUse = nuget.maxSatisfying(versions, '0-1000')
                         if (this.debug) {
                             this.parsingWarning(`Using most recent version ${minVersion}`)
                         }
+                    } else if (minVersion.includes('*')) {
+                        // Match pattern against available versions
+                        let pattern = this.nugetPattern(minVersion)
+                        for (const version of semverRsort(versions)) {
+                            if (pattern.exec(version)) {
+                                versionToUse = version
+                                break
+                            }
+                        }
+                    } else {
+                        versionToUse = nuget.minSatisfying(versions, minVersion)
                     }
-                    const version = nuget.minSatisfying(versions, minVersion)
-                    pkgPath = ppath.join(pkgPath, version ?? '')
+                    pkgPath = ppath.join(pkgPath, versionToUse ?? '')
                     const nuspecPath = ppath.join(pkgPath, `${packageName}.nuspec`)
                     await this.expandNuspec(nuspecPath)
                 } else if (this.debug) {
