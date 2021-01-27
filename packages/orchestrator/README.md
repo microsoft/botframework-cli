@@ -50,7 +50,6 @@ bf plugins:uninstall @microsoft/bf-orchestrator-cli
 
 * [`bf orchestrator`](#bf-orchestrator)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
-* [`bf orchestrator:build`](#bf-orchestratorbuild)
 * [`bf orchestrator:basemodel:get`](#bf-orchestratorbasemodelget)
 * [`bf orchestrator:basemodel:list`](#bf-orchestratorbasemodellist)
 * [`bf orchestrator:interactive`](#bf-orchestratorinteractive)
@@ -70,32 +69,6 @@ OPTIONS
 ```
 
 _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
-
-## `bf orchestrator:build`
-
-Creates Orchestrator snapshot (.blu) file and Orchestrator dialog definition file (optional) for each lu file in input folder.
-
-```
-USAGE
-  $ bf orchestrator:build
-
-OPTIONS
-  -d, --debug
-  -h, --help         Orchestrator build command help
-  -i, --in=in        Path to lu file or folder with lu files.
-  -m, --model=model  Path to Orchestrator base model directory.
-  -o, --out=out      Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.
-  --dialog           Generate multi language or cross train Orchestrator recognizers.
-
-EXAMPLE
-
-       $ bf orchestrator:build 
-       $ bf orchestrator:build --in ./path/to/lufile/or/folder/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/
-       $ bf orchestrator:build --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/base/model/directory
-```
-
-_See code: [src\commands\orchestrator\build.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/build.ts)_
 
 ## `bf orchestrator:create`
 
