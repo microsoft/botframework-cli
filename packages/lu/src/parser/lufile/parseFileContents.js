@@ -1152,7 +1152,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         if (hashTable[uttHash]) {
                             utteranceObject = hashTable[uttHash];
                         } else {
-                            utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            utteranceObject = new helperClass.utterances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                             hashTable[uttHash] = utteranceObject;
                         }
@@ -1230,7 +1230,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         }
                     } else {
                         if(!hashTable[uttHash]) {
-                            let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            let utteranceObject = new helperClass.utterances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                             hashTable[uttHash] = utteranceObject;
                         }

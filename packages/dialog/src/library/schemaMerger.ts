@@ -153,8 +153,9 @@ class ComponentNode {
                 patterns.push(`!${ppath.join(root, 'node_modules', '**')}`)
             } else if (this.metadata.path.endsWith('.csproj')) {
                 patterns.push(`!${ppath.join(root, 'bin', '**')}`)
+                patterns.push(`!${ppath.join(root, 'obj', '**')}`)
             }
-            patterns.push(`!${imports}`)
+            patterns.push(`!${ppath.join(ppath.resolve(imports), '**')}`)
             patterns.push(`!${ppath.join(root, 'test', '**')}`)
             patterns.push(`!${ppath.join(root, 'tests', '**')}`)
             patterns = [...patterns, ...negativePatterns]

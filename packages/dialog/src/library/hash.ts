@@ -9,7 +9,8 @@ import * as os from 'os'
 import * as ppath from 'path'
 
 export function computeHash(val: string): string {
-    return crypto.createHash('md5').update(val).digest('hex')
+    // We write out OS.EOL, but want hash independent of endings
+    return crypto.createHash('md5').update(val.replace(/\r/, '')).digest('hex')
 }
 
 // Normalize to OS line endings
