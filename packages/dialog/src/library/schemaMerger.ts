@@ -1057,6 +1057,7 @@ export class SchemaMerger {
     }
 
     // Convert a nuget pattern to a regexp
+    // 4.*.2.*-* would go to ^4\.[^.]*\.2\.[^-]*-.*$
     private nugetPattern(version: string): RegExp {
         let pattern = '^'
         for (let i = 0; i < version.length; ++i) {
@@ -1094,7 +1095,7 @@ export class SchemaMerger {
                     for (const pkgVersion of await fs.readdir(pkgPath)) {
                         versions.push(pkgVersion.toLowerCase())
                     }
-                    let versionToUse: any
+                    let versionToUse = ''
                     minVersion = minVersion || '0.0.0'
                     if (minVersion.startsWith('$')) {
                         // Deal with build variables by installing most recent version
