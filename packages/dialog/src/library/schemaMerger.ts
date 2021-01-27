@@ -1105,7 +1105,7 @@ export class SchemaMerger {
                         }
                     } else if (minVersion.includes('*')) {
                         // Match pattern against available versions
-                        let pattern = this.nugetPattern(minVersion)
+                        const pattern = this.nugetPattern(minVersion)
                         for (const version of semverRsort(versions)) {
                             if (pattern.exec(version)) {
                                 versionToUse = version
