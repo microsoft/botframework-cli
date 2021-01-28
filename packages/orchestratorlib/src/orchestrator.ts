@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+import {OrchestratorAdd} from './add';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
 import {OrchestratorEvaluate} from './evaluate';
@@ -43,6 +44,25 @@ export class Orchestrator {
       inputs,
       isDialog,
       luConfig,
+      fullEmbedding);
+  }
+
+  // eslint-disable-next-line max-params
+  public static async addAsync(
+    baseModelPath: string,
+    snapshot: any,
+    luObject: any,
+    isDialog: boolean,
+    routingName: string = '',
+    entityBaseModelPath: string = '',
+    fullEmbedding: boolean = false): Promise<any> {
+    return OrchestratorAdd.runAsync(
+      baseModelPath,
+      snapshot,
+      luObject,
+      isDialog,
+      routingName,
+      entityBaseModelPath,
       fullEmbedding);
   }
 

@@ -8,12 +8,14 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
+import {LabelResolver} from './labelresolver';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {Span} from '@microsoft/bf-dispatcher';
 import {ScoreEntity} from '@microsoft/bf-dispatcher';
 import {ScoreIntent} from '@microsoft/bf-dispatcher';
 import {Utility} from './utility';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
 const ReadText: any = require('read-text-file');
@@ -101,7 +103,8 @@ export class OrchestratorHelper {
     inputPathConfiguration: string,
     hierarchical: boolean = false,
     outputDteFormat: boolean = false)  {
-    const utteranceLabelsMap: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)).utteranceLabelsMap;
+    const utteranceLabelsMap: Map<string, Set<string>> =
+      (await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical)).utteranceLabelsMap;
     let tsvContent: string = '';
 
     if (outputDteFormat) {
@@ -124,7 +127,8 @@ export class OrchestratorHelper {
 
   public static async getUtteranceLabelsMap(
     filePathConfiguration: string,
-    hierarchical: boolean = false): Promise<{
+    hierarchical: boolean = false,
+    routingName: string = ''): Promise<{
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': Map<string, Label[]>;
@@ -147,12 +151,11 @@ export class OrchestratorHelper {
       } else {
         await OrchestratorHelper.processFile(
           filePathEntry,
-          path.basename(filePathEntry),
+          OrchestratorHelper.getRoutingNameFromFileName(filePathEntry, hierarchical, routingName),
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap,
-          hierarchical);
+          utteranceEntityLabelDuplicateMap);
       }
     }
     Utility.processUnknownLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
@@ -242,14 +245,12 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   static async processFile(
     filePath: string,
-    fileName: string,
+    routingName: string,
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
-    hierarchical: boolean): Promise<void> {
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     const ext: string = path.extname(filePath);
-    const hierarchicalLabel: string = OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical);
 
     if (ext !== '.lu' &&
         ext !== '.json' &&
@@ -260,14 +261,14 @@ export class OrchestratorHelper {
         ext !== '.dispatch') {
       throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
-
+    
     Utility.writeToConsole(`Processing ${filePath}...`);
     try {
       switch (ext) {
       case '.lu':
         await OrchestratorHelper.parseLuFile(
           filePath,
-          hierarchicalLabel,
+          routingName,
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
@@ -276,14 +277,14 @@ export class OrchestratorHelper {
       case '.qna':
         await OrchestratorHelper.parseQnaFile(
           filePath,
-          hierarchicalLabel,
+          routingName,
           utteranceLabelsMap,
           utteranceLabelDuplicateMap);
         break;
       case '.json':
         if (OrchestratorHelper.getIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
-          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          routingName,
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
@@ -292,7 +293,7 @@ export class OrchestratorHelper {
         }
         if (!OrchestratorHelper.getJsonIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
-          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          routingName,
           utteranceLabelsMap,
           utteranceLabelDuplicateMap,
           utteranceEntityLabelsMap,
@@ -304,7 +305,7 @@ export class OrchestratorHelper {
       case '.txt':
         OrchestratorHelper.parseTsvFile(
           filePath,
-          OrchestratorHelper.getLabelFromFileName(fileName, ext, hierarchical),
+          routingName,
           utteranceLabelsMap,
           utteranceLabelDuplicateMap);
         break;
@@ -320,7 +321,7 @@ export class OrchestratorHelper {
           utteranceLabelsMap,
           utteranceLabelDuplicateMap);
         break;
-      }   
+      }
     } catch (error) {
       throw new Error(`Failed to parse ${filePath}`);
     }
@@ -601,9 +602,9 @@ export class OrchestratorHelper {
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
     hierarchical: boolean): Promise<void> {
     const supportedFileFormats: string[] = ['.lu', '.json', '.qna', '.tsv', '.txt'];
-    const items: string[] = fs.readdirSync(folderPath);
-    for (const item of items) {
-      const currentItemPath: string = path.join(folderPath, item);
+    const files: string[] = fs.readdirSync(folderPath);
+    for (const file of files) {
+      const currentItemPath: string = path.join(folderPath, file);
       const isDirectory: boolean = OrchestratorHelper.isDirectory(currentItemPath);
       if (isDirectory) {
         // eslint-disable-next-line no-await-in-loop
@@ -615,7 +616,7 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap,
           hierarchical);
       } else {
-        const ext: string = path.extname(item);
+        const ext: string = path.extname(file);
         if (processedFiles.includes(currentItemPath)) {
           continue;
         }
@@ -623,12 +624,11 @@ export class OrchestratorHelper {
           // eslint-disable-next-line no-await-in-loop
           await OrchestratorHelper.processFile(
             currentItemPath,
-            item,
+            OrchestratorHelper.getRoutingNameFromFileName(file, hierarchical),
             utteranceLabelsMap,
             utteranceLabelDuplicateMap,
             utteranceEntityLabelsMap,
-            utteranceEntityLabelDuplicateMap,
-            hierarchical);
+            utteranceEntityLabelDuplicateMap);
         }
       }
     }
@@ -839,8 +839,13 @@ export class OrchestratorHelper {
     return false;
   }
 
-  static getLabelFromFileName(fileName: string, ext: string, hierarchical: boolean) {
-    return hierarchical ? fileName.substr(0, fileName.length - ext.length) : '';
+  static getRoutingNameFromFileName(filePath: string, hierarchical: boolean, routingName: string = '') {
+    if (!hierarchical) {
+      return '';
+    }
+    const fileName: string = path.basename(filePath);
+    const ext: string = path.extname(filePath);
+    return Utility.isEmptyString(routingName) ? fileName.substr(0, fileName.length - ext.length) : routingName;
   }
 
   // eslint-disable-next-line max-params
@@ -1082,5 +1087,44 @@ export class OrchestratorHelper {
 
       bluPaths[baseName] = snapshotFile;
     }
+  }
+
+  public static async processLuContent(luObject: any, routingName: string = '', isDialog: boolean = false, fullEmbedding: boolean = false) {
+    Utility.debuggingLog(`routingName=${routingName}`);
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
+    const labelResolver: any = LabelResolver.createLabelResolver();
+    Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
+    if (fullEmbedding) {
+      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
+    }
+    Utility.debuggingLog('Created label resolver');
+
+    const baseName: string = luObject.id;
+
+    const result: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
+        utteranceLabelsMap: new Map<string, Set<string>>(),
+        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+        utteranceEntityLabelsMap: new Map<string, Label[]>(),
+        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+
+    await OrchestratorHelper.parseLuContent(
+      luObject.id,
+      luObject.content,
+      '',
+      result.utteranceLabelsMap,
+      result.utteranceLabelDuplicateMap,
+      result.utteranceEntityLabelsMap,
+      result.utteranceEntityLabelDuplicateMap);
+
+    Utility.debuggingLog(`Processed ${luObject.id}`);
+    LabelResolver.addExamples(result, labelResolver);
+    const snapshot: any = labelResolver.createSnapshot();
+    const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+    const recognizer: any = OrchestratorHelper.getDialogFilesContent(isDialog, baseName, entities);
+    return {id: baseName, snapshot: snapshot, recognizer: recognizer};
   }
 }

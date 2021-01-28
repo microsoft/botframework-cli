@@ -70,11 +70,15 @@ export class LabelResolver {
     return LabelResolver.LabelResolver;
   }
 
-  public static async createWithSnapshotAsync(baseModelPath: string, snapshotPath: string, entityBaseModelPath: string = '') {
-    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`);
-    await LabelResolver.loadNlrAsync(baseModelPath, entityBaseModelPath);
+  public static async createWithSnapshotFileAsync(baseModelPath: string, snapshotPath: string, entityBaseModelPath: string = '') {
     Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): loading a snapshot.');
     const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(snapshotPath);
+    return LabelResolver.createWithSnapshotAsync(baseModelPath, snapshot, entityBaseModelPath);
+  }
+
+  public static async createWithSnapshotAsync(baseModelPath: string, snapshot: Uint8Array, entityBaseModelPath: string = '') {
+    Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`);
+    await LabelResolver.loadNlrAsync(baseModelPath, entityBaseModelPath);
     Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): typeof(snapshot)=${typeof snapshot}`);
     Utility.debuggingLog(`LabelResolver.createWithSnapshotAsync(): snapshot.byteLength=${snapshot.byteLength}`);
     Utility.debuggingLog('LabelResolver.createWithSnapshotAsync(): creating label resolver.');
