@@ -22,6 +22,7 @@ export class LuBuildCore {
   private readonly retryCount: number
   private readonly retryDuration: number
   private readonly headers: any
+  private readonly trainMode: string | undefined
 
   constructor(subscriptionKey: string, endpoint: string, retryCount: number, retryDuration: number) {
     this.subscriptionKey = subscriptionKey
@@ -36,6 +37,9 @@ export class LuBuildCore {
 
     // set user agent
     const luisUserAgent = process.env['LUIS_USER_AGENT'] || this.getUserAgent()
+
+    // set luis train mode
+    this.trainMode = process.env['LUIS_TRAIN_MODE']
 
     // set headers
     this.headers = {
@@ -299,19 +303,24 @@ export class LuBuildCore {
     }
   }
 
-  public async trainApplication(appId: string, versionId: string) {
+  public async trainApplication(appId: string, versionId: string, trainMode: string) {
+    let mode = trainMode || this.trainMode
+    let url = `${this.endpoint}/luis/authoring/v3.0-preview/apps/${appId}/versions/${versionId}/train`
+    url += mode ? `?mode=${mode}` : ''
+
+    let messageData
     let retryCount = this.retryCount + 1
-    let error
+    let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          await this.client.train.trainVersion(appId, versionId)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
+        let response = await fetch(url, {method: 'POST', headers: this.headers})
+        messageData = await response.json()
+
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -320,6 +329,8 @@ export class LuBuildCore {
     if (retryCount === 0) {
       throw error
     }
+
+    return messageData
   }
 
   public async getTrainingStatus(appId: string, versionId: string) {

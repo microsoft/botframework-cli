@@ -197,6 +197,8 @@ export class Builder {
     // set retry duration for rate limit luis API failure
     let retryDuration = options.retryDuration || 1000
 
+    let trainMode = options.trainMode
+
     // settings assets like app id and version returned from luis api call
     let settingsAssets: any[] = []
 
@@ -253,7 +255,7 @@ export class Builder {
 
               if (needTrainAndPublish) {
                 // train and publish application
-                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging)
+                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, trainMode)
               }
 
               // init settings asset
@@ -421,11 +423,11 @@ export class Builder {
     return true
   }
 
-  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean, trainMode: string) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(timeBucket)
-    await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
+    await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId, trainMode)
     this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...\n`)
     let done = true
     do {
