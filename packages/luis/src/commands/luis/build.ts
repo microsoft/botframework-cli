@@ -41,6 +41,7 @@ export default class LuisBuild extends Command {
     endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
     isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
+    directVersionPublish: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
   }
 
   async run() {
@@ -68,7 +69,7 @@ export default class LuisBuild extends Command {
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
 
-      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging}
+      let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging, directVersionPublish}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
 
       flags.stdin = await this.readStdin()
@@ -141,7 +142,8 @@ export default class LuisBuild extends Command {
         region,
         keptVersionCount,
         isStaging,
-        schema
+        schema,
+        directVersionPublish
       })
 
       // write dialog assets based on config
