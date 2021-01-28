@@ -6,7 +6,7 @@
 import {CLIError, utils} from '@microsoft/bf-cli-command';
 const fs: any = require('fs-extra');
 const path: any = require('path');
-const FileHelper: any = require('@microsoft/bf-lu/lib/utils/fileHelper');
+const FileHelper: any = require('@microsoft/bf-lu/lib/utils/filehelper');
 const FileExtEnum: any = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum;
 const LuOptions: any = require('@microsoft/bf-lu/lib/parser/lu/luOptions');
 const LuContent: any = require('@microsoft/bf-lu/lib/parser/lu/lu');
