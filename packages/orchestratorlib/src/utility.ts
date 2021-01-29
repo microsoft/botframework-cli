@@ -44,6 +44,10 @@ export class Utility {
 
   public static NumberOfInstancesPerProgressDisplayBatch: number = 1000; // 10000;
 
+  public static NumberOfInstancesPerProgressDisplayBatchForIntent: number = 100; // 1000; // 10000;
+
+  public static NumberOfInstancesPerProgressDisplayBatchForEntity: number = 100; // 1000; // 10000;
+
   public static readonly DefaultAmbiguousClosenessThresholdParameter: number = 0.2; // ---- Close to the correct top prediction within 20% of the score.
 
   public static readonly DefaultLowConfidenceScoreThresholdParameter: number = 0.5; // ---- Lower than the threshold for an ambiguous prediction.

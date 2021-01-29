@@ -158,11 +158,14 @@ export class LabelResolver {
     if (labelResolver === null) {
       labelResolver = LabelResolver.LabelResolver;
     }
-    const utteranceLabelsMap: Map<string, Set<string>> = utteranceIntentEntityLabels.utteranceLabelsMap;
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    // -----------------------------------------------------------------------
+    const utteranceLabelsMap: Map<string, Set<string>> = utteranceIntentEntityLabels.utteranceLabelsMap;
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
     let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
     Utility.debuggingLog(`READY to call labelResolver.addExample() on utteranceLabelsMap utterances and labels, utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
     // ---- Utility.toPrintDetailedDebuggingLogToConsole = true; // ---- NOTE ---- disable after detailed tracing is done.
@@ -194,11 +197,15 @@ export class LabelResolver {
         }
       }
       numberUtterancesProcessedUtteranceLabelsMap++;
-      if ((numberUtterancesProcessedUtteranceLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
+      if ((numberUtterancesProcessedUtteranceLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
         Utility.debuggingLog(`LabelResolver.addExample(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
       }
     }
+    // -----------------------------------------------------------------------
     const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    let numberUtterancesProcessedUtteranceEntityLabelsMap: number = 0;
     Utility.debuggingLog(`READY to call labelResolver.addExample() on utteranceEntityLabelsMap utterances and labels, utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
     // eslint-disable-next-line guard-for-in
     for (const utterance of utteranceEntityLabelsMap.keys()) {
@@ -237,7 +244,12 @@ export class LabelResolver {
           }
         }
       }
+      numberUtterancesProcessedUtteranceEntityLabelsMap++;
+      if ((numberUtterancesProcessedUtteranceEntityLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForEntity) === 0) {
+        Utility.debuggingLog(`LabelResolver.addExample(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
+      }
     }
+    // -----------------------------------------------------------------------
     Utility.debuggingLog('LEAVING LabelResolver.addExamples()');
   }
 
