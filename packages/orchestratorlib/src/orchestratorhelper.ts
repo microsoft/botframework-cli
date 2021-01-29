@@ -135,9 +135,8 @@ export class OrchestratorHelper {
       'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ==== NOTE-DISABLE-ENTITY-EXAMPLE ==== when it's done, change let back to const.
-    let utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
-    let utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
     for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
@@ -159,18 +158,10 @@ export class OrchestratorHelper {
       }
     }
     Utility.processUnknownLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
-    utteranceEntityLabelsMap = new Map<string, Label[]>();
-    utteranceEntityLabelDuplicateMap = new Map<string, Label[]>();
     return {utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap};
-    /* ==== NOTE-DISABLE-ENTITY-EXAMPLE ====
-    return {utteranceLabelsMap,
-      utteranceLabelDuplicateMap,
-      utteranceEntityLabelsMap,
-      utteranceEntityLabelDuplicateMap};
-      */
   }
 
   /*
@@ -261,7 +252,7 @@ export class OrchestratorHelper {
         ext !== '.dispatch') {
       throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
-    
+
     Utility.writeToConsole(`Processing ${filePath}...`);
     try {
       switch (ext) {

@@ -48,6 +48,7 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`outputPath=${outputPath}`);
     Utility.toObfuscateLabelTextInReportUtility = obfuscateEvaluationReport;
     UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = obfuscateEvaluationReport;
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- load the ground truth set ------------------------------
     const groundTruthFileConfiguration: string = inputPathConfiguration;
     if (Utility.isEmptyString(groundTruthFileConfiguration)) {
@@ -61,8 +62,7 @@ export class OrchestratorAssess {
     const assessmentSetIntentLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetIntentLabelsOutputFilename);
     const assessmentSetEntitySummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntitySummaryHtmlOutputFilename);
     const assessmentSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntityLabelsOutputFilename);
-    // -----------------------------------------------------------------------
-    // ---- NOTE ---- process the ground-truth set, retrieve labels ----------
+    // ---- NOTE ---- process the ground-truth set and retrieve labels -------
     const groundTruthFileProcessedUtteranceLabelsMap: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
@@ -97,6 +97,8 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   });
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for groundTruth set');
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- process the ground-truth set intent labels -------------
     const groundTruthSetLabels: string[] =
       [...groundTruthSetUtteranceLabelsMap.values()].reduce(
         (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
@@ -107,6 +109,7 @@ export class OrchestratorAssess {
     // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set unique utterances=${groundTruthSetUtteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set duplicate utterance/label pairs=${groundTruthSetUtteranceLabelDuplicateMap.size}`);
+    // ---- NOTE ---- process the ground-truth set entity labels -------------
     const groundTruthSetEntityLabels: string[] =
       [...groundTruthSetUtteranceEntityLabelsMap.values()].reduce(
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
@@ -118,7 +121,7 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set unique utterances=${groundTruthSetUtteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set duplicate utterance/label pairs=${groundTruthSetUtteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
-    // ---- NOTE ---- process the prediction set, retrieve labels ------------
+    // ---- NOTE ---- process the prediction set and retrieve labels ---------
     const predictionFileProcessedUtteranceLabelsMap: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
@@ -147,12 +150,24 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelDuplicateMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelDuplicateMap);
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- process unknown intent labels --------------------------
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
         utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap},
       groundTruthSetLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction set');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction intent labels');
+    // ---- NOTE ---- process unknown entity labels --------------------------
+    Utility.processUnknownEntityLabelsInUtteranceLabelsMapUsingLabelSet(
+      {
+        utteranceLabelsMap: predictionSetUtteranceEntityLabelsMap,
+        utteranceLabelDuplicateMap: predictionSetUtteranceEntityLabelDuplicateMap},
+      groundTruthSetEntityLabelSet);
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction entity labels');
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- process the prediction set intent labels ---------------
     const predictionSetLabels: string[] =
       [...predictionSetUtteranceLabelsMap.values()].reduce(
         (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
@@ -165,6 +180,7 @@ export class OrchestratorAssess {
     // if (predictionSetUtteranceLabelsMap.size <= 0) {
     //   Utility.debuggingThrow('There is no example, something wrong?');
     // }
+    // ---- NOTE ---- process the prediction set entity labels ---------------
     const predictionSetEntityLabels: string[] =
       [...predictionSetUtteranceEntityLabelsMap.values()].reduce(
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
