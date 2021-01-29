@@ -1089,10 +1089,19 @@ export class OrchestratorHelper {
     }
   }
 
-  public static async processLuContent(luObject: any, routingName: string = '', isDialog: boolean = false, fullEmbedding: boolean = false) {
+  // eslint-disable-next-line max-params
+  public static async processLuContent(
+    luObject: any,
+    routingName: string = '',
+    isDialog: boolean = false,
+    fullEmbedding: boolean = false,
+    labelResolver: any = null) {
     Utility.debuggingLog(`routingName=${routingName}`);
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
-    const labelResolver: any = LabelResolver.createLabelResolver();
+
+    if (!labelResolver) {
+      labelResolver = LabelResolver.createLabelResolver();
+    }
     Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
     if (fullEmbedding) {
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
