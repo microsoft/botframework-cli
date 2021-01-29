@@ -3183,6 +3183,170 @@ export class Utility {
     return utteranceLabels;
   }
 
+  public static processUnknownEntityLabelsInUtteranceLabelsMapUsingLabelSet(
+    utteranceLabels: {
+      'utteranceLabelsMap': Map<string, Label[]>;
+      'utteranceLabelDuplicateMap': Map<string, Label[]>; },
+    labelSet: Set<string>): {
+        'utteranceLabelsMap': Map<string, Label[]>;
+        'utteranceLabelDuplicateMap': Map<string, Label[]>; } {
+    const utteranceLabelsMap: Map<string, Label[]> = utteranceLabels.utteranceLabelsMap;
+    const utteranceLabelDuplicateMap:  Map<string, Label[]> = utteranceLabels.utteranceLabelDuplicateMap;
+    if (utteranceLabelsMap) {
+      for (const utteranceKey of utteranceLabelsMap.keys()) {
+        if (utteranceKey) {
+          try {
+            const utteranceLabelSet: Label[] = utteranceLabelsMap.get(utteranceKey) as Label[];
+            // eslint-disable-next-line max-depth
+            // ---- NOTE-PLACEHOLDER ---- if (!utteranceLabelSet) {
+            // ---- NOTE-PLACEHOLDER ----   Utility.debuggingThrow(`Utility.processUnknownEntityLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+            // ---- NOTE-PLACEHOLDER ---- }
+            const concreteLabels: Label[] = [...utteranceLabelSet].filter(
+              (label: Label) =>
+                !Utility.UnknownLabelSet.has(label.name.toUpperCase()) && labelSet.has(label.name));
+            const hasConcreteLabel: boolean = concreteLabels.length > 0;
+            const unknownLabels: Label[] = [...utteranceLabelSet].filter(
+              (label: Label) =>
+                Utility.UnknownLabelSet.has(label.name.toUpperCase()) || !labelSet.has(label.name));
+            const hasUnknownLabel: boolean = unknownLabels.length > 0;
+            // eslint-disable-next-line max-depth
+            utteranceLabelSet.length = 0; // ---- NOTE ---- clear the set!
+            // eslint-disable-next-line max-depth
+            if (hasConcreteLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of concreteLabels) {
+                utteranceLabelSet.push(label);
+              }
+            }
+            // eslint-disable-next-line max-depth
+            if (hasUnknownLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of unknownLabels) {
+                label.name = Utility.UnknownLabel;
+                utteranceLabelSet.push(label);
+              }
+            }
+          } catch (error) {
+            // ---- NOTE-PLACEHOLDER ---- Utility.debuggingLog(`Utility.processUnknownEntityLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+            throw error;
+          }
+        }
+      }
+    }
+    if (utteranceLabelDuplicateMap) {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Label[], _: string) => {
+        const labelsArray: Label[] = [...labelsSet];
+        const concreteLabels: Label[] = labelsArray.filter(
+          (label: Label) =>
+            !Utility.UnknownLabelSet.has(label.name.toUpperCase()) && labelSet.has(label.name));
+        const hasConcreteLabel: boolean = concreteLabels.length > 0;
+        const unknownLabels: Label[] = labelsArray.filter(
+          (label: Label) =>
+            Utility.UnknownLabelSet.has(label.name.toUpperCase()) || !labelSet.has(label.name));
+        const hasUnknownLabel: boolean = unknownLabels.length > 0;
+        // eslint-disable-next-line max-depth
+        labelsSet.length = 0; // ---- NOTE ---- clear the set!
+        // eslint-disable-next-line max-depth
+        if (hasConcreteLabel) {
+          // eslint-disable-next-line max-depth
+          for (const label of concreteLabels) {
+            labelsSet.push(label);
+          }
+        }
+        // eslint-disable-next-line max-depth
+        if (hasUnknownLabel) {
+          // eslint-disable-next-line max-depth
+          for (const label of unknownLabels) {
+            label.name = Utility.UnknownLabel;
+            labelsSet.push(label);
+          }
+        }
+      });
+    }
+    return utteranceLabels;
+  }
+
+  public static processUnknownEntityLabelsInUtteranceLabelsMap(
+    utteranceLabels: {
+      'utteranceLabelsMap': Map<string, Label[]>;
+      'utteranceLabelDuplicateMap': Map<string, Label[]>; }): {
+        'utteranceLabelsMap': Map<string, Label[]>;
+        'utteranceLabelDuplicateMap': Map<string, Label[]>; } {
+    const utteranceLabelsMap: Map<string, Label[]> = utteranceLabels.utteranceLabelsMap;
+    const utteranceLabelDuplicateMap:  Map<string, Label[]> = utteranceLabels.utteranceLabelDuplicateMap;
+    if (utteranceLabelsMap) {
+      for (const utteranceKey of utteranceLabelsMap.keys()) {
+        if (utteranceKey) {
+          try {
+            const utteranceLabelSet: Label[] = utteranceLabelsMap.get(utteranceKey) as Label[];
+            // eslint-disable-next-line max-depth
+            // ---- NOTE-PLACEHOLDER ---- if (!utteranceLabelSet) {
+            // ---- NOTE-PLACEHOLDER ----   Utility.debuggingThrow(`Utility.processUnknownEntityLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+            // ---- NOTE-PLACEHOLDER ---- }
+            const concreteLabels: Label[] = [...utteranceLabelSet].filter(
+              (label: Label) =>
+                !Utility.UnknownLabelSet.has(label.name.toUpperCase()));
+            const hasConcreteLabel: boolean = concreteLabels.length > 0;
+            const unknownLabels: Label[] = [...utteranceLabelSet].filter(
+              (label: Label) =>
+                Utility.UnknownLabelSet.has(label.name.toUpperCase()));
+            const hasUnknownLabel: boolean = unknownLabels.length > 0;
+            // eslint-disable-next-line max-depth
+            utteranceLabelSet.length = 0; // ---- NOTE ---- clear the set!
+            // eslint-disable-next-line max-depth
+            if (hasConcreteLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of concreteLabels) {
+                utteranceLabelSet.push(label);
+              }
+            }
+            // eslint-disable-next-line max-depth
+            if (hasUnknownLabel) {
+              // eslint-disable-next-line max-depth
+              for (const label of unknownLabels) {
+                label.name = Utility.UnknownLabel;
+                utteranceLabelSet.push(label);
+              }
+            }
+          } catch (error) {
+            // ---- NOTE-PLACEHOLDER ---- Utility.debuggingLog(`Utility.processUnknownEntityLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+            throw error;
+          }
+        }
+      }
+    }
+    if (utteranceLabelDuplicateMap) {
+      utteranceLabelDuplicateMap.forEach((labelsSet: Label[], _: string) => {
+        const labelsArray: Label[] = [...labelsSet];
+        const concreteLabels: Label[] = labelsArray.filter(
+          (label: Label) =>
+            !Utility.UnknownLabelSet.has(label.name.toUpperCase()));
+        const hasConcreteLabel: boolean = concreteLabels.length > 0;
+        const unknownLabels: Label[] = [...labelsSet].filter(
+          (label: Label) =>
+            Utility.UnknownLabelSet.has(label.name.toUpperCase()));
+        const hasUnknownLabel: boolean = unknownLabels.length > 0;
+        labelsSet.length = 0; // ---- NOTE ---- clear the set!
+        // eslint-disable-next-line max-depth
+        if (hasConcreteLabel) {
+          // eslint-disable-next-line max-depth
+          for (const label of concreteLabels) {
+            labelsSet.push(label);
+          }
+        }
+        // eslint-disable-next-line max-depth
+        if (hasUnknownLabel) {
+          // eslint-disable-next-line max-depth
+          for (const label of unknownLabels) {
+            label.name = Utility.UnknownLabel;
+            labelsSet.push(label);
+          }
+        }
+      });
+    }
+    return utteranceLabels;
+  }
+
   public static processUnknownLabelsInTsvBluFileContent(bluFileContents: string): string {
     const lines: string[] = bluFileContents.split('\n');
     for (let lineIndex: number = 1; lineIndex < lines.length; lineIndex++) {
