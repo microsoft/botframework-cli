@@ -175,7 +175,7 @@ export class Builder {
     let region = options.region || 'westus'
     
     // set kept version count which means how many versions would be kept in luis service
-    let keptVersionCount = options.keptVersionCount && options.keptVersionCount > 0 ? options.keptVersionCount : maxVersionCount
+    let keptVersionCount = options.keptVersionCount && options.keptVersionCount > 0 && options.keptVersionCount <= maxVersionCount ? options.keptVersionCount : maxVersionCount
     
     // set if publish this application to staging or production slot
     // default to production
@@ -197,6 +197,11 @@ export class Builder {
     // set retry duration for rate limit luis API failure
     let retryDuration = options.retryDuration || 1000
 
+    // set direct version publish flag
+    // default to false
+    let directVersionPublish = options.directVersionPublish || false
+
+    // set train mode
     let trainMode = options.trainMode
 
     // settings assets like app id and version returned from luis api call
@@ -255,7 +260,7 @@ export class Builder {
 
               if (needTrainAndPublish) {
                 // train and publish application
-                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, trainMode)
+                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, directVersionPublish, trainMode)
               }
 
               // init settings asset
@@ -423,7 +428,7 @@ export class Builder {
     return true
   }
 
-  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean, trainMode: string) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean, directVersionPublish: boolean, trainMode: string) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(timeBucket)
@@ -450,7 +455,7 @@ export class Builder {
     // publish applications
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(timeBucket)
-    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging)
+    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging, directVersionPublish)
     this.handler(`${recognizer.getLuPath()} publishing finished for ${isStaging ? 'Staging' : 'Production'} slot\n`)
   }
 

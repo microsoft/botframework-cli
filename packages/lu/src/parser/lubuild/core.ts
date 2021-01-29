@@ -359,23 +359,26 @@ export class LuBuildCore {
     return status
   }
 
-  public async publishApplication(appId: string, versionId: string, isStaging: boolean) {
+  public async publishApplication(appId: string, versionId: string, isStaging: boolean, directVersionPublish: boolean) {
+    let url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/publish'
+
+    let messageData
     let retryCount = this.retryCount + 1
-    let error
+    let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          await this.client.apps.publish(appId,
-            {
-              versionId,
-              isStaging
-            })
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
+        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify({
+          versionId,
+          isStaging,
+          directVersionPublish
+        })})
+        messageData = await response.json()
+
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -384,6 +387,8 @@ export class LuBuildCore {
     if (retryCount === 0) {
       throw error
     }
+
+    return messageData
   }
 
   private updateVersionValue(versionId: string) {

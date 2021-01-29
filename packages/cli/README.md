@@ -771,6 +771,7 @@ OPTIONS
 
   --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
+  --directVersionPublish           [default: false] Available only in direct version query. Do not publish to staging or production
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
