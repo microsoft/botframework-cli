@@ -2,6 +2,18 @@
   "name": "@microsoft/bf-orchestrator-cli",
   "description": "Bot Orchestrator",
   "version": "1.0.0",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "ia32"
+  ],
+  "engines": {
+    "node": "^10.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0"
+  },
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {

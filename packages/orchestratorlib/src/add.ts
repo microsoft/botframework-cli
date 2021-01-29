@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-import * as path from 'path';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
@@ -14,23 +13,30 @@ export class OrchestratorAdd {
   public static async runAsync(
     baseModelPath: string,
     snapshot: Uint8Array,
-    luObject: any,
+    luObsjects: any[],
     isDialog: boolean = false,
-    routingName: string = '',
     entityBaseModelPath: string = '',
     fullEmbeddings: boolean = false) {
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
-    Utility.debuggingLog(`routingName=${routingName}`);
 
     if (!baseModelPath || baseModelPath.length === 0) {
       throw new Error('Please provide path to Orchestrator model');
     }
 
     Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    await LabelResolver.createWithSnapshotAsync(baseModelPath, snapshot);
+    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(baseModelPath, snapshot);
     Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
-    return OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings);
+
+    const retPayload: any[] = [];
+    for (const luObject of (luObsjects || [])) {
+      const routingName: string =  Utility.isEmptyString(luObject.routingName) ? '' : luObject.routingName;
+      // eslint-disable-next-line no-await-in-loop
+      const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver);
+      retPayload.push(retVal);
+    }
+
+    return retPayload;
   }
 }

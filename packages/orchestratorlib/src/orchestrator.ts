@@ -50,20 +50,18 @@ export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async addAsync(
     baseModelPath: string,
-    snapshot: any,
-    luObject: any,
-    isDialog: boolean,
-    routingName: string = '',
+    snapshot: Uint8Array,
+    luObsjects: any[],
+    isDialog: boolean = false,
     entityBaseModelPath: string = '',
-    fullEmbedding: boolean = false): Promise<any> {
+    fullEmbeddings: boolean = false): Promise<any> {
     return OrchestratorAdd.runAsync(
       baseModelPath,
       snapshot,
-      luObject,
+      luObsjects,
       isDialog,
-      routingName,
       entityBaseModelPath,
-      fullEmbedding);
+      fullEmbeddings);
   }
 
   // eslint-disable-next-line max-params
