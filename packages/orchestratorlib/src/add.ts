@@ -34,9 +34,10 @@ export class OrchestratorAdd {
       const routingName: string =  Utility.isEmptyString(luObject.routingName) ? '' : luObject.routingName;
       // eslint-disable-next-line no-await-in-loop
       const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver);
-      retPayload.push(retVal);
+      snapshot = retVal.snapshot;
+      retPayload.push({id: luObject.id, recognizer: retVal.recognizer});
     }
 
-    return retPayload;
+    return {snapshot: snapshot, outputs: retPayload};
   }
 }

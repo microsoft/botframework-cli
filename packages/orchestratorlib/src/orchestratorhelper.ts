@@ -1,5 +1,4 @@
-/* eslint-disable no-await-in-loop */
-/*!
+/*
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
@@ -140,6 +139,7 @@ export class OrchestratorHelper {
     const filePaths: string[] = filePathConfiguration.split(',');
     for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
+        // eslint-disable-next-line no-await-in-loop
         await OrchestratorHelper.iterateInputFolder(
           filePathEntry,
           utteranceLabelsMap,
@@ -148,6 +148,7 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap,
           hierarchical);
       } else {
+        // eslint-disable-next-line no-await-in-loop
         await OrchestratorHelper.processFile(
           filePathEntry,
           OrchestratorHelper.getRoutingNameFromFileName(filePathEntry, hierarchical, routingName),
@@ -188,19 +189,43 @@ export class OrchestratorHelper {
     return retValue;
   }
 
-  public static getDialogFilesContent(isDialog: boolean, baseName: string, recognizers: any = []) {
-    if (!isDialog) return undefined;
-    const recoContent: {
-      '$kind': string;
-      'modelPath': string;
-      'snapshotPath': string;
-      'entityRecognizers': any;
-    } = {
-      $kind: 'Microsoft.OrchestratorRecognizer',
-      modelPath: '=settings.orchestrator.modelPath',
-      snapshotPath: `=settings.orchestrator.snapshots.${baseName}`,
-      entityRecognizers: recognizers,
-    };
+  public static getDialogFilesContent(baseName: string, recognizers: any = [], routingName: string = '', skillName: string = '') {
+    let recoContent: any;
+    if (Utility.isEmptyString(skillName)) {
+      recoContent = {
+        $kind: 'Microsoft.OrchestratorRecognizer',
+        modelPath: '=settings.orchestrator.modelPath',
+        snapshotPath: `=settings.orchestrator.snapshots.${baseName}`,
+        entityRecognizers: recognizers,
+      };
+    } else {
+      // eslint-disable-next-line no-warning-comments
+      // TODO: remove $designer or generate the id with randomly generated 6 alphanumeric characters
+      routingName = Utility.isEmptyString(routingName) ? baseName : routingName;
+      recoContent = {
+        $kind: 'Microsoft.OnIntent',
+        $designer: {
+          id: '2oSiwz',
+          name: `${routingName}`,
+        },
+        intent: `${routingName}`,
+        actions: [
+          {
+            $kind: 'Microsoft.BeginSkill',
+            $designer: {
+              id: 'pDok9V',
+            },
+            activityProcessed: true,
+            botId: '=settings.MicrosoftAppId',
+            skillHostEndpoint: '=settings.skillHostEndpoint',
+            connectionName: '=settings.connectionName',
+            allowInterruptions: true,
+            skillEndpoint: `=settings.skill['${skillName}'].endpointUrl`,
+            skillAppId: `=settings.skill['${skillName}'].msAppId`,
+          },
+        ],
+      };
+    }
 
     const multiRecoContent: any = {
       $kind: 'Microsoft.MultiLanguageRecognizer',
@@ -1086,18 +1111,19 @@ export class OrchestratorHelper {
     routingName: string = '',
     isDialog: boolean = false,
     fullEmbedding: boolean = false,
-    labelResolver: any = null) {
+    labelResolver: any = null,
+    skillName: string = '') {
     Utility.debuggingLog(`routingName=${routingName}`);
-    Utility.debuggingLog('OrchestratorBuild.processLuFile(), ready to call LabelResolver.createLabelResolver()');
 
     if (!labelResolver) {
+      Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
       labelResolver = LabelResolver.createLabelResolver();
+      Utility.debuggingLog('OrchestratorHelper.processLuFile(), after calling LabelResolver.createLabelResolver()');
+      Utility.debuggingLog('Created label resolver');
     }
-    Utility.debuggingLog('OrchestratorBuild.processLuFile(), after calling LabelResolver.createLabelResolver()');
     if (fullEmbedding) {
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
     }
-    Utility.debuggingLog('Created label resolver');
 
     const baseName: string = luObject.id;
 
@@ -1114,7 +1140,7 @@ export class OrchestratorHelper {
     await OrchestratorHelper.parseLuContent(
       luObject.id,
       luObject.content,
-      '',
+      routingName,
       result.utteranceLabelsMap,
       result.utteranceLabelDuplicateMap,
       result.utteranceEntityLabelsMap,
@@ -1124,7 +1150,7 @@ export class OrchestratorHelper {
     LabelResolver.addExamples(result, labelResolver);
     const snapshot: any = labelResolver.createSnapshot();
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
-    const recognizer: any = OrchestratorHelper.getDialogFilesContent(isDialog, baseName, entities);
+    const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
     return {id: baseName, snapshot: snapshot, recognizer: recognizer};
   }
 }
