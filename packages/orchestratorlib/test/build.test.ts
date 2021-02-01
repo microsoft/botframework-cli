@@ -16,7 +16,7 @@ const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l'
 
 describe('OrchestratorBuildTests', () => {
   beforeEach(async () => {
-    Utility.debuggingLog('Downloading a base nerual network language model for unit test');
+    Utility.debuggingLog('Downloading a base neural network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
       basemodelId,
       baseModelPath,
@@ -30,7 +30,7 @@ describe('OrchestratorBuildTests', () => {
       '',
       OrchestratorHelper.getLuInputs('./test/fixtures/adaptive/'),
       true,
-      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+      null);
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
@@ -46,6 +46,10 @@ describe('OrchestratorBuildTests', () => {
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
+    OrchestratorHelper.writeBuildOutputFiles('./test/fixtures/output', retPayload);
+    assert.ok(Utility.exists('./test/fixtures/output/RootDialog.blu'));
+    assert.ok(Utility.exists('./test/fixtures/output/RootDialog.en-us.lu.dialog'));
+    assert.ok(Utility.exists('./test/fixtures/output/RootDialog.lu.dialog'));
   });
 });
 

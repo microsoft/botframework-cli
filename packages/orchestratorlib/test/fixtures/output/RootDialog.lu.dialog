@@ -1,0 +1,6 @@
+{
+  "$kind": "Microsoft.OrchestratorRecognizer",
+  "modelPath": "=settings.orchestrator.modelPath",
+  "snapshotPath": "=settings.orchestrator.snapshots.RootDialog",
+  "entityRecognizers": []
+}

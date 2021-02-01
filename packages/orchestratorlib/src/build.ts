@@ -80,7 +80,7 @@ export class OrchestratorBuild {
     for (const file of (luConfig.models || [])) {
       const luObject: any = {
         content: OrchestratorHelper.readFile(file),
-        id: file,
+        id: path.basename(file, '.lu'),
       };
       luObjects.push(luObject);
     }

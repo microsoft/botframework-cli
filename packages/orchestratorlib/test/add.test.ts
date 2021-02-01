@@ -2,46 +2,34 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-/*
+
 import * as path from 'path';
-
-const sinon: any = require('sinon');
-
-import {LabelResolver} from '../src/labelresolver';
-// import {OrchestratorBaseModel} from '../src/basemodel';
-// import {OrchestratorAdd} from '../src/add';
+import {OrchestratorBaseModel} from '../src/basemodel';
+import {Orchestrator} from '../src/orchestrator';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
-// import {Utility} from '../src/utility';
-// import {UnitTestHelper} from './utility.test';
+import {Utility} from '../src/utility';
+import {UnitTestHelper} from './utility.test';
+
+const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
+const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
+const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve('./test/fixtures/output/RootDialog.blu'));
 
 describe('OrchestratorAddTests', () => {
-  beforeEach(() => {
-    const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve('./test/fixtures/dispatch/orchestrator.blu'));
-    sinon.stub(LabelResolver, 'createWithSnapshotAsync');
-    sinon.stub(LabelResolver, 'addSnapshot');
-    sinon.stub(LabelResolver, 'addExamples');
-    sinon.stub(LabelResolver, 'createSnapshot').returns(snapshot);
-  });
-
-  afterEach(() => {
-    sinon.restore();
+  beforeEach(async () => {
+    Utility.debuggingLog('Downloading a base neural network language model for unit test');
+    await UnitTestHelper.downloadModelFileForTest(
+      basemodelId,
+      baseModelPath,
+      OrchestratorBaseModel.defaultHandler,
+      OrchestratorBaseModel.defaultHandler);
   });
 
   it('runAsync-0', async () => {
-    await OrchestratorAdd.runAsync(
-      './test/fixtures/',
-      './test/fixtures/adaptive/',
-      './test/fixtures/',
-      './test/fixtures/dispatch/orchestrator.blu');
-  });
-
-  it('runAsync-1', async () => {
-    await OrchestratorAdd.runAsync(
-      './test/fixtures/',
-      './test/fixtures/adaptive/',
-      './test/fixtures/',
-      './test/fixtures/dispatch/orchestrator.blu',
-      'testPrefix');
+    await Orchestrator.addAsync(
+      baseModelPath,
+      snapshot,
+      OrchestratorHelper.getLuInputs('./test/fixtures/skills/'),
+      true);
   });
 });
-*/
+

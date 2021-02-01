@@ -9,8 +9,6 @@
     "out": ".",
     "suffix": "bobd",
     "models": [
-        "./test/fixtures/adaptive/AddToDoDialog.lu",
-        "./test/fixtures/adaptive/DeleteToDoDialog.lu",
-        "./test/fixtures/adaptive/GetUserProfileDialog.lu"
+        "./test/fixtures/adaptive/RootDialog.lu"
     ]
 }
