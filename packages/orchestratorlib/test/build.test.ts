@@ -2,7 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-/*
+
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
 import {OrchestratorBaseModel} from '../src/basemodel';
@@ -24,9 +24,10 @@ describe('OrchestratorBuildTests', () => {
       OrchestratorBaseModel.defaultHandler);
   });
 
-  it('runAsync', async () => {
+  it('runAsync with lu inputs', async () => {
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
+      '',
       OrchestratorHelper.getLuInputs('./test/fixtures/adaptive/'),
       true,
       JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
@@ -34,5 +35,17 @@ describe('OrchestratorBuildTests', () => {
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
   });
+
+  it('runAsync with luConfig json', async () => {
+    const retPayload: any = await OrchestratorBuild.runAsync(
+      baseModelPath,
+      '',
+      [],
+      true,
+      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+
+    assert.ok(retPayload !== null);
+    assert.ok(retPayload.outputs !== null);
+  });
 });
-*/
+
