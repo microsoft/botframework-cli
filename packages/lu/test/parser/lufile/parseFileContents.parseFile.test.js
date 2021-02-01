@@ -1025,7 +1025,7 @@ describe('parseFile correctly parses utterances', function () {
                         .then(res => {
                                 assert.equal(res.LUISJsonStructure.patternAnyEntities.length, 0);
                                 assert.equal(res.LUISJsonStructure.entities.length, 0);
-                                assert.equal(res.LUISJsonStructure.utterances[0].text, 'this is a \\{test\\}');
+                                assert.equal(res.LUISJsonStructure.utterances[0].text, 'this is a {test}');
                                 assert.equal(res.LUISJsonStructure.utterances[1].text, 'this ia a test \\n');
                                 done();
                         })
@@ -1112,4 +1112,39 @@ describe('parseFile correctly parses utterances', function () {
                 })
                 .catch(err => done(err))
         })
+
+        it("Correctly parses utterance with escape char \\ to escape entity definition", function (done) {
+          let testLU = `
+                      # test
+                      - this is another \\{@from = one} from \\{@to = tokyo} \\in japan`;
+          parseFile
+            .parseFile(testLU)
+            .then((res) => {
+              assert.equal(
+                res.LUISJsonStructure.utterances[0].text,
+                "this is another {@from = one} from {@to = tokyo} \\in japan"
+              );
+              done();
+            })
+            .catch((err) => done(err));
+        });
+
+        it("Correctly parses utterance that keeps @ at the the beginning of entity name", function (done) {
+          let testLU = `
+                      # test
+                      - this is another \\\\{@@from = one} from {@@to = tokyo}`;
+          parseFile
+            .parseFile(testLU)
+            .then((res) => {
+              assert.equal(
+                res.LUISJsonStructure.utterances[0].text,
+                "this is another \\one from tokyo"
+              );
+              assert.equal(res.LUISJsonStructure.entities.length, 2);
+              assert.equal(res.LUISJsonStructure.entities[0].name, "@from");
+              assert.equal(res.LUISJsonStructure.entities[1].name, "@to");
+              done();
+            })
+            .catch((err) => done(err));
+        });
 })

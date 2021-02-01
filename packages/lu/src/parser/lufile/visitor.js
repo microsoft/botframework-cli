@@ -1,6 +1,7 @@
 const lp = require('./generated/LUFileParser').LUFileParser;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
+const EscapeCharsInUtterance = require('./../utils/enums/escapechars').EscapeCharsInUtterance;
 
 class Visitor {
     /**
@@ -18,6 +19,12 @@ class Visitor {
                 case lp.EXPRESSION: {
                     let tokUtt = this.tokenizeUtterance(innerNode.getText().trim());
                     utterance = this.recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, utterance.trimLeft()); 
+                    break;
+                }
+                case lp.ESCAPE_CHARACTER: {
+                    let escapeCharacters = innerNode.getText();
+                    let escapedUtterace = escapeCharacters.length > 1 && EscapeCharsInUtterance.includes(escapeCharacters[1]) ? escapeCharacters.slice(1) : escapeCharacters;
+                    utterance = utterance.concat(escapedUtterace);
                     break;
                 }
                 default: {
