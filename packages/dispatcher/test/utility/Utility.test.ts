@@ -17,14 +17,20 @@ import { Utility } from "../../src/utility/Utility";
 
 export class UnitTestHelper {
 
+    public static getDefaultFunctionalTestTimeout(): number {
+        return 3000000;
+    }
     public static getDefaultUnitTestTimeout(): number {
-        return 80000;
+        return 100000;
     }
     public static getDefaultUnitTestDebuggingLogFlag(): boolean {
         return false;
     }
     public static getDefaultUnitTestCleanUpFlag(): boolean {
         return true;
+    }
+    public static getIgnoreFlag(): boolean {
+        return false;
     }
 }
 
