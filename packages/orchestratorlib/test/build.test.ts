@@ -36,13 +36,13 @@ describe('OrchestratorBuildTests', () => {
     assert.ok(retPayload.outputs !== null);
   });
 
-  it('runAsync with luConfig json', async () => {
+  it('runAsync with luconfig json', async () => {
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
       '',
       [],
       true,
-      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luconfig.json')));
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
