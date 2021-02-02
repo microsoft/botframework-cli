@@ -194,8 +194,8 @@ export class OrchestratorHelper {
     if (Utility.isEmptyString(skillName)) {
       recoContent = {
         $kind: 'Microsoft.OrchestratorRecognizer',
-        modelPath: '=settings.orchestrator.modelPath',
-        snapshotPath: `=settings.orchestrator.snapshots.${baseName}`,
+        modelFolder: '=settings.orchestrator.modelPath',
+        snapshotFile: `=settings.orchestrator.snapshots.${baseName}`,
         entityRecognizers: recognizers,
       };
     } else {

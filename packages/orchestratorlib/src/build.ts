@@ -60,12 +60,12 @@ export class OrchestratorBuild {
 
       const settings: {
         'orchestrator': {
-          'modelPath': string;
+          'modelFolder': string;
           'snapshots': Map<string, string>;
         };
       } = {
         orchestrator: {
-          modelPath: baseModelPath,
+          modelFolder: baseModelPath,
           snapshots: new Map<string, string>(),
         },
       };
