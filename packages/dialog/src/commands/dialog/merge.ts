@@ -7,7 +7,7 @@ import { Command, flags } from '@microsoft/bf-cli-command'
 import { SchemaMerger } from '../../library/schemaMerger'
 
 export default class DialogMerge extends Command {
-    static description = 'Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an "exported" directory it is copied to /<package> in the --imports directory.'
+    static description = 'Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an "exported" directory it is copied to /<package> in the --imports directory. You can make use of negative patterns like !**/generated/** to exclude particular directories or files, although some directories like bin, obj and node_modules are automatically excluded.'
 
     static args = [
         { name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .csproj, .nuspec or package.json files.' },

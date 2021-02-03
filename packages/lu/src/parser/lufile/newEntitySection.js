@@ -54,7 +54,7 @@ class NewEntitySection  extends BaseSection {
 
     ExtractType(parseTree) {
         if (parseTree.newEntityDefinition().newEntityLine().newEntityType()) {
-            return parseTree.newEntityDefinition().newEntityLine().newEntityType().getText().trim();
+            return parseTree.newEntityDefinition().newEntityLine().newEntityType().getText().trim().toLowerCase();
         }
     }
 

@@ -183,3 +183,13 @@ describe('ValidateResource don\'t change resource in memory', () => {
     assert.equal(luresource.Sections.length, 2);
   });
 });
+
+describe('Invalid utterance references', () => {
+  it('Throw exception when utterance reference is invalid', function () {
+    let fileContent = `# Cancel
+    - [Cancel](./general)`;
+    let luresource = luparser.parse(fileContent);
+    let errors = validateResource(luresource);
+    assert.include(errors[0].Message, '[ERROR]: Invalid LU File Ref: "[Cancel](./general)".')
+  });
+});

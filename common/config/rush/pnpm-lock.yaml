@@ -64,7 +64,6 @@ dependencies:
   read-text-file: 1.1.0
   readline: 1.3.0
   seedrandom: 3.0.5
-  semver: 5.7.1
   sinon: 7.5.0
   source-map-support: 0.5.16
   testdouble: 3.13.0
@@ -3848,6 +3847,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
+  /lru-cache/6.0.0:
+    dependencies:
+      yallist: 4.0.0
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-Jo6dJ04CmSjuznwJSS3pUeWmd/H0ffTlkXXgwZi+eq1UCmqQwCh+eLsYOYCwY991i2Fah4h1BEMCx4qThGbsiA==
   /make-dir/2.1.0:
     dependencies:
       pify: 4.0.1
@@ -5132,6 +5139,15 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw==
+  /semver/7.3.4:
+    dependencies:
+      lru-cache: 6.0.0
+    dev: false
+    engines:
+      node: '>=10'
+    hasBin: true
+    resolution:
+      integrity: sha512-tCfb2WLjqFAtXn4KEdxIhalnRtoKFN7nAwj0B3ZXCbQloV2tq5eDbcTmT68JJD3nRJq24/XgxtQKFIpQdtvmVw==
   /set-blocking/2.0.0:
     dev: false
     resolution:
@@ -6179,6 +6195,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-a4UGQaWPH59mOXUYnAG2ewncQS4i4F43Tv3JoAM+s2VDAmS9NsK8GpDMLrCHPksFT7h3K6TOoUNn2pb7RoXx4g==
+  /yallist/4.0.0:
+    dev: false
+    resolution:
+      integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==
   /yargs-parser/13.1.1:
     dependencies:
       camelcase: 5.3.1
@@ -6265,7 +6285,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-Wb4uaq0qzFykhafngtZf7SiHiNrGzhhmof6QqgeoME7tHLszySHESBlOXKFyn18QHxiqfrSrDxNwYA1d1CVAEg==
+      integrity: sha512-LwnxaJqorI7QZOxe9fA42tJiw9KC018EJ4/Nb5TJdhnH4W9jI6hsFnai/7KrPok+1l4hdb2Dp0p2Yqft0+MM+w==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6306,7 +6326,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-kYzHgqDKu3wAjtUuKwtp8FvZt5AkCADPxQPvs3lV9U//bYD5o2d27xl6Dmj9T2namd/AR5S4LwxBkJD+De2bxQ==
+      integrity: sha512-j/EQpgif6mijXWVVa6eTxJ1W/rvMNHJ/1JQy+CHJz/M6NkCVCvLFlR5modLisPLKCDRRT+29eygP/SMpCRrWcg==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6335,7 +6355,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-ksGLovc5xrgg1UroumRsRoMMdhcYIWHpcMrOOWAFc+TupPLMJ9OHZ9V5unfN4fi4e4OSVxZK1EQBQRqa0ok0Gg==
+      integrity: sha512-jROoKQr6sygYp+6RJDEF5Yo+W4e4mJtjih6nMCDl+jllo13ZLkvXgrrxTLmJiVp1BD2r2La0Ydgcu0LKwH0u5w==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6364,7 +6384,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-xS786DuaVjEi8tPoDFgpWainsqS3Cb1CmzJSLX4zTTKyE60p+HTYwmUQx1JKq8dggoNO+P2lbz/51SflCV0L7Q==
+      integrity: sha512-f4KIJd3jxLMwW29Gf/E7a1PdcJa1LqZTxYgcsgivlfGedKFVho+BSoJxhhJ99c7RYqiMI8vvoNzKmwuzzFzAtw==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6410,7 +6430,7 @@ packages:
       path: 0.12.7
       rimraf: 2.7.1
       seedrandom: 3.0.5
-      semver: 5.7.1
+      semver: 7.3.4
       ts-node: 9.0.0_typescript@4.0.3
       tslib: 2.0.3
       tslint: 5.20.1_typescript@4.0.3
@@ -6419,7 +6439,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-8kUxj5rw5WU5RlPdqqOUfIZ0FrC93AIcrRaEmIeT/ThY6y+kRFYiNBafWNdgZuV4tDhwjbdWCPZsLReXBzo0Ag==
+      integrity: sha512-RKFohAxZBJ6lsydNs3Oel2pjEeFUqSZUGPjW20cdw0iRTYNoj4HN0hNJSqdYoslu9GKHtO7hHJfUSUE7uFPQXA==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-lg-cli.tgz':
@@ -6458,7 +6478,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lg-cli'
     resolution:
-      integrity: sha512-gvrRLE11wdMMjPil7NxZa0Xj+IkTEx6Q5eehmv5v+Af7ifkxOe3n2bNyTyAYEe/7dzY2jca3dTvuBR3D77hZvA==
+      integrity: sha512-n/fsTdjvlGsrNbOvuBZiKxWCb2OTQS/Cqt+C6rqrGKibe3hnTFF24RjJhuU1CBkPw3CDHJkfA9pAPnwoXNM4Jg==
       tarball: 'file:projects/bf-lg-cli.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6500,7 +6520,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-BZgbZNnq37dDSnbEv71cYgExtHIwGoJtTRLI1Lg3JhyS37Ctvu71fOEsC5Igz7QfZCwVy44FHL30XjLc0yxQng==
+      integrity: sha512-idgtiuhAkB8CwVNp0iQcGkBUCIbsmQab6zQujW1T1AOUwPZjE1Aml1y9NUizV4G5batuOhygJvtZHcYB4UZrKQ==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6544,7 +6564,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-h38qp0iFrAg2EGh054ZZicscEWGmEvg0sRhwPuiVppm/iA+KXtYTFJFwz6Kw8R7EZoEbmbE9Dt1eWM0vr9eO3Q==
+      integrity: sha512-IvEe5WBbavK6PUFtDRqATprW3PXQ4hZWSEqZ+wneCXq48Ow0/0YlXZf7D+pm6rTm6ij6EK93/DDK3rtktACnqA==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6595,7 +6615,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-k458yG6b0VkPZ5wy4E0Kc3z+V91k6rrdCrYNZSJ6wGHbHIFtoIU0jEObi/tDMdhE7OzVvHPqz0vXWmeWnDcb6g==
+      integrity: sha512-GpMpI9b+pI8abjKmCCvp0BH2T/P0Di+k5dATmhcmgCHz8UOjkjGByZKqO+YirQGhjXEoaBImaVQ7dP5aj57Qsw==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6631,7 +6651,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-AX7BHfM3wGdgxGgtJAKJWtH+k+GkPR/OntSH6FI/oFadniGwg4CjKD01YIhC4NSKb+pzBZXTXj48Ler8sbcODw==
+      integrity: sha512-9/0dyLrvSjgWsNXuBSOXqwjTbMLJAZYYvD7wX2OQWvadN/vq5ghqSNXuB78IZiFaClFOdiuueRHQqPDVNL8VVQ==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6701,7 +6721,6 @@ specifiers:
   read-text-file: ^1.1.0
   readline: ^1.3.0
   seedrandom: ~3.0.5
-  semver: ^5.5.1
   sinon: ^7.5.0
   source-map-support: ~0.5.16
   testdouble: ^3.11.0

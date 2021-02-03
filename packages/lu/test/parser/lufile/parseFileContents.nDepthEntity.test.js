@@ -816,4 +816,21 @@ describe('V2 NDepth definitions using @ notation', function () {
             .catch(err => done())
     })
     
+    it('nDepth useFeatures can have semicolon at the end of feature list', function(done){
+        let luFile = `
+@ ml nDepth usesFeatures phraselist1
+    - @ ml nDepth_child2 usesFeatures phraselist1,
+@ phraselist phraselist1(interchangeable) = 
+    - who,why,where,what
+        `;
+
+        parseFile.parseFile(luFile)
+            .then(res => {
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'phraselist1');
+                assert.equal(res.LUISJsonStructure.entities[0].children[0].features[0].featureName, 'phraselist1');
+                done();
+            })
+            .catch(err => done(err))
+    });
 });

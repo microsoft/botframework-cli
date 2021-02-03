@@ -144,7 +144,7 @@ const resolveRefs = function(refTree, srcId) {
             if (result.utterances !== undefined) {
                 result.utterances.forEach(utt => {
                     if (luObj.uttHash[utt] === undefined) {
-                        luObj.utterances.push(new hClasses.uttereances(utt, ref.uttObj.intent));
+                        luObj.utterances.push(new hClasses.utterances(utt, ref.uttObj.intent));
                         luObj.uttHash[utt] = '';
                     }
                 })
