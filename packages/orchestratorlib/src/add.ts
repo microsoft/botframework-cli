@@ -33,7 +33,7 @@ export class OrchestratorAdd {
     for (const luObject of (luObsjects || [])) {
       const routingName: string =  Utility.isEmptyString(luObject.routingName) ? luObject.id : luObject.routingName;
       // eslint-disable-next-line no-await-in-loop
-      const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver);
+      const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver, luObject.skillName);
       snapshot = retVal.snapshot;
       retPayload.push({id: luObject.id, recognizer: retVal.recognizer});
     }
