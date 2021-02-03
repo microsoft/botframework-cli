@@ -47,12 +47,17 @@ describe('OrchestratorAddTests', () => {
       assert.ok(snapshotContent.indexOf(luInput.id) > 0);
     }
     Utility.deleteFile(snapshotFile);
+
+    for (const output of retPayload.outputs) {
+      assert.ok(output.recognizer.orchestratorRecognizer.$kind === 'Microsoft.OrchestratorRecognizer');
+    }
   });
 
-  it('runAsync with routing names', async () => {
+  it('runAsync with routing and skill names', async () => {
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     for (const luInput of luInputs) {
       luInput.routingName = luInput.id + 'Ex';
+      luInput.skillName = luInput.id + 'Skill';
     }
 
     const retPayload: any = await Orchestrator.addAsync(
@@ -75,6 +80,10 @@ describe('OrchestratorAddTests', () => {
       assert.ok(snapshotContent.indexOf(luInput.routingName) > 0);
     }
     Utility.deleteFile(snapshotFile);
+
+    for (const output of retPayload.outputs) {
+      assert.ok(output.recognizer.orchestratorRecognizer.$kind === 'Microsoft.OnIntent');
+    }
   });
 });
 
