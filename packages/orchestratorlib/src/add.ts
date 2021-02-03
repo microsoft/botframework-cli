@@ -31,7 +31,7 @@ export class OrchestratorAdd {
 
     const retPayload: any[] = [];
     for (const luObject of (luObsjects || [])) {
-      const routingName: string =  Utility.isEmptyString(luObject.routingName) ? '' : luObject.routingName;
+      const routingName: string =  Utility.isEmptyString(luObject.routingName) ? luObject.id : luObject.routingName;
       // eslint-disable-next-line no-await-in-loop
       const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver);
       snapshot = retVal.snapshot;

@@ -34,9 +34,10 @@ describe('OrchestratorBuildTests', () => {
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
+    assert.ok(retPayload.settings.orchestrator.modelFolder === baseModelPath);
   });
 
-  it('runAsync with luconfig json', async () => {
+  it('runAsync with luConfig json', async () => {
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
       '',
