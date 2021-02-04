@@ -84,10 +84,10 @@ export class OrchestratorSettings {
         let snapshotFile: string = path.basename(snapshotPath);
         if (!snapshotFile.includes('.')) {
           snapshotDir = snapshotPath;
-          snapshotFile = '';
+          snapshotFile = OrchestratorHelper.SnapshotFileName;
         }
         fs.mkdirSync(snapshotDir, {recursive: true});
-        snapshotPath = path.join(snapshotPath, snapshotFile);
+        snapshotPath = path.join(snapshotDir, snapshotFile);
       }
     } else if (!settingsFileExists || !settings.snapshotPath || settings.snapshotPath.length === 0) {
       snapshotPath = defaultSnapshotPath;

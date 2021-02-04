@@ -121,7 +121,7 @@ export class OrchestratorHelper {
   }
 
   public static getSnapshotFromFile(file: string) {
-    return new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(file));
+    return Utility.exists(file) ? new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(file)) : new Uint8Array();
   }
 
   public static async getUtteranceLabelsMap(

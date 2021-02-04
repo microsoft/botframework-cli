@@ -24,9 +24,16 @@ export class OrchestratorAdd {
       throw new Error('Please provide path to Orchestrator model');
     }
 
-    Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
-    const labelResolver: any = await LabelResolver.createWithSnapshotAsync(baseModelPath, snapshot);
-    Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    let labelResolver: any = null;
+    if (snapshot) {
+      Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createWithSnapshotAsync()');
+      labelResolver = await LabelResolver.createWithSnapshotAsync(baseModelPath, snapshot);
+      Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createWithSnapshotAsync()');
+    } else {
+      Utility.debuggingLog('OrchestratorAdd.runAsync(), ready to call LabelResolver.createAsync()');
+      labelResolver = await LabelResolver.createAsync(baseModelPath);
+      Utility.debuggingLog('OrchestratorAdd.runAsync(), after calling LabelResolver.createAsync()');
+    }
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
 
     const retPayload: any[] = [];

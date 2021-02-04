@@ -25,7 +25,35 @@ describe('OrchestratorAddTests', () => {
       OrchestratorBaseModel.defaultHandler);
   });
 
-  it('runAsync default', async () => {
+  it('addAsync with empty snapshot', async () => {
+    const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
+    const retPayload: any = await Orchestrator.addAsync(
+      baseModelPath,
+      new Uint8Array(),
+      luInputs,
+      true);
+
+    assert.ok(retPayload !== null);
+    assert.ok(retPayload.snapshot !== null);
+    assert.ok(retPayload.outputs !== null);
+    assert.ok(retPayload.outputs.length === 2);
+
+    const snapshotFile: string = path.join('./test/fixtures/output', 'RootDialog1.blu');
+    OrchestratorHelper.writeToFile(snapshotFile, retPayload.snapshot);
+    assert.ok(Utility.exists(snapshotFile));
+
+    const snapshotContent: string = OrchestratorHelper.readFile(snapshotFile);
+    for (const luInput of luInputs) {
+      assert.ok(snapshotContent.indexOf(luInput.id) > 0);
+    }
+    Utility.deleteFile(snapshotFile);
+
+    for (const output of retPayload.outputs) {
+      assert.ok(output.recognizer.orchestratorRecognizer.$kind === 'Microsoft.OrchestratorRecognizer');
+    }
+  });
+
+  it('addAsync default', async () => {
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     const retPayload: any = await Orchestrator.addAsync(
       baseModelPath,
@@ -53,7 +81,7 @@ describe('OrchestratorAddTests', () => {
     }
   });
 
-  it('runAsync with routing and skill names', async () => {
+  it('addAsync with routing and skill names', async () => {
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     for (const luInput of luInputs) {
       luInput.routingName = luInput.id + 'Ex';
@@ -81,8 +109,12 @@ describe('OrchestratorAddTests', () => {
     }
     Utility.deleteFile(snapshotFile);
 
-    for (const output of retPayload.outputs) {
+    const outputs: any = retPayload.outputs;
+    for (let i: number = 0; i < outputs.length; i++) {
+      const output: any = outputs[i];
+      const luInput: any = luInputs[i];
       assert.ok(output.recognizer.orchestratorRecognizer.$kind === 'Microsoft.OnIntent');
+      assert.ok(output.recognizer.orchestratorRecognizer.actions[0].skillEndpoint === `=settings.skill['${luInput.skillName}'].endpointUrl`);
     }
   });
 });
