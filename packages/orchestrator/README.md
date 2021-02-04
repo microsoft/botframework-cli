@@ -80,13 +80,15 @@ USAGE
 
 OPTIONS
   -d, --debug
-  -h, --help         Orchestrator create command help
-  -i, --in=in        The path to source label files from where orchestrator example file will be created from. Default
-                     to the current working directory.  Valid file extensions are lu, .qna, .json and .tsv.
-  -m, --model=model  Path to Orchestrator base model directory.
-  -o, --out=out      Path where generated orchestrator example file will be placed. Default to current working
-                     directory.
-  --hierarchical     Add hierarchical labels based on lu/qna file name.
+  -h, --help                        Orchestrator create command help
+  -i, --in=in                       The path to source label files from where orchestrator example file will
+                                    be created from. Default to the current working directory.
+                                    Valid file extensions are lu, .qna, .json and .tsv.
+  -m, --model=model                 Path to Orchestrator base model directory.
+  -e, --entityModel=entity-model    Path to Orchestrator entity base model directory.
+  -o, --out=out                     Path where generated orchestrator example file will be placed.
+                                    Default to current working directory.
+  --hierarchical                    Add hierarchical labels based on lu/qna file name.
 
 EXAMPLE
 
@@ -136,17 +138,20 @@ A user can play with an Orchestrator base model interactively and improve a snap
 
 ```
 USAGE
-    $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base model-and-config-folder>[--in=<previous-generated-blu-training-set-file>]
+  $ bf orchestrator:interactive --out=<analysis-and-output-folder> --model=<base-model-and-config-folder>
+    [--entityModel=<entity-base-model-and-config-folder>]
+    [--in=<previous-generated-blu-training-set-file>]
 
 OPTIONS
-  -d, --debug       Print detailed debugging information during execution.
-  -h, --help        Orchestrator 'interactive' command help.
-  -i, --in=in       Optional path to a previously created Orchestrator .blu file.
-                    This argument is optional users can use the 'interactive' command
-                    to start an Orchestrator snapshot from scratch. The 'n' commandlet
-                    can save the utterance labels into a snapshot (.blu) file.
-  -m, --model=model Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out     Directory where analysis and output files will be placed.
+  -d, --debug                       Print detailed debugging information during execution.
+  -h, --help                        Orchestrator 'interactive' command help.
+  -i, --in=in                       Optional path to a previously created Orchestrator .blu file.
+                                    This argument is optional users can use the 'interactive' command
+                                    to start an Orchestrator snapshot from scratch. The 'n' commandlet
+                                    can save the utterance labels into a snapshot (.blu) file.
+  -m, --model=model                 Directory or a config file hosting Orchestrator base model files.
+  -e, --entityModel=entity-model    Path to Orchestrator entity base model directory.
+  -o, --out=out                     Directory where analysis and output files will be placed.
 
 DESCRIPTION
 
@@ -237,15 +242,20 @@ Query Orchestrator base model and a snapshot/train file.
 
 ```
 USAGE
-  $ bf orchestrator:query
+  $ bf orchestrator:query --model=<base-model-and-config-folder> --query=<query>
+    [--entityModel=<entity-base-model-and-config-folder>]
+    [--in=<previous-generated-blu-training-set-file>]
+    [--limit=<limit-of-number-of-predictions>]
 
 OPTIONS
   -d, --debug
-  -h, --help         Orchestrator query command help
-  -i, --in=in        Path to previously created Orchestrator snapshot (.blu file).
-  -q, --query=query  Query string to predict.
-  -m, --model=model  Path to Orchestrator base model directory.
-  
+  -h, --help                        Orchestrator query command help
+  -i, --in=in                       Path to previously created Orchestrator snapshot (.blu file).
+  -q, --query=query                 Query string to predict.
+  -m, --model=model                 Path to Orchestrator base model directory.
+  -e, --entityModel=entity-model    Path to Orchestrator entity base model directory.
+  -l, --limit=#                     (optional) Limit of number of predictions.
+
 EXAMPLE
        $ bf orchestrator:query --in ./path/to/blufile/ --query /query/string/to/predict 
        $ bf orchestrator:query --in ./path/to/blufile/ --query /query/string/to/predict --model ./path/to/base/model/directory
@@ -291,13 +301,14 @@ USAGE
   $ bf orchestrator:test
 
 OPTIONS
-  -d, --debug        Print detailed debugging information during execution.
-  -h, --help         Orchestrator 'test' command help.
-  -i, --in=in        Path to a previously created Orchestrator .blu file.
-  -m, --model=model  Directory or a config file hosting Orchestrator base model files.
-  -o, --out=out      Directory where analysis and output files will be placed.
-  -t, --test=test    Path to a test file, or comma-separated paths to
-                     a collection of test files -- most uselful for crosss-valiaton.
+  -d, --debug                       Print detailed debugging information during execution.
+  -h, --help                        Orchestrator 'test' command help.
+  -i, --in=in                       Path to a previously created Orchestrator .blu file.
+  -m, --model=model                 Directory or a config file hosting Orchestrator base model files.
+  -e, --entityModel=entity-model    Path to Orchestrator entity base model directory.
+  -o, --out=out                     Directory where analysis and output files will be placed.
+  -t, --test=test                   Path to a test file, or comma-separated paths to
+                                    a collection of test files -- most uselful for crosss-valiaton.
 
 DESCRIPTION
 
@@ -342,6 +353,7 @@ OPTIONS
   -i, --in=in                     Path to a previously created Orchestrator .blu file.
   -o, --out=out                   Directory where analysis and output files will be placed.
   -m, --model=model               Optional directory or a config file hosting Orchestrator base model files.
+  -e, --entityModel=entity-model  Path to Orchestrator entity base model directory.
 
 DESCRIPTION
 

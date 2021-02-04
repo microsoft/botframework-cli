@@ -16,10 +16,12 @@ import { AutoActiveLearner } from "./AutoActiveLearner";
 import { AppSoftmaxRegressionSparse } from "../neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../neural_network/learner/SoftmaxRegressionSparse";
 
-import { ColumnarData } from "../../../../data/ColumnarData";
-import { LuData } from "../../../../data/LuData";
 import { Data } from "../../../../data/Data";
-import { DataUtility } from "../../../../data/DataUtility";
+import { DataWithSubwordFeaturizer } from "../../../../data/DataWithSubwordFeaturizer";
+
+import { ColumnarDataWithSubwordFeaturizer } from "../../../../data/ColumnarDataWithSubwordFeaturizer";
+import { LuDataWithSubwordFeaturizer } from "../../../../data/LuDataWithSubwordFeaturizer";
+import { DataWithSubwordFeaturizerUtility } from "../../../../data/DataWithSubwordFeaturizerUtility";
 
 import { NgramSubwordFeaturizer } from "../../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
@@ -36,13 +38,14 @@ export class AppAutoActiveLearner {
     public static defaultDoBootstrapResampling: boolean = false;
 
     /**
-     * This function uses a Data object and retrieve label and text data to run through 3 steps of
+     * This function uses a DataWithSubwordFeaturizer object and retrieve label and text data to run through 3 steps of
      * sampling processes:
      * 0) Bootstrap Resampling
      * 1) Auto Active Learning Sampling
      * 2) Stratified Sampling
      *
-     * @param data - a Data object whose label and text connect are used as input.
+     * @param dataWithSubwordFeaturizer - a DataWithSubwordFeaturizer object
+     *        whose label and text connect are used as input.
      * @param labelColumnIndex - label/intent column index.
      * @param textColumnIndex - text/utterace column index.
      * @param weightColumnIndex - weight column index.
@@ -62,8 +65,8 @@ export class AppAutoActiveLearner {
      * @param learnerParameterToCalculateOverallLossAfterEpoch - AAL Softmax Regression learner parameter - flag
      * @param limitingSampleSize - sample size controled by a final stratified sampling process.
      */
-    public static async mainAutoActiveLearnerWithData(
-        data: Data,
+    public static async mainAutoActiveLearnerWithDataWithSubwordFeaturizer(
+        dataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
@@ -96,7 +99,7 @@ export class AppAutoActiveLearner {
             true,
         limitingSampleSize: number =
             DefaultLimitingSampleSize): Promise<{
-            "newData": Data,
+            "newDataWithSubwordFeaturizer": DataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
@@ -106,11 +109,12 @@ export class AppAutoActiveLearner {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
                     brsDistribution,
-                    data.getIntentInstanceIndexMapArray());
+                    dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
             // ---- NOTE-FOR-REFERENCE ---- const bootstrapSamplerKeyMap: BootstrapSamplerKeyMap<number> =
-            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(data.getIntentInstanceIndexMapArray());
-            Utility.debuggingLog(`data.getIntentInstanceIndexMapArray()=` +
-                `${Utility.mapToJsonSerialization(data.getIntentInstanceIndexMapArray())}`);
+            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(
+            // ---- NOTE-FOR-REFERENCE ----         dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
+            Utility.debuggingLog(`dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray()=` +
+                `${Utility.mapToJsonSerialization(dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray())}`);
             Utility.debuggingLog(`bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()=` +
                 `${bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()}`);
             // ---- FOR-DEBUGGING ---- const samplingIndexArrayGenerator =
@@ -123,20 +127,20 @@ export class AppAutoActiveLearner {
                 [...bootstrapSamplerKeyMap.sampleInstances()];
             Utility.debuggingLog(`samplingIndexArray.length=` +
                 `${samplingIndexArray.length}`);
-            const dataBootstrapSampled: Data =
-                await data.createDataFromSamplingExistingDataUtterances(
-                    data,
+            const dataWithSubwordFeaturizerBootstrapSampled: Data =
+                await dataWithSubwordFeaturizer.createDataFromSamplingExistingDataUtterances(
+                    dataWithSubwordFeaturizer,
                     labelColumnIndex,
                     textColumnIndex,
                     weightColumnIndex,
                     linesToSkip,
                     samplingIndexArray,
                     false);
-            data = dataBootstrapSampled;
+            dataWithSubwordFeaturizer = dataWithSubwordFeaturizerBootstrapSampled as DataWithSubwordFeaturizer;
         }
         // -------------------------------------------------------------------
         const results =
-            data.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
+            dataWithSubwordFeaturizer.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
             results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
         const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -165,7 +169,7 @@ export class AppAutoActiveLearner {
             "seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels": Map<string, Set<number>>,
             "candidateUtteranceIndexSetSampled": Set<number>,
             "candidateUtteranceIndexSetRemaining": Set<number>,
-            } = data.collectUtteranceIndexSetSeedingIntentTrainingSet(
+            } = dataWithSubwordFeaturizer.collectUtteranceIndexSetSeedingIntentTrainingSet(
                 smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
                 remainingUtteranceIndexSet,
                 aalLimitInitialNumberOfInstancesPerCategory);
@@ -202,9 +206,9 @@ export class AppAutoActiveLearner {
         const seedingInstanceIndexArray: number[] =
             Utility.cloneArray(seedingUtteranceIndexArray);
         const intentLabelIndexArray: number[] =
-            data.getIntentLabelIndexArray();
+            dataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            data.getUtteranceFeatureIndexArrays();
+            dataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         const autoActiveLearner: AutoActiveLearner =
             new AutoActiveLearner(
                 doAutoActiveLearning,
@@ -222,10 +226,10 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "learner": SoftmaxRegressionSparse,
             } = autoActiveLearner.learn(
-                data.getFeaturizerLabels(),
-                data.getFeaturizerLabelMap(),
-                data.getFeaturizer().getNumberLabels(),
-                data.getFeaturizer().getNumberFeatures(),
+                dataWithSubwordFeaturizer.getFeaturizerLabels(),
+                dataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+                dataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+                dataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
                 intentLabelIndexArray,
                 utteranceFeatureIndexArrays,
                 seedingInstanceIndexArray,
@@ -246,16 +250,17 @@ export class AppAutoActiveLearner {
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
         // -------------------------------------------------------------------
-        const newData: Data = await data.createDataFromFilteringExistingDataUtterances(
-            data,
-            labelColumnIndex,
-            textColumnIndex,
-            weightColumnIndex,
-            linesToSkip,
-            new Set<number>(aalSampledInstanceIndexArray),
-            false);
+        const newDataWithSubwordFeaturizer: DataWithSubwordFeaturizer =
+            await dataWithSubwordFeaturizer.createDataFromFilteringExistingDataUtterances(
+                dataWithSubwordFeaturizer,
+                labelColumnIndex,
+                textColumnIndex,
+                weightColumnIndex,
+                linesToSkip,
+                new Set<number>(aalSampledInstanceIndexArray),
+                false) as DataWithSubwordFeaturizer;
         return {
-            newData,
+            newDataWithSubwordFeaturizer,
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
@@ -315,14 +320,14 @@ export class AppAutoActiveLearner {
             true,
         limitingSampleSize: number =
             DefaultLimitingSampleSize): Promise<{
-            "newLuData": LuData,
+            "newLuDataWithSubwordFeaturizer": LuDataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
             }> {
         // -------------------------------------------------------------------
-        let luData: LuData =
-            await LuData.createLuData(
+        let luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
+            await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
                 luContent,
                 new NgramSubwordFeaturizer(),
                 true);
@@ -331,11 +336,12 @@ export class AppAutoActiveLearner {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
                     brsDistribution,
-                    luData.getIntentInstanceIndexMapArray());
+                    luDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
             // ---- NOTE-FOR-REFERENCE ---- const bootstrapSamplerKeyMap: BootstrapSamplerKeyMap<number> =
-            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(data.getIntentInstanceIndexMapArray());
-            Utility.debuggingLog(`luData.getIntentInstanceIndexMapArray()=` +
-                `${Utility.mapToJsonSerialization(luData.getIntentInstanceIndexMapArray())}`);
+            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(
+            // ---- NOTE-FOR-REFERENCE ----         dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
+            Utility.debuggingLog(`luDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray()=` +
+                `${Utility.mapToJsonSerialization(luDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray())}`);
             Utility.debuggingLog(`bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()=` +
                 `${bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()}`);
             // ---- NOTE-FOR-DEBUGGING ---- const samplingIndexArrayGenerator =
@@ -348,20 +354,20 @@ export class AppAutoActiveLearner {
                 [...bootstrapSamplerKeyMap.sampleInstances()];
             Utility.debuggingLog(`samplingIndexArray.length=` +
                 `${samplingIndexArray.length}`);
-            const luDataBootstrapSampled: Data =
-                await luData.createDataFromSamplingExistingDataUtterances(
-                    luData,
-                    -1, // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
-                    -1, // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
-                    -1, // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
-                    -1, // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
+            const luDataWithSubwordFeaturizerBootstrapSampled: DataWithSubwordFeaturizer =
+                await luDataWithSubwordFeaturizer.createDataFromSamplingExistingDataUtterances(
+                    luDataWithSubwordFeaturizer,
+                    -1, // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- labelColumnIndex,
+                    -1, // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- textColumnIndex,
+                    -1, // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- weightColumnIndex,
+                    -1, // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- linesToSkip,
                     samplingIndexArray,
-                    false);
-            luData = luDataBootstrapSampled as LuData;
+                    false) as DataWithSubwordFeaturizer;
+            luDataWithSubwordFeaturizer = luDataWithSubwordFeaturizerBootstrapSampled as LuDataWithSubwordFeaturizer;
         }
         // -------------------------------------------------------------------
         const results =
-            luData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
+            luDataWithSubwordFeaturizer.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
             results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
         const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -390,7 +396,7 @@ export class AppAutoActiveLearner {
             "seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels": Map<string, Set<number>>,
             "candidateUtteranceIndexSetSampled": Set<number>,
             "candidateUtteranceIndexSetRemaining": Set<number>,
-            } = luData.collectUtteranceIndexSetSeedingIntentTrainingSet(
+            } = luDataWithSubwordFeaturizer.collectUtteranceIndexSetSeedingIntentTrainingSet(
                 smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
                 remainingUtteranceIndexSet,
                 aalLimitInitialNumberOfInstancesPerCategory);
@@ -427,9 +433,9 @@ export class AppAutoActiveLearner {
         const seedingInstanceIndexArray: number[] =
             Utility.cloneArray(seedingUtteranceIndexArray);
         const intentLabelIndexArray: number[] =
-            luData.getIntentLabelIndexArray();
+            luDataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            luData.getUtteranceFeatureIndexArrays();
+            luDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         const autoActiveLearner: AutoActiveLearner =
             new AutoActiveLearner(
                 doAutoActiveLearning,
@@ -447,10 +453,10 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "learner": SoftmaxRegressionSparse,
             } = autoActiveLearner.learn(
-                luData.getFeaturizerLabels(),
-                luData.getFeaturizerLabelMap(),
-                luData.getFeaturizer().getNumberLabels(),
-                luData.getFeaturizer().getNumberFeatures(),
+                luDataWithSubwordFeaturizer.getFeaturizerLabels(),
+                luDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+                luDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+                luDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
                 intentLabelIndexArray,
                 utteranceFeatureIndexArrays,
                 seedingInstanceIndexArray,
@@ -471,12 +477,13 @@ export class AppAutoActiveLearner {
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
         // -------------------------------------------------------------------
-        const newLuData: LuData = await LuData.createLuDataFromFilteringExistingLuDataUtterances(
-            luData,
-            new Set<number>(aalSampledInstanceIndexArray),
-            false);
+        const newLuDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
+            await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizerFromFilteringExistingLuDataUtterances(
+                luDataWithSubwordFeaturizer,
+                new Set<number>(aalSampledInstanceIndexArray),
+                false);
         return {
-            newLuData,
+            newLuDataWithSubwordFeaturizer,
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
@@ -544,14 +551,14 @@ export class AppAutoActiveLearner {
             true,
         limitingSampleSize: number =
             DefaultLimitingSampleSize): Promise<{
-            "newColumnarData": ColumnarData,
+            "newColumnarDataWithSubwordFeaturizer": ColumnarDataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
             }> {
         // -------------------------------------------------------------------
-        let columnarData: ColumnarData =
-            ColumnarData.createColumnarData(
+        let columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
                 columnarContent,
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
@@ -564,11 +571,13 @@ export class AppAutoActiveLearner {
             const bootstrapSamplerKeyMap: BootstrapSamplerKeyMapDistribution<number> =
                 new BootstrapSamplerKeyMapDistribution<number>(
                     brsDistribution,
-                    columnarData.getIntentInstanceIndexMapArray());
+                    columnarDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
             // ---- NOTE-FOR-REFERENCE ---- const bootstrapSamplerKeyMap: BootstrapSamplerKeyMap<number> =
-            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(data.getIntentInstanceIndexMapArray());
-            Utility.debuggingLog(`columnarData.getIntentInstanceIndexMapArray()=` +
-                `${Utility.mapToJsonSerialization(columnarData.getIntentInstanceIndexMapArray())}`);
+            // ---- NOTE-FOR-REFERENCE ----     new BootstrapSamplerKeyMap(
+            // ---- NOTE-FOR-REFERENCE ----         dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
+            Utility.debuggingLog(`columnarDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray()=` +
+                `${Utility.mapToJsonSerialization(
+                    columnarDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray())}`);
             Utility.debuggingLog(`bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()=` +
                 `${bootstrapSamplerKeyMap.computeSamplingNumberInstancesPerLabel()}`);
             // ---- NOTE-FOR-DEBUGGING ---- const samplingIndexArrayGenerator =
@@ -581,20 +590,21 @@ export class AppAutoActiveLearner {
                 [...bootstrapSamplerKeyMap.sampleInstances()];
             Utility.debuggingLog(`samplingIndexArray.length=` +
                 `${samplingIndexArray.length}`);
-            const columnarDataBootstrapSampled: Data =
-                await columnarData.createDataFromSamplingExistingDataUtterances(
-                    columnarData,
+            const columnarDataWithSubwordFeaturizerBootstrapSampled: DataWithSubwordFeaturizer =
+                await columnarDataWithSubwordFeaturizer.createDataFromSamplingExistingDataUtterances(
+                    columnarDataWithSubwordFeaturizer,
                     labelColumnIndex,
                     textColumnIndex,
                     weightColumnIndex,
                     linesToSkip,
                     samplingIndexArray,
-                    false);
-            columnarData = columnarDataBootstrapSampled as ColumnarData;
+                    false) as DataWithSubwordFeaturizer;
+            columnarDataWithSubwordFeaturizer =
+                columnarDataWithSubwordFeaturizerBootstrapSampled as ColumnarDataWithSubwordFeaturizer;
         }
         // -------------------------------------------------------------------
         const results =
-            columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
+            columnarDataWithSubwordFeaturizer.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
             results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
         const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -623,7 +633,7 @@ export class AppAutoActiveLearner {
             "seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels": Map<string, Set<number>>,
             "candidateUtteranceIndexSetSampled": Set<number>,
             "candidateUtteranceIndexSetRemaining": Set<number>,
-            } = columnarData.collectUtteranceIndexSetSeedingIntentTrainingSet(
+            } = columnarDataWithSubwordFeaturizer.collectUtteranceIndexSetSeedingIntentTrainingSet(
                 smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
                 remainingUtteranceIndexSet,
                 aalLimitInitialNumberOfInstancesPerCategory);
@@ -660,9 +670,9 @@ export class AppAutoActiveLearner {
         const seedingInstanceIndexArray: number[] =
             Utility.cloneArray(seedingUtteranceIndexArray);
         const intentLabelIndexArray: number[] =
-            columnarData.getIntentLabelIndexArray();
+            columnarDataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            columnarData.getUtteranceFeatureIndexArrays();
+            columnarDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         const autoActiveLearner: AutoActiveLearner =
             new AutoActiveLearner(
                 doAutoActiveLearning,
@@ -680,10 +690,10 @@ export class AppAutoActiveLearner {
             "seedingInstanceIndexArray": number[],
             "learner": SoftmaxRegressionSparse,
             } = autoActiveLearner.learn(
-                columnarData.getFeaturizerLabels(),
-                columnarData.getFeaturizerLabelMap(),
-                columnarData.getFeaturizer().getNumberLabels(),
-                columnarData.getFeaturizer().getNumberFeatures(),
+                columnarDataWithSubwordFeaturizer.getFeaturizerLabels(),
+                columnarDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+                columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+                columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
                 intentLabelIndexArray,
                 utteranceFeatureIndexArrays,
                 seedingInstanceIndexArray,
@@ -704,9 +714,10 @@ export class AppAutoActiveLearner {
                 [...reservoirArraySampler.sampleInstances(limitingSampleSize)];
         }
         // -------------------------------------------------------------------
-        const newColumnarData: ColumnarData =
-            ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
-                columnarData,
+        const newColumnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            // tslint:disable-next-line: max-line-length
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizerFromFilteringExistingColumnarDataUtterances(
+                columnarDataWithSubwordFeaturizer,
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,
@@ -714,7 +725,7 @@ export class AppAutoActiveLearner {
                 new Set<number>(aalSampledInstanceIndexArray),
                 false);
         return {
-            newColumnarData,
+            newColumnarDataWithSubwordFeaturizer,
             learner,
             seedingInstanceIndexArray: aalSampledInstanceIndexArray,
             seedingInstanceIndexArrayInitial: seedingUtteranceIndexArray };
@@ -1079,32 +1090,34 @@ export class AppAutoActiveLearner {
                 weights: [] };
         let intentLabelIndexArray: number[] = [];
         let utteranceFeatureIndexArrays: number[][] = [];
-        const data: Data = await DataUtility.LoadData(
-            filename,
-            null,
-            true,
-            filetype,
-            labelColumnIndex,
-            textColumnIndex,
-            weightColumnIndex,
-            linesToSkip);
-        intentsUtterancesWeights = data.getIntentsUtterancesWeights();
-        intentLabelIndexArray = data.getIntentLabelIndexArray();
-        utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
+        const dataWithSubwordFeaturizer: DataWithSubwordFeaturizer =
+            await DataWithSubwordFeaturizerUtility.LoadDataWithSubwordFeaturizer(
+                filename,
+                null,
+                true,
+                filetype,
+                labelColumnIndex,
+                textColumnIndex,
+                weightColumnIndex,
+                linesToSkip);
+        intentsUtterancesWeights = dataWithSubwordFeaturizer.getIntentsUtterancesWeights();
+        intentLabelIndexArray = dataWithSubwordFeaturizer.getIntentLabelIndexArray();
+        utteranceFeatureIndexArrays = dataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         // -------------------------------------------------------------------
         const bootstrapResamplingDistribution: Map<string, number> = new Map<string, number>();
         if (doBootstrapResampling) {
             if (Utility.exists(bootstrapResamplingDistributionFilename)) {
-                const dataBootstrapResampling: Data = await DataUtility.LoadData(
-                    bootstrapResamplingDistributionFilename,
-                    null,
-                    true,
-                    filetype,
-                    bootstrapResamplingDistributionFileLabelColumnIndex,
-                    bootstrapResamplingDistributionFileTextColumnIndex,
-                    bootstrapResamplingDistributionFileLinesToSkip);
+                const dataWithSubwordFeaturizerBootstrapResampling: DataWithSubwordFeaturizer =
+                    await DataWithSubwordFeaturizerUtility.LoadDataWithSubwordFeaturizer(
+                        bootstrapResamplingDistributionFilename,
+                        null,
+                        true,
+                        filetype,
+                        bootstrapResamplingDistributionFileLabelColumnIndex,
+                        bootstrapResamplingDistributionFileTextColumnIndex,
+                        bootstrapResamplingDistributionFileLinesToSkip);
                 const bootstrapResamplingIntentInstanceIndexMapArray: Map<string, number[]> =
-                    dataBootstrapResampling.getIntentInstanceIndexMapArray();
+                    dataWithSubwordFeaturizerBootstrapResampling.getIntentInstanceIndexMapArray();
                 for (const entry of bootstrapResamplingIntentInstanceIndexMapArray) {
                     bootstrapResamplingDistribution.set(entry[0], entry[1].length);
                 }
@@ -1112,12 +1125,12 @@ export class AppAutoActiveLearner {
         }
         // -------------------------------------------------------------------
         const aalResult: {
-            "newData": Data,
+            "newDataWithSubwordFeaturizer": DataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
             "seedingInstanceIndexArray": number[],
             "seedingInstanceIndexArrayInitial": number[],
-            } = await AppAutoActiveLearner.mainAutoActiveLearnerWithData(
-            data,
+            } = await AppAutoActiveLearner.mainAutoActiveLearnerWithDataWithSubwordFeaturizer(
+            dataWithSubwordFeaturizer,
             labelColumnIndex,
             textColumnIndex,
             weightColumnIndex,
@@ -1136,18 +1149,18 @@ export class AppAutoActiveLearner {
             learnerParameterLearningRate,
             learnerParameterToCalculateOverallLossAfterEpoch,
             limitingSampleSize);
-        const newData: Data =
-            aalResult.newData;
+        const newDataWithSubwordFeaturizer: DataWithSubwordFeaturizer =
+            aalResult.newDataWithSubwordFeaturizer;
         const learner: SoftmaxRegressionSparse =
             aalResult.learner;
         // -------------------------------------------------------------------
         const outputFilenames: string[] = [];
-        const outputFilenameDump: string = newData.dumpLuLuisJsonStructureInLuFormat(
+        const outputFilenameDump: string = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructureInLuFormat(
             outputFilename);
         outputFilenames.push(outputFilenameDump);
         const outputFilenameLuis: string =
             outputFilename + ".luis";
-        const outputFilenameLuisAfterDumpfile = newData.dumpLuLuisJsonStructure(
+        const outputFilenameLuisAfterDumpfile = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructure(
             outputFilenameLuis, undefined, 4);
         outputFilenames.push(outputFilenameLuisAfterDumpfile);
         if (!Utility.isEmptyString(outputModelFilename)) {
@@ -1159,7 +1172,7 @@ export class AppAutoActiveLearner {
         if (!Utility.isEmptyString(outputFeaturizerFilename)) {
             const outputFeaturizerFilenameAfterDumpfile: string = Utility.dumpFile(
                 outputFeaturizerFilename,
-                newData.getFeaturizer().serializeToJsonString(undefined, 4));
+                newDataWithSubwordFeaturizer.getFeaturizer().serializeToJsonString(undefined, 4));
             outputFilenames.push(outputFeaturizerFilenameAfterDumpfile);
         }
         // -------------------------------------------------------------------

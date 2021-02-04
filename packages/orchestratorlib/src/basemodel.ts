@@ -111,7 +111,7 @@ export class OrchestratorBaseModel {
 
   public static async listAsync(): Promise<string> {
     const json: any = await OrchestratorBaseModel.getVersionsAsync();
-    return JSON.stringify(json, null, 2);
+    return Utility.jsonStringify(json, null, 2);
   }
 
   public static defaultHandler(status: string): void {

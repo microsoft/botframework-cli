@@ -7,6 +7,8 @@ import * as path from 'path';
 
 // import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
+import {Result} from '@microsoft/bf-dispatcher';
+
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
@@ -26,7 +28,8 @@ export class OrchestratorQuery {
     lowConfidenceScoreThresholdParameter: number,
     multiLabelPredictionThresholdParameter: number,
     unknownLabelPredictionThresholdParameter: number,
-    fullEmbeddings: boolean = false): Promise<void> {
+    fullEmbeddings: boolean = false,
+    limit: number = 0): Promise<void> {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process arguments
     if (Utility.isEmptyString(inputPathConfiguration)) {
@@ -59,6 +62,7 @@ export class OrchestratorQuery {
     Utility.debuggingLog(`multiLabelPredictionThreshold=${multiLabelPredictionThreshold}`);
     Utility.debuggingLog(`unknownLabelPredictionThreshold=${unknownLabelPredictionThreshold}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
+    Utility.debuggingLog(`limit=${limit}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the snapshot set
     const snapshotFile: string = inputPathConfiguration;
@@ -93,7 +97,43 @@ export class OrchestratorQuery {
     const scoreResults: any = (entityBaseModelPath) ?
       await LabelResolver.score(queryConfiguration, LabelType.All) :
       await LabelResolver.score(queryConfiguration, LabelType.Intent);
-    Utility.writeToConsole(scoreResults);
+    if (limit > 0) {
+      const scoreResultArray: Result[] = Utility.scoreResultsToArray(scoreResults);
+      let scoreResultArrayIntent: Result[] = scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Intent);
+      let scoreResultArrayEntity: Result[] = scoreResultArray.filter((x: Result) => x.label.labeltype === LabelType.Entity);
+      scoreResultArrayIntent.sort(
+        (n1: Result, n2: Result) => {
+          if (n1.score > n2.score) {
+            return -1;
+          }
+          if (n1.score < n2.score) {
+            return 1;
+          }
+          return 0;
+        });
+      scoreResultArrayIntent = scoreResultArrayIntent.slice(0, limit);
+      scoreResultArrayEntity.sort(
+        (n1: Result, n2: Result) => {
+          if (n1.score > n2.score) {
+            return -1;
+          }
+          if (n1.score < n2.score) {
+            return 1;
+          }
+          return 0;
+        });
+      scoreResultArrayEntity = scoreResultArrayEntity.slice(0, limit);
+      let slicedScoreResultArray: Result[] = [];
+      slicedScoreResultArray = slicedScoreResultArray.concat(scoreResultArrayIntent);
+      slicedScoreResultArray = slicedScoreResultArray.concat(scoreResultArrayEntity);
+      // ---- NOTE-FOR-REFERENCE ---- // eslint-disable-next-line no-console
+      // ---- NOTE-FOR-REFERENCE ---- console.log(
+      // ---- NOTE-FOR-REFERENCE ----   slicedScoreResultArray.map((x: Result) => x.toSimpleAlternateObjectFormatted()));
+      Utility.writeAnyJsonifiedToConsoleStdout(
+        slicedScoreResultArray.map((x: Result) => x.toSimpleAlternateObjectFormatted()));
+    } else {
+      Utility.writeAnyJsonifiedToConsoleStdout(scoreResults);
+    }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- THE END
     Utility.debuggingLog('OrchestratorQuery.runAsync(), THE END');

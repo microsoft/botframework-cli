@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { Label } from "../../label_structure/Label";
-import { PredictionPluralEvaluationLabelObjectStructure } from "../../label_structure/PredictionPluralEvaluationLabelObjectStructure";
-import { PredictionPluralEvaluationLabelStringStructure } from "../../label_structure/PredictionPluralEvaluationLabelStringStructure";
+// import { Label } from "../../label_structure/Label";
+import { PredictionStructureWithPluralEvaluationLabelObject } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelObject";
+import { PredictionStructureWithPluralEvaluationLabelString } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelString";
 
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 import { ConfusionMatrix } from "./ConfusionMatrix";
@@ -207,7 +207,7 @@ export class UtilityConfusionMatrix {
         `;
 
     public static generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
-        predictionStructures: PredictionPluralEvaluationLabelObjectStructure[],
+        predictionStructures: PredictionStructureWithPluralEvaluationLabelObject[],
         labelArrayAndMap: {
             "stringArray": string[];
             "stringMap": Map<string, number>;
@@ -365,8 +365,8 @@ export class UtilityConfusionMatrix {
         };
     }
 
-    public static generateAssessmentConfusionMatrixMetricsAndHtmlTable(
-        predictionStructures: PredictionPluralEvaluationLabelStringStructure[],
+    public static generateAssessmentLabelStringConfusionMatrixMetricsAndHtmlTable(
+        predictionStructures: PredictionStructureWithPluralEvaluationLabelString[],
         labelArrayAndMap: {
             "stringArray": string[];
             "stringMap": Map<string, number>;
@@ -1029,9 +1029,9 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionWeightedSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(confusionMatrix.getMicroAverageMetrics())=${JSON.stringify(confusionMatrix.getMicroAverageMetrics(binaryConfusionMatrices))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(confusionMatrix.getMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getMacroAverageMetrics(binaryConfusionMatrices))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics())=${JSON.stringify(confusionMatrix.getWeightedMacroAverageMetrics(binaryConfusionMatrices))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), confusionMatrix.getMicroAverageMetrics()=        ${Utility.jsonStringify(confusionMatrix.getMicroAverageMetrics(binaryConfusionMatrices))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), confusionMatrix.getMacroAverageMetrics()=        ${Utility.jsonStringify(confusionMatrix.getMacroAverageMetrics(binaryConfusionMatrices))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), confusionMatrix.getWeightedMacroAverageMetrics()=${Utility.jsonStringify(confusionMatrix.getWeightedMacroAverageMetrics(binaryConfusionMatrices))}`);
         // -----------------------------------------------------------------------
         const confusionMatrixAverageMetricsHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
             "Average confusion matrix metrics",
@@ -1054,6 +1054,16 @@ export class UtilityConfusionMatrix {
         // -----------------------------------------------------------------------
     }
 
+    /**
+     * Aggregate an input MultiLabelObjectConfusionMatrixExact object into
+     * a collection of evaluation output objects with the help of some
+     * auxiliary objects.
+     *
+     * @param multiLabelObjectConfusionMatrixExact
+     * @param labelArrayAndMap
+     * @param confusionMatrixAverageOutputLines
+     * @param confusionMatrixAverageDescriptionOutputLines
+     */
     public static aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact,
         labelArrayAndMap: {
@@ -1113,10 +1123,10 @@ export class UtilityConfusionMatrix {
             ]);
         }
         // -----------------------------------------------------------------------
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()         =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics()=                      ${Utility.jsonStringify(multiLabelObjectConfusionMatrixExact.getMicroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics()=                      ${Utility.jsonStringify(multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics()=              ${Utility.jsonStringify(multiLabelObjectConfusionMatrixExact.getWeightedMacroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()=         ${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTotal()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives() =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTruePositives()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getFalsePositives()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelObjectConfusionMatrixExact.getBinaryConfusionMatrix().getTrueNegatives()}`);
@@ -1141,6 +1151,16 @@ export class UtilityConfusionMatrix {
         // -----------------------------------------------------------------------
     }
 
+    /**
+     * Aggregate an input MultiLabelObjectConfusionMatrixSubset object into
+     * a collection of evaluation output objects with the help of some
+     * auxiliary objects.
+     *
+     * @param multiLabelObjectConfusionMatrixSubset
+     * @param labelArrayAndMap
+     * @param confusionMatrixAverageOutputLines
+     * @param confusionMatrixAverageDescriptionOutputLines
+     */
     public static aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset,
         labelArrayAndMap: {
@@ -1200,10 +1220,10 @@ export class UtilityConfusionMatrix {
             ]);
         }
         // -----------------------------------------------------------------------
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), JSON.stringify(multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics())=${JSON.stringify(multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics([]))}`);
-        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()         =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics()=                      ${Utility.jsonStringify(multiLabelObjectConfusionMatrixSubset.getMicroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics()=                      ${Utility.jsonStringify(multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics()=              ${Utility.jsonStringify(multiLabelObjectConfusionMatrixSubset.getWeightedMacroAverageMetrics([]))}`);
+        Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()=         ${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTotal()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives() =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTruePositives()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()=${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getFalsePositives()}`);
         Utility.debuggingLog(`aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(), multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives() =${multiLabelObjectConfusionMatrixSubset.getBinaryConfusionMatrix().getTrueNegatives()}`);

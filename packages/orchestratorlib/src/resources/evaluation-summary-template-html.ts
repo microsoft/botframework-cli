@@ -117,9 +117,13 @@ export class EvaluationSummaryTemplateHtml {
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="intent-utterance-statistics" role="tabpanel" aria-labelledby="intent-utterance-statistics-tab">
-                <p>Intent and utterance statistics</p>
+                <p>Intent and utterance statistics.  The spurious table at the end shows the labels not
+                in the training set. These spurious labels are unknown to the system and would be renamed accordingly.</p>
                 <p>
                     {LABEL_TEXT_STATISTICS}
+                </p>
+                <p>
+                    {SPURIOUS_UTTERANCE_LABELS}
                 </p>
             </div>
             <div class="tab-pane" id="utterance-duplicates" role="tabpanel" aria-labelledby="utterance-duplicates-tab">

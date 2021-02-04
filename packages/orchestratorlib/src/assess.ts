@@ -12,8 +12,8 @@ import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {Label}  from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from './orchestratorhelper';
 
-import {PredictionPluralEvaluationLabelObjectStructure} from '@microsoft/bf-dispatcher';
-import {PredictionPluralEvaluationLabelStringStructure} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithPluralEvaluationLabelObject} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithPluralEvaluationLabelString} from '@microsoft/bf-dispatcher';
 
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
@@ -104,9 +104,9 @@ export class OrchestratorAssess {
         (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     const groundTruthSetLabelSet: Set<string> =
       new Set<string>(groundTruthSetLabels);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetLabelSet)=${JSON.stringify(groundTruthSetLabelSet)}`);
-    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetUtteranceLabelsMap)=${JSON.stringify(groundTruthSetUtteranceLabelsMap)}`);
-    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))}`);
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthSetLabelSet=${Utility.jsonStringify(groundTruthSetLabelSet)}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthSetUtteranceLabelsMap=${Utility.jsonStringify(groundTruthSetUtteranceLabelsMap)}`);
+    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap)=${Utility.jsonStringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set unique utterances=${groundTruthSetUtteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth set duplicate utterance/label pairs=${groundTruthSetUtteranceLabelDuplicateMap.size}`);
     // ---- NOTE ---- process the ground-truth set entity labels -------------
@@ -115,9 +115,9 @@ export class OrchestratorAssess {
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
     const groundTruthSetEntityLabelSet: Set<string> =
       new Set<string>(groundTruthSetEntityLabels);
-    Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetEntityLabelSet)=${JSON.stringify(groundTruthSetEntityLabelSet)}`);
-    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(groundTruthSetUtteranceEntityLabelsMap)=${JSON.stringify(groundTruthSetUtteranceEntityLabelsMap)}`);
-    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap))}`);
+    Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthSetEntityLabelSet=${Utility.jsonStringify(groundTruthSetEntityLabelSet)}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthSetUtteranceEntityLabelsMap=${Utility.jsonStringify(groundTruthSetUtteranceEntityLabelsMap)}`);
+    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap)=${Utility.jsonStringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(groundTruthSetUtteranceEntityLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set unique utterances=${groundTruthSetUtteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set duplicate utterance/label pairs=${groundTruthSetUtteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
@@ -153,6 +153,11 @@ export class OrchestratorAssess {
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process unknown intent labels --------------------------
+    // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousLabelsProcessed: {
+    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelsMap': Map<string, Set<string>>;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
+    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousLabels': boolean;
+    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousDuplicateLabels': boolean; } =
     Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
@@ -160,12 +165,17 @@ export class OrchestratorAssess {
       groundTruthSetLabelSet);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction intent labels');
     // ---- NOTE ---- process unknown entity labels --------------------------
-    Utility.processUnknownEntityLabelsInUtteranceLabelsMapUsingLabelSet(
+    // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousEntityLabelsProcessed: {
+    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelsMap': Map<string, Label[]>;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
+    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousLabels': boolean;
+    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousDuplicateLabels': boolean; } =
+    Utility.processUnknownEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
       {
-        utteranceLabelsMap: predictionSetUtteranceEntityLabelsMap,
-        utteranceLabelDuplicateMap: predictionSetUtteranceEntityLabelDuplicateMap},
+        utteranceEntityLabelsMap: predictionSetUtteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap: predictionSetUtteranceEntityLabelDuplicateMap},
       groundTruthSetEntityLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction entity labels');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceEntityLabelsMapUsingLabelSet() for prediction entity labels');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the prediction set intent labels ---------------
     const predictionSetLabels: string[] =
@@ -173,8 +183,8 @@ export class OrchestratorAssess {
         (accumulant: string[], entry: Set<string>) => accumulant.concat([...entry]), []);
     const predictionSetLabelSet: Set<string> =
       new Set<string>(predictionSetLabels);
-    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(predictionSetUtteranceLabelsMap)=${JSON.stringify(predictionSetUtteranceLabelsMap)}`);
-    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap))}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionSetUtteranceLabelsMap=${Utility.jsonStringify(predictionSetUtteranceLabelsMap)}`);
+    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap)=${Utility.jsonStringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction-set duplicate utterance/label pairs=${predictionSetUtteranceLabelDuplicateMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set unique utterances=${predictionSetUtteranceLabelsMap.size}`);
     // if (predictionSetUtteranceLabelsMap.size <= 0) {
@@ -186,8 +196,8 @@ export class OrchestratorAssess {
         (accumulant: string[], entry: Label[]) => accumulant.concat(entry.map((x: Label) => x.name)), []);
     const predictionSetEntityLabelSet: Set<string> =
       new Set<string>(predictionSetEntityLabels);
-    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(predictionSetUtteranceEntityLabelsMap)=${JSON.stringify(predictionSetUtteranceEntityLabelsMap)}`);
-    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap))=${JSON.stringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap))}`);
+    // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionSetUtteranceEntityLabelsMap=${Utility.jsonStringify(predictionSetUtteranceEntityLabelsMap)}`);
+    // ---- Utility.debuggingLog(`OrchestratorAssess.runAsync(), Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap)=${Utility.jsonStringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(predictionSetUtteranceEntityLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction set entity unique utterances=${predictionSetUtteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of prediction-set entity duplicate utterance/label pairs=${predictionSetUtteranceEntityLabelDuplicateMap.size}`);
     // if (predictionSetUtteranceEntityLabelsMap.size <= 0) {
@@ -250,7 +260,7 @@ export class OrchestratorAssess {
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
           'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-      'predictionPluralEvaluationLabelStringStructureArray': PredictionPluralEvaluationLabelStringStructure[];
+      'predictionStructureWithPluralEvaluationLabelStringArray': PredictionStructureWithPluralEvaluationLabelString[];
     } =
     Utility.generateAssessmentEvaluationReport(
       groundTruthSetLabels,
@@ -343,7 +353,7 @@ export class OrchestratorAssess {
           'confusionMatrixMetricsHtml': string;
           'confusionMatrixAverageMetricsHtml': string;
           'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-      'predictionPluralEvaluationLabelObjectStructureArray': PredictionPluralEvaluationLabelObjectStructure[];
+      'predictionStructureWithPluralEvaluationLabelObjectArray': PredictionStructureWithPluralEvaluationLabelObject[];
     } =
     Utility.generateAssessmentLabelObjectEvaluationReport(
       groundTruthSetEntityLabels,

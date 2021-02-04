@@ -14,8 +14,9 @@ import { DataProfileReporter } from "../report/DataProfileReporter";
 import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
 import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
 
-import { DataUtility } from "../../../data/DataUtility";
 import { Data } from "../../../data/Data";
+import { DataWithSubwordFeaturizer } from "../../../data/DataWithSubwordFeaturizer";
+import { DataWithSubwordFeaturizerUtility } from "../../../data/DataWithSubwordFeaturizerUtility";
 
 import { Utility } from "../../../utility/Utility";
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
@@ -140,7 +141,7 @@ export function mainDataProfileReporter(): void {
     Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
-    DataUtility.LoadData(
+    DataWithSubwordFeaturizerUtility.LoadDataWithSubwordFeaturizer(
         filename,
         null,
         true,

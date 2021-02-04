@@ -5,8 +5,6 @@
 
 import { Data } from "./Data";
 
-import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
-
 import { Utility } from "../utility/Utility";
 
 export class EntityAnnotatedCorpusData extends Data {
@@ -14,15 +12,12 @@ export class EntityAnnotatedCorpusData extends Data {
     public static createEntityAnnotatedCorpusDataFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
         existingEntityAnnotatedCorpusData: EntityAnnotatedCorpusData,
         linesToSkip: number,
-        samplingIndexArray: number[],
-        toResetFeaturizerLabelFeatureMaps: boolean): EntityAnnotatedCorpusData {
+        samplingIndexArray: number[]): EntityAnnotatedCorpusData {
         // -------------------------------------------------------------------
         const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
             EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
                 existingEntityAnnotatedCorpusData.getContent(),
-                existingEntityAnnotatedCorpusData.getFeaturizer(),
-                linesToSkip,
-                toResetFeaturizerLabelFeatureMaps);
+                linesToSkip);
         // -------------------------------------------------------------------
         const luUtterances: Array<{
             "entities": Array<{
@@ -98,27 +93,18 @@ export class EntityAnnotatedCorpusData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        entityAnnotatedCorpusData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }
 
     public static createEntityAnnotatedCorpusDataFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
         existingEntityAnnotatedCorpusData: EntityAnnotatedCorpusData,
         linesToSkip: number,
-        filteringIndexSet: Set<number>,
-        toResetFeaturizerLabelFeatureMaps: boolean): EntityAnnotatedCorpusData {
+        filteringIndexSet: Set<number>): EntityAnnotatedCorpusData {
         // -------------------------------------------------------------------
         const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
             EntityAnnotatedCorpusData.createEntityAnnotatedCorpusData(
                 existingEntityAnnotatedCorpusData.getContent(),
-                existingEntityAnnotatedCorpusData.getFeaturizer(),
-                linesToSkip,
-                toResetFeaturizerLabelFeatureMaps);
+                linesToSkip);
         // -------------------------------------------------------------------
         const luUtterances: Array<{
             "entities": Array<{
@@ -217,24 +203,15 @@ export class EntityAnnotatedCorpusData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        entityAnnotatedCorpusData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }
 
     public static createEntityAnnotatedCorpusData(
         content: string,
-        featurizer: NgramSubwordFeaturizer,
-        linesToSkip: number,
-        toResetFeaturizerLabelFeatureMaps: boolean): EntityAnnotatedCorpusData {
+        linesToSkip: number): EntityAnnotatedCorpusData {
         // -------------------------------------------------------------------
         const entityAnnotatedCorpusData: EntityAnnotatedCorpusData =
             new EntityAnnotatedCorpusData(
-                featurizer,
                 linesToSkip);
         entityAnnotatedCorpusData.content =
             content;
@@ -292,21 +269,14 @@ export class EntityAnnotatedCorpusData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            entityAnnotatedCorpusData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        entityAnnotatedCorpusData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }
 
     protected linesToSkip: number = 0;
 
     protected constructor(
-        featurizer: NgramSubwordFeaturizer,
         linesToSkip: number = 0) {
-        super(featurizer);
+        super();
         this.linesToSkip = linesToSkip;
     }
 
@@ -325,8 +295,7 @@ export class EntityAnnotatedCorpusData extends Data {
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
-            samplingIndexArray,
-            toResetFeaturizerLabelFeatureMaps);
+            samplingIndexArray);
     }
 
     public async createDataFromFilteringExistingDataUtterances(
@@ -344,8 +313,7 @@ export class EntityAnnotatedCorpusData extends Data {
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
             // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
-            filteringIndexSet,
-            toResetFeaturizerLabelFeatureMaps);
+            filteringIndexSet);
     }
 
     public retrieveEntityAnnotatedCorpusUtterances( // ---- NOTE the return is newly allocated, unlike the one of LuData

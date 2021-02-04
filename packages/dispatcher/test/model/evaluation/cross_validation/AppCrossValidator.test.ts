@@ -5,9 +5,9 @@
 
 import assert = require("assert");
 
-import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
+import { ColumnarContentEmail } from "../../../data/ColumnarDataWithSubwordFeaturizer.test";
 
-import { LuContentEmail } from "../../../data/LuData.test";
+import { LuContentEmail } from "../../../data/LuDataWithSubwordFeaturizer.test";
 
 import { mainCrossValidatorWithColumnarContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";
 import { mainCrossValidatorWithLuContent } from "../../../../src/model/evaluation/cross_validation/AppCrossValidator";

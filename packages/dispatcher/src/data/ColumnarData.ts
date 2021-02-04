@@ -5,8 +5,6 @@
 
 import { Data } from "./Data";
 
-import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
-
 import { Utility } from "../utility/Utility";
 
 export class ColumnarData extends Data {
@@ -17,18 +15,15 @@ export class ColumnarData extends Data {
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
-        samplingIndexArray: number[],
-        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
+        samplingIndexArray: number[]): ColumnarData {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
                 existingColumnarData.getContent(),
-                existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,
-                linesToSkip,
-                toResetFeaturizerLabelFeatureMaps);
+                linesToSkip);
         // -------------------------------------------------------------------
         const luUtterances: Array<{
             "entities": Array<{
@@ -104,12 +99,6 @@ export class ColumnarData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            columnarData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        columnarData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return columnarData;
     }
 
@@ -119,18 +108,15 @@ export class ColumnarData extends Data {
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
-        filteringIndexSet: Set<number>,
-        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
+        filteringIndexSet: Set<number>): ColumnarData {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             ColumnarData.createColumnarData(
                 existingColumnarData.getContent(),
-                existingColumnarData.getFeaturizer(),
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,
-                linesToSkip,
-                toResetFeaturizerLabelFeatureMaps);
+                linesToSkip);
         // -------------------------------------------------------------------
         const luUtterances: Array<{
             "entities": Array<{
@@ -230,27 +216,18 @@ export class ColumnarData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            columnarData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        columnarData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return columnarData;
     }
 
     public static createColumnarData(
         content: string,
-        featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
-        linesToSkip: number,
-        toResetFeaturizerLabelFeatureMaps: boolean): ColumnarData {
+        linesToSkip: number): ColumnarData {
         // -------------------------------------------------------------------
         const columnarData: ColumnarData =
             new ColumnarData(
-                featurizer,
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,
@@ -311,12 +288,6 @@ export class ColumnarData extends Data {
                 "text": string,
                 "weight": number }) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            columnarData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        columnarData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return columnarData;
     }
 
@@ -326,12 +297,11 @@ export class ColumnarData extends Data {
     protected linesToSkip: number = 0;
 
     protected constructor(
-        featurizer: NgramSubwordFeaturizer,
         labelColumnIndex: number = 0,
         textColumnIndex: number = 1,
         weightColumnIndex: number = -1,
         linesToSkip: number = 0) {
-        super(featurizer);
+        super();
         this.labelColumnIndex = labelColumnIndex;
         this.textColumnIndex = textColumnIndex;
         this.weightColumnIndex = weightColumnIndex;
@@ -344,16 +314,14 @@ export class ColumnarData extends Data {
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
-        samplingIndexArray: number[],
-        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        samplingIndexArray: number[]): Promise<Data> {
         return ColumnarData.createColumnarDataFromSamplingExistingColumnarDataUtterances(
             existingData as ColumnarData,
             labelColumnIndex,
             textColumnIndex,
             weightColumnIndex,
             linesToSkip,
-            samplingIndexArray,
-            toResetFeaturizerLabelFeatureMaps);
+            samplingIndexArray);
     }
 
     public async createDataFromFilteringExistingDataUtterances(
@@ -362,16 +330,14 @@ export class ColumnarData extends Data {
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
-        filteringIndexSet: Set<number>,
-        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        filteringIndexSet: Set<number>): Promise<Data> {
         return ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
             existingData as ColumnarData,
             labelColumnIndex,
             textColumnIndex,
             weightColumnIndex,
             linesToSkip,
-            filteringIndexSet,
-            toResetFeaturizerLabelFeatureMaps);
+            filteringIndexSet);
     }
 
     public retrieveColumnarUtterances(content: string): Array<{ // ---- NOTE the return is newly allocated, unlike the one of LuData

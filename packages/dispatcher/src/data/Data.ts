@@ -3,10 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import { isNull } from "util";
-import { isUndefined } from "util";
+// ---- NOTE-FOR-REFERENCE ---- @deprecated — since v4.0.0 - use value === null instead.
+// ---- NOTE-FOR-REFERENCE ---- 'isNull' is deprecatedts(6385)
+// ---- NOTE-FOR-REFERENCE ---- import { isNull } from "util";
+// ---- NOTE-FOR-REFERENCE ---- import { isUndefined } from "util";
 
-import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
+// tslint:disable-next-line: max-line-length
+// ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../utility/Utility";
 
@@ -40,17 +43,13 @@ export abstract class Data {
         "utteranceFeatureIndexArrays": number[][] } =
         { intentLabelIndexArray: [], utteranceFeatureIndexArrays: [] };
 
-    protected featurizer: NgramSubwordFeaturizer;
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- protected featurizer: NgramSubwordFeaturizer;
 
-    protected constructor(featurizer: NgramSubwordFeaturizer) {
-        if (isNull(featurizer) || (isUndefined(featurizer))) {
-            Utility.debuggingThrow(
-                "input featurizer is null");
-        }
-        this.featurizer = featurizer;
+    protected constructor() {
     }
 
-    public abstract async createDataFromSamplingExistingDataUtterances(
+     // ---- NOTE-FOR-REFERENCE ---- 'async' modifier cannot be used with 'abstract' modifier.ts(1243) ---- async
+    public abstract createDataFromSamplingExistingDataUtterances(
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
@@ -59,7 +58,8 @@ export abstract class Data {
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
 
-    public abstract async createDataFromFilteringExistingDataUtterances(
+    // ---- NOTE-FOR-REFERENCE ---- 'async' modifier cannot be used with 'abstract' modifier.ts(1243) ---- async
+    public abstract createDataFromFilteringExistingDataUtterances(
         existingData: Data,
         labelColumnIndex: number,
         textColumnIndex: number,
@@ -272,33 +272,34 @@ export abstract class Data {
         return this.intentUtteranceSparseIndexArrays.utteranceFeatureIndexArrays;
     }
 
-    public resetFeaturizerLabelFeatureMaps(): void {
-        this.getFeaturizer().resetLabelFeatureMaps(
-            this.getIntentsUtterancesWeights());
-    }
-    public featurizeIntentsUtterances(): void {
-        this.intentUtteranceSparseIndexArrays =
-            this.getFeaturizer().createIntentUtteranceSparseIndexArrays(
-                this.getIntentsUtterancesWeights());
-    }
-    public featurize(inputUtterance: string): string[] {
-        return this.getFeaturizer().featurize(inputUtterance);
-    }
-    public getFeaturizer(): NgramSubwordFeaturizer {
-        return this.featurizer;
-    }
-    public getFeaturizerLabels(): string[] {
-        return this.getFeaturizer().getLabels();
-    }
-    public getFeaturizerLabelMap(): Map<string, number> {
-        return this.getFeaturizer().getLabelMap();
-    }
-    public getFeaturizerFeatures(): string[] {
-        return this.getFeaturizer().getFeatures();
-    }
-    public getFeaturizerFeatureMap(): Map<string, number> {
-        return this.getFeaturizer().getFeatureMap();
-    }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public resetFeaturizerLabelFeatureMaps(): void {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     this.getFeaturizer().resetLabelFeatureMaps(
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----         this.getIntentsUtterancesWeights());
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public featurizeIntentsUtterances(): void {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     this.intentUtteranceSparseIndexArrays =
+    // tslint:disable-next-line: max-line-length
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----         this.getFeaturizer().createIntentUtteranceSparseIndexArrays(
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----             this.getIntentsUtterancesWeights());
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public featurize(inputUtterance: string): string[] {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.getFeaturizer().featurize(inputUtterance);
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public getFeaturizer(): NgramSubwordFeaturizer {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.featurizer;
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public getFeaturizerLabels(): string[] {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.getFeaturizer().getLabels();
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public getFeaturizerLabelMap(): Map<string, number> {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.getFeaturizer().getLabelMap();
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public getFeaturizerFeatures(): string[] {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.getFeaturizer().getFeatures();
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- public getFeaturizerFeatureMap(): Map<string, number> {
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ----     return this.getFeaturizer().getFeatureMap();
+    // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- }
 
     public collectUtteranceIndexSetSeedingIntentTrainingSet(
         seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>>,

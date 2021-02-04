@@ -14,7 +14,7 @@ import { ModelMetaDataProfileReporter } from "./ModelMetaDataProfileReporter";
 import { IDictionaryStringIdGenericArrays } from "../../../data_structure/IDictionaryStringIdGenericArrays";
 import { IDictionaryStringIdGenericValue } from "../../../data_structure/IDictionaryStringIdGenericValue";
 
-import { DataUtility } from "../../../data/DataUtility";
+import { DataWithSubwordFeaturizerUtility } from "../../../data/DataWithSubwordFeaturizerUtility";
 
 import { Data } from "../../../data/Data";
 

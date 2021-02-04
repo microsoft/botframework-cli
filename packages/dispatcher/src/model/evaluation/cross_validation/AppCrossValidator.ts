@@ -20,20 +20,20 @@ import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/Bin
 
 import { ThresholdReporter } from "../report/ThresholdReporter";
 
-import { ColumnarData } from "../../../data/ColumnarData";
-import { LuData } from "../../../data/LuData";
-import { Data } from "../../../data/Data";
-import { DataUtility } from "../../../data/DataUtility";
+import { ColumnarDataWithSubwordFeaturizer } from "../../../data/ColumnarDataWithSubwordFeaturizer";
+import { LuDataWithSubwordFeaturizer } from "../../../data/LuDataWithSubwordFeaturizer";
+import { DataWithSubwordFeaturizer } from "../../../data/DataWithSubwordFeaturizer";
+import { DataWithSubwordFeaturizerUtility } from "../../../data/DataWithSubwordFeaturizerUtility";
 
 import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../../../utility/Utility";
 
 /**
- * This function consumes a Data object as input and run cross validation (CV) to evaluate models trained from
- * the input label/text (intent/utterance) instance set.
+ * This function consumes a DataWithSubwordFeaturizer object as input and run cross validation (CV)
+ * to evaluate the models trained using the input label/text (intent/utterance) instance set.
  *
- * @param data - input Data object as input.
+ * @param dataWithSubwordFeaturizer - input DataWithSubwordFeaturizer object as input.
  * @param numberOfCrossValidationFolds - number of cross validation (CV) folds.
  * @param learnerParameterEpochs - CV Softmax Regression Learner parameter - number of epochs
  * @param learnerParameterMiniBatchSize - CV Softmax Regression learner parameter - mini-batch size.
@@ -43,8 +43,8 @@ import { Utility } from "../../../utility/Utility";
  * @param learnerParameterLearningRate - CV Softmax Regression learner parameter - learning rate.
  * @param learnerParameterToCalculateOverallLossAfterEpoch - CV Softmax Regression learner parameter - flag
  */
-export function mainCrossValidatorWithData(
-    data: Data,
+export function mainCrossValidatorWithDataWithSubwordFeaturizer(
+    dataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
     numberOfCrossValidationFolds: number =
         CrossValidator.defaultNumberOfCrossValidationFolds,
     learnerParameterEpochs: number =
@@ -67,13 +67,13 @@ export function mainCrossValidatorWithData(
     }
     // -------------------------------------------------------------------
     const intents: string[] =
-        data.getIntents();
+        dataWithSubwordFeaturizer.getIntents();
     const utterances: string[] =
-        data.getUtterances();
+        dataWithSubwordFeaturizer.getUtterances();
     const intentLabelIndexArray: number[] =
-        data.getIntentLabelIndexArray();
+        dataWithSubwordFeaturizer.getIntentLabelIndexArray();
     const utteranceFeatureIndexArrays: number[][] =
-        data.getUtteranceFeatureIndexArrays();
+        dataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
     assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
@@ -94,15 +94,15 @@ export function mainCrossValidatorWithData(
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = crossValidator.crossValidate(
-        data.getFeaturizerLabels(),
-            data.getFeaturizerLabelMap(),
-            data.getFeaturizer().getNumberLabels(),
-            data.getFeaturizer().getNumberFeatures(),
+        dataWithSubwordFeaturizer.getFeaturizerLabels(),
+            dataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+            dataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+            dataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
             intents,
             utterances,
             intentLabelIndexArray,
             utteranceFeatureIndexArrays,
-            data.getIntentInstanceIndexMapArray());
+            dataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
         `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
@@ -162,8 +162,8 @@ export async function mainCrossValidatorWithLuContent(
     learnerParameterToCalculateOverallLossAfterEpoch: boolean =
         true): Promise<CrossValidator> {
     // -----------------------------------------------------------------------
-    const luData: LuData =
-        await LuData.createLuData(
+    const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
+        await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
             luContent,
             new NgramSubwordFeaturizer(),
             true);
@@ -173,13 +173,13 @@ export async function mainCrossValidatorWithLuContent(
     }
     // -------------------------------------------------------------------
     const intents: string[] =
-        luData.getIntents();
+        luDataWithSubwordFeaturizer.getIntents();
     const utterances: string[] =
-        luData.getUtterances();
+        luDataWithSubwordFeaturizer.getUtterances();
     const intentLabelIndexArray: number[] =
-        luData.getIntentLabelIndexArray();
+        luDataWithSubwordFeaturizer.getIntentLabelIndexArray();
     const utteranceFeatureIndexArrays: number[][] =
-        luData.getUtteranceFeatureIndexArrays();
+        luDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
     assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
@@ -200,15 +200,15 @@ export async function mainCrossValidatorWithLuContent(
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = crossValidator.crossValidate(
-            luData.getFeaturizerLabels(),
-            luData.getFeaturizerLabelMap(),
-            luData.getFeaturizer().getNumberLabels(),
-            luData.getFeaturizer().getNumberFeatures(),
+            luDataWithSubwordFeaturizer.getFeaturizerLabels(),
+            luDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+            luDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+            luDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
             intents,
             utterances,
             intentLabelIndexArray,
             utteranceFeatureIndexArrays,
-            luData.getIntentInstanceIndexMapArray());
+            luDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
         `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
@@ -276,8 +276,8 @@ export function mainCrossValidatorWithColumnarContent(
     learnerParameterToCalculateOverallLossAfterEpoch: boolean =
         true): CrossValidator {
     // -----------------------------------------------------------------------
-    const columnarData: ColumnarData =
-        ColumnarData.createColumnarData(
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
             columnarContent,
             new NgramSubwordFeaturizer(),
             labelColumnIndex,
@@ -291,13 +291,13 @@ export function mainCrossValidatorWithColumnarContent(
     }
     // -------------------------------------------------------------------
     const intents: string[] =
-        columnarData.getIntents();
+        columnarDataWithSubwordFeaturizer.getIntents();
     const utterances: string[] =
-        columnarData.getUtterances();
+        columnarDataWithSubwordFeaturizer.getUtterances();
     const intentLabelIndexArray: number[] =
-        columnarData.getIntentLabelIndexArray();
+        columnarDataWithSubwordFeaturizer.getIntentLabelIndexArray();
     const utteranceFeatureIndexArrays: number[][] =
-        columnarData.getUtteranceFeatureIndexArrays();
+        columnarDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
     assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
     assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
     const crossValidator: CrossValidator =
@@ -318,15 +318,15 @@ export function mainCrossValidatorWithColumnarContent(
         "groundTruthLabels": string[],
         "groundTruthLabelIndexes": number[],
         "predictions": number[][] } = crossValidator.crossValidate(
-            columnarData.getFeaturizerLabels(),
-            columnarData.getFeaturizerLabelMap(),
-            columnarData.getFeaturizer().getNumberLabels(),
-            columnarData.getFeaturizer().getNumberFeatures(),
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
             intents,
             utterances,
             intentLabelIndexArray,
             utteranceFeatureIndexArrays,
-            columnarData.getIntentInstanceIndexMapArray());
+            columnarDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
     Utility.debuggingLog(
         `crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()=` +
         `${crossValidationResult.confusionMatrixCrossValidation.getMicroQuantileMetrics()}` +
@@ -588,19 +588,20 @@ export async function mainCrossValidator(): Promise<{
     Utility.debuggingLog(
         `linesToSkip=${linesToSkip}`);
     // -----------------------------------------------------------------------
-    const data: Data = await DataUtility.LoadData(
-        filename,
-        null,
-        true,
-        filetype,
-        labelColumnIndex,
-        textColumnIndex,
-        weightColumnIndex,
-        linesToSkip);
+    const dataWithSubwordFeaturizer: DataWithSubwordFeaturizer =
+        await DataWithSubwordFeaturizerUtility.LoadDataWithSubwordFeaturizer(
+            filename,
+            null,
+            true,
+            filetype,
+            labelColumnIndex,
+            textColumnIndex,
+            weightColumnIndex,
+            linesToSkip);
     // -----------------------------------------------------------------------
     const crossValidator: CrossValidator =
-        mainCrossValidatorWithData(
-            data,
+        mainCrossValidatorWithDataWithSubwordFeaturizer(
+            dataWithSubwordFeaturizer,
             numberOfCrossValidationFolds,
             learnerParameterEpochs,
             learnerParameterMiniBatchSize,

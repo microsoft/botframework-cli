@@ -101,37 +101,29 @@ export default class OrchestratorTest extends Command {
       if (process.env.ambiguousClosenessThreshold) {
         ambiguousClosenessThresholdParameter = Number(process.env.ambiguousClosenessThreshold);
         if (Number.isNaN(ambiguousClosenessThresholdParameter)) {
-          Utility.writeLineToConsole(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
+          Utility.writeStringLineToConsoleStderr(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
           Utility.debuggingThrow(`ambiguous parameter "${process.env.ambiguousClosenessThreshold}" is not a number`);
-        } else {
-          ambiguousClosenessThresholdParameter = Utility.DefaultAmbiguousClosenessThresholdParameter;
         }
       }
       if (process.env.lowConfidenceScoreThreshold) {
         lowConfidenceScoreThresholdParameter = Number(process.env.lowConfidenceScoreThreshold);
         if (Number.isNaN(lowConfidenceScoreThresholdParameter)) {
-          Utility.writeLineToConsole(`low-confidence parameter "${process.env.lowConfidenceScoreThreshold}" is not a number`);
+          Utility.writeStringLineToConsoleStderr(`low-confidence parameter "${process.env.lowConfidenceScoreThreshold}" is not a number`);
           Utility.debuggingThrow(`low-confidence parameter "${process.env.lowConfidenceScoreThreshold}" is not a number`);
-        } else {
-          lowConfidenceScoreThresholdParameter = Utility.DefaultLowConfidenceScoreThresholdParameter;
         }
       }
       if (process.env.multiLabelPredictionThreshold) {
         multiLabelPredictionThresholdParameter = Number(process.env.multiLabelPredictionThreshold);
         if (Number.isNaN(multiLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
+          Utility.writeStringLineToConsoleStderr(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
           Utility.debuggingThrow(`multi-label threshold parameter "${process.env.multiLabelPredictionThreshold}" is not a number`);
-        } else {
-          multiLabelPredictionThresholdParameter = Utility.DefaultMultiLabelPredictionThresholdParameter;
         }
       }
       if (process.env.unknownLabelPredictionThreshold) {
         unknownLabelPredictionThresholdParameter = Number(process.env.unknownLabelPredictionThreshold);
         if (Number.isNaN(unknownLabelPredictionThresholdParameter)) {
-          Utility.writeLineToConsole(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
+          Utility.writeStringLineToConsoleStderr(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
           Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
-        } else {
-          unknownLabelPredictionThresholdParameter = Utility.DefaultUnknownLabelPredictionThresholdParameter;
         }
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
