@@ -179,7 +179,8 @@ export class Orchestrator {
     lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter,
     multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter,
     unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter,
-    fullEmbedding: boolean = false): Promise<void> {
+    fullEmbedding: boolean = false,
+    limit: number = 0): Promise<void> {
     await OrchestratorQuery.runAsync(
       baseModelPath,
       entityBaseModelPath,
@@ -190,7 +191,8 @@ export class Orchestrator {
       lowConfidenceScoreThresholdParameter,
       multiLabelPredictionThresholdParameter,
       unknownLabelPredictionThresholdParameter,
-      fullEmbedding);
+      fullEmbedding,
+      limit);
   }
 
   // eslint-disable-next-line max-params

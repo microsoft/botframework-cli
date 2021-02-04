@@ -41,11 +41,16 @@ describe('Test Suite - test', () => {
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-    const testingSetScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetScoresOutputFilename);
-    const testingSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetGroundTruthJsonContentOutputFilename);
-    const testingSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetPredictionJsonContentOutputFilename);
-    const testingSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetSummaryHtmlOutputFilename);
-    const testingSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetLabelsOutputFilename);
+    const testingSetIntentScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetIntentScoresOutputFilename);
+    const testingSetIntentGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetIntentGroundTruthJsonContentOutputFilename);
+    const testingSetIntentPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetIntentPredictionJsonContentOutputFilename);
+    const testingSetIntentSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetIntentSummaryHtmlOutputFilename);
+    const testingSetIntentLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetIntentLabelsOutputFilename);
+    const testingSetEntityScoresOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetEntityScoresOutputFilename);
+    const testingSetEntityGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetEntityGroundTruthJsonContentOutputFilename);
+    const testingSetEntityPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetEntityPredictionJsonContentOutputFilename);
+    const testingSetEntitySummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetEntitySummaryHtmlOutputFilename);
+    const testingSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorTest.testingSetEntityLabelsOutputFilename);
     await OrchestratorTest.runAsync(
       baseModelPath,
       '', // ---- entityBaseModelPath
@@ -60,29 +65,54 @@ describe('Test Suite - test', () => {
     const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
     if (toCleanUpAfterUnitTest) {
       try {
-        Utility.deleteFile(testingSetScoresOutputFilename);
+        Utility.deleteFile(testingSetIntentScoresOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output score file="${testingSetScoresOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output score file="${testingSetIntentScoresOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(testingSetGroundTruthJsonContentOutputFilename);
+        Utility.deleteFile(testingSetIntentGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output ground-truth json file="${testingSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output ground-truth json file="${testingSetIntentGroundTruthJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(testingSetPredictionJsonContentOutputFilename);
+        Utility.deleteFile(testingSetIntentPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output prediction json file="${testingSetPredictionJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output prediction json file="${testingSetIntentPredictionJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(testingSetSummaryHtmlOutputFilename);
+        Utility.deleteFile(testingSetIntentSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output summary file="${testingSetSummaryHtmlOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output summary file="${testingSetIntentSummaryHtmlOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(testingSetLabelsOutputFilename);
+        Utility.deleteFile(testingSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output labels file="${testingSetLabelsOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output labels file="${testingSetIntentLabelsOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(testingSetEntityScoresOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output score file="${testingSetEntityScoresOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(testingSetEntityGroundTruthJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output ground-truth json file="${testingSetEntityGroundTruthJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(testingSetEntityPredictionJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output prediction json file="${testingSetEntityPredictionJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(testingSetEntitySummaryHtmlOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output summary file="${testingSetEntitySummaryHtmlOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(testingSetEntityLabelsOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0100 OrchestratorTest.runAsync()-Bert-3-layer: FAILED deleting output labels file="${testingSetEntityLabelsOutputFilename}", error=${error}`);
       }
       try {
         fs.rmdirSync(outputPath);
@@ -94,4 +124,3 @@ describe('Test Suite - test', () => {
     Utility.debuggingLog('THE END - Test.0100 OrchestratorTest.runAsync()-Bert-3-layer');
   });
 });
-

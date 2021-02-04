@@ -7,15 +7,18 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
-import {LabelResolver} from './labelresolver';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
-import {Span} from '@microsoft/bf-dispatcher';
 import {ScoreEntity} from '@microsoft/bf-dispatcher';
 import {ScoreIntent} from '@microsoft/bf-dispatcher';
-import {Utility} from './utility';
+// import {Span} from '@microsoft/bf-dispatcher';
+
+import {LabelResolver} from './labelresolver';
 import {UtilityLabelResolver} from './utilitylabelresolver';
+
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
+
+import {Utility} from './utility';
 
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -278,7 +281,7 @@ export class OrchestratorHelper {
       throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
 
-    Utility.writeToConsole(`Processing ${filePath}...`);
+    Utility.writeStringToConsoleStdout(`Processing ${filePath}...`);
     try {
       switch (ext) {
       case '.lu':
@@ -755,7 +758,7 @@ export class OrchestratorHelper {
               const jsonBluExampleEntityLabel: string = jsonBluExampleEntity.entity;
               const jsonBluExampleEntityOffset: number = jsonBluExampleEntity.offset;
               const jsonBluExampleEntityLength: number = jsonBluExampleEntity.length;
-              OrchestratorHelper.addNewEntityLabelUtterance(
+              OrchestratorHelper.addNewEntityLabelObjectUtterance(
                 utterance,
                 Label.newEntityLabel(jsonBluExampleEntityLabel, jsonBluExampleEntityOffset, jsonBluExampleEntityLength),
                 utteranceEntityLabelsMap,
@@ -864,6 +867,7 @@ export class OrchestratorHelper {
     return Utility.isEmptyString(routingName) ? fileName.substr(0, fileName.length - ext.length) : routingName;
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
   static addNewLabelUtterance(
     utterance: string,
@@ -898,6 +902,7 @@ export class OrchestratorHelper {
     }
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
   static addNewEntityLabelUtterance(
     utterance: string,
@@ -910,11 +915,14 @@ export class OrchestratorHelper {
       if (utteranceEntityLabelsMap.has(utterance)) {
         existingEntityLabels = utteranceEntityLabelsMap.get(utterance) as Label[];
       }
-      const entity: string = entityEntry.entity;
+      const entityName: string = entityEntry.entity;
       const startPos: number = Number(entityEntry.startPos);
       const endPos: number = Number(entityEntry.endPos);
       // const entityMention: string = entityEntry.text;
-      const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
+      if (Utility.isEmptyString(entityName) || (startPos === undefined) || (endPos === undefined)) {
+        Utility.debuggingThrow(`EMPTY entityName: '${entityName}', startPos='${startPos}', endPos='${endPos}', entityEntry='${entityEntry}', utterance='${utterance}'`);
+      }
+      const entityLabel: Label = Label.newEntityLabelByPosition(entityName, startPos, endPos);
       if (Utility.isEmptyGenericArray(existingEntityLabels)) {
         existingEntityLabels = [entityLabel];
         utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
@@ -927,10 +935,47 @@ export class OrchestratorHelper {
     }
   }
 
+  // ---- NOTE-TO-REFACTOR ----
+  // eslint-disable-next-line max-params
+  static addNewEntityLabelObjectUtterance(
+    utterance: string,
+    entityEntry: Label,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
+    let existingEntityLabels: Label[] = [];
+    try {
+      // eslint-disable-next-line no-prototype-builtins
+      if (utteranceEntityLabelsMap.has(utterance)) {
+        existingEntityLabels = utteranceEntityLabelsMap.get(utterance) as Label[];
+      }
+      const labelType: LabelType = entityEntry.labeltype;
+      const entityName: string = entityEntry.name;
+      const offset: number = entityEntry.span.offset;
+      const length: number = entityEntry.span.length;
+      // ---- NOTE-NOT-AVAILABLE ---- const entityMention: string = entityEntry.text;
+      if (Utility.isEmptyString(entityName) || (labelType === undefined) || (offset === undefined) || (length === undefined)) {
+        Utility.debuggingThrow(`EMPTY entityName: '${entityName}', labelType='${labelType}', offset='${offset}', length='${length}', entityEntry='${entityEntry}', utterance='${utterance}'`);
+      }
+      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
+        existingEntityLabels = [entityEntry];
+        utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
+      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityEntry, existingEntityLabels)) {
+        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityEntry, utteranceEntityLabelDuplicateMap);
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      throw error;
+    }
+  }
+
+  // ---- NOTE-TO-REFACTOR ----
   static addUniqueLabel(newLabel: string, labels: Set<string>): boolean {
     try {
       if (labels.has(newLabel)) {
         return false;
+      }
+      if (Utility.isEmptyString(newLabel)) {
+        Utility.debuggingThrow(`EMPTY newLabel: '${newLabel}'`);
       }
       labels.add(newLabel);
       return true;
@@ -941,6 +986,7 @@ export class OrchestratorHelper {
     return false;
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
   static addNewLabelUtteranceToObejctDictionary(
     utterance: string,
@@ -974,6 +1020,7 @@ export class OrchestratorHelper {
     }
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
   static addNewEntityLabelUtteranceToObejctDictionary(
     utterance: string,
@@ -986,11 +1033,11 @@ export class OrchestratorHelper {
       if (utteranceEntityLabelsMap.hasOwnProperty(utterance)) {
         existingEntityLabels = utteranceEntityLabelsMap[utterance];
       }
-      const entity: string = entityEntry.entity;
+      const entityName: string = entityEntry.entity;
       const startPos: number = Number(entityEntry.startPos);
       const endPos: number = Number(entityEntry.endPos);
       // const entityMention: string = entityEntry.text;
-      const entityLabel: Label = new Label(LabelType.Entity, entity, new Span(startPos, endPos - startPos + 1));
+      const entityLabel: Label = Label.newEntityLabelByPosition(entityName, startPos, endPos);
       if (Utility.isEmptyGenericArray(existingEntityLabels)) {
         existingEntityLabels = [entityLabel];
         utteranceEntityLabelsMap[utterance] = existingEntityLabels;
@@ -1003,6 +1050,7 @@ export class OrchestratorHelper {
     }
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   static addUniqueLabelToArray(newLabel: string, labels: string[]): boolean {
     try {
       for (const label of labels) {
@@ -1019,6 +1067,7 @@ export class OrchestratorHelper {
     return false;
   }
 
+  // ---- NOTE-TO-REFACTOR ----
   static addUniqueEntityLabelArray(newLabel: Label, labels: Label[]): boolean {
     try {
       for (const label of labels) {
@@ -1093,11 +1142,11 @@ export class OrchestratorHelper {
 
       if (buildOutput.recognizer !== undefined) {
         const recoFileName: string = path.join(outputPath, `${baseName}.lu.dialog`);
-        this.writeToFile(recoFileName, JSON.stringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
+        this.writeToFile(recoFileName, Utility.jsonStringify(buildOutput.recognizer.orchestratorRecognizer, null, 2));
         Utility.debuggingLog(`Recognizer file written to ${recoFileName}`);
 
         const multiRecoFileName: string = path.join(outputPath, `${baseName}.en-us.lu.dialog`);
-        this.writeToFile(multiRecoFileName, JSON.stringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
+        this.writeToFile(multiRecoFileName, Utility.jsonStringify(buildOutput.recognizer.multiLanguageRecognizer, null, 2));
         Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
       }
 

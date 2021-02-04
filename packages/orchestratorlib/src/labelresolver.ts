@@ -7,7 +7,10 @@ import * as path from 'path';
 
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
+import {LabelStructureUtility} from '@microsoft/bf-dispatcher';
+
 import {OrchestratorHelper} from './orchestratorhelper';
+
 import {Utility} from './utility';
 
 const oc: any = require('orchestrator-core');
@@ -118,6 +121,18 @@ export class LabelResolver {
   public static getExamples(labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
     return labelResolver.getExamples();
+  }
+
+  public static getExamplesWithLabelName(labelName: string, labelResolver: any = null) {
+    labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
+    return labelResolver.getExamples(labelName);
+  }
+
+  public static getExamplesWithLabelType(labelType: LabelType, labelResolver: any = null) {
+    labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
+    const labelTypeInNumber: number = LabelStructureUtility.labelTypeToNumber(labelType);
+    Utility.debuggingLog(`LabelResolver.getExamplesWithLabelType(), labelTypeInNumber=${labelTypeInNumber}`);
+    return labelResolver.getExamples(labelTypeInNumber);
   }
 
   public static getLabels(labelType: LabelType, labelResolver: any = null) {

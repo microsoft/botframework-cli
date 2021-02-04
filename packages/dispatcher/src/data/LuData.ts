@@ -10,22 +10,17 @@ const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromL
 
 import { Data } from "./Data";
 
-import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
-
 import { Utility } from "../utility/Utility";
 
 export class LuData extends Data {
 
     public static async createLuDataFromSamplingExistingLuDataUtterances(
         existingLuData: LuData,
-        samplingIndexArray: number[],
-        toResetFeaturizerLabelFeatureMaps: boolean): Promise<LuData> {
+        samplingIndexArray: number[]): Promise<LuData> {
         // -------------------------------------------------------------------
         const luData: LuData =
             await LuData.createLuData(
-                existingLuData.getContent(),
-                existingLuData.getFeaturizer(),
-                toResetFeaturizerLabelFeatureMaps);
+                existingLuData.getContent());
         // -------------------------------------------------------------------
         const luLuisJsonStructure: any =
             luData.getLuLuisJsonStructure();
@@ -59,12 +54,6 @@ export class LuData extends Data {
         luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
             (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            luData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        luData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return luData;
     }
 
@@ -75,9 +64,7 @@ export class LuData extends Data {
         // -------------------------------------------------------------------
         const luData: LuData =
             await LuData.createLuData(
-                existingLuData.getContent(),
-                existingLuData.getFeaturizer(),
-                toResetFeaturizerLabelFeatureMaps);
+                existingLuData.getContent());
         // -------------------------------------------------------------------
         const luLuisJsonStructure: any =
             luData.getLuLuisJsonStructure();
@@ -111,22 +98,14 @@ export class LuData extends Data {
         luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
             (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            luData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        luData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return luData;
     }
 
     public static async createLuData(
-        content: string,
-        featurizer: NgramSubwordFeaturizer,
-        toResetFeaturizerLabelFeatureMaps: boolean): Promise<LuData> {
+        content: string): Promise<LuData> {
         // -------------------------------------------------------------------
         const luData: LuData =
-            new LuData(featurizer);
+            new LuData();
         luData.content =
             content;
         // -------------------------------------------------------------------
@@ -150,20 +129,13 @@ export class LuData extends Data {
         luData.intentsUtterancesWeights.weights = luData.luUtterances.map(
             (entry: any) => entry.weight as number);
         // -------------------------------------------------------------------
-        if (toResetFeaturizerLabelFeatureMaps) {
-            luData.resetFeaturizerLabelFeatureMaps();
-        }
-        // -------------------------------------------------------------------
-        luData.featurizeIntentsUtterances();
-        // -------------------------------------------------------------------
         return luData;
     }
 
     protected luObject: any = null;
 
-    protected constructor(
-        featurizer: NgramSubwordFeaturizer) {
-        super(featurizer);
+    protected constructor() {
+        super();
     }
 
     public async createDataFromSamplingExistingDataUtterances(
@@ -172,16 +144,14 @@ export class LuData extends Data {
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
-        samplingIndexArray: number[],
-        toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        samplingIndexArray: number[]): Promise<Data> {
         return await LuData.createLuDataFromSamplingExistingLuDataUtterances(
             existingData as LuData,
             // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
             // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
-            samplingIndexArray,
-            toResetFeaturizerLabelFeatureMaps);
+            samplingIndexArray);
     }
 
     public async createDataFromFilteringExistingDataUtterances(

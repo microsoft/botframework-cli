@@ -7,7 +7,8 @@ import * as path from 'path';
 
 import * as readline from 'readline';
 
-import {DictionaryMapUtility, IConfusionMatrix} from '@microsoft/bf-dispatcher';
+import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
@@ -15,14 +16,17 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
 import {Example} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 
-import {PredictionScoreLabelStringStructure} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithScoreLabelString} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
-import {Utility} from './utility';
 import {UtilityLabelResolver} from './utilitylabelresolver';
+
+import {Utility} from './utility';
 
 /* eslint-disable no-console */
 export class OrchestratorPredict {
@@ -91,17 +95,29 @@ export class OrchestratorPredict {
 
   protected snapshotFile: string = '';
 
-  protected predictingSetGroundTruthJsonContentOutputFilename: string = '';
+  protected predictingSetIntentGroundTruthJsonContentOutputFilename: string = '';
 
-  protected predictingSetPredictionJsonContentOutputFilename: string = '';
+  protected predictingSetIntentPredictionJsonContentOutputFilename: string = '';
 
-  protected predictingSetScoreOutputFilename: string = '';
+  protected predictingSetIntentScoreOutputFilename: string = '';
 
-  protected predictingSetSummaryOutputFilename: string = '';
+  protected predictingSetIntentSummaryOutputFilename: string = '';
 
-  protected predictingLabelsOutputFilename: string = '';
+  protected predictingSetIntentLabelsOutputFilename: string = '';
 
-  protected predictingSetSnapshotFilename: string = '';
+  protected predictingSetIntentSnapshotFilename: string = '';
+
+  protected predictingSetEntityGroundTruthJsonContentOutputFilename: string = '';
+
+  protected predictingSetEntityPredictionJsonContentOutputFilename: string = '';
+
+  protected predictingSetEntityScoreOutputFilename: string = '';
+
+  protected predictingSetEntitySummaryOutputFilename: string = '';
+
+  protected predictingSetEntityLabelsOutputFilename: string = '';
+
+  protected predictingSetEntitySnapshotFilename: string = '';
 
   // ---- NOTE-REFACTOR-LATER ---- protected labelResolver: any;
 
@@ -121,7 +137,7 @@ export class OrchestratorPredict {
 
   protected currentUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
-  protected currentEvaluationOutput: {
+  protected currentIntentEvaluationOutput: {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
       'labelArrayAndMap': {
@@ -162,11 +178,58 @@ export class OrchestratorPredict {
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
         'confusionMatrixAverageDescriptionMetricsHtml': string;};};
-    'predictionScoreLabelStringStructureArray': PredictionScoreLabelStringStructure[];
+    'predictionStructureWithScoreLabelStringArray': PredictionStructureWithScoreLabelString[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
     'predictionJsonContent': string;
-  } = Utility.generateEmptyEvaluationReport();
+  } = Utility.generateLabelStringEmptyEvaluationReport();
+
+  protected currentEntityEvaluationOutput: {
+    'evaluationReportLabelUtteranceStatistics': {
+      'evaluationSummary': string;
+      'labelArrayAndMap': {
+        'stringArray': string[];
+        'stringMap': Map<string, number>;};
+      'labelStatisticsAndHtmlTable': {
+        'labelUtterancesMap': Map<string, Set<string>>;
+        'labelUtterancesTotal': number;
+        'labelStatistics': string[][];
+        'labelStatisticsHtml': string;};
+      'utteranceStatisticsAndHtmlTable': {
+        'utteranceStatisticsMap': Map<number, number>;
+        'utteranceStatistics': [string, number][];
+        'utteranceCount': number;
+        'utteranceStatisticsHtml': string;};
+      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArraysHtml': string;
+      'utteranceLabelDuplicateHtml': string; };
+    'evaluationReportAnalyses': {
+      'evaluationSummary': string;
+      'ambiguousAnalysis': {
+        'scoringAmbiguousUtterancesArrays': string[][];
+        'scoringAmbiguousUtterancesArraysHtml': string;
+        'scoringAmbiguousUtteranceSimpleArrays': string[][];};
+      'misclassifiedAnalysis': {
+        'scoringMisclassifiedUtterancesArrays': string[][];
+        'scoringMisclassifiedUtterancesArraysHtml': string;
+        'scoringMisclassifiedUtterancesSimpleArrays': string[][];};
+      'lowConfidenceAnalysis': {
+        'scoringLowConfidenceUtterancesArrays': string[][];
+        'scoringLowConfidenceUtterancesArraysHtml': string;
+        'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
+      'confusionMatrixAnalysis': {
+        'confusionMatrix': IConfusionMatrix;
+        'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
+        'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
+        'predictingConfusionMatrixOutputLines': string[][];
+        'confusionMatrixMetricsHtml': string;
+        'confusionMatrixAverageMetricsHtml': string;
+        'confusionMatrixAverageDescriptionMetricsHtml': string;};};
+    'predictionStructureWithScoreLabelObjectArray': PredictionStructureWithScoreLabelObject[];
+    'scoreOutputLines': string[][];
+    'groundTruthJsonContent': string;
+    'predictionJsonContent': string;
+  } = Utility.generateLabelObjectEmptyEvaluationReport();
 
   /* eslint-disable max-params */
   /* eslint-disable complexity */
@@ -246,36 +309,66 @@ export class OrchestratorPredict {
         Utility.debuggingThrow(`snapshot set file does not exist, snapshotFile=${this.snapshotFile}`);
       }
     }
-    this.predictingSetGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_ground_truth._instancesjson');
-    this.predictingSetPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_prediction_instances.json');
-    this.predictingSetScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_scores.txt');
-    this.predictingSetSummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_summary.html');
-    this.predictingLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_labels.txt');
-    this.predictingSetSnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_snapshot_set.blu');
+    this.predictingSetIntentGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_ground_truth._instancesjson');
+    this.predictingSetIntentPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_prediction_instances.json');
+    this.predictingSetIntentScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_scores.txt');
+    this.predictingSetIntentSummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_summary.html');
+    this.predictingSetIntentLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_labels.txt');
+    this.predictingSetIntentSnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_set_intent_snapshot.blu');
+    this.predictingSetEntityGroundTruthJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_ground_truth._instancesjson');
+    this.predictingSetEntityPredictionJsonContentOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_prediction_instances.json');
+    this.predictingSetEntityScoreOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_scores.txt');
+    this.predictingSetEntitySummaryOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_summary.html');
+    this.predictingSetEntityLabelsOutputFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_labels.txt');
+    this.predictingSetEntitySnapshotFilename = path.join(this.outputPath, 'orchestrator_predicting_set_entity_snapshot.blu');
   }
 
-  public getPredictingSetGroundTruthJsonContentOutputFilename(): string {
-    return this.predictingSetGroundTruthJsonContentOutputFilename;
+  public getPredictingSetIntentGroundTruthJsonContentOutputFilename(): string {
+    return this.predictingSetIntentGroundTruthJsonContentOutputFilename;
   }
 
-  public getPredictingSetPredictionJsonContentOutputFilename(): string {
-    return this.predictingSetPredictionJsonContentOutputFilename;
+  public getPredictingSetIntentPredictionJsonContentOutputFilename(): string {
+    return this.predictingSetIntentPredictionJsonContentOutputFilename;
   }
 
-  public getPredictingSetScoreOutputFilename(): string {
-    return this.predictingSetScoreOutputFilename;
+  public getPredictingSetIntentScoreOutputFilename(): string {
+    return this.predictingSetIntentScoreOutputFilename;
   }
 
-  public getPredictingSetSummaryOutputFilename(): string {
-    return this.predictingSetSummaryOutputFilename;
+  public getPredictingSetIntentSummaryOutputFilename(): string {
+    return this.predictingSetIntentSummaryOutputFilename;
   }
 
-  public getPredictingLabelsOutputFilename(): string {
-    return this.predictingLabelsOutputFilename;
+  public getPredictingSetIntentLabelsOutputFilename(): string {
+    return this.predictingSetIntentLabelsOutputFilename;
   }
 
-  public getPredictingSetSnapshotFilename(): string {
-    return this.predictingSetSnapshotFilename;
+  public getPredictingSetIntentSnapshotFilename(): string {
+    return this.predictingSetIntentSnapshotFilename;
+  }
+
+  public getPredictingSetEntityGroundTruthJsonContentOutputFilename(): string {
+    return this.predictingSetEntityGroundTruthJsonContentOutputFilename;
+  }
+
+  public getPredictingSetEntityPredictionJsonContentOutputFilename(): string {
+    return this.predictingSetEntityPredictionJsonContentOutputFilename;
+  }
+
+  public getPredictingSetEntityScoreOutputFilename(): string {
+    return this.predictingSetEntityScoreOutputFilename;
+  }
+
+  public getPredictingSetEntitySummaryOutputFilename(): string {
+    return this.predictingSetEntitySummaryOutputFilename;
+  }
+
+  public getPredictingSetEntityLabelsOutputFilename(): string {
+    return this.predictingSetEntityLabelsOutputFilename;
+  }
+
+  public getPredictingSetEntitySnapshotFilename(): string {
+    return this.predictingSetEntitySnapshotFilename;
   }
 
   public async buildLabelResolver(): Promise<void> {
@@ -468,7 +561,7 @@ export class OrchestratorPredict {
     console.log('    f   - find the "current" utterance if it is already in the model example set');
     console.log('    p   - make a prediction on the "current" utterance input');
     console.log('    v   - validate the model and save analyses (validation report) to ');
-    console.log(`          "${this.predictingSetSummaryOutputFilename}"`);
+    console.log(`          "${this.predictingSetIntentSummaryOutputFilename}"`);
     console.log('    vd  - reference a validation Duplicates report ');
     console.log('          (previously generated by the "v" command) and enter an index');
     console.log('          for retrieving utterance/intents into "current"');
@@ -493,7 +586,7 @@ export class OrchestratorPredict {
     console.log('          add it with the "new" intent labels to the model example set');
     console.log('    rl  - remove the "current" intent labels from the model example set');
     console.log('    n   - create a new snapshot of model examples and save it to ');
-    console.log(`          "${this.predictingSetSnapshotFilename}"`);
+    console.log(`          "${this.predictingSetIntentSnapshotFilename}"`);
     return 0;
   }
 
@@ -534,20 +627,27 @@ export class OrchestratorPredict {
       console.log('> There is no example');
       return -1;
     }
+    const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetS(), exampleStructureArray.length=${exampleStructureArray.length}`);
     const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labels.length=${labels.length}`);
     // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labels=${labels}`);
     this.currentLabelArrayAndMap = Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
-    Utility.examplesToUtteranceLabelMaps(
-      examples,
+    const numberAddedIntentLabels: [number, number] = Utility.examplesToUtteranceLabelMaps(
+      exampleStructureArray,
       this.currentUtteranceLabelsMap,
       this.currentUtteranceLabelDuplicateMap);
+    const numberIntentUtteancesAdded: number = numberAddedIntentLabels[0];
+    const numberIntentLabelsAdded: number = numberAddedIntentLabels[1];
+    Utility.debuggingLog(`OrchestratorPredict.commandLetS(), numberAddedIntentLabels=${numberAddedIntentLabels}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetS(), numberIntentUtteancesAdded=${numberIntentUtteancesAdded}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetS(), numberIntentLabelsAdded=${numberIntentLabelsAdded}`);
     const labelStatisticsAndHtmlTable: {
       'labelUtterancesMap': Map<string, Set<string>>;
       'labelUtterancesTotal': number;
       'labelStatistics': string[][];
       'labelStatisticsHtml': string;
-    } = Utility.generateLabelStatisticsAndHtmlTable(
+    } = Utility.generateLabelStringLabelStatisticsAndHtmlTable(
       this.currentUtteranceLabelsMap,
       this.currentLabelArrayAndMap);
     const labelUtteranceCount: Map<string, number> = new Map<string, number>();
@@ -704,65 +804,134 @@ export class OrchestratorPredict {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetV`, {commandLet: 'commandLetV'});
     } catch (error) {
     }
-    // ---- NOTE ---- process the snapshot set.
-    const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
-    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- retrieve the examples.
     const examples: any = LabelResolver.getExamples();
     if (examples.length <= 0) {
       console.log('ERROR: There is no example in the snapshot set, please add some.');
       return -1;
     }
-    Utility.examplesToUtteranceLabelMaps(
-      examples,
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), examples.length=${examples.length}`);
+    const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), exampleStructureArray.length=${exampleStructureArray.length}`);
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- process the snapshot set for intent.
+    const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const numberAddedIntentLabels: [number, number] = Utility.examplesToUtteranceLabelMaps(
+      exampleStructureArray,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
-    // ---- NOTE ---- integrated step to produce analysis reports.
+    const numberIntentUtteancesAdded: number = numberAddedIntentLabels[0];
+    const numberIntentLabelsAdded: number = numberAddedIntentLabels[1];
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberAddedIntentLabels=${numberAddedIntentLabels}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberIntentUtteancesAdded=${numberIntentUtteancesAdded}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberIntentLabelsAdded=${numberIntentLabelsAdded}`);
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- process the snapshot set for entity.
+    const entityLabels: string[] = LabelResolver.getLabels(LabelType.Entity);
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const numberAddedEntityLabels: [number, number] = Utility.examplesToUtteranceEntityLabelMaps(
+      exampleStructureArray,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+    const numberEntityUtteancesAdded: number = numberAddedEntityLabels[0];
+    const numberEntityLabelsAdded: number = numberAddedEntityLabels[1];
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberAddedEntityLabels=${numberAddedEntityLabels}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberEntityUtteancesAdded=${numberEntityUtteancesAdded}`);
+    Utility.debuggingLog(`OrchestratorPredict.commandLetV(), numberEntityLabelsAdded=${numberEntityLabelsAdded}`);
+    // -----------------------------------------------------------------------
     Utility.toObfuscateLabelTextInReportUtility = this.obfuscateEvaluationReport;
     UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = this.obfuscateEvaluationReport;
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("true")');
     UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample(true);
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample()');
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- integrated step to produce intent analysis reports.
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
-    this.currentEvaluationOutput = Utility.generateEvaluationReport(
-      UtilityLabelResolver.score,
+    this.currentIntentEvaluationOutput = Utility.generateLabelStringEvaluationReport(
+      UtilityLabelResolver.scoreStringLabels,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       this.ambiguousClosenessThreshold,
       this.lowConfidenceScoreThreshold,
       this.multiLabelPredictionThreshold,
-      this.unknownLabelPredictionThreshold);
+      this.unknownLabelPredictionThreshold,
+      false);
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
-    Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call Utility.generateEvaluationReportFiles()');
-    let evaluationSummary: string =
-      this.currentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
-    evaluationSummary = evaluationSummary.replace(
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call Utility.generateEvaluationReportFiles()');
+    let evaluationSummaryIntent: string =
+      this.currentIntentEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    evaluationSummaryIntent = evaluationSummaryIntent.replace(
       '{APP_NAME}',
       '');
-    evaluationSummary = evaluationSummary.replace(
+    evaluationSummaryIntent = evaluationSummaryIntent.replace(
       '{MODEL_SPECIFICATION}',
       '');
     // -----------------------------------------------------------------------
     Utility.generateEvaluationReportFiles(
-      this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
-      this.currentEvaluationOutput.scoreOutputLines,
-      this.currentEvaluationOutput.groundTruthJsonContent,
-      this.currentEvaluationOutput.predictionJsonContent,
-      evaluationSummary,
-      this.getPredictingLabelsOutputFilename(),
-      this.getPredictingSetScoreOutputFilename(),
-      this.getPredictingSetGroundTruthJsonContentOutputFilename(),
-      this.getPredictingSetPredictionJsonContentOutputFilename(),
-      this.getPredictingSetSummaryOutputFilename());
-    Utility.debuggingLog('OrchestratorTest.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
+      this.currentIntentEvaluationOutput.scoreOutputLines,
+      this.currentIntentEvaluationOutput.groundTruthJsonContent,
+      this.currentIntentEvaluationOutput.predictionJsonContent,
+      evaluationSummaryIntent,
+      this.getPredictingSetIntentLabelsOutputFilename(),
+      this.getPredictingSetIntentScoreOutputFilename(),
+      this.getPredictingSetIntentGroundTruthJsonContentOutputFilename(),
+      this.getPredictingSetIntentPredictionJsonContentOutputFilename(),
+      this.getPredictingSetIntentSummaryOutputFilename());
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      Utility.debuggingLog(`this.currentEvaluationOutput=${Utility.jsonStringify(this.currentEvaluationOutput)}`);
+      Utility.debuggingLog(`this.currentIntentEvaluationOutput=${Utility.jsonStringify(this.currentIntentEvaluationOutput)}`);
     }
     // -----------------------------------------------------------------------
-    console.log(`> Leave-one-out cross validation is done and reports generated in '${this.predictingSetSummaryOutputFilename}'`);
+    // ---- NOTE ---- integrated step to produce entity analysis reports.
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
+    this.currentEntityEvaluationOutput = Utility.generateLabelObjectEvaluationReport(
+      UtilityLabelResolver.scoreObjectLabels,
+      entityLabels,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap,
+      this.ambiguousClosenessThreshold,
+      this.lowConfidenceScoreThreshold,
+      this.multiLabelPredictionThreshold,
+      this.unknownLabelPredictionThreshold,
+      false);
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- integrated step to produce analysis report output files.
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call Utility.generateEvaluationReportFiles()');
+    let evaluationSummaryEntity: string =
+      this.currentEntityEvaluationOutput.evaluationReportAnalyses.evaluationSummary;
+    evaluationSummaryEntity = evaluationSummaryEntity.replace(
+      '{APP_NAME}',
+      '');
+    evaluationSummaryEntity = evaluationSummaryEntity.replace(
+      '{MODEL_SPECIFICATION}',
+      '');
+    // -----------------------------------------------------------------------
+    Utility.generateEvaluationReportFiles(
+      this.currentEntityEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelArrayAndMap.stringArray,
+      this.currentEntityEvaluationOutput.scoreOutputLines,
+      this.currentEntityEvaluationOutput.groundTruthJsonContent,
+      this.currentEntityEvaluationOutput.predictionJsonContent,
+      evaluationSummaryEntity,
+      this.getPredictingSetEntityLabelsOutputFilename(),
+      this.getPredictingSetEntityScoreOutputFilename(),
+      this.getPredictingSetEntityGroundTruthJsonContentOutputFilename(),
+      this.getPredictingSetEntityPredictionJsonContentOutputFilename(),
+      this.getPredictingSetEntitySummaryOutputFilename());
+    Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReportFiles()');
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`this.currentEntityEvaluationOutput=${Utility.jsonStringify(this.currentEntityEvaluationOutput)}`);
+    }
+    // -----------------------------------------------------------------------
+    console.log(`> Leave-one-out cross validation is done and reports generated in '${this.predictingSetIntentSummaryOutputFilename}' and '${this.predictingSetEntitySummaryOutputFilename}'`);
     return 0;
   }
 
@@ -779,18 +948,18 @@ export class OrchestratorPredict {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetVDwithEntry`, {commandLet: 'commandLetVDwithEntry'});
     } catch (error) {
     }
-    if (!this.currentEvaluationOutput) {
+    if (!this.currentIntentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const utterancesMultiLabelArrays: [string, string][] =
-    this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.utterancesMultiLabelArrays;
+    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.utterancesMultiLabelArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -828,18 +997,18 @@ export class OrchestratorPredict {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetVAwithEntry`, {commandLet: 'commandLetVAwithEntry'});
     } catch (error) {
     }
-    if (!this.currentEvaluationOutput) {
+    if (!this.currentIntentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringAmbiguousUtterancesSimpleArrays: string[][] =
-    this.currentEvaluationOutput.evaluationReportAnalyses.ambiguousAnalysis.scoringAmbiguousUtteranceSimpleArrays;
+    this.currentIntentEvaluationOutput.evaluationReportAnalyses.ambiguousAnalysis.scoringAmbiguousUtteranceSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -877,18 +1046,18 @@ export class OrchestratorPredict {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetVMwithEntry`, {commandLet: 'commandLetVMwithEntry'});
     } catch (error) {
     }
-    if (!this.currentEvaluationOutput) {
+    if (!this.currentIntentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringMisclassifiedUtterancesSimpleArrays: string[][] =
-    this.currentEvaluationOutput.evaluationReportAnalyses.misclassifiedAnalysis.scoringMisclassifiedUtterancesSimpleArrays;
+    this.currentIntentEvaluationOutput.evaluationReportAnalyses.misclassifiedAnalysis.scoringMisclassifiedUtterancesSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -926,18 +1095,18 @@ export class OrchestratorPredict {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetVLwithEntry`, {commandLet: 'commandLetVLwithEntry'});
     } catch (error) {
     }
-    if (!this.currentEvaluationOutput) {
+    if (!this.currentIntentEvaluationOutput) {
       console.log('ERROR: There is no validation report, please use the "v" command to create one');
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringLowConfidenceUtterancesSimpleArrays: string[][] =
-    this.currentEvaluationOutput.evaluationReportAnalyses.lowConfidenceAnalysis.scoringLowConfidenceUtterancesSimpleArrays;
+    this.currentIntentEvaluationOutput.evaluationReportAnalyses.lowConfidenceAnalysis.scoringLowConfidenceUtterancesSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -1170,9 +1339,9 @@ export class OrchestratorPredict {
     } catch (error) {
     }
     const snapshot: any = LabelResolver.createSnapshot();
-    Utility.dumpFile(this.getPredictingSetSnapshotFilename(), snapshot);
-    Utility.debuggingLog(`Snapshot written to ${this.getPredictingSetSnapshotFilename()}`);
-    console.log(`> A new snapshot has been saved to '${this.getPredictingSetSnapshotFilename()}'`);
+    Utility.dumpFile(this.getPredictingSetIntentSnapshotFilename(), snapshot);
+    Utility.debuggingLog(`Snapshot written to ${this.getPredictingSetIntentSnapshotFilename()}`);
+    console.log(`> A new snapshot has been saved to '${this.getPredictingSetIntentSnapshotFilename()}'`);
     return 0;
   }
 }

@@ -116,7 +116,7 @@ export class OrchestratorSettings {
         snapshotPath: OrchestratorSettings.SnapshotPath,
       };
 
-      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, JSON.stringify(settings, null, 2));
+      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
     } catch (error) {
       throw new CLIError(error);
     }

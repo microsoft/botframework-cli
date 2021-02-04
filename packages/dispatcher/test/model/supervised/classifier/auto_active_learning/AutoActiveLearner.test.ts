@@ -10,13 +10,13 @@ import { AutoActiveLearner } from "../../../../../src/model/supervised/classifie
 import { AppSoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
-import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
+import { ColumnarContentEmail } from "../../../../data/ColumnarDataWithSubwordFeaturizer.test";
 
-// import { LuContentEmail } from "../../../../data/LuData.test";
+// import { LuContentEmail } from "../../../../data/LuDataWithSubwordFeaturizer.test";
 
-import { ColumnarData } from "../../../../../src/data/ColumnarData";
+import { ColumnarDataWithSubwordFeaturizer } from "../../../../../src/data/ColumnarDataWithSubwordFeaturizer";
 
-// import { LuData } from "../../../../../src/data/LuData";
+// import { LuDataWithSubwordFeaturizer } from "../../../../../src/data/LuDataWithSubwordFeaturizer";
 
 import { NgramSubwordFeaturizer } from "../../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
@@ -116,8 +116,8 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         const textColumnIndex: number = 2;
         const weightColumnIndex: number = 1;
         const linesToSkip: number = 1;
-        const columnarData: ColumnarData =
-            ColumnarData.createColumnarData(
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
                 columnarContent,
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
@@ -127,7 +127,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
                 true);
         // -----------------------------------------------------------------------
         const results =
-            columnarData.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
+            columnarDataWithSubwordFeaturizer.collectSmallUtteranceIndexSetCoveringAllIntentEntityLabels();
         const smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
             results.smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels;
         const smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels: Map<string, Set<number>> =
@@ -161,7 +161,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
             aalLimitInitialNumberOfInstancesPerCategory = -1;
         }
         const resultsInitialSampling =
-            columnarData.collectUtteranceIndexSetSeedingIntentTrainingSet(
+            columnarDataWithSubwordFeaturizer.collectUtteranceIndexSetSeedingIntentTrainingSet(
                 smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
                 remainingUtteranceIndexSet,
                 aalLimitInitialNumberOfInstancesPerCategory);
@@ -195,17 +195,17 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
             `${seedingUtteranceIndexArray.length}`);
         // -------------------------------------------------------------------
         const intentLabelIndexArray: number[] =
-            columnarData.getIntentLabelIndexArray();
+            columnarDataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            columnarData.getUtteranceFeatureIndexArrays();
+            columnarDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         const learned: {
             "seedingInstanceIndexArray": number[],
             "learner": SoftmaxRegressionSparse,
         } = autoActiveLearner.learn(
-            columnarData.getFeaturizerLabels(),
-            columnarData.getFeaturizerLabelMap(),
-            columnarData.getFeaturizer().getNumberLabels(),
-            columnarData.getFeaturizer().getNumberFeatures(),
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
             intentLabelIndexArray,
             utteranceFeatureIndexArrays,
             seedingUtteranceIndexArray,
@@ -214,9 +214,9 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         //     learned.seedingInstanceIndexArray;
         // const learner: SoftmaxRegressionSparse =
         //     learned.learner;
-        // const newColumnarData: ColumnarData =
-        //     ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
-        //     columnarData,
+        // const newColumnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        //     ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizerFromFilteringExistingColumnarDataUtterances(
+        //     columnarDataWithSubwordFeaturizer,
         //     labelColumnIndex,
         //     textColumnIndex,
         //     weightColumnIndex,

@@ -5,9 +5,9 @@
 
 import assert = require("assert");
 
-import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
+import { ColumnarContentEmail } from "../../../data/ColumnarDataWithSubwordFeaturizer.test";
 
-import { ColumnarData } from "../../../../src/data/ColumnarData";
+import { ColumnarDataWithSubwordFeaturizer } from "../../../../src/data/ColumnarDataWithSubwordFeaturizer";
 
 import { NgramSubwordFeaturizer } from "../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
@@ -33,7 +33,7 @@ function getNgramSubwordFeaturizerForUnitTests(
         toRemoveEmptyElements,
         splitDelimiter,
         numberHashingFeaturesSetting);
-    const columnarData: ColumnarData = ColumnarData.createColumnarData(
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
         ColumnarContentEmail,
         featurizer,
         0,
@@ -60,7 +60,7 @@ function getHashingNgramSubwordFeaturizerForUnitTests(
         toRemoveEmptyElements,
         splitDelimiter,
         numberHashingFeaturesSetting);
-    const columnarData: ColumnarData = ColumnarData.createColumnarData(
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
         ColumnarContentEmail,
         featurizer,
         0,
@@ -950,7 +950,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarData: ColumnarData = ColumnarData.createColumnarData(
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
             ColumnarContentEmail,
             featurizer,
             0,
@@ -978,7 +978,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarData: ColumnarData = ColumnarData.createColumnarData(
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
             ColumnarContentEmail,
             featurizer,
             0,
@@ -1009,7 +1009,7 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarData: ColumnarData = ColumnarData.createColumnarData(
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
             ColumnarContentEmail,
             featurizer,
             0,

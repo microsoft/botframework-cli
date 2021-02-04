@@ -350,7 +350,7 @@ export class Utility {
     }
 
     public static stringMapToJson<V>(stringMap: Map<string, V>): string {
-        return JSON.stringify(Utility.stringMapToObject<V>(stringMap));
+        return Utility.jsonStringify(Utility.stringMapToObject<V>(stringMap));
     }
     public static jsonToStringMap<V>(jsonString: string): Map<string, V> {
         return Utility.objectToStringMap<V>(JSON.parse(jsonString));
@@ -2330,20 +2330,47 @@ export class Utility {
     }
 
     public static getJsonStringified(jsonObject: any, indents: number = 4): string {
-        return JSON.stringify(jsonObject, null, indents);
+        return Utility.jsonStringify(jsonObject, null, indents);
     }
 
-    public static writeLineToConsoleStdout(outputContents: string) {
-        Utility.writeToConsoleStdout(`${outputContents}\n`);
+    public static writeAnyJsonifiedToConsoleStdout(outputContents: any) {
+        const output: string = Utility.jsonStringify(outputContents, null, 2);
+        Utility.writeAnyLineToConsoleStdout(output);
     }
-    public static writeLineToConsoleStderr(outputContents: string) {
-        Utility.writeToConsoleStderr(`${outputContents}\n`);
+    public static writeAnyJsonifiedToConsoleStderr(outputContents: any) {
+        const output: string = Utility.jsonStringify(outputContents, null, 2);
+        Utility.writeAnyLineToConsoleStderr(output);
     }
 
-    public static writeToConsoleStdout(outputContents: string) {
+    public static writeAnyLineToConsoleStdout(outputContents: any) {
+        Utility.writeAnyToConsoleStdout(outputContents);
+        Utility.writeStringToConsoleStdout("\n");
+    }
+    public static writeAnyLineToConsoleStderr(outputContents: any) {
+        Utility.writeAnyToConsoleStderr(outputContents);
+        Utility.writeStringToConsoleStderr("\n");
+    }
+
+    public static writeAnyToConsoleStdout(outputContents: any) {
         process.stdout.write(outputContents);
     }
-    public static writeToConsoleStderr(outputContents: string) {
+    public static writeAnyToConsoleStderr(outputContents: any) {
+        process.stderr.write(outputContents);
+    }
+
+    public static writeStringLineToConsoleStdout(outputContents: string) {
+        Utility.writeStringToConsoleStdout(outputContents);
+        Utility.writeStringToConsoleStdout("\n");
+    }
+    public static writeStringLineToConsoleStderr(outputContents: string) {
+        Utility.writeStringToConsoleStderr(outputContents);
+        Utility.writeStringToConsoleStderr("\n");
+    }
+
+    public static writeStringToConsoleStdout(outputContents: string) {
+        process.stdout.write(outputContents);
+    }
+    public static writeStringToConsoleStderr(outputContents: string) {
         process.stderr.write(outputContents);
     }
 
@@ -2878,7 +2905,19 @@ export class Utility {
     // -------------------------------------------------------------------------
 
     public static outputLabelStringUtility(input: Label): string {
-        return input.toOutputString(Utility.toObfuscateLabelTextInReportUtility);
+        return input.toString(Utility.toObfuscateLabelTextInReportUtility);
+    }
+
+    public static outputLabelString(input: Label, toObfuscate: boolean = false): string {
+        if (toObfuscate) {
+            return input.toObfuscatedString();
+        }
+        return input.toSimpleString();
+    }
+
+    public static obfuscateLabel(input: Label): string {
+        const inputObfuscated: string = input.toObfuscatedString();
+        return inputObfuscated;
     }
 
     public static outputNumberUtility(input: number): number {

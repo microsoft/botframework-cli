@@ -9,17 +9,17 @@ import { CrossValidator } from "../../../../src/model/evaluation/cross_validatio
 
 import { AppSoftmaxRegressionSparse } from "../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 
-import { ColumnarContentEmail } from "../../../data/ColumnarData.test";
+import { ColumnarContentEmail } from "../../../data/ColumnarDataWithSubwordFeaturizer.test";
 
-import { LuContentEmail } from "../../../data/LuData.test";
+import { LuContentEmail } from "../../../data/LuDataWithSubwordFeaturizer.test";
 
 import { ConfusionMatrix } from "../../../../src/mathematics/confusion_matrix/ConfusionMatrix";
 
 import { ThresholdReporter } from "../../../../src/model/evaluation/report/ThresholdReporter";
 
-import { ColumnarData } from "../../../../src/data/ColumnarData";
+import { ColumnarDataWithSubwordFeaturizer } from "../../../../src/data/ColumnarDataWithSubwordFeaturizer";
 
-import { LuData } from "../../../../src/data/LuData";
+import { LuDataWithSubwordFeaturizer } from "../../../../src/data/LuDataWithSubwordFeaturizer";
 
 import { NgramSubwordFeaturizer } from "../../../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
@@ -48,15 +48,15 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             AppSoftmaxRegressionSparse.defaultLearningRate;
         const learnerParameterToCalculateOverallLossAfterEpoch: boolean =
             true;
-        const luData: LuData =
-            await LuData.createLuData(
+        const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
+            await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
                 luContent,
                 new NgramSubwordFeaturizer(),
                 true);
         const intentLabelIndexArray: number[] =
-            luData.getIntentLabelIndexArray();
+            luDataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            luData.getUtteranceFeatureIndexArrays();
+            luDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
@@ -70,15 +70,15 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
         crossValidator.crossValidate(
-            luData.getFeaturizerLabels(),
-                luData.getFeaturizerLabelMap(),
-                luData.getFeaturizer().getNumberLabels(),
-                luData.getFeaturizer().getNumberFeatures(),
-                luData.getIntents(),
-                luData.getUtterances(),
-                luData.getIntentLabelIndexArray(),
-                luData.getUtteranceFeatureIndexArrays(),
-                luData.getIntentInstanceIndexMapArray());
+            luDataWithSubwordFeaturizer.getFeaturizerLabels(),
+                luDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+                luDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+                luDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
+                luDataWithSubwordFeaturizer.getIntents(),
+                luDataWithSubwordFeaturizer.getUtterances(),
+                luDataWithSubwordFeaturizer.getIntentLabelIndexArray(),
+                luDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays(),
+                luDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
         const crossValidationResult: {
             "confusionMatrixCrossValidation": ConfusionMatrix
             "thresholdReporterCrossValidation": ThresholdReporter,
@@ -135,8 +135,8 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
             AppSoftmaxRegressionSparse.defaultLearningRate;
         const learnerParameterToCalculateOverallLossAfterEpoch: boolean =
             true;
-        const columnarData: ColumnarData =
-            ColumnarData.createColumnarData(
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
                 columnarContent,
                 new NgramSubwordFeaturizer(),
                 labelColumnIndex,
@@ -145,9 +145,9 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 linesToSkip,
                 true);
         const intentLabelIndexArray: number[] =
-            columnarData.getIntentLabelIndexArray();
+            columnarDataWithSubwordFeaturizer.getIntentLabelIndexArray();
         const utteranceFeatureIndexArrays: number[][] =
-            columnarData.getUtteranceFeatureIndexArrays();
+            columnarDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
         assert(intentLabelIndexArray, "intentLabelIndexArray is undefined.");
         assert(utteranceFeatureIndexArrays, "utteranceFeatureIndexArrays is undefined.");
         const crossValidator: CrossValidator =
@@ -161,15 +161,15 @@ describe("Test Suite - model/evaluation/cross_validator/CrossValidator", async (
                 learnerParameterLearningRate,
                 learnerParameterToCalculateOverallLossAfterEpoch);
         crossValidator.crossValidate(
-            columnarData.getFeaturizerLabels(),
-            columnarData.getFeaturizerLabelMap(),
-            columnarData.getFeaturizer().getNumberLabels(),
-            columnarData.getFeaturizer().getNumberFeatures(),
-            columnarData.getIntents(),
-            columnarData.getUtterances(),
-            columnarData.getIntentLabelIndexArray(),
-            columnarData.getUtteranceFeatureIndexArrays(),
-            columnarData.getIntentInstanceIndexMapArray());
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizerLabelMap(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberLabels(),
+            columnarDataWithSubwordFeaturizer.getFeaturizer().getNumberFeatures(),
+            columnarDataWithSubwordFeaturizer.getIntents(),
+            columnarDataWithSubwordFeaturizer.getUtterances(),
+            columnarDataWithSubwordFeaturizer.getIntentLabelIndexArray(),
+            columnarDataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays(),
+            columnarDataWithSubwordFeaturizer.getIntentInstanceIndexMapArray());
         const crossValidationResult: {
             "confusionMatrixCrossValidation": ConfusionMatrix
             "thresholdReporterCrossValidation": ThresholdReporter,

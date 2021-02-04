@@ -17,17 +17,15 @@ import { BinaryConfusionMatrix } from "../../../mathematics/confusion_matrix/Bin
 
 import { ConfusionMatrix } from "../../../mathematics/confusion_matrix/ConfusionMatrix";
 
-// import { ColumnarData } from "../../../data/ColumnarData";
-// import { LuData } from "../../../data/LuData";
+// import { ColumnarDataWithSubwordFeaturizer } from "../../../data/ColumnarDataWithSubwordFeaturizer";
+// import { LuDataWithSubwordFeaturizer } from "../../../data/LuDataWithSubwordFeaturizer";
 import { Data } from "../../../data/Data";
-import { DataUtility } from "../../../data/DataUtility";
+import { DataWithSubwordFeaturizer } from "../../../data/DataWithSubwordFeaturizer";
+import { DataWithSubwordFeaturizerUtility } from "../../../data/DataWithSubwordFeaturizerUtility";
 
-// import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
+import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../../../utility/Utility";
-import { LuData } from "../../../data/LuData";
-import { NgramSubwordFeaturizer } from "../../language_understanding/featurizer/NgramSubwordFeaturizer";
-import { ColumnarData } from "../../../data/ColumnarData";
 
 export async function mainTester(): Promise<void> {
     // -----------------------------------------------------------------------
@@ -192,18 +190,19 @@ export async function mainTester(): Promise<void> {
             weights: [] };
     let intentLabelIndexArray: number[] = [];
     let utteranceFeatureIndexArrays: number[][] = [];
-    const data: Data = await DataUtility.LoadData(
-        filename,
-        featurizer,
-        false,
-        filetype,
-        labelColumnIndex,
-        textColumnIndex,
-        weightColumnIndex,
-        linesToSkip);
-    intentsUtterancesWeights = data.getIntentsUtterancesWeights();
-    intentLabelIndexArray = data.getIntentLabelIndexArray();
-    utteranceFeatureIndexArrays = data.getUtteranceFeatureIndexArrays();
+    const dataWithSubwordFeaturizer: DataWithSubwordFeaturizer =
+        await DataWithSubwordFeaturizerUtility.LoadDataWithSubwordFeaturizer(
+            filename,
+            featurizer,
+            false,
+            filetype,
+            labelColumnIndex,
+            textColumnIndex,
+            weightColumnIndex,
+            linesToSkip);
+    intentsUtterancesWeights = dataWithSubwordFeaturizer.getIntentsUtterancesWeights();
+    intentLabelIndexArray = dataWithSubwordFeaturizer.getIntentLabelIndexArray();
+    utteranceFeatureIndexArrays = dataWithSubwordFeaturizer.getUtteranceFeatureIndexArrays();
     // -----------------------------------------------------------------------
     tester.test(
         intentsUtterancesWeights.intents,

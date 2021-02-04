@@ -49,48 +49,4 @@ describe("Test Suite - data/DataUtility", () => {
             `DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER=${DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER}`);
         assert.ok(dataFileType === DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER);
     });
-
-    it("Test.0100 LoadData", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/LU/skills/emailskill/en/Email.lu";
-        DataUtility.LoadData(filename).then(
-            (luData) => {
-                const numberFeaturizerLabels: number = luData.getFeaturizerLabels().length;
-                Utility.debuggingLog(`numberFeaturizerLabels=${numberFeaturizerLabels},` +
-                    `luData.getFeaturizerLabels()=${luData.getFeaturizerLabels()}`);
-                assert.ok(numberFeaturizerLabels === 15);
-            });
-    });
-
-    it("Test.0101 LoadData", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/LU/MicrosoftFAQ/MicrosoftFaqForWindows.qna";
-        DataUtility.LoadData(filename).then(
-            (luData) => {
-                const luDataContent: string = luData.getContent();
-                // Utility.debuggingLog(
-                //     `luDataContent-MicrosoftFaqForWindows=${luDataContent}`);
-                const luQnaJsonStructure: string =
-                    luData.getLuQnaJsonStructure();
-                Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForWindows=${Utility.jsonStringify(luQnaJsonStructure)}`);
-            });
-    });
-    it("Test.0102 LoadData", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-        this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const filename: string = "resources/data/LU/MicrosoftFAQ/MicrosoftFaqForOffice.qna";
-        DataUtility.LoadData(filename).then(
-            (luData) => {
-                const luDataContent: string = luData.getContent();
-                // Utility.debuggingLog(
-                //     `luDataContent-MicrosoftFaqForOffice=${luDataContent}`);
-                const luQnaJsonStructure: string =
-                    luData.getLuQnaJsonStructure();
-                Utility.debuggingLog(
-                    `luQnaJsonStructure-MicrosoftFaqForOffice=${Utility.jsonStringify(luQnaJsonStructure)}`);
-            });
-    });
 });

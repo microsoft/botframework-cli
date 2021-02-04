@@ -4,19 +4,16 @@
  */
 
 // import { PredictionType } from "./PredictionType";
-import { PredictionStructureEssential } from "./PredictionStructureEssential";
-import { PredictionStructureForSingleEvaluation } from "./PredictionStructureForSingleEvaluation";
-import { PredictionStructureForDisplay } from "./PredictionStructureForDisplay";
+import { PredictionStructureWithSingularEvaluationGenericLabel } from "./PredictionStructureWithSingularEvaluationGenericLabel";
+import { PredictionStructureFoundationDisplay } from "./PredictionStructureFoundationDisplay";
 
-export class PredictionStructure<TL> extends PredictionStructureEssential {
+export class PredictionStructure<TL>
+extends PredictionStructureWithSingularEvaluationGenericLabel<TL> {
 
-    public predictionStructureForSingleEvaluation: PredictionStructureForSingleEvaluation;
-
-    public predictionStructureForDisplay: PredictionStructureForDisplay;
-
-    public labels: TL[];
-
-    public labelsPredicted: TL[];
+    // ---- NOTE-DOCUMENTATION ---- A PredictionStructure object has
+    // ---- NOTE-DOCUMENTATION ---- an PredictionStructureFoundationDisplay object
+    // ---- NOTE-DOCUMENTATION ---- for stroing labels and labelsPredicted representation.
+    public predictionStructureFoundationDisplay: PredictionStructureFoundationDisplay;
 
     constructor(
         text: string,
@@ -35,17 +32,16 @@ export class PredictionStructure<TL> extends PredictionStructureEssential {
         labelsPredictedIndexes: number[]) {
         super(
             text,
+            labelsPredictedEvaluation,
+            labels,
             labelsIndexes,
+            labelsPredicted,
             labelsPredictedIndexes);
-        this.predictionStructureForSingleEvaluation = new PredictionStructureForSingleEvaluation(
-            labelsPredictedEvaluation);
-        this.predictionStructureForDisplay = new PredictionStructureForDisplay(
+        this.predictionStructureFoundationDisplay = new PredictionStructureFoundationDisplay(
             labelsConcatenated,
             labelsConcatenatedToHtmlTable,
             labelsPredictedConcatenated,
             labelsPredictedConcatenatedToHtmlTable);
-        this.labels = labels;
-        this.labelsPredicted = labelsPredicted;
     }
 
     public toObjectPredictionStructure(): {
@@ -55,39 +51,39 @@ export class PredictionStructure<TL> extends PredictionStructureEssential {
         // ---- NOTE ---- PredictionType.FalsePositive(2):FP
         // ---- NOTE ---- PredictionType.FalseNegative(4):FN
         // ---- NOTE ---- PredictionType.TrueNegative(8):TN
-        "labelsIndexes": number[];
-        "labelsPredictedIndexes": number[];
         "labels": TL[];
+        "labelsIndexes": number[];
         "labelsPredicted": TL[];
-        "predictionStructureForDisplay": PredictionStructureForDisplay;
+        "labelsPredictedIndexes": number[];
+        "predictionStructureFoundationDisplay": PredictionStructureFoundationDisplay;
         } {
         return {
             text:
                 this.text,
             labelsPredictedEvaluation:
-                this.predictionStructureForSingleEvaluation.labelsPredictedEvaluation,
+                this.predictionStructureFoundationSingularEvaluation.labelsPredictedEvaluation,
             // ---- NOTE ---- PredictionType.TruePositive(1):TP
             // ---- NOTE ---- PredictionType.FalsePositive(2):FP
             // ---- NOTE ---- PredictionType.FalseNegative(4):FN
             // ---- NOTE ---- PredictionType.TrueNegative(8):TN
-            labelsIndexes:
-                this.labelsIndexes,
-            labelsPredictedIndexes:
-                this.labelsPredictedIndexes,
             labels:
                 this.labels,
+            labelsIndexes:
+                this.labelsIndexes,
             labelsPredicted:
                 this.labelsPredicted,
-            predictionStructureForDisplay:
-                this.predictionStructureForDisplay,
+            labelsPredictedIndexes:
+                this.labelsPredictedIndexes,
+            predictionStructureFoundationDisplay:
+                this.predictionStructureFoundationDisplay,
         };
     }
 
     public isCorrectPrediction(): boolean {
-        return this.predictionStructureForSingleEvaluation.isCorrectPrediction();
+        return this.predictionStructureFoundationSingularEvaluation.isCorrectPrediction();
     }
 
     public isMisclassified(): boolean {
-        return this.predictionStructureForSingleEvaluation.isMisclassified();
+        return this.predictionStructureFoundationSingularEvaluation.isMisclassified();
     }
 }

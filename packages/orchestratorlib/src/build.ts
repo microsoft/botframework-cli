@@ -25,9 +25,9 @@ export class OrchestratorBuild {
     fullEmbeddings: boolean = false): Promise<any> {
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
-    Utility.debuggingLog(`inputPath=${JSON.stringify(inputs, null, 2)}`);
+    Utility.debuggingLog(`inputPath=${Utility.jsonStringify(inputs, null, 2)}`);
     Utility.debuggingLog(`isDialog=${isDialog}`);
-    Utility.debuggingLog(`luConfigFile=${JSON.stringify(luConfig, null, 2)}`);
+    Utility.debuggingLog(`luConfigFile=${Utility.jsonStringify(luConfig, null, 2)}`);
     Utility.debuggingLog(`fullEmbeddings=${fullEmbeddings}`);
     try {
       if (!baseModelPath || baseModelPath.length === 0) {

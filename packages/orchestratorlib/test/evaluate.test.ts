@@ -27,11 +27,16 @@ describe('Test Suite - the "evaluate" command', () => {
     const lowConfidenceScoreThresholdParameter: number = Utility.DefaultLowConfidenceScoreThresholdParameter;
     const multiLabelPredictionThresholdParameter: number = Utility.DefaultMultiLabelPredictionThresholdParameter;
     const unknownLabelPredictionThresholdParameter: number = Utility.DefaultUnknownLabelPredictionThresholdParameter;
-    const snapshotSetScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetScoresOutputFilename);
-    const snapshotSetGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetGroundTruthJsonContentOutputFilename);
-    const snapshotSetPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetPredictionJsonContentOutputFilename);
-    const snapshotSetSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetSummaryHtmlOutputFilename);
-    const snapshotSetLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetLabelsOutputFilename);
+    const snapshotSetIntentScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetIntentScoresOutputFilename);
+    const snapshotSetIntentGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetIntentGroundTruthJsonContentOutputFilename);
+    const snapshotSetIntentPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetIntentPredictionJsonContentOutputFilename);
+    const snapshotSetIntentSummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetIntentSummaryHtmlOutputFilename);
+    const snapshotSetIntentLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetIntentLabelsOutputFilename);
+    const snapshotSetEntityScoresOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetEntityScoresOutputFilename);
+    const snapshotSetEntityGroundTruthJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetEntityGroundTruthJsonContentOutputFilename);
+    const snapshotSetEntityPredictionJsonContentOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetEntityPredictionJsonContentOutputFilename);
+    const snapshotSetEntitySummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetEntitySummaryHtmlOutputFilename);
+    const snapshotSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorEvaluate.snapshotSetEntityLabelsOutputFilename);
     await OrchestratorEvaluate.runAsync(
       inputPath,
       outputPath,
@@ -45,29 +50,54 @@ describe('Test Suite - the "evaluate" command', () => {
     const toCleanUpAfterUnitTest: boolean = UnitTestHelper.getDefaultUnitTestCleanUpFlag();
     if (toCleanUpAfterUnitTest) {
       try {
-        Utility.deleteFile(snapshotSetScoresOutputFilename);
+        Utility.deleteFile(snapshotSetIntentScoresOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${snapshotSetScoresOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${snapshotSetIntentScoresOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(snapshotSetGroundTruthJsonContentOutputFilename);
+        Utility.deleteFile(snapshotSetIntentGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${snapshotSetGroundTruthJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${snapshotSetIntentGroundTruthJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(snapshotSetPredictionJsonContentOutputFilename);
+        Utility.deleteFile(snapshotSetIntentPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${snapshotSetPredictionJsonContentOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${snapshotSetIntentPredictionJsonContentOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(snapshotSetSummaryHtmlOutputFilename);
+        Utility.deleteFile(snapshotSetIntentSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${snapshotSetSummaryHtmlOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${snapshotSetIntentSummaryHtmlOutputFilename}", error=${error}`);
       }
       try {
-        Utility.deleteFile(snapshotSetLabelsOutputFilename);
+        Utility.deleteFile(snapshotSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${snapshotSetLabelsOutputFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${snapshotSetIntentLabelsOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(snapshotSetEntityScoresOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output score file="${snapshotSetEntityScoresOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(snapshotSetEntityGroundTruthJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output ground-truth json file="${snapshotSetEntityGroundTruthJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(snapshotSetEntityPredictionJsonContentOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output prediction json file="${snapshotSetEntityPredictionJsonContentOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(snapshotSetEntitySummaryHtmlOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output summary file="${snapshotSetEntitySummaryHtmlOutputFilename}", error=${error}`);
+      }
+      try {
+        Utility.deleteFile(snapshotSetEntityLabelsOutputFilename);
+      } catch (error) {
+        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate, FAILED deleting output labels file="${snapshotSetEntityLabelsOutputFilename}", error=${error}`);
       }
       try {
         fs.rmdirSync(outputPath);

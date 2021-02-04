@@ -15,15 +15,15 @@ import { AutoActiveLearner } from "../../../../../src/model/supervised/classifie
 import { AppSoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/AppSoftmaxRegressionSparse";
 import { SoftmaxRegressionSparse } from "../../../../../src/model/supervised/classifier/neural_network/learner/SoftmaxRegressionSparse";
 
-import { ColumnarContentEmail } from "../../../../data/ColumnarData.test";
+import { ColumnarContentEmail } from "../../../../data/ColumnarDataWithSubwordFeaturizer.test";
 
-import { LuContentEmail } from "../../../../data/LuData.test";
+import { LuContentEmail } from "../../../../data/LuDataWithSubwordFeaturizer.test";
 
 import { AppAutoActiveLearner } from "../../../../../src/model/supervised/classifier/auto_active_learning/AppAutoActiveLearner";
 
-import { ColumnarData } from "../../../../../src/data/ColumnarData";
+import { ColumnarDataWithSubwordFeaturizer } from "../../../../../src/data/ColumnarDataWithSubwordFeaturizer";
 
-import { LuData } from "../../../../../src/data/LuData";
+import { LuDataWithSubwordFeaturizer } from "../../../../../src/data/LuDataWithSubwordFeaturizer";
 
 import { Utility } from "../../../../../src/utility/Utility";
 
@@ -34,7 +34,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
-            "newLuData": LuData,
+            "newLuDataWithSubwordFeaturizer": LuDataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
         } = await AppAutoActiveLearner.mainAutoActiveLearnerWithLuContent(
             LuContentEmail,
@@ -46,7 +46,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
             AutoActiveLearner.defaultAalInstanceSelectionThreshold,
             AppSoftmaxRegressionSparse.defaultEpochs,
             32);
-        // const luData: LuData = aalResult.newLuData;
+        // const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer = aalResult.newLuDataWithSubwordFeaturizer;
         // const learner: SoftmaxRegressionSparse = aalResult.learner;
     });
 
@@ -54,7 +54,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
-            "newColumnarData": ColumnarData,
+            "newColumnarDataWithSubwordFeaturizer": ColumnarDataWithSubwordFeaturizer,
             "learner": SoftmaxRegressionSparse,
         } = await AppAutoActiveLearner.mainAutoActiveLearnerWithColumnarContent(
             ColumnarContentEmail,
@@ -70,7 +70,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
             AutoActiveLearner.defaultAalInstanceSelectionThreshold,
             AppSoftmaxRegressionSparse.defaultEpochs,
             32);
-        // const luData: LuData = aalResult.newLuData;
+        // const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer = aalResult.newLuDataWithSubwordFeaturizer;
         // const learner: SoftmaxRegressionSparse = aalResult.learner;
     });
 
