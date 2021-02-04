@@ -184,7 +184,7 @@ ESCAPE_CHARACTER
   ;
 
 EXPRESSION
-  : '{' (~[\r\n{}] | ('{' ~[\r\n]* '}'))* '}'
+  : '{' (~[\r\n{}] | EXPRESSION)* '}'
   ;
 
 TEXT
