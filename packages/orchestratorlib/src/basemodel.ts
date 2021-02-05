@@ -137,20 +137,22 @@ export class OrchestratorBaseModel {
   }
 
   public static getDefaultModelId(nlrVersions: any): string {
-    let defaultVersion: string = nlrVersions.default;
-    if (defaultVersion && defaultVersion.length > 0) {
-      return defaultVersion;
+    let defaultVersion: string = '';
+    try {
+      defaultVersion = nlrVersions.default;
+      if (defaultVersion && defaultVersion.length > 0) {
+        return defaultVersion;
+      }
+    } catch {
     }
 
     defaultVersion = '';
     const models: any = nlrVersions.models;
     for (const modelVersion in models) {
       // eslint-disable-next-line no-prototype-builtins
-      if (models.hasOwnProperty(modelVersion)) {
-        if (defaultVersion === '') {
-          defaultVersion = modelVersion;
-          break;
-        }
+      if (defaultVersion === '') {
+        defaultVersion = modelVersion;
+        break;
       }
     }
 

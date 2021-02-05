@@ -6,6 +6,7 @@
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings} from '../../../utils/settings';
+import * as path from 'path';
 
 export default class OrchestratorBaseModelGet extends Command {
   static description: string = 'Gets Orchestrator base model'
@@ -21,7 +22,7 @@ export default class OrchestratorBaseModelGet extends Command {
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
-    const output: string = flags.out || `${cwd}/model`;
+    const output: string = flags.out || path.join(cwd, 'model');
     const basemodelId: any = flags.versionId || '';
     Utility.toPrintDebuggingLogToConsole = flags.debug;
 

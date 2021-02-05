@@ -335,10 +335,11 @@ export class OrchestratorHelper {
           utteranceLabelDuplicateMap);
         break;
       case '.dispatch':
+        /*
         OrchestratorHelper.parseDispatchFile(
           filePath,
           utteranceLabelsMap,
-          utteranceLabelDuplicateMap);
+          utteranceLabelDuplicateMap); */
         break;
       }
     } catch (error) {
@@ -380,18 +381,16 @@ export class OrchestratorHelper {
     OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utteranceLabelsMap, utteranceLabelDuplicateMap, true);
   }
 
+  /*
   static parseDispatchFile(
     dispatchFile: string,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     utteranceLabelsMap: Map<string, Set<string>>,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     utteranceLabelDuplicateMap: Map<string, Set<string>>) {
     const fileContents: string = OrchestratorHelper.readFile(dispatchFile);
     Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseDispatchFile()');
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const jsonDispatchSettings: any = JSON.parse(fileContents);
   }
-
+*/
   // eslint-disable-next-line max-params
   static async parseLuFile(
     luFile: string,

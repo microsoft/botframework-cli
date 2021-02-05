@@ -12,6 +12,9 @@ const ReadText: any = require('read-text-file');
 const OrchestratorSettingsFileName: string = 'orchestratorsettings.json';
 
 export class OrchestratorSettings {
+  static addInput(id: string, key: string, version: string, type: string, input: string) {
+      throw new Error('Method not implemented.');
+  }
   public static ModelPath: string;
 
   public static EntityModelPath: string;
@@ -19,6 +22,8 @@ export class OrchestratorSettings {
   public static SnapshotPath: string;
 
   public static SettingsPath: string;
+
+  public static DataSettings: OrchestratorDataSettings;
 
   public static readFile(filePath: string): string {
     try {
@@ -51,6 +56,8 @@ export class OrchestratorSettings {
     if (settingsFileExists) {
       settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
     }
+
+    //OrchestratorSettings.DataSettings = settingsFileExists && settings.dataSettings ? settings.dataSettings : new OrchestratorDataSettings();
 
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
@@ -111,14 +118,50 @@ export class OrchestratorSettings {
         modelPath: OrchestratorSettings.ModelPath,
         entityModelPath: OrchestratorSettings.EntityModelPath,
         snapshotPath: OrchestratorSettings.SnapshotPath,
+        dataSettings: OrchestratorSettings.DataSettings,
       } : {
         modelPath: OrchestratorSettings.ModelPath,
         snapshotPath: OrchestratorSettings.SnapshotPath,
+        dataSettings: OrchestratorSettings.DataSettings,
       };
 
       OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
     } catch (error) {
       throw new CLIError(error);
     }
+  }
+}
+
+export class OrchestratorDataSettings {
+  public hierarchical: boolean = false;
+
+  public inputs: OrchestratorData[] = [];
+
+  constructor(inputs: OrchestratorData[], hierarchical: boolean) {
+    this.inputs = inputs;
+    this.hierarchical = hierarchical;
+  }
+}
+
+export class OrchestratorData {
+  public type: string = 'file';
+
+  public id: string = '';
+
+  public version: string = '';
+
+  public key: string = '';
+
+  public routingName: string = '';
+
+  public filePath: string = '';
+
+  // eslint-disable-next-line max-params
+  constructor(id: string, key: string, version: string, type: string, filePath: string) {
+    this.id = id;
+    this.key = key;
+    this.version = version;
+    this.type = type;
+    this.filePath = filePath;
   }
 }

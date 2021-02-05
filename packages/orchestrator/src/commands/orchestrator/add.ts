@@ -3,10 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import * as path from 'path';	
+import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
-import {OrchestratorSettings} from '../../utils/settings';
+import {OrchestratorSettings, OrchestratorData} from '../../utils/settings';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file';
@@ -30,6 +30,7 @@ export default class OrchestratorAdd extends Command {
     id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna'}),
     key: flags.boolean({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna'}),
     type: flags.string({char: 't', description: 'Type of input (luis/qna/file), default to file'}),
+    version: flags.string({char: 'v', description: 'LUIS app version'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator add command help'}),
   }
@@ -37,13 +38,14 @@ export default class OrchestratorAdd extends Command {
   async run() {
     const {flags}: flags.Output = this.parse(OrchestratorAdd);
     const cwd: string = process.cwd();
-    const input: string = path.resolve(flags.in || cwd);
+    let input: string = '';
     const output: string = flags.out;
     const isDialog: boolean = flags.dialog;
     const baseModelPath: string = flags.model;
     const entityBaseModelPath: string = flags.entityModel;
-    const type: string = (flags.type || 'file');
+    const type: string = (flags.type.toLowerCase() || 'file');
     const id: string = (flags.id || '');
+    const version: string = (flags.version || '');
     const key: string = (flags.key || '');
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
@@ -57,6 +59,13 @@ export default class OrchestratorAdd extends Command {
       OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, cwd);
       const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(OrchestratorSettings.SnapshotPath));
 
+      if (!Utility.isEmptyString(id) && !Utility.isEmptyString(key) && !Utility.isEmptyString(type) && type !== 'file') {
+        input = OrchestratorAdd.getFileInput(new OrchestratorData(id, key, version, type, cwd));
+        OrchestratorSettings.addInput(id, key, version, type, input);
+      } else {
+        input = path.resolve(flags.in || cwd);
+      }
+
       await Orchestrator.addAsync(
         OrchestratorSettings.ModelPath,
         snapshot,
@@ -66,7 +75,27 @@ export default class OrchestratorAdd extends Command {
         flags.fullEmbeddings);
     } catch (error) {
       throw (new CLIError(error));
-    }	
+    }
     return 0;
+  }
+
+  // eslint-disable-next-line max-params
+  private static getFileInput(input: OrchestratorData): string {
+    switch (input.type) {
+    case 'luis':
+      return OrchestratorAdd.getLuFileFromLuisApp(input);
+    case 'qna':
+      return OrchestratorAdd.getQnAFileFromQnaKb(input);
+    default:
+      throw new CLIError('Invalid input type');
+    }
+  }
+
+  static getQnAFileFromQnaKb(input: OrchestratorData): string {
+    throw new Error('Method not implemented.');
+  }
+
+  static getLuFileFromLuisApp(input: OrchestratorData): string {
+    throw new Error('Method not implemented.');
   }
 }
