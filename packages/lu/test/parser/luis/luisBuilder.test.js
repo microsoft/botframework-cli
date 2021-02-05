@@ -78,5 +78,22 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.content.includes(`@ intent "test intent" usesFeature bar`), true);
     })
 
-    
+    it('App settings can be merged correctly when importing lu files', async () => {
+        let luFile = `
+        > !# @app.culture = zh-cn
+        > !# @app.settings.NormalizeWordForm = true
+        > !# @app.settings.UseAllTrainingData = true
+        
+        [import greeting](./test/fixtures/testcases/collate/1.lu)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.intents[0].name, 'Greeting');
+        assert.equal(luisObject.culture, 'zh-cn');
+        assert.equal(luisObject.settings.length, 2);
+        assert.equal(luisObject.settings[0].name, 'NormalizeWordForm');
+        assert.equal(luisObject.settings[0].value, true);
+        assert.equal(luisObject.settings[1].name, 'UseAllTrainingData');
+        assert.equal(luisObject.settings[1].value, true);
+    });
 });
