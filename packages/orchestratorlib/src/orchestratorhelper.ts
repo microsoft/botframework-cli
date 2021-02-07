@@ -50,10 +50,10 @@ export class OrchestratorHelper {
     // ---- NOTE
     // the code below was trying to normalize unknown labels in a BLU file,
     // but the unknown labels should have been processed during ingesting
-    // an input file (LU, QnA, TSV, etc.) and before creating a BLU file,
+    // a raw input file (LU, QnA, TSV, etc.) and before creating a BLU file,
     // so there is really no need to process unknown labels in a BLU file
-    // anymore. The line below is thus deprecated especially now the BLU
-    // file can be a JSON, so the statement below does not applu anyway.
+    // anymore. The line below is thus deprecated, especially now the BLU
+    // file can be a JSON, so the statement below does not apply anyway.
     // ---- return Utility.processUnknownLabelsInTsvBluFileContent(ReadText.readSync(filePath));
   }
 
