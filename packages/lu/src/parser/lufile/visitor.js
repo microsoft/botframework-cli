@@ -98,7 +98,8 @@ class Visitor {
         let expChars = exp.split('');
         let escapeChar = false;
         expChars.forEach(function (char, index) {
-            if (char === '\\' && expChars.length > index + 1 && EscapeCharsInUtterance.includes(expChars[index + 1])) {
+            if (char === '\\' && !escapeChar && expChars.length > index + 1
+                && (EscapeCharsInUtterance.includes(expChars[index + 1]) || expChars[index + 1] === '\\')) {
                 escapeChar = true;
             } else if (char === '{' && !escapeChar) {
                 let newEntity = {entityName : '', role : '', entityValue : undefined, parent : curEntity};

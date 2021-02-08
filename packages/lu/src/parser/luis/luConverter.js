@@ -1,6 +1,8 @@
 const NEWLINE = require('os').EOL;
 const helperClasses = require('./../lufile/classes/hclasses')
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
+const EscapeCharsInUtterance = require('./../utils/enums/escapechars').EscapeCharsInUtterance;
+const helpers = require('./../utils/helpers');
 
 /**
  * Parses a Luis object into Lu Content
@@ -89,7 +91,7 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(luisJSON.test === true && utterance.predictedResult !== undefined){
             fileContent += parsePredictedResultToLu(utterance, luisJSON)
         }
-        if(utterance.entities.length >= 0) {
+        if(utterance.entities.length > 0) {
             // update utterance for each entity
             let text = utterance.text;
             // flatten entities
@@ -99,10 +101,25 @@ const parseUtterancesToLu = function(utterances, luisJSON){
             // remove all children
             sortedEntitiesList.forEach(entity => delete entity.children);
             let tokenizedText = text.split('');
+            tokenizedText.forEach(function (token, index) {
+                tokenizedText[index] = EscapeCharsInUtterance.includes(token) ? `\\${token}` : token; 
+            });
             // handle cases where we have both child as well as cases where more than one entity can have the same start position
             // if there are multiple entities in the same start position, then order them by composite, nDepth, regular entity
             getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
             updatedText = tokenizedText.join('');
+        } else {
+            // will not add escape char for pattern utterances since brackets are strictly used in pattern
+            // so there are no exceptions that need to be handled in pattern
+            if (helpers.isUtterancePattern(utterance)) {
+                updatedText = utterance.text;
+            } else {
+                let tokenizedText = utterance.text.split('');
+                tokenizedText.forEach(function (token, index) {
+                    tokenizedText[index] = EscapeCharsInUtterance.includes(token) ? `\\${token}` : token;
+                });
+                updatedText = tokenizedText.join('');
+            }
         }
 
         // remove duplicated whitespaces between words inside utterance to make sure they are aligned with the luis portal
@@ -138,7 +155,16 @@ const updateTokenizedTextByEntity = function(tokenizedText, entity) {
     } else {
         tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
     }
-    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] + '}';
+
+    // check blackslash before entity definition
+    // blackslash before { or } will be reconized to escape { or }
+    // to avoid such escape, add another blackslash before blackslash
+    if (parseInt(entity.startPos) > 0 && tokenizedText[parseInt(entity.startPos) - 1] === '\\') {
+        tokenizedText[parseInt(entity.startPos) - 1] += '\\'
+    }
+
+    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] === '\\' ? 
+        tokenizedText[parseInt(entity.endPos)] + '\\}' : tokenizedText[parseInt(entity.endPos)] + '}';
 }
 
 const parsePredictedResultToLu =  function(utterance, luisJSON){

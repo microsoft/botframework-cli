@@ -4,5 +4,5 @@
  */
  // Escape chars in utterance
 module.exports = {
-    EscapeCharsInUtterance: ['{', '}', '\\']
+    EscapeCharsInUtterance: ['{', '}']
 };
