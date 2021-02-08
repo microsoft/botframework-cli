@@ -1147,4 +1147,62 @@ describe('parseFile correctly parses utterances', function () {
             })
             .catch((err) => done(err));
         });
+
+        it("Correctly parses utterance that escape char \\ in nested entity definition", function (done) {
+          let testLU = `
+                # test
+                - {@Command={@Action={@BoldAction=bold}} \\{{@ActionTargetPhrase=directions from seattle to portland}\\}}`;
+          parseFile
+            .parseFile(testLU)
+            .then((res) => {
+              assert.equal(
+                res.LUISJsonStructure.utterances[0].text,
+                "bold {directions from seattle to portland}"
+              );
+              assert.equal(res.LUISJsonStructure.entities.length, 4);
+              assert.equal(res.LUISJsonStructure.entities[0].name, "BoldAction");
+              assert.equal(res.LUISJsonStructure.entities[1].name, "Action");
+              assert.equal(res.LUISJsonStructure.entities[2].name, "ActionTargetPhrase");
+              assert.equal(res.LUISJsonStructure.entities[3].name, "Command");
+              done();
+            })
+            .catch((err) => done(err));
+        });
+
+        it("Correctly parses utterance that with equal sign as entity value", function (done) {
+          let testLU = `
+                # test
+                - {@Command={@Action={@BoldAction=emphasise from}} {@ActionTargetRange={@ActionTargetStart=@username} {@ActionTargetSeparator=through} {@ActionTargetEnd==}}}`;
+          parseFile
+            .parseFile(testLU)
+            .then((res) => {
+                assert.equal(res.LUISJsonStructure.utterances[0].text, "emphasise from @username through =");
+                assert.equal(res.LUISJsonStructure.entities.length, 7);
+                assert.equal(res.LUISJsonStructure.entities[0].name, "BoldAction");
+                assert.equal(res.LUISJsonStructure.entities[1].name, "Action");
+                assert.equal(res.LUISJsonStructure.entities[2].name, "ActionTargetStart");
+                assert.equal(res.LUISJsonStructure.entities[3].name, "ActionTargetSeparator");
+                assert.equal(res.LUISJsonStructure.entities[4].name, "ActionTargetEnd");
+                assert.equal(res.LUISJsonStructure.entities[5].name, "ActionTargetRange");
+                assert.equal(res.LUISJsonStructure.entities[6].name, "Command");
+                done();
+            })
+            .catch((err) => done(err));
+        });
+
+        it("Correctly parses utterance that with colon sign in entity role", function (done) {
+          let testLU = `
+                      # test
+                      - {@city::startCity=Seattle}`;
+          parseFile
+            .parseFile(testLU)
+            .then((res) => {
+                assert.equal(res.LUISJsonStructure.utterances[0].text, "Seattle");
+                assert.equal(res.LUISJsonStructure.entities.length, 1);
+                assert.equal(res.LUISJsonStructure.entities[0].name, "city");
+                assert.equal(res.LUISJsonStructure.entities[0].roles[0], ":startCity");
+                done();
+            })
+            .catch((err) => done(err));
+        });
 })
