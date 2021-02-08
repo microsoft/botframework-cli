@@ -20,6 +20,7 @@ const Content = require('./../lu/qna')
 const KB = require('./../qna/qnamaker/kb')
 const recognizerType = require('./../utils/enums/recognizertypes')
 const qnaOptions = require('./../lu/qnaOptions')
+const localeToQnALanguageMap = require('./../utils/enums/localeToQnALanguageMap')
 
 export class Builder {
   private readonly handler: (input: string) => any
@@ -38,7 +39,7 @@ export class Builder {
     for (const file of files) {
       let fileCulture: string
       let fileName: string
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      let cultureFromPath = fileHelper.getQnACultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))
@@ -46,6 +47,10 @@ export class Builder {
       } else {
         fileCulture = culture
         fileName = path.basename(file, path.extname(file))
+      }
+
+      if (!fileCulture) {
+        throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Culture is not set or unsupported by qnamaker service.'))
       }
 
       let fileContent = ''
@@ -209,7 +214,15 @@ export class Builder {
               // set kb name
               if (!currentQna.kb.name) currentQna.kb.name = `${botName}(${suffix}).${qnamakerContent.language}.qna`
 
+              // set kb locale and map it to language that qna service can recognize
+              let locale = qnamakerContent.language
+              let language = localeToQnALanguageMap[locale]
+              if (!language) {
+                throw new Error(`${locale} is not supported in current qnamaker service.`)
+              }
+
               let currentKB = currentQna.kb
+              currentKB.language = language
               let currentAlt = currentQna.alterations
               let hostName = ''
               let kbId = ''
@@ -446,6 +459,7 @@ export class Builder {
     await delay(delayDuration)
     const emptyKBJson = {
       name: currentKB.name,
+      language: currentKB.language,
       qnaList: [],
       urls: [],
       files: []

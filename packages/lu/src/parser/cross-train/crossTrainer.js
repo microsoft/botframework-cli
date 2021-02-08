@@ -355,7 +355,7 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, i
   try {
     for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
       let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
-      const culture = fileHelper.getCultureFromPath(qnaObjectId)
+      const culture = fileHelper.getQnACultureFromPath(qnaObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
       const luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId.toLowerCase())
