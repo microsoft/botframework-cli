@@ -12,7 +12,7 @@ class Visitor {
         let utterance = '';
         let entities = [];
         let errorMsgs = [];
-        for (const node of ctx.children) {
+        for (const [index, node] of ctx.children.entries()) {
             const innerNode = node;
             switch (innerNode.symbol.type) {
                 case lp.DASH: break;
@@ -23,7 +23,7 @@ class Visitor {
                 }
                 case lp.ESCAPE_CHARACTER: {
                     let escapeCharacters = innerNode.getText();
-                    let escapedUtterace = escapeCharacters.length > 1 && EscapeCharsInUtterance.includes(escapeCharacters[1]) ? escapeCharacters.slice(1) : escapeCharacters;
+                    let escapedUtterace = escapeCharacters.length > 1 && (EscapeCharsInUtterance.includes(escapeCharacters[1]) || (escapeCharacters[1] === '\\' && index + 1 < ctx.children.length && ctx.children[index + 1].symbol.type === lp.EXPRESSION)) ? escapeCharacters.slice(1) : escapeCharacters;
                     utterance = utterance.concat(escapedUtterace);
                     break;
                 }
