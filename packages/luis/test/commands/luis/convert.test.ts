@@ -402,6 +402,13 @@ describe('luis:convert', () => {
       let parsedObjects = await parseJsonFiles('./../../../results/root41.json', './../../fixtures/verified/merge_intents_disabled.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/intent_name_with_special_chars.json')}`, '--out', './results/root36.lu',])
+    .it('luis:convert lu file with special chars in intent name', async () => {
+      expect(await compareLuFiles('./../../../results/root36.lu', './../../fixtures/verified/intent_name_with_special_chars.lu')).to.be.true
+    })
 })   
 
 

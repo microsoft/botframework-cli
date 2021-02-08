@@ -1,7 +1,17 @@
 import {expect, test} from '@oclif/test'
+const fs = require('fs-extra')
+const path = require('path')
 
 import {deleteTestConfigFile, initTestConfigFile} from '../../../configfilehelper'
 const nock = require('nock')
+
+const compareQnaFiles = async function (file1: string, file2: string) {
+  let result = await fs.readFile(path.join(__dirname, file1))
+  let fixtureFile = await fs.readFile(path.join(__dirname, file2))
+  result = result.toString().replace(/\r\n/g, "\n")
+  fixtureFile = fixtureFile.toString().replace(/\r\n/g, "\n")
+  return result === fixtureFile
+}
 
 describe('qnamaker:kb:export', () => {
   before(async function () {
@@ -82,3 +92,35 @@ describe('[qnaformat] qnamaker:kb:export', () => {
     })
 })
 
+describe('[qnaformat] qnamaker:kb:export to qna file', () => {
+  before(async function () {
+    await initTestConfigFile()
+    // runs before all tests in this block
+    nock('https://westus.api.cognitive.microsoft.com/qnamaker/v4.0')
+      .get('/knowledgebases/5690998c-4438-4ae1-900a-88a2aa3bfa68/Test/qna?qnaformat=true')
+      .reply(200,
+        `# ? Hello
+- Plus d'information sur la lettre reçu des éléctions?
+      
+\`\`\`
+Plus d'information sur la lettre reçu des éléctions
+\`\`\``)
+  })
+
+  after(async function () {
+    await deleteTestConfigFile()
+    await fs.remove(path.join(__dirname, './../../../../exportSpecialChars.qna'))
+  })
+
+  test
+    .stdout()
+    .command(['qnamaker:kb:export',
+      '--kbId', '5690998c-4438-4ae1-900a-88a2aa3bfa68',
+      '--environment', 'Test',
+      '--qnaFormat',
+      '--out', 'exportSpecialChars.qna'])
+    .it('Exports kb to qna file', async () => {
+      expect(await compareQnaFiles('./../../../../exportSpecialChars.qna', './../../../fixtures/verified/exportSpecialChars.qna')).to.be.true
+      nock.cleanAll()
+    })
+})

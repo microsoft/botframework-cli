@@ -39,7 +39,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="nuget1" Version="10.0.0" />
+        <PackageReference Include="nuget1" Version="10.*" />
         <PackageReference Include="NonExistent" Version="1.0.1" />
     </ItemGroup>
 

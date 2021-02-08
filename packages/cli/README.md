@@ -771,6 +771,7 @@ OPTIONS
 
   --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
+  --directVersionPublish           [default: false] Available only in direct version query. Do not publish to staging or production
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
@@ -1617,7 +1618,9 @@ USAGE
   $ bf qnamaker:kb:export
 
 OPTIONS
+  -f, --force                        [default: false] If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help                         qnamaker:kb:export command help
+  -o, --out                          Output file path. If not specified stdout will be used as output.
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --environment=environment          [default: Prod] Specifies whether environment is Test or Prod.
 

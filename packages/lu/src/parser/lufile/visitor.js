@@ -1,6 +1,7 @@
 const lp = require('./generated/LUFileParser').LUFileParser;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
+const EscapeCharsInUtterance = require('./../utils/enums/escapechars').EscapeCharsInUtterance;
 
 class Visitor {
     /**
@@ -18,6 +19,12 @@ class Visitor {
                 case lp.EXPRESSION: {
                     let tokUtt = this.tokenizeUtterance(innerNode.getText().trim());
                     utterance = this.recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, utterance.trimLeft()); 
+                    break;
+                }
+                case lp.ESCAPE_CHARACTER: {
+                    let escapeCharacters = innerNode.getText();
+                    let escapedUtterace = escapeCharacters.length > 1 && EscapeCharsInUtterance.includes(escapeCharacters[1]) ? escapeCharacters.slice(1) : escapeCharacters;
+                    utterance = utterance.concat(escapedUtterace);
                     break;
                 }
                 default: {
@@ -88,58 +95,56 @@ class Visitor {
         let entityNameCapture = false;
         let entityValueCapture = false;
         let entityRoleCapture = false;
-        exp.split('').forEach(char => {
-            switch(char) 
-            {
-                case '{':
-                    let newEntity = {entityName : '', role : '', entityValue : undefined, parent : curEntity};
-                    curList.push(newEntity);
-                    curEntity = newEntity;
-                    entityNameCapture = true;
-                    entityRoleCapture = false;
-                    entityValueCapture = false;
-                    break;
-                case '}':
-                    curEntity = curEntity.parent || undefined;
-                    curList = curEntity != undefined ? curEntity.entityValue : splitString;
-                    entityValueCapture = false;
-                    entityRoleCapture = false;
+        let expChars = exp.split('');
+        let escapeChar = false;
+        expChars.forEach(function (char, index) {
+            if (char === '\\' && expChars.length > index + 1 && EscapeCharsInUtterance.includes(expChars[index + 1])) {
+                escapeChar = true;
+            } else if (char === '{' && !escapeChar) {
+                let newEntity = {entityName : '', role : '', entityValue : undefined, parent : curEntity};
+                curList.push(newEntity);
+                curEntity = newEntity;
+                entityNameCapture = true;
+                entityRoleCapture = false;
+                entityValueCapture = false;
+            } else if (char === '}' && !escapeChar) {
+                curEntity = curEntity.parent || undefined;
+                curList = curEntity != undefined ? curEntity.entityValue : splitString;
+                entityValueCapture = false;
+                entityRoleCapture = false;
+                entityNameCapture = false;
+            } else if (char === '=' && !entityValueCapture) {
+                curEntity.entityValue = [];
+                curList = curEntity.entityValue;
+                entityNameCapture = false;
+                entityValueCapture = true;
+                entityRoleCapture = false;
+            } else if (char === ':' && !entityRoleCapture) {
+                if (curEntity !== undefined && curEntity.entityName !== '' && entityNameCapture === true) {
+                    entityRoleCapture = true;
                     entityNameCapture = false;
-                    break;
-                case '=':
-                    curEntity.entityValue = [];
-                    curList = curEntity.entityValue;
-                    entityNameCapture = false;
-                    entityValueCapture = true;
-                    entityRoleCapture = false;
-                    break;
-                case ':':
-                    if (curEntity !== undefined && curEntity.entityName !== '' && entityNameCapture === true) {
-                        entityRoleCapture = true;
-                        entityNameCapture = false;
-                        entityValueCapture = false;
-                    } else {
-                        curList.push(char);
-                    }
-                    break;
-                default :
-                    if (entityNameCapture) {
-                        curEntity.entityName += char;
-                    } else if (entityValueCapture) {
-                        if (char === ' ') {
-                            // we do not want leading spaces
-                            if (curList.length !== 0) {
-                                curList.push(char);
-                            }
-                        } else {
+                    entityValueCapture = false;
+                } else {
+                    curList.push(char);
+                }
+            } else {
+                escapeChar = false;
+                if (entityNameCapture) {
+                    curEntity.entityName += char;
+                } else if (entityValueCapture) {
+                    if (char === ' ') {
+                        // we do not want leading spaces
+                        if (curList.length !== 0) {
                             curList.push(char);
                         }
-                    } else if (entityRoleCapture) {
-                        curEntity.role += char;
                     } else {
                         curList.push(char);
                     }
-                    break;
+                } else if (entityRoleCapture) {
+                    curEntity.role += char;
+                } else {
+                    curList.push(char);
+                }
             }
         });
         return splitString;

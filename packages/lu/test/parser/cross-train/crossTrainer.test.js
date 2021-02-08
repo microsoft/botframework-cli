@@ -992,4 +992,48 @@ describe('luis:cross training tests among lu and qna contents', () => {
 
     assert.equal(luResult.get('dia1').Sections.filter(s => s.SectionType !== sectionTypes.MODELINFOSECTION).length, 0)
   })
+
+  it('luis:cross training can get expected result when handling brackets in qna question', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - book a hotel for me`,
+      id: 'main'
+    })
+
+    qnaContentArray.push({
+      content:
+        `#? What does const [thing, setThing] = useState() mean?
+        - how to use it?
+        \`\`\`
+        Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\``,
+      id: 'main'
+    })
+
+    let crossTrainConfig = {
+      'main': {
+        'rootDialog': true,
+        'triggers': {}
+      }
+    }
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    let foundIndex = luResult.get('main').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(luResult.get('main').Sections[foundIndex].Body, `- how to use it?`)
+
+    foundIndex = qnaResult.get('main').Sections.findIndex(s => s.Answer === 'intent=DeferToRecognizer_LUIS_main')
+    assert.isTrue(foundIndex > -1)
+    assert.equal(qnaResult.get('main').Sections[foundIndex].FilterPairs[0].key, 'dialogName')
+    assert.equal(qnaResult.get('main').Sections[foundIndex].FilterPairs[0].value, 'main')
+    assert.equal(qnaResult.get('main').Sections[foundIndex].Questions.length, 1)
+    assert.equal(qnaResult.get('main').Sections[foundIndex].Questions[0], 'book a hotel for me')
+  })
 })

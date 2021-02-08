@@ -16,6 +16,7 @@ const LUOptions = require('./../parser/lu/luOptions')
 const QnAOptions = require('./../parser/lu/qnaOptions')
 const luParser = require('./../parser/lufile/luParser')
 const LUSectionTypes = require('./../parser/utils/enums/lusectiontypes')
+const localeToQnALanguageMap = require('./../parser/utils/enums/localeToQnALanguageMap')
 const globby = require('globby')
 
 /* tslint:disable:prefer-for-of no-unused*/
@@ -285,27 +286,40 @@ export function parseJSON(input: string, appType: string) {
   }
 }
 
-export function getCultureFromPath(file: string): string | null {
+export function getLuisCultureFromPath(file: string): string | null {
   let fn = path.basename(file, path.extname(file))
   let lang = path.extname(fn).substring(1)
   switch (lang.toLowerCase()) {
-  case 'en-us':
-  case 'zh-cn':
-  case 'nl-nl':
-  case 'fr-fr':
-  case 'fr-ca':
-  case 'de-de':
-  case 'it-it':
-  case 'ja-jp':
-  case 'ko-kr':
-  case 'pt-br':
-  case 'es-es':
-  case 'es-mx':
-  case 'tr-tr':
-    return lang
-  default:
-    return null
+    case 'en-us':
+    case 'ar-ar':
+    case 'zh-cn':
+    case 'nl-nl':
+    case 'fr-fr':
+    case 'fr-ca':
+    case 'de-de':
+    case 'gu-in':
+    case 'hi-in':
+    case 'it-it':
+    case 'ja-jp':
+    case 'ko-kr':
+    case 'mr-in':
+    case 'pt-br':
+    case 'es-es':
+    case 'es-mx':
+    case 'ta-in':
+    case 'te-in':
+    case 'tr-tr':
+      return lang
+    default:
+      return null
   }
+}
+
+export function getQnACultureFromPath(file: string): string | null {
+  let fn = path.basename(file, path.extname(file))
+  let lang = path.extname(fn).substring(1)
+
+  return localeToQnALanguageMap[lang] ? lang : null
 }
 
 export function isFileSectionEmpty(content: any): boolean {

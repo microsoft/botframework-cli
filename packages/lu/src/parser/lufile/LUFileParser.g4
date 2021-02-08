@@ -42,7 +42,7 @@ nestedIntentName
     ;
 
 nameIdentifier
-    : IDENTIFIER (DOT IDENTIFIER)*
+    : IDENTIFIER
     ;
 
 nestedIntentBodyDefinition
