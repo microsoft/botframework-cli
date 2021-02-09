@@ -38,8 +38,6 @@
   "dependencies": {
     "@microsoft/bf-lu": "next",
     "@microsoft/bf-dispatcher": "1.0.0",
-    "@microsoft/bf-luis-cli": "next",
-    "@microsoft/bf-qnamaker": "next",
     "@types/node-fetch": "~2.5.5",
     "node-fetch": "~2.6.0",
     "tslib": "^1.10.0",
