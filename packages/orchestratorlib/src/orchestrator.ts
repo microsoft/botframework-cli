@@ -14,16 +14,19 @@ import {OrchestratorAssess} from './assess';
 import {Utility} from '.';
 
 export class Orchestrator {
+  // eslint-disable-next-line max-params
   public static async baseModelGetAsync(
     baseModelPath: string,
     basemodelId: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
-    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
-    await OrchestratorBaseModel.getAsync(baseModelPath, basemodelId, onProgress, onFinish);
+    onFinish: any = OrchestratorBaseModel.defaultHandler,
+    modelType: string = 'intent',
+    lang: string = 'en'): Promise<void> {
+    await OrchestratorBaseModel.getAsync(baseModelPath, basemodelId, onProgress, onFinish, modelType, lang);
   }
 
-  public static async baseModelListAsync(): Promise<string> {
-    return OrchestratorBaseModel.listAsync();
+  public static async baseModelListAsync(all: boolean = false): Promise<object> {
+    return OrchestratorBaseModel.listAsync(all);
   }
 
   public static async baseModelGetVersionsAsync(): Promise<any> {

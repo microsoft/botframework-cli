@@ -10,11 +10,16 @@ const unzip: any = require('unzip-stream');
 const fetch: any = require('node-fetch');
 
 export class OrchestratorBaseModel {
+  public static NlrVersionsSchema: string = '0.2';
+
+  // eslint-disable-next-line max-params
   public static async getAsync(
     baseModelPath: string,
     basemodelId: string = '',
     onProgress: any = OrchestratorBaseModel.defaultHandler,
-    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
+    onFinish: any = OrchestratorBaseModel.defaultHandler,
+    modelType: string = 'intent',
+    lang: string = 'en'): Promise<void> {
     try {
       if (baseModelPath) {
         baseModelPath = path.resolve(baseModelPath);
@@ -33,7 +38,7 @@ export class OrchestratorBaseModel {
       }
 
       if (basemodelId === '') {
-        basemodelId = OrchestratorBaseModel.getDefaultModelId(versions);
+        basemodelId = OrchestratorBaseModel.getDefaultModelId(versions, modelType, lang);
       }
 
       if (basemodelId === '') {
@@ -104,14 +109,24 @@ export class OrchestratorBaseModel {
     }
   }
 
-  public static async getVersionsAsync(): Promise<object> {
-    const response: any = await fetch('https://aka.ms/nlrversions');
+  public static async getVersionsAsync(schemaVersion: string = OrchestratorBaseModel.NlrVersionsSchema): Promise<object> {
+    const response: any = await fetch(`https://aka.ms/nlrversions_${schemaVersion}`);
     return response.json();
   }
 
-  public static async listAsync(): Promise<string> {
-    const json: any = await OrchestratorBaseModel.getVersionsAsync();
-    return Utility.jsonStringify(json, null, 2);
+  public static async listAsync(all: boolean = false): Promise<object> {
+    const nlrVersions: any = await OrchestratorBaseModel.getVersionsAsync();
+    if (all) {
+      return nlrVersions.models;
+    }
+
+    const defaultModels: any = {};
+    // eslint-disable-next-line guard-for-in
+    for (const key in nlrVersions.defaults) {
+      const value: string = nlrVersions.defaults[key];
+      defaultModels[value] = nlrVersions.models[value];
+    }
+    return defaultModels;
   }
 
   public static defaultHandler(status: string): void {
@@ -136,12 +151,14 @@ export class OrchestratorBaseModel {
     }
   }
 
-  public static getDefaultModelId(nlrVersions: any): string {
-    let defaultVersion: string = '';
+  public static getDefaultModelId(nlrVersions: any, modelType: string = 'intent', lang: string = 'en'): string {
+    let defaultVersion: any = '';
     try {
-      defaultVersion = nlrVersions.default;
-      if (defaultVersion && defaultVersion.length > 0) {
-        return defaultVersion;
+      const defaultVersions: any = nlrVersions.defaults;
+      const requestedVersion: string = `${lang}_${modelType}`;
+      // eslint-disable-next-line no-prototype-builtins
+      if (defaultVersions && defaultVersions.hasOwnProperty(requestedVersion)) {
+        return defaultVersions[requestedVersion];
       }
     } catch {
     }
@@ -149,10 +166,14 @@ export class OrchestratorBaseModel {
     defaultVersion = '';
     const models: any = nlrVersions.models;
     for (const modelVersion in models) {
-      // eslint-disable-next-line no-prototype-builtins
-      if (defaultVersion === '') {
+      if (modelType === 'entity' && modelVersion.indexOf('example_ner') > 0 && modelVersion.indexOf(lang) > 0) {
+        defaultVersion =  modelVersion;
+        break;
+      } else if (modelType === 'entity' && modelVersion.indexOf('example_ner') === 0 && modelVersion.indexOf(lang) > 0) {
         defaultVersion = modelVersion;
         break;
+      } else {
+        defaultVersion = modelVersion;
       }
     }
 

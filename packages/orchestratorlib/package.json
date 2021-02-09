@@ -17,9 +17,6 @@
   "author": "Microsoft",
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "main": "lib/index.js",
-  "engines": {
-    "node": ">=8.0.0"
-  },
   "files": [
     "/lib"
   ],

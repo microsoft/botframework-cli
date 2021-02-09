@@ -27,9 +27,10 @@ export default class OrchestratorAdd extends Command {
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
     fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
-    id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna'}),
-    key: flags.boolean({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna'}),
-    type: flags.string({char: 't', description: 'Type of input (luis/qna/file), default to file'}),
+    id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
+    key: flags.boolean({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna.'}),
+    endpoint: flags.string({description: 'LUIS/QnAMaker endpoint.'}),
+    type: flags.string({char: 't', description: 'Type of input (luis/qna/file), default to file.'}),
     version: flags.string({char: 'v', description: 'LUIS app version'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h', description: 'Orchestrator add command help'}),
@@ -45,6 +46,7 @@ export default class OrchestratorAdd extends Command {
     const entityBaseModelPath: string = flags.entityModel;
     const type: string = (flags.type.toLowerCase() || 'file');
     const id: string = (flags.id || '');
+    const endpoint: string = (flags.endpoint || '');
     const version: string = (flags.version || '');
     const key: string = (flags.key || '');
 
@@ -60,7 +62,7 @@ export default class OrchestratorAdd extends Command {
       const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(OrchestratorSettings.SnapshotPath));
 
       if (!Utility.isEmptyString(id) && !Utility.isEmptyString(key) && !Utility.isEmptyString(type) && type !== 'file') {
-        input = OrchestratorAdd.getFileInput(new OrchestratorData(id, key, version, type, cwd));
+        input = OrchestratorAdd.getFileInput(new OrchestratorData(id, key, version, endpoint, type, cwd));
         OrchestratorSettings.addInput(id, key, version, type, input);
       } else {
         input = path.resolve(flags.in || cwd);

@@ -152,15 +152,18 @@ export class OrchestratorData {
 
   public key: string = '';
 
+  public endpoint: string = '';
+
   public routingName: string = '';
 
   public filePath: string = '';
 
   // eslint-disable-next-line max-params
-  constructor(id: string, key: string, version: string, type: string, filePath: string) {
+  constructor(id: string, key: string, version: string, endpoint: string, type: string, filePath: string) {
     this.id = id;
     this.key = key;
     this.version = version;
+    this.endpoint = endpoint;
     this.type = type;
     this.filePath = filePath;
   }
