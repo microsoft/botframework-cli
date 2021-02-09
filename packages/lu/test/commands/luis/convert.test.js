@@ -62,6 +62,14 @@ describe('luis:convert', () => {
         await assertToLu('./../../fixtures/verified/nDepthEntityInUtterance.json', './../../fixtures/verified/nDepthEntityInUtterance.lu')
     })
 
+    it('luis:convert successfully reconstructs a markdown file from a LUIS input file (with escape characters in utterances)', async () => {
+        await assertToLu('./../../fixtures/verified/escapeCharactersInUtterances.json', './../../fixtures/verified/escapeCharactersInUtterances.lu')
+    })
+
+    it('luis:convert Utterances with escape characters correctly', async () => {
+        await assertToJSON('./../../fixtures/verified/escapeCharactersInUtterances.lu', './../../fixtures/verified/escapeCharactersInUtterances.json')
+    })
+
     it('luis:convert Simple intent and utterances are parsed correctly', async () => {
         await assertToJSON('./../../fixtures/examples/1.lu', './../../fixtures/verified/1.json', '1')
     })
