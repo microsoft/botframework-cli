@@ -78,11 +78,7 @@ const httpRequest = async function (subscriptionKey: string, config: any) {
     if (error.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
-      let message = ''
-      if(error.response.data 
-        && error.response.data.error) {
-          message = error.response.data.error.message
-      }
+      let message = error?.response?.data?.error?.message ?? ''
       throw Error(`Code: ${error.response.statusText} ${message}`)
     } else {
       // Something happened in setting up the request that triggered an Error
