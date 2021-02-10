@@ -21,7 +21,7 @@ export class OrchestratorCreate {
     inputPathConfiguration: string,
     outputPath: string,
     hierarchical: boolean = false,
-    fullEmbeddings: boolean = false) {
+    fullEmbeddings: boolean = false) : Promise<string> {
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`inputPathConfiguration=${inputPathConfiguration}`);
@@ -84,12 +84,14 @@ export class OrchestratorCreate {
     // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshot=${snapshot}`);
     // ---- NOTE-FOR-DEBUGGING ---- const snapshotInString: string = (new TextDecoder()).decode(snapshot);
     // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshotInString=${snapshotInString}`);
-    const outPath: string = OrchestratorHelper.getOutputPath(outputPath, inputPathConfiguration);
+    const outPath: string = OrchestratorHelper.getSnapshotFilePath(outputPath, inputPathConfiguration);
     const resolvedFilePath: string = OrchestratorHelper.writeToFile(outPath, snapshot);
     if (Utility.isEmptyString(resolvedFilePath)) {
       Utility.writeStringToConsoleStdout(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
     } else {
       Utility.writeStringToConsoleStdout(`Snapshot written to ${resolvedFilePath}`);
     }
+
+    return resolvedFilePath;
   }
 }

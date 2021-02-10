@@ -7,7 +7,7 @@ import {expect, test} from '@oclif/test';
 import {Orchestrator} from '@microsoft/bf-orchestrator';
 const sinon: any = require('sinon');
 
-describe('orchestrator:create', () => {
+describe('orchestrator:create tests', () => {
   beforeEach(() => {
     sinon.stub(Orchestrator, 'createAsync');
   });

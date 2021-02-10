@@ -11,10 +11,97 @@ import * as path from 'path';
 const ReadText: any = require('read-text-file');
 const OrchestratorSettingsFileName: string = 'orchestratorsettings.json';
 
-export class OrchestratorSettings {
-  static addInput(id: string, key: string, version: string, type: string, input: string) {
-      throw new Error('Method not implemented.');
+export class OrchestratorDataSource {
+  public type: string = '';
+
+  public id: string = '';
+
+  public version: string = '';
+
+  public key: string = '';
+
+  public endpoint: string = '';
+
+  public routingName: string = '';
+
+  public filePath: string = '';
+
+  // eslint-disable-next-line max-params
+  constructor(id: string, key: string, version: string, endpoint: string, type: string, routingName: string, filePath: string) {
+    this.id = id;
+    this.key = key;
+    this.version = version;
+    this.endpoint = endpoint;
+    this.type = type;
+    this.filePath = filePath;
+    this.routingName = routingName;
   }
+
+  public update(input: OrchestratorDataSource) {
+    this.key = input.key;
+
+    if (input.version.length > 0 && input.version !== this.version) {
+      this.version = input.version;
+    }
+
+    if (input.endpoint.length > 0 && input.endpoint !== this.endpoint) {
+      this.endpoint = input.endpoint;
+    }
+
+    if (input.routingName.length > 0 && input.routingName !== this.routingName) {
+      this.routingName = input.routingName;
+    }
+
+    if (input.filePath.length > 0 && input.filePath !== this.filePath) {
+      this.filePath = input.filePath;
+    }
+  }
+}
+
+export class OrchestratorDataSourceSettings {
+  public hierarchical: boolean = false;
+
+  public inputs: OrchestratorDataSource[] = [];
+
+  constructor(inputs: OrchestratorDataSource[], hierarchical: boolean) {
+    this.inputs = inputs;
+    this.hierarchical = hierarchical;
+  }
+}
+
+export class OrchestratorSettings {
+  public static hasDataSource(input: OrchestratorDataSource): boolean {
+    const existingSources: OrchestratorDataSource[] = OrchestratorSettings.DataSources.inputs;
+    for (const existingSource of existingSources) {
+      if (existingSource.type !== input.type) {
+        continue;
+      }
+
+      switch (input.type) {
+      case 'luis':
+      case 'qna':
+        if (input.id === existingSource.id) {
+          existingSource.update(input);
+          return true;
+        }
+        break;
+      case 'file':
+        if (input.filePath === existingSource.filePath) {
+          return true;
+        }
+        break;
+      default:
+        throw new Error('Invalid input type');
+      }
+    }
+
+    return false;
+  }
+
+  public static addUpdateDataSource(data: OrchestratorDataSource) {
+    this.DataSources.inputs.push(data);
+  }
+
   public static ModelPath: string;
 
   public static EntityModelPath: string;
@@ -23,7 +110,7 @@ export class OrchestratorSettings {
 
   public static SettingsPath: string;
 
-  public static DataSettings: OrchestratorDataSettings;
+  public static DataSources: OrchestratorDataSourceSettings;
 
   public static readFile(filePath: string): string {
     try {
@@ -43,47 +130,90 @@ export class OrchestratorSettings {
   }
 
   // eslint-disable-next-line max-params
-  public static init(settingsDir: string, baseModelPath: string, entityBaseModelPath: string, snapshotPath: string, defaultSnapshotPath: string)  {
+  public static init(
+    settingsDir: string,
+    baseModelPath: string,
+    entityBaseModelPath: string,
+    snapshotPath: string,
+    hierarchical: boolean = false)  {
     const settingsFile: string = path.join(settingsDir, OrchestratorSettingsFileName);
     OrchestratorSettings.SettingsPath = settingsFile;
     const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile) || OrchestratorHelper.exists(path.join(settingsDir, 'orchestrator.json'));
 
-    let settings: any;
     OrchestratorSettings.ModelPath = '';
     OrchestratorSettings.EntityModelPath = '';
     OrchestratorSettings.SnapshotPath = '';
+    OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings([], hierarchical);
 
+    let settings: any;
     if (settingsFileExists) {
       settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
     }
-
     //OrchestratorSettings.DataSettings = settingsFileExists && settings.dataSettings ? settings.dataSettings : new OrchestratorDataSettings();
 
-    if (baseModelPath) {
-      baseModelPath = path.resolve(baseModelPath);
-
-      if (!OrchestratorHelper.exists(baseModelPath)) {
-        Utility.debuggingLog(`Invalid model path ${baseModelPath}`);
-        throw new Error('Invalid model path');
-      }
-    } else if (!settingsFileExists || !settings.modelPath || settings.modelPath.length === 0) {
-      throw new Error('Missing model path');
-    } else {
-      baseModelPath = settings.modelPath;
+    OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
+    OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
+    entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
+    if (!Utility.isEmptyString(entityBaseModelPath)) {
+      OrchestratorSettings.EntityModelPath = entityBaseModelPath;
     }
+  }
 
-    if (entityBaseModelPath) {
+  public static persist()  {
+    if (OrchestratorSettings.SettingsPath.length === 0) {
+      throw new CLIError('settings not initialized.');
+    }
+    try {
+      const settings: any = (OrchestratorSettings.EntityModelPath) ? {
+        modelPath: OrchestratorSettings.ModelPath,
+        entityModelPath: OrchestratorSettings.EntityModelPath,
+        snapshotPath: OrchestratorSettings.SnapshotPath,
+        dataSettings: OrchestratorSettings.DataSources,
+      } : {
+        modelPath: OrchestratorSettings.ModelPath,
+        snapshotPath: OrchestratorSettings.SnapshotPath,
+        dataSettings: OrchestratorSettings.DataSources,
+      };
+
+      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
+    } catch (error) {
+      throw new CLIError(error);
+    }
+  }
+
+  static ensureEntityBaseModelPath(entityBaseModelPath: string, settings: any): string {
+    if (!Utility.isEmptyString(entityBaseModelPath)) {
       entityBaseModelPath = path.resolve(entityBaseModelPath);
 
       if (!OrchestratorHelper.exists(entityBaseModelPath)) {
         Utility.debuggingLog(`Invalid entity model path ${entityBaseModelPath}`);
         throw new Error('Invalid entity model path');
       }
-    } else if (settingsFileExists && 'entityModelPath' in settings) {
+    } else if (settings && 'entityModelPath' in settings) {
       entityBaseModelPath = settings.entityModelPath;
     }
 
-    if (snapshotPath) {
+    return entityBaseModelPath;
+  }
+
+  static ensureBaseModelPath(baseModelPath: string, settings: any) : string {
+    if (!Utility.isEmptyString(baseModelPath)) {
+      baseModelPath = path.resolve(baseModelPath);
+
+      if (!OrchestratorHelper.exists(baseModelPath)) {
+        Utility.debuggingLog(`Invalid model path ${baseModelPath}`);
+        throw new Error('Invalid model path');
+      }
+    } else if (!settings || !settings.modelPath || settings.modelPath.length === 0) {
+      throw new Error('Missing model path');
+    } else {
+      baseModelPath = settings.modelPath;
+    }
+    return baseModelPath;
+  }
+
+  static ensureSnapshotPath(snapshotPath: string, defaultSnapshotPath: string, settings: any): string {
+    if (!Utility.isEmptyString(snapshotPath)) {
       snapshotPath = path.resolve(snapshotPath);
 
       if (!OrchestratorHelper.exists(snapshotPath)) {
@@ -96,75 +226,12 @@ export class OrchestratorSettings {
         fs.mkdirSync(snapshotDir, {recursive: true});
         snapshotPath = path.join(snapshotDir, snapshotFile);
       }
-    } else if (!settingsFileExists || !settings.snapshotPath || settings.snapshotPath.length === 0) {
+    } else if (!settings || !settings.snapshotPath || settings.snapshotPath.length === 0) {
       snapshotPath = defaultSnapshotPath;
     } else {
       snapshotPath = settings.snapshotPath;
     }
 
-    OrchestratorSettings.ModelPath = baseModelPath;
-    if (entityBaseModelPath) {
-      OrchestratorSettings.EntityModelPath = entityBaseModelPath;
-    }
-    OrchestratorSettings.SnapshotPath = snapshotPath;
-  }
-
-  public static persist()  {
-    if (OrchestratorSettings.SettingsPath.length === 0) {
-      throw new CLIError('settings not initialized.');
-    }
-    try {
-      const settings: any = (OrchestratorSettings.EntityModelPath) ? {
-        modelPath: OrchestratorSettings.ModelPath,
-        entityModelPath: OrchestratorSettings.EntityModelPath,
-        snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSettings: OrchestratorSettings.DataSettings,
-      } : {
-        modelPath: OrchestratorSettings.ModelPath,
-        snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSettings: OrchestratorSettings.DataSettings,
-      };
-
-      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
-    } catch (error) {
-      throw new CLIError(error);
-    }
-  }
-}
-
-export class OrchestratorDataSettings {
-  public hierarchical: boolean = false;
-
-  public inputs: OrchestratorData[] = [];
-
-  constructor(inputs: OrchestratorData[], hierarchical: boolean) {
-    this.inputs = inputs;
-    this.hierarchical = hierarchical;
-  }
-}
-
-export class OrchestratorData {
-  public type: string = 'file';
-
-  public id: string = '';
-
-  public version: string = '';
-
-  public key: string = '';
-
-  public endpoint: string = '';
-
-  public routingName: string = '';
-
-  public filePath: string = '';
-
-  // eslint-disable-next-line max-params
-  constructor(id: string, key: string, version: string, endpoint: string, type: string, filePath: string) {
-    this.id = id;
-    this.key = key;
-    this.version = version;
-    this.endpoint = endpoint;
-    this.type = type;
-    this.filePath = filePath;
+    return snapshotPath;
   }
 }
