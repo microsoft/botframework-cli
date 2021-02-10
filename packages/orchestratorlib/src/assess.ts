@@ -91,7 +91,7 @@ export class OrchestratorAssess {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelDuplicateMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknownLabelsInUtteranceLabelsMap(
+    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----   {
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
     // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
@@ -154,28 +154,32 @@ export class OrchestratorAssess {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process unknown intent labels --------------------------
     // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousLabelsProcessed: {
+    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownLabelsMap': Map<string, Set<string>>;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownLabelDuplicateMap': Map<string, Set<string>>;
     // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelsMap': Map<string, Set<string>>;
     // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
-    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousLabels': boolean;
-    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousDuplicateLabels': boolean; } =
-    Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
+    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
         utteranceLabelDuplicateMap: predictionSetUtteranceLabelDuplicateMap},
       groundTruthSetLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet() for prediction intent labels');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet() for prediction intent labels');
     // ---- NOTE ---- process unknown entity labels --------------------------
     // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousEntityLabelsProcessed: {
+    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownEntityLabelsMap': Map<string, Label[]>;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownEntityLabelDuplicateMap': Map<string, Label[]>;
     // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelsMap': Map<string, Label[]>;
     // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
-    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousLabels': boolean;
-    // ---- NOTE-NOT-USED-YET ----   'hasUnknownSpuriousDuplicateLabels': boolean; } =
-    Utility.processUnknownEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
+    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+    Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
       {
         utteranceEntityLabelsMap: predictionSetUtteranceEntityLabelsMap,
         utteranceEntityLabelDuplicateMap: predictionSetUtteranceEntityLabelDuplicateMap},
       groundTruthSetEntityLabelSet);
-    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownLabelsInUtteranceEntityLabelsMapUsingLabelSet() for prediction entity labels');
+    Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownSpuriousLabelsInUtteranceEntityLabelsMapUsingLabelSet() for prediction entity labels');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the prediction set intent labels ---------------
     const predictionSetLabels: string[] =
@@ -222,6 +226,11 @@ export class OrchestratorAssess {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -240,6 +249,11 @@ export class OrchestratorAssess {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -315,6 +329,11 @@ export class OrchestratorAssess {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -333,6 +352,11 @@ export class OrchestratorAssess {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };

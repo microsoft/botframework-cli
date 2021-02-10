@@ -38,7 +38,7 @@ export class DictionaryMapUtility {
     public static readonly UnknownLabelSet: Set<string> =
         new Set<string>(["", "NONE", DictionaryMapUtility.UnknownLabel]);
 
-    public static processUnknownLabelsInUtteranceLabelsMap(
+    public static processUnknownSpuriousLabelsInUtteranceLabelsMap(
         utteranceLabels: {
             "utteranceLabelsMap": Map<string, Set<string>>;
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; }): {
@@ -64,7 +64,7 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+                        Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
                         throw error;
                     }
                 }
@@ -92,7 +92,7 @@ export class DictionaryMapUtility {
         return utteranceLabels;
     }
 
-    public static processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
+    public static processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
         utteranceLabels: {
             "utteranceLabelsMap": Map<string, Set<string>>;
             "utteranceLabelDuplicateMap": Map<string, Set<string>>; },
@@ -119,7 +119,7 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+                        Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
                         throw error;
                     }
                 }

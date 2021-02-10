@@ -14,7 +14,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data_structure/DictionaryMapUtility", () => {
 
-    it("Test.0000 Utility.processUnknownLabelsInUtteranceLabelsMap()", function() {
+    it("Test.0000 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -48,7 +48,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
-        DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMap(
+        DictionaryMapUtility.processUnknownSpuriousLabelsInUtteranceLabelsMap(
           utteranceLabels);
         Utility.debuggingLog(
           `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
@@ -69,7 +69,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).size === 1);
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
     });
-    it("Test.0001 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()", function() {
+    it("Test.0001 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet()", function() {
         Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -104,7 +104,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
           `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
         Utility.debuggingLog(
           `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
-        DictionaryMapUtility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
+        DictionaryMapUtility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
           utteranceLabels,
           labelSet);
         Utility.debuggingLog(

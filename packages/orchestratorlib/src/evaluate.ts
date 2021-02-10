@@ -232,6 +232,11 @@ export class OrchestratorEvaluate {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        'spuriousLabelStatisticsAndHtmlTable': {
+          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesTotal': number;
+          'spuriousLabelStatistics': string[][];
+          'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -271,7 +276,7 @@ export class OrchestratorEvaluate {
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold,
-      false);
+      Utility.createEmptyLabelStringUnknownSpuriousLabelsStructure());
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
@@ -319,6 +324,11 @@ export class OrchestratorEvaluate {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        'spuriousLabelStatisticsAndHtmlTable': {
+          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesTotal': number;
+          'spuriousLabelStatistics': string[][];
+          'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -358,7 +368,7 @@ export class OrchestratorEvaluate {
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold,
-      false);
+      Utility.createEmptyLabelObjectUnknownSpuriousLabelsStructure());
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutputLabelObject=${Utility.jsonStringify(evaluationOutputLabelObject)}`);
     }
@@ -395,6 +405,3 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), THE END');
   }
 }
-
-/* ---- NOTE-FOR-REFERENCE ---- performance reference for "test" LOOCV
-*/

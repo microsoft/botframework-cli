@@ -241,11 +241,12 @@ export class UtilityLabelResolver {
           }
         }
         if ((predictionStructureWithScoreLabelStringArray.length % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
-          Utility.debuggingLog(`UtilityLabelResolver.scoreStringLabels(): Added predictionStructureWithScoreLabelStringArray=${predictionStructureWithScoreLabelStringArray.length}`);
+          Utility.debuggingLog(`UtilityLabelResolver.scoreStringLabels(): Added predictionStructureWithScoreLabelStringArray.length=${predictionStructureWithScoreLabelStringArray.length}`);
         }
       }
       // ---------------------------------------------------------------------
     }
+    Utility.debuggingLog(`UtilityLabelResolver.scoreStringLabels(): Total added predictionStructureWithScoreLabelStringArray.length=${predictionStructureWithScoreLabelStringArray.length}`);
     // Utility.debuggingLog('UtilityLabelResolver.scoreStringLabels(), leaving');
     // -----------------------------------------------------------------------
     return predictionStructureWithScoreLabelStringArray;
@@ -462,12 +463,13 @@ export class UtilityLabelResolver {
             }
           }
         }
-        if ((predictionStructureWithScoreLabelObjectArray.length % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
-          Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(): Added predictionStructureWithScoreLabelObjectArray=${predictionStructureWithScoreLabelObjectArray.length}`);
+        if ((predictionStructureWithScoreLabelObjectArray.length % Utility.NumberOfInstancesPerProgressDisplayBatchForEntity) === 0) {
+          Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(): Added predictionStructureWithScoreLabelObjectArray.length=${predictionStructureWithScoreLabelObjectArray.length}`);
         }
       }
       // ---------------------------------------------------------------------
     }
+    Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(): Total added predictionStructureWithScoreLabelObjectArray.length=${predictionStructureWithScoreLabelObjectArray.length}`);
     // Utility.debuggingLog('UtilityLabelResolver.scoreObjectLabels(), leaving');
     // -----------------------------------------------------------------------
     return predictionStructureWithScoreLabelObjectArray;
