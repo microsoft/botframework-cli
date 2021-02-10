@@ -128,7 +128,7 @@ export default class OrchestratorTest extends Command {
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
       UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
-      Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
+      Utility.debuggingLog(`OrchestratorTest.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): baseModelPath=${baseModelPath}`);

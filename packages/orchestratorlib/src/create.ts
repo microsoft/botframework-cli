@@ -87,9 +87,9 @@ export class OrchestratorCreate {
     const outPath: string = OrchestratorHelper.getSnapshotFilePath(outputPath, inputPathConfiguration);
     const resolvedFilePath: string = OrchestratorHelper.writeToFile(outPath, snapshot);
     if (Utility.isEmptyString(resolvedFilePath)) {
-      Utility.writeStringToConsoleStdout(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
+      Utility.writeStringLineToConsoleStdout(`ERROR: failed writing the snapshot to file ${resolvedFilePath}`);
     } else {
-      Utility.writeStringToConsoleStdout(`Snapshot written to ${resolvedFilePath}`);
+      Utility.writeStringLineToConsoleStdout(`Snapshot written to ${resolvedFilePath}`);
     }
 
     return resolvedFilePath;

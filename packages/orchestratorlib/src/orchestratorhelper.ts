@@ -54,7 +54,7 @@ export class OrchestratorHelper {
     // so there is really no need to process unknown labels in a BLU file
     // anymore. The line below is thus deprecated, especially now the BLU
     // file can be a JSON, so the statement below does not apply anyway.
-    // ---- return Utility.processUnknownLabelsInTsvBluFileContent(ReadText.readSync(filePath));
+    // ---- return Utility.processUnknownSpuriousLabelsInTsvBluFileContent(ReadText.readSync(filePath));
   }
 
   public static readFile(filePath: string): string {
@@ -164,7 +164,7 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap);
       }
     }
-    Utility.processUnknownLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
+    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
     return {utteranceLabelsMap,
       utteranceLabelDuplicateMap,
       utteranceEntityLabelsMap,
@@ -426,6 +426,9 @@ export class OrchestratorHelper {
       id: luFile,
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog1('parseLuContent(): calling getIntentsEntitiesUtterances(), luisObject=', luisObject);
+    }
     try {
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
         luisObject,

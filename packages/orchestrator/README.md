@@ -361,7 +361,7 @@ DESCRIPTION
   on a model and its example snapshot set. It also generates a detailed evaluation report
   with the following sections:
 
-  >  Intent/utterancce Statistics - label and utterance statistics and distributions.
+  >  Intent/utterance Statistics - label and utterance statistics and distributions.
   >  Duplicates - tables of utterance with multiple labels and exact utterance/label duplicates.
   >  Ambiguous - ambiguous predictions that there are some other label predictions whose
      scores are close to the correctly predicted labels. Ambiguity closeness is controlled by the "ambiguous" parameter, default to 0.2. I.e., if there is a prediction whose score is within 80% of
@@ -520,9 +520,9 @@ REPORT
 
   Each report has the following sections:
 
-  >  Ground-Truth Label/Utterancce Statistics - ground-truth label and utterance statistics and distributions.
+  >  Ground-Truth Label/Utterance Statistics - ground-truth label and utterance statistics and distributions.
   >  Ground-Truth Duplicates - tables of ground-truth utterances with multiple labels and exact utterance/label duplicates.
-  >  Prediction Label/Utterancce Statistics - prediction label and utterance statistics and distributions.
+  >  Prediction Label/Utterance Statistics - prediction label and utterance statistics and distributions.
   >  Prediction Duplicates - tables of prediction utterances with multiple labels and exact utterance/label duplicates.
   >  Misclassified - utterances with false-positive and false-negative predictions.
   >  Metrics - confisuon matrix metrics.
@@ -599,7 +599,7 @@ REPORT
   11) Positive Support Summation Macro-Average - this metric is similar to 3), but use 4)'s denominator.
   12) Weighted Macro-Average - this metric averaging approach takes an weighted average of the series of binary
         per-label confusion matrices. The weights are the per-label prevalences, which are listed in the
-        "Ground-Truth Label/Utterancce Statistics" tab.
+        "Ground-Truth Label/Utterance Statistics" tab.
   13) Weighted Summation Macro-Average - similar to 6), but the weighted average only applies to
         the 4 confusion matrix cells. Weighted TP, FP, TN, FN are then used to calculate precision, recall, F1, and
         accuracy.

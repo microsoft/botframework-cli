@@ -153,6 +153,11 @@ export class OrchestratorPredict {
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
+      'spuriousLabelStatisticsAndHtmlTable': {
+        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesTotal': number;
+        'spuriousLabelStatistics': string[][];
+        'spuriousLabelStatisticsHtml': string; };
       'utterancesMultiLabelArrays': [string, string][];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string; };
@@ -182,7 +187,7 @@ export class OrchestratorPredict {
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
     'predictionJsonContent': string;
-  } = Utility.generateLabelStringEmptyEvaluationReport();
+  } = Utility.createEmptyLabelStringEvaluationReport();
 
   protected currentEntityEvaluationOutput: {
     'evaluationReportLabelUtteranceStatistics': {
@@ -200,6 +205,11 @@ export class OrchestratorPredict {
         'utteranceStatistics': [string, number][];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
+      'spuriousLabelStatisticsAndHtmlTable': {
+        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesTotal': number;
+        'spuriousLabelStatistics': string[][];
+        'spuriousLabelStatisticsHtml': string; };
       'utterancesMultiLabelArrays': [string, string][];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string; };
@@ -229,7 +239,7 @@ export class OrchestratorPredict {
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
     'predictionJsonContent': string;
-  } = Utility.generateLabelObjectEmptyEvaluationReport();
+  } = Utility.createEmptyLabelObjectEvaluationReport();
 
   /* eslint-disable max-params */
   /* eslint-disable complexity */
@@ -860,7 +870,7 @@ export class OrchestratorPredict {
       this.lowConfidenceScoreThreshold,
       this.multiLabelPredictionThreshold,
       this.unknownLabelPredictionThreshold,
-      false);
+      Utility.createEmptyLabelStringUnknownSpuriousLabelsStructure());
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.
@@ -901,7 +911,7 @@ export class OrchestratorPredict {
       this.lowConfidenceScoreThreshold,
       this.multiLabelPredictionThreshold,
       this.unknownLabelPredictionThreshold,
-      false);
+      Utility.createEmptyLabelObjectUnknownSpuriousLabelsStructure());
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReport()');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce analysis report output files.

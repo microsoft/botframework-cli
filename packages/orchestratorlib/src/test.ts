@@ -156,11 +156,13 @@ export class OrchestratorTest {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process testing set intent labels.
     const unknownSpuriousLabelsProcessed: {
+      'utteranceUnknownLabelsMap': Map<string, Set<string>>;
+      'utteranceUnknownLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceSpuriousLabelsMap': Map<string, Set<string>>;
       'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
-      'hasUnknownSpuriousLabels': boolean;
-      'hasUnknownSpuriousDuplicateLabels': boolean; } =
-      Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
+      'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+      'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+      Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
         processedUtteranceLabelsMap,
         snapshotSetLabelSet);
     const utteranceLabelsMap: Map<string, Set<string>> =
@@ -178,11 +180,13 @@ export class OrchestratorTest {
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process testing set entity labels.
     const unknownSpuriousEntityLabelsProcessed: {
+      'utteranceUnknownEntityLabelsMap': Map<string, Label[]>;
+      'utteranceUnknownEntityLabelDuplicateMap': Map<string, Label[]>;
       'utteranceSpuriousEntityLabelsMap': Map<string, Label[]>;
       'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
-      'hasUnknownSpuriousLabels': boolean;
-      'hasUnknownSpuriousDuplicateLabels': boolean; } =
-      Utility.processUnknownEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
+      'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+      'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+      Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
         processedUtteranceLabelsMap,
         snapshotSetEntityLabelSet);
     const utteranceEntityLabelsMap: Map<string, Label[]> =
@@ -219,6 +223,11 @@ export class OrchestratorTest {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        'spuriousLabelStatisticsAndHtmlTable': {
+          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesTotal': number;
+          'spuriousLabelStatistics': string[][];
+          'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -258,7 +267,7 @@ export class OrchestratorTest {
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold,
-      unknownSpuriousLabelsProcessed.hasUnknownSpuriousLabels);
+      unknownSpuriousLabelsProcessed);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutputLabelString=${Utility.jsonStringify(evaluationOutputLabelString)}`);
     }
@@ -312,6 +321,11 @@ export class OrchestratorTest {
           'utteranceStatistics': [string, number][];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
+        'spuriousLabelStatisticsAndHtmlTable': {
+          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesTotal': number;
+          'spuriousLabelStatistics': string[][];
+          'spuriousLabelStatisticsHtml': string; };
         'utterancesMultiLabelArrays': [string, string][];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -351,7 +365,7 @@ export class OrchestratorTest {
       lowConfidenceScoreThreshold,
       multiLabelPredictionThreshold,
       unknownLabelPredictionThreshold,
-      unknownSpuriousEntityLabelsProcessed.hasUnknownSpuriousLabels);
+      unknownSpuriousEntityLabelsProcessed);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutputLabelObject=${Utility.jsonStringify(evaluationOutputLabelObject)}`);
     }
@@ -388,6 +402,3 @@ export class OrchestratorTest {
     Utility.debuggingLog('OrchestratorTest.runAsync(), THE END');
   }
 }
-
-/* ---- NOTE-FOR-REFERENCE ---- performance reference for "test" TRAIN/TEST
-*/

@@ -94,13 +94,13 @@ export class AssessmentLabelSummaryTemplateHtml {
         <br />
         <ul class="nav nav-pills ms-fontSize-mPlus ms-fontWeight-semibold" id="modelAnalysis" role="tablist" style="padding-bottom:10px">
             <li class="nav-item active">
-                <a class="nav-link active" id="ground-truth-set-label-utterance-statistics-tab" data-toggle="tab" href="#ground-truth-set-label-utterance-statistics" role="tab" aria-controls="ground-truth-set-label-utterance-statistics" aria-selected="true"><strong>Ground-Truth Label/Utterancce Statistics</strong></a>
+                <a class="nav-link active" id="ground-truth-set-label-utterance-statistics-tab" data-toggle="tab" href="#ground-truth-set-label-utterance-statistics" role="tab" aria-controls="ground-truth-set-label-utterance-statistics" aria-selected="true"><strong>Ground-Truth Label/Utterance Statistics</strong></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="ground-truth-set-duplicates-tab" data-toggle="tab" href="#ground-truth-set-duplicates" role="tab" aria-controls="ground-truth-set-duplicates" aria-selected="true"><strong>Ground-Truth Duplicates</strong></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link active" id="prediction-set-label-utterance-statistics-tab" data-toggle="tab" href="#prediction-set-label-utterance-statistics" role="tab" aria-controls="prediction-set-label-utterance-statistics" aria-selected="true"><strong>Prediction Label/Utterancce Statistics</strong></a>
+                <a class="nav-link active" id="prediction-set-label-utterance-statistics-tab" data-toggle="tab" href="#prediction-set-label-utterance-statistics" role="tab" aria-controls="prediction-set-label-utterance-statistics" aria-selected="true"><strong>Prediction Label/Utterance Statistics</strong></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="prediction-set-duplicates-tab" data-toggle="tab" href="#prediction-set-duplicates" role="tab" aria-controls="prediction-set-duplicates" aria-selected="true"><strong>Prediction Duplicates</strong></a>

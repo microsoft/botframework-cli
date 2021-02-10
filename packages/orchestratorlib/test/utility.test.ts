@@ -80,7 +80,7 @@ describe('Test Suite - utility', () => {
     }
   });
 
-  it('Test.0100 Utility.processUnknownLabelsInUtteranceLabelsMap()', function () {
+  it('Test.0100 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -114,7 +114,7 @@ describe('Test Suite - utility', () => {
       `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
       `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
-    Utility.processUnknownLabelsInUtteranceLabelsMap(
+    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(
       utteranceLabels);
     Utility.debuggingLog(
       `utteranceLabelsMap=A=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
@@ -135,7 +135,7 @@ describe('Test Suite - utility', () => {
     assert.ok((utteranceLabelDuplicateMap.get('C') as Set<string>).size === 1);
     assert.ok((utteranceLabelDuplicateMap.get('C') as Set<string>).has(Utility.UnknownLabel));
   });
-  it('Test.0101 Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet()', function () {
+  it('Test.0101 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet()', function () {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -170,7 +170,7 @@ describe('Test Suite - utility', () => {
       `utteranceLabelsMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
     Utility.debuggingLog(
       `utteranceLabelDuplicateMap-B=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelDuplicateMap)}`);
-    Utility.processUnknownLabelsInUtteranceLabelsMapUsingLabelSet(
+    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
       utteranceLabels,
       labelSet);
     Utility.debuggingLog(

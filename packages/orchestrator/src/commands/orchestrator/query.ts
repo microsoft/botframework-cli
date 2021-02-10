@@ -102,7 +102,7 @@ export default class OrchestratorQuery extends Command {
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
       UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
-      Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
+      Utility.debuggingLog(`OrchestratorQuery.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): query=${query}`);
       // Utility.debuggingLog(`OrchestratorQuery.run(): outputPath=${outputPath}`);

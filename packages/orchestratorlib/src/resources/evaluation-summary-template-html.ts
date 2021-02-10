@@ -92,7 +92,7 @@ export class EvaluationSummaryTemplateHtml {
         <br />
         <ul class="nav nav-pills ms-fontSize-mPlus ms-fontWeight-semibold" id="modelAnalysis" role="tablist" style="padding-bottom:10px">
             <li class="nav-item active">
-                <a class="nav-link active" id="intent-utterance-statistics-tab" data-toggle="tab" href="#intent-utterance-statistics" role="tab" aria-controls="intent-utterance-statistics" aria-selected="true"><strong>Intent/Utterancce Statistics</strong></a>
+                <a class="nav-link active" id="intent-utterance-statistics-tab" data-toggle="tab" href="#intent-utterance-statistics" role="tab" aria-controls="intent-utterance-statistics" aria-selected="true"><strong>Intent/Utterance Statistics</strong></a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" id="utterance-duplicates-tab" data-toggle="tab" href="#utterance-duplicates" role="tab" aria-controls="utterance-duplicates" aria-selected="true"><strong>Utterance Duplicates</strong></a>
@@ -117,11 +117,16 @@ export class EvaluationSummaryTemplateHtml {
         </ul>
         <div class="tab-content">
             <div class="tab-pane active" id="intent-utterance-statistics" role="tabpanel" aria-labelledby="intent-utterance-statistics-tab">
-                <p>Intent and utterance statistics.  The spurious table at the end shows the labels not
-                in the training set. These spurious labels are unknown to the system and would be renamed accordingly.</p>
+                <p>Label and utterance statistics
+		</p>
                 <p>
                     {LABEL_TEXT_STATISTICS}
                 </p>
+                <p>Spurious label and utterance statistics.
+		   Spurious labels are not in the training set, thus they are unknown to the system.
+		   Spurious intent labels are renamed to UNKNOWN and ignored if an utterance has other legitimate labels
+		   Spurious entity labels are simply ignored.
+		</p>
                 <p>
                     {SPURIOUS_UTTERANCE_LABELS}
                 </p>
