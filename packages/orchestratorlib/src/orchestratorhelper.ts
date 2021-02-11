@@ -1183,6 +1183,7 @@ export class OrchestratorHelper {
       const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
       return {id: baseName, snapshot: snapshot, recognizer: recognizer};
     }
+    // eslint-disable-next-line no-lone-blocks
     {
       // Create new label resolver
       if (!labelResolver) {
@@ -1196,6 +1197,7 @@ export class OrchestratorHelper {
         UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
       }
 
+      /*
       const result: {
         'utteranceLabelsMap': Map<string, Set<string>>;
         'utteranceLabelDuplicateMap': Map<string, Set<string>>;
@@ -1221,6 +1223,9 @@ export class OrchestratorHelper {
       const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
       const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
       return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+      */
+      // eslint-disable-next-line no-return-await
+      return await OrchestratorHelper.processLuContentSingle(luObject, labelResolver, routingName, isDialog, fullEmbedding, skillName);
     }
   }
 
