@@ -1228,4 +1228,50 @@ export class OrchestratorHelper {
       return {id: baseName, snapshot: snapshot, recognizer: recognizer};
     }
   }
+
+  public static async processLuContentSingle(
+    luObject: any,
+    labelResolver: LabelResolver,
+    routingName: string = '',
+    isDialog: boolean = false,
+    fullEmbedding: boolean = false,
+    skillName: string = '') {
+    Utility.debuggingLog(`routingName=${routingName}`);
+
+    const baseName: string = luObject.id;
+
+      // Create new label resolver 
+    if (!labelResolver) {
+      Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
+      labelResolver = LabelResolver.createLabelResolver();
+      Utility.debuggingLog('OrchestratorHelper.processLuFile(), after calling LabelResolver.createLabelResolver()');
+      Utility.debuggingLog('Created label resolver');
+    }
+    if (fullEmbedding) {
+      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
+    }
+    const result: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
+        utteranceLabelsMap: new Map<string, Set<string>>(),
+        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+        utteranceEntityLabelsMap: new Map<string, Label[]>(),
+        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    await OrchestratorHelper.parseLuContent(
+      luObject.id,
+      luObject.content,
+      routingName,
+      result.utteranceLabelsMap,
+      result.utteranceLabelDuplicateMap,
+      result.utteranceEntityLabelsMap,
+      result.utteranceEntityLabelDuplicateMap);
+    Utility.debuggingLog(`Processed ${luObject.id}`);
+    LabelResolver.addExamples(result, labelResolver);
+    const snapshot: any = LabelResolver.createSnapshot(labelResolver);
+    const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+    const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
+    return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+  }
 }
