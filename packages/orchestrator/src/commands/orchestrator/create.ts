@@ -51,19 +51,21 @@ export default class OrchestratorCreate extends Command {
       UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
       Utility.debuggingLog(`refresh=${refresh}`);
 
-      OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, cwd);
+      OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
 
       if (refresh) {
         OrchestratorCreate.refreshLuisQnAInputs(input);
       }
 
-      await Orchestrator.createAsync(
+      const snapshotFilePath: string = await Orchestrator.createAsync(
         OrchestratorSettings.ModelPath,
         input,
         OrchestratorSettings.SnapshotPath,
         OrchestratorSettings.EntityModelPath,
         flags.hierarchical,
         fullEmbeddings);
+
+      OrchestratorSettings.SnapshotPath = snapshotFilePath;
       OrchestratorSettings.persist();
     } catch (error) {
       throw (new CLIError(error));

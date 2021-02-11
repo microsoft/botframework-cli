@@ -123,8 +123,11 @@ export class OrchestratorHelper {
     return tsvContent;
   }
 
-  public static getSnapshotFromFile(file: string) {
-    return Utility.exists(file) ? new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(file)) : new Uint8Array();
+  public static getSnapshotFromFile(snapshotPath: string) {
+    if (Utility.exists(snapshotPath) && !OrchestratorHelper.isDirectory(snapshotPath)) {
+      return new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(snapshotPath));
+    }
+    return new Uint8Array();
   }
 
   public static async getUtteranceLabelsMap(
@@ -172,13 +175,13 @@ export class OrchestratorHelper {
   If --in is a file
       - If --out is a folder, write to outFolder\inFileName.blu
       - If --out is a file, write to outFile
-      - else, write to cwd()\orchestrator.blu
+      - else, write to cwd()\inFileName.blu
   Else
       - If --out is a folder, write to outFolder\orchestrator.blu
       - If --out is a file, write to outFile
       - else, write to cwd()\orchestrator.blu
   */
-  public static getOutputPath(out: string, input: string): string {
+  public static getSnapshotFilePath(out: string, input: string): string {
     let retValue: string = out;
     if (OrchestratorHelper.isDirectory(out)) {
       if (OrchestratorHelper.isDirectory(input)) {

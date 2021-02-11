@@ -4,6 +4,7 @@
  */
 
 import {LabelResolver} from './labelresolver';
+import {LuisQnaHelper} from './luisqnahelper';
 import {Orchestrator} from './orchestrator';
 import {OrchestratorAssess} from './assess';
 import {OrchestratorBaseModel} from './basemodel';
@@ -19,6 +20,7 @@ import {Utility} from './utility';
 
 export {
   LabelResolver,
+  LuisQnaHelper,
   Orchestrator,
   OrchestratorAssess,
   OrchestratorBaseModel,

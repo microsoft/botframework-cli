@@ -74,8 +74,8 @@ export class Orchestrator {
     outputPath: string,
     entityBaseModelPath: string = '',
     hierarchical: boolean = false,
-    fullEmbedding: boolean = false): Promise<void> {
-    await OrchestratorCreate.runAsync(
+    fullEmbedding: boolean = false): Promise<string> {
+    return OrchestratorCreate.runAsync(
       baseModelPath,
       entityBaseModelPath,
       inputPathConfiguration,

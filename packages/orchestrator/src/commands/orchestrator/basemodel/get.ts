@@ -30,7 +30,7 @@ export default class OrchestratorBaseModelGet extends Command {
       if (!OrchestratorHelper.exists(output)) {
         OrchestratorHelper.mkDir(output);
       }
-      OrchestratorSettings.init(cwd, output, '', '', cwd);
+      OrchestratorSettings.init(cwd, output, '', '');
       await Orchestrator.baseModelGetAsync(
         OrchestratorSettings.ModelPath,
         basemodelId,
