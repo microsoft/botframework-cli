@@ -1193,37 +1193,6 @@ export class OrchestratorHelper {
         Utility.debuggingLog('Created label resolver');
         labelResolvers.set(luObject.id, labelResolver);
       }
-      if (fullEmbedding) {
-        UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
-      }
-
-      /*
-      const result: {
-        'utteranceLabelsMap': Map<string, Set<string>>;
-        'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-        'utteranceEntityLabelsMap': Map<string, Label[]>;
-        'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
-          utteranceLabelsMap: new Map<string, Set<string>>(),
-          utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
-          utteranceEntityLabelsMap: new Map<string, Label[]>(),
-          utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
-
-      await OrchestratorHelper.parseLuContent(
-        luObject.id,
-        luObject.content,
-        routingName,
-        result.utteranceLabelsMap,
-        result.utteranceLabelDuplicateMap,
-        result.utteranceEntityLabelsMap,
-        result.utteranceEntityLabelDuplicateMap);
-
-      Utility.debuggingLog(`Processed ${luObject.id}`);
-      LabelResolver.addExamples(result, labelResolver);
-      const snapshot: any = labelResolver.createSnapshot();
-      const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
-      const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
-      return {id: baseName, snapshot: snapshot, recognizer: recognizer};
-      */
       // eslint-disable-next-line no-return-await
       return await OrchestratorHelper.processLuContentSingle(luObject, labelResolver, routingName, isDialog, fullEmbedding, skillName);
     }

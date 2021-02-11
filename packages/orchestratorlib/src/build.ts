@@ -146,28 +146,6 @@ export class OrchestratorBuild {
   static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
     const subject: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
     const target: Example[] = await OrchestratorBuild.getExamplesLU(luContent);
-    // console.log(`subject (labelResolver) (length=${subject.length})`)
-    // subject.forEach(element => {
-    //     console.log(`  ${element.text} (labels length=${element.labels.length})`)
-    //     element.labels.forEach(l => {
-    //         console.log(`     name: ${l.name}`);
-    //         console.log(`     type: ${l.labeltype}`);
-    //         console.log(`     span.length: ${l.span.length}`);
-    //         console.log(`     span.offset: ${l.span.offset}`);
-    //     });
-
-    // });
-    // console.log(`target (LU file) (length=${target.length})`);
-    // target.forEach(element => {
-    //     console.log(`  ${element.text} (labels length=${element.labels.length})`)
-    //     element.labels.forEach(l => {
-    //         console.log(`     name: ${l.name}`);
-    //         console.log(`     type: ${l.labeltype}`);
-    //         console.log(`     span.length: ${l.span.length}`);
-    //         console.log(`     span.offset: ${l.span.offset}`);
-    //     });
-
-    // });
     // http://www.mlsite.net/blog/?p=2250
     let x: number = 0;
     let y: number = 0;
@@ -192,15 +170,6 @@ export class OrchestratorBuild {
         y += 1;
       }
     }
-    // console.log(`size of deletes: ${deletes.length}`)
-    // deletes.forEach(element => {
-    //     console.log(`  index=${element} (${subject[element].text})`)
-    // });
-    // console.log(`size of inserts: ${inserts.length}`)
-    // inserts.forEach(element => {
-    //     console.log(`  index=${element.index}, value=${element.value} (${target[element.index].text})`)
-    // });
-
     //  Process deletes
     deletes.forEach((element: number) => {
       LabelResolver.removeExample(subject[element], labelResolver);
