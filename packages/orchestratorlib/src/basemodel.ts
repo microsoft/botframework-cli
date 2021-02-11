@@ -137,20 +137,6 @@ export class OrchestratorBaseModel {
     Utility.debuggingLog(status);
   }
 
-  private static deleteFolderRecursive(inputPath: string) {
-    if (fs.existsSync(inputPath)) {
-      fs.readdirSync(inputPath).forEach(function (file: string) {
-        const curPath: string = path.join(inputPath, file);
-        if (fs.lstatSync(curPath).isDirectory()) { // recurse
-          OrchestratorBaseModel.deleteFolderRecursive(curPath);
-        } else { // delete file
-          fs.unlinkSync(curPath);
-        }
-      });
-      fs.rmdirSync(inputPath);
-    }
-  }
-
   public static getDefaultModelId(nlrVersions: any, modelType: string = 'intent', lang: string = 'en'): string {
     let defaultVersion: any = '';
     try {

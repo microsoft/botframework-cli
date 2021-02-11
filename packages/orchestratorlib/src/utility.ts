@@ -7033,4 +7033,31 @@ export class Utility {
     Utility.debuggingLog(stackTrace);
     throw error;
   }
+
+  public static emptyFolder(inputPath: string) {
+    if (fs.existsSync(inputPath)) {
+      fs.readdirSync(inputPath).forEach(function (file: string) {
+        const curPath: string = path.join(inputPath, file);
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          Utility.deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+    }
+  }
+
+  public static deleteFolderRecursive(inputPath: string) {
+    if (fs.existsSync(inputPath)) {
+      fs.readdirSync(inputPath).forEach(function (file: string) {
+        const curPath: string = path.join(inputPath, file);
+        if (fs.lstatSync(curPath).isDirectory()) { // recurse
+          Utility.deleteFolderRecursive(curPath);
+        } else { // delete file
+          fs.unlinkSync(curPath);
+        }
+      });
+      fs.rmdirSync(inputPath);
+    }
+  }
 }

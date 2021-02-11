@@ -338,13 +338,6 @@ export class OrchestratorHelper {
           utteranceLabelsMap,
           utteranceLabelDuplicateMap);
         break;
-      case '.dispatch':
-        /*
-        OrchestratorHelper.parseDispatchFile(
-          filePath,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap); */
-        break;
       }
     } catch (error) {
       throw new Error(`Failed to parse ${filePath}`);
@@ -385,16 +378,6 @@ export class OrchestratorHelper {
     OrchestratorHelper.tryParseLabelUtteranceTsv(lines, utteranceLabelsMap, utteranceLabelDuplicateMap, true);
   }
 
-  /*
-  static parseDispatchFile(
-    dispatchFile: string,
-    utteranceLabelsMap: Map<string, Set<string>>,
-    utteranceLabelDuplicateMap: Map<string, Set<string>>) {
-    const fileContents: string = OrchestratorHelper.readFile(dispatchFile);
-    Utility.debuggingLog('BEFORE calling OrchestratorHelper.parseDispatchFile()');
-    const jsonDispatchSettings: any = JSON.parse(fileContents);
-  }
-*/
   // eslint-disable-next-line max-params
   static async parseLuFile(
     luFile: string,

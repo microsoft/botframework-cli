@@ -6,7 +6,8 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {OrchestratorSettings} from '../../utils/settings';
+import {OrchestratorDataSourceSettings, OrchestratorSettings} from '../../utils/settings';
+import {DataSourceHelper} from '../../utils/datasourcehelper';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorCreate extends Command {
@@ -30,18 +31,22 @@ export default class OrchestratorCreate extends Command {
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
     const flagsKeys: string[] = Object.keys(flags);
-    if (Utility.isEmptyStringArray(flagsKeys)) {
+    const cwd: string = process.cwd();
+
+    if (Utility.isEmptyStringArray(flagsKeys) && !OrchestratorSettings.hasBaseModelSettings(cwd)) {
       this._help();
     }
 
-    const cwd: string = process.cwd();
-    const input: string = path.resolve(flags.in || cwd);
+    let input: string = path.resolve(flags.in || cwd);
+    let hierarchical: boolean = flags.hierarchical;
     const output: string = flags.out;
     const baseModelPath: string = flags.model;
     const entityBaseModelPath: string = flags.entityModel;
-    const refresh: boolean = flags.refresh;
+    let refresh: boolean = flags.refresh;
 
     try {
+      OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
+
       let fullEmbeddings: boolean = false;
       if (process.env.fullEmbeddings) {
         fullEmbeddings = true;
@@ -51,10 +56,19 @@ export default class OrchestratorCreate extends Command {
       UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
       Utility.debuggingLog(`refresh=${refresh}`);
 
-      OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
+      if (DataSourceHelper.isDispatchInput(input)) {
+        DataSourceHelper.convertDispatchInputs(input, OrchestratorSettings.DataSources);
+        refresh = true;
+      }
+
+      const hasDataSources: boolean = OrchestratorSettings.DataSources && OrchestratorSettings.DataSources.inputs.length > 0;
+      if (hasDataSources) {
+        input = OrchestratorSettings.DataSources.path;
+        hierarchical = true;
+      }
 
       if (refresh) {
-        OrchestratorCreate.refreshLuisQnAInputs(input);
+        await this.refreshLuisQnAInputs(OrchestratorSettings.DataSources);
       }
 
       const snapshotFilePath: string = await Orchestrator.createAsync(
@@ -62,7 +76,7 @@ export default class OrchestratorCreate extends Command {
         input,
         OrchestratorSettings.SnapshotPath,
         OrchestratorSettings.EntityModelPath,
-        flags.hierarchical,
+        hierarchical,
         fullEmbeddings);
 
       OrchestratorSettings.SnapshotPath = snapshotFilePath;
@@ -74,7 +88,16 @@ export default class OrchestratorCreate extends Command {
     return 0;
   }
 
-  private static refreshLuisQnAInputs(inputPath: string): any {
-
+  private async refreshLuisQnAInputs(dataSources: OrchestratorDataSourceSettings): Promise<void> {
+    if (!dataSources) {
+      throw new CLIError('No data sources previously defined');
+    }
+    for (const dataSource of dataSources.inputs) {
+      if (dataSource.type !== 'file') {
+        this.log(`Refreshing ${dataSource.type} data - id ${dataSource.id}...`);
+      }
+      // eslint-disable-next-line no-await-in-loop
+      await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path, false);
+    }
   }
 }

@@ -1,0 +1,30 @@
+> # QnA pairs
+
+> !# @qna.pair.source = QnAMaker.tsv
+
+<a id = "1"></a>
+
+## ? hi
+- greetings
+- good morning
+- good evening
+
+```markdown
+Hello!
+```
+
+> !# @qna.pair.source = QnAMaker.tsv
+
+<a id = "2"></a>
+
+## ? What are you?
+- What?
+- What do you do?
+- Who are you?
+- What is your name?
+- What should I call you?
+
+```markdown
+I am the LUIS-QnAMaker Dispatch bot! This sample demonstrates using several LUIS applications and QnA Maker knowledge base using dispatch.
+```
+

@@ -4,10 +4,10 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs-extra';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {LuisQnaHelper, Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
+import {Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings, OrchestratorDataSource} from '../../utils/settings';
+import {DataSourceHelper} from '../../utils/datasourcehelper';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file';
@@ -64,7 +64,14 @@ export default class OrchestratorAdd extends Command {
     try {
       if (type.length > 0) {
         OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true);
-        await this.ensureDataSourceAsync(new OrchestratorDataSource(id, key, version, endpoint, type, routingName, inputPath));
+        const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
+        await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
+
+        if (dataSource.type === 'file') {
+          this.log(`Added ${dataSource.type} source  ${dataSource.filePath}`);
+        } else {
+          this.log(`Added ${dataSource.type} source with id ${dataSource.id}`);
+        }
       } else {
         OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output);
         const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(OrchestratorSettings.SnapshotPath));
@@ -83,74 +90,5 @@ export default class OrchestratorAdd extends Command {
       throw (new CLIError(error));
     }
     return 0;
-  }
-
-  private async ensureDataSourceAsync(
-    input: OrchestratorDataSource): Promise<any> {
-    let content: string = '';
-
-    try {
-      switch (input.type) {
-      case 'luis':
-        content = await OrchestratorAdd.getLuFileFromLuisApp(input);
-        if (content.length === 0) {
-          throw new Error(`LUIS app id ${input.id} - subscriptionKey ${input.key} not found`);
-        }
-        break;
-      case 'qna':
-        content = await OrchestratorAdd.getQnAFileFromQnaKb(input);
-        if (content.length === 0) {
-          throw new Error(`Qna kb id ${input.id} - subscriptionKey ${input.key} not found`);
-        }
-        break;
-      case 'file':
-        // eslint-disable-next-line no-negated-condition
-        if (!Utility.exists(input.filePath)) {
-          throw new Error(`Input file ${input.filePath} not found`);
-        }
-        break;
-      default:
-        throw new Error('Invalid input type');
-      }
-
-      if (!OrchestratorSettings.hasDataSource(input)) {
-        OrchestratorSettings.addUpdateDataSource(input);
-      }
-
-      if (content.length > 0) {
-        if (OrchestratorHelper.isDirectory(input.filePath)) {
-          if (!Utility.isEmptyString(input.routingName)) {
-            input.filePath = path.join(input.filePath, input.routingName);
-          } else if (input.type === 'luis') {
-            input.routingName = LuisQnaHelper.getLuisAppNameFromLu(content);
-            input.filePath = path.join(input.filePath, input.routingName + '.lu');
-          } else if (input.type === 'qna') {
-            input.routingName = LuisQnaHelper.getQnAKbNameFromQna(content);
-            input.filePath = path.join(input.filePath, input.routingName + '.qna');
-          } else {
-            throw new Error(`Invalid file path ${input.filePath}`);
-          }
-        }
-        fs.writeFileSync(input.filePath, content);
-      }
-
-      if (input.type === 'file') {
-        this.log(`Added ${input.type} source  ${input.filePath}`);
-      } else {
-        this.log(`Added ${input.type} source with id ${input.id}`);
-      }
-    } catch (error) {
-      throw new CLIError(error);
-    }
-  }
-
-  static async getQnAFileFromQnaKb(input: OrchestratorDataSource, endpoint: string = ''): Promise<any> {
-    const qna: any = await LuisQnaHelper.getQnaFromKb(input.id, input.key, endpoint);
-    return qna;
-  }
-
-  static async getLuFileFromLuisApp(input: OrchestratorDataSource): Promise<string> {
-    const lu: string  = await LuisQnaHelper.getLuFromLuisApp(input.endpoint, input.id, input.key, input.version);
-    return lu;
   }
 }

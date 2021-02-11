@@ -3,13 +3,19 @@
  * Licensed under the MIT License.
  */
 
+import * as path from 'path';
 import {expect, test} from '@oclif/test';
-import {Orchestrator} from '@microsoft/bf-orchestrator';
+import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
+import {OrchestratorSettings} from '../../../src/utils/settings';
 const sinon: any = require('sinon');
 
 describe('orchestrator:create tests', () => {
   beforeEach(() => {
     sinon.stub(Orchestrator, 'createAsync');
+    const settingsFile: string = path.resolve(OrchestratorSettings.OrchestratorSettingsFileName);
+    if (Utility.exists(settingsFile)) {
+      Utility.deleteFile(path.resolve(settingsFile));
+    }
   });
 
   afterEach(() => {

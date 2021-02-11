@@ -46,9 +46,4 @@ export class LuisQnaHelper {
     const idxStart: number = content.indexOf(LuisAppNameComment) + 17;
     return 'l_' + content.substring(idxStart, content.indexOf('>', idxStart)).trim();
   }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public static getQnAKbNameFromQna(content: string): string {
-    return 'q_kb';
-  }
 }
