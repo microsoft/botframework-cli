@@ -37,7 +37,7 @@ export class OrchestratorAdd {
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
 
     const retPayload: any[] = [];
-    
+
     for (const luObject of (luObsjects || [])) {
       const routingName: string =  Utility.isEmptyString(luObject.routingName) ? luObject.id : luObject.routingName;
 

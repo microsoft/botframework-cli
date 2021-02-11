@@ -60,6 +60,7 @@ export class Orchestrator {
     isDialog: boolean = false,
     entityBaseModelPath: string = '',
     fullEmbeddings: boolean = false): Promise<any> {
+    // eslint-disable-next-line no-return-await
     return await OrchestratorAdd.runAsync(
       baseModelPath,
       snapshot,

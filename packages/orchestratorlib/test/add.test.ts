@@ -32,6 +32,9 @@ describe('OrchestratorAddTests', () => {
       new Uint8Array(),
       luInputs,
       true);
+    // Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.debuggingLog1('luInputs=', luInputs);
+    Utility.debuggingLog1('retPayload.snapshot.length=', retPayload.snapshot.length);
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.snapshot !== null);
@@ -43,6 +46,8 @@ describe('OrchestratorAddTests', () => {
     assert.ok(Utility.exists(snapshotFile));
 
     const snapshotContent: string = OrchestratorHelper.readFile(snapshotFile);
+    Utility.debuggingLog1('snapshotFile=', snapshotFile);
+    Utility.debuggingLog1('snapshotContent=', snapshotContent);
     for (const luInput of luInputs) {
       assert.ok(snapshotContent.indexOf(luInput.id) > 0);
     }
