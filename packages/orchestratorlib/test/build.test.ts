@@ -80,7 +80,6 @@ describe('OrchestratorBuildTests', function () {
   it('syncLabelResolver-no differences LabelResolver/LU', async () => {
     // Arrange
     // Load up Label Resolver
-    // const orchestrator: any = await LabelResolver.loadNlrAsync(baseModelPath);
     const labelResolver: any = LabelResolver.createLabelResolver();
     const example1: any = {
       labels: [{name: 'travel',
@@ -129,7 +128,6 @@ describe('OrchestratorBuildTests', function () {
   it('syncLabelResolver-LU adds new travel intent', async () => {
     // Arrange
     // Load up Label Resolver
-    // const orchestrator: any = await LabelResolver.loadNlrAsync(baseModelPath);
     const labelResolver: any = LabelResolver.createLabelResolver();
     const example1: any = {
       labels: [{name: 'travel',
@@ -179,6 +177,60 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(examples_after_sync.length === 4);
     examples_after_sync.sort(Example.sort_fn);
     assert.ok(examples_after_sync[0].text === 'book a flight to miami.');
+  });
+
+  it('syncLabelResolver-LU removes travel intent', async () => {
+    // Arrange
+    // Load up Label Resolver
+    const labelResolver: any = LabelResolver.createLabelResolver();
+    const example1: any = {
+      labels: [{name: 'travel',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'book a flight to miami.',
+    };
+    const example2: any = {
+      labels: [{name: 'schedule',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'book meeting with architect for Monday.',
+    };
+    const example3: any = {
+      labels: [{name: 'music',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'play some mozart and metallica.',
+    };
+
+    LabelResolver.addExample(example1, labelResolver);
+    LabelResolver.addExample(example2, labelResolver);
+    LabelResolver.addExample(example3, labelResolver);
+
+    // Check  examples before sync
+    const examples_before_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    assert.ok(examples_before_sync !== null);
+    assert.ok(examples_before_sync.length === 3);
+
+    // Load up LU
+    const filename: string =
+      'resources/data/LU/syncLabelResolver/remove_travel.lu';
+    const luContents: string = OrchestratorHelper.readFile(filename);
+
+    // Action
+    await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
+
+    // Assert
+    const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    assert.ok(examples_after_sync !== null);
+    assert.ok(examples_after_sync.length === 2);
+    examples_after_sync.sort(Example.sort_fn);
+    assert.ok(examples_after_sync[0].text === 'book meeting with architect for Monday.');
   });
 
   it('syncLabelResolver-detect multi-intent music label', async () => {
