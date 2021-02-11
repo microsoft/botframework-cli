@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs-extra'
+import * as fs from 'fs-extra';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {LuisQnaHelper, Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
 import {OrchestratorSettings, OrchestratorDataSource} from '../../utils/settings';

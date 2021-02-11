@@ -14,7 +14,7 @@ import assert = require('assert');
 describe('OrchestratorCreateTests', () => {
   it('Create Dispatch Snapshot', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/dispatch';
-    Utility.toPrintDebuggingLogToConsole = true;
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
@@ -41,7 +41,7 @@ describe('OrchestratorCreateTests', () => {
 /*
   it('Create Snapshot with multiple intents', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/output/multiintent';
-    Utility.toPrintDebuggingLogToConsole = true;
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');

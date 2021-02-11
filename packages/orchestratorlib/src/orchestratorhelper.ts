@@ -19,6 +19,7 @@ import {UtilityLabelResolver} from './utilitylabelresolver';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
 import {Utility} from './utility';
+import {OrchestratorBuild} from '.';
 
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -351,7 +352,7 @@ export class OrchestratorHelper {
   }
 
   // eslint-disable-next-line max-params
-  static async parseJsonBluFile(
+  static parseJsonBluFile(
     jsonBluFile: string,
     hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
@@ -401,7 +402,7 @@ export class OrchestratorHelper {
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     await OrchestratorHelper.parseLuContent(
       luFile,
       OrchestratorHelper.readFile(luFile),
@@ -420,7 +421,7 @@ export class OrchestratorHelper {
     utteranceLabelsMap: Map<string, Set<string>>,
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>) {
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     const luObject: any = {
       content: luContent,
       id: luFile,
@@ -593,7 +594,7 @@ export class OrchestratorHelper {
     qnaFile: string,
     hierarchicalLabel: string,
     utteranceLabelsMap: Map<string, Set<string>>,
-    utteranceLabelDuplicateMap: Map<string, Set<string>>) {
+    utteranceLabelDuplicateMap: Map<string, Set<string>>): Promise<void> {
     const fileContents: string = OrchestratorHelper.readFile(qnaFile);
     const lines: string[] = fileContents.split('\n');
     if (lines.length === 0) {
@@ -1112,7 +1113,7 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
-  private static async getLuInputsEx(inputPath: string, retPayload: any[]): Promise<void> {
+  private static getLuInputsEx(inputPath: string, retPayload: any[]): void {
     if (OrchestratorHelper.isDirectory(inputPath)) {
       const items: string[] = fs.readdirSync(inputPath);
       for (const item of items) {
@@ -1162,13 +1163,54 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   public static async processLuContent(
     luObject: any,
+    labelResolvers: Map<string, LabelResolver>,
     routingName: string = '',
     isDialog: boolean = false,
     fullEmbedding: boolean = false,
-    labelResolver: any = null,
     skillName: string = '') {
     Utility.debuggingLog(`routingName=${routingName}`);
 
+    const baseName: string = luObject.id;
+
+    // Use cached labelResolver
+    let labelResolver: any = labelResolvers.get(baseName);
+    if (labelResolvers.has(baseName)) {
+      // Sync the label resolver with LU content.
+      await OrchestratorBuild.syncLabelResolver(labelResolver, luObject.content);
+
+      const snapshot: any = labelResolver.createSnapshot();
+      const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+      const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
+      return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+    }
+    // eslint-disable-next-line no-lone-blocks
+    {
+      // Create new label resolver
+      if (!labelResolver) {
+        Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
+        labelResolver = LabelResolver.createLabelResolver();
+        Utility.debuggingLog('OrchestratorHelper.processLuFile(), after calling LabelResolver.createLabelResolver()');
+        Utility.debuggingLog('Created label resolver');
+        labelResolvers.set(luObject.id, labelResolver);
+      }
+      // eslint-disable-next-line no-return-await
+      return await OrchestratorHelper.processLuContentSingle(luObject, labelResolver, routingName, isDialog, fullEmbedding, skillName);
+    }
+  }
+
+  // eslint-disable-next-line max-params
+  public static async processLuContentSingle(
+    luObject: any,
+    labelResolver: LabelResolver,
+    routingName: string = '',
+    isDialog: boolean = false,
+    fullEmbedding: boolean = false,
+    skillName: string = '') {
+    Utility.debuggingLog(`routingName=${routingName}`);
+
+    const baseName: string = luObject.id;
+
+    // Create new label resolver
     if (!labelResolver) {
       Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
       labelResolver = LabelResolver.createLabelResolver();
@@ -1178,9 +1220,6 @@ export class OrchestratorHelper {
     if (fullEmbedding) {
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
     }
-
-    const baseName: string = luObject.id;
-
     const result: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
@@ -1190,7 +1229,6 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
         utteranceEntityLabelsMap: new Map<string, Label[]>(),
         utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
-
     await OrchestratorHelper.parseLuContent(
       luObject.id,
       luObject.content,
@@ -1199,10 +1237,9 @@ export class OrchestratorHelper {
       result.utteranceLabelDuplicateMap,
       result.utteranceEntityLabelsMap,
       result.utteranceEntityLabelDuplicateMap);
-
     Utility.debuggingLog(`Processed ${luObject.id}`);
     LabelResolver.addExamples(result, labelResolver);
-    const snapshot: any = labelResolver.createSnapshot();
+    const snapshot: any = LabelResolver.createSnapshot(labelResolver);
     const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
     const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
     return {id: baseName, snapshot: snapshot, recognizer: recognizer};

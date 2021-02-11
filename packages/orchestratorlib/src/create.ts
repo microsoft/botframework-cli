@@ -21,7 +21,7 @@ export class OrchestratorCreate {
     inputPathConfiguration: string,
     outputPath: string,
     hierarchical: boolean = false,
-    fullEmbeddings: boolean = false) : Promise<string> {
+    fullEmbeddings: boolean = false): Promise<string> {
     Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
     Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
     Utility.debuggingLog(`inputPathConfiguration=${inputPathConfiguration}`);

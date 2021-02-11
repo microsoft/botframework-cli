@@ -74,7 +74,7 @@ export default class OrchestratorCreate extends Command {
     return 0;
   }
 
-  private static refreshLuisQnAInputs(inputPath: string) : any {
+  private static refreshLuisQnAInputs(inputPath: string): any {
 
   }
 }
