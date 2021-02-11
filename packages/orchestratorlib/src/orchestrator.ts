@@ -11,7 +11,7 @@ import {OrchestratorPredict} from './predict';
 import {OrchestratorTest} from './test';
 import {OrchestratorQuery} from './query';
 import {OrchestratorAssess} from './assess';
-import {Utility} from '.';
+import {LabelResolver, Utility} from '.';
 
 export class Orchestrator {
   // eslint-disable-next-line max-params
@@ -37,6 +37,7 @@ export class Orchestrator {
   public static async buildAsync(
     baseModelPath: string,
     inputs: any[],
+    labelResolvers: Map<string, LabelResolver>,
     isDialog: boolean,
     entityBaseModelPath: string = '',
     luConfig: any = null,
@@ -45,6 +46,7 @@ export class Orchestrator {
       baseModelPath,
       entityBaseModelPath,
       inputs,
+      labelResolvers,
       isDialog,
       luConfig,
       fullEmbedding);
@@ -58,7 +60,7 @@ export class Orchestrator {
     isDialog: boolean = false,
     entityBaseModelPath: string = '',
     fullEmbeddings: boolean = false): Promise<any> {
-    return OrchestratorAdd.runAsync(
+    return await OrchestratorAdd.runAsync(
       baseModelPath,
       snapshot,
       luObsjects,

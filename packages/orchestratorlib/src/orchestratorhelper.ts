@@ -19,6 +19,7 @@ import {UtilityLabelResolver} from './utilitylabelresolver';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
 import {Utility} from './utility';
+import { OrchestratorBuild } from '.';
 
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -264,6 +265,7 @@ export class OrchestratorHelper {
     return entitiesList;
   }
 
+
   // eslint-disable-next-line max-params
   static async processFile(
     filePath: string,
@@ -445,6 +447,8 @@ export class OrchestratorHelper {
       throw error;
     }
   }
+
+
 
   static parseTsvFile(
     tsvFile: string,
@@ -1112,7 +1116,7 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
-  private static async getLuInputsEx(inputPath: string, retPayload: any[]): Promise<void> {
+  private static getLuInputsEx(inputPath: string, retPayload: any[]) {
     if (OrchestratorHelper.isDirectory(inputPath)) {
       const items: string[] = fs.readdirSync(inputPath);
       for (const item of items) {
@@ -1162,49 +1166,66 @@ export class OrchestratorHelper {
   // eslint-disable-next-line max-params
   public static async processLuContent(
     luObject: any,
+    labelResolvers: Map<string, LabelResolver>,
     routingName: string = '',
     isDialog: boolean = false,
     fullEmbedding: boolean = false,
-    labelResolver: any = null,
     skillName: string = '') {
     Utility.debuggingLog(`routingName=${routingName}`);
 
-    if (!labelResolver) {
-      Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
-      labelResolver = LabelResolver.createLabelResolver();
-      Utility.debuggingLog('OrchestratorHelper.processLuFile(), after calling LabelResolver.createLabelResolver()');
-      Utility.debuggingLog('Created label resolver');
-    }
-    if (fullEmbedding) {
-      UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
-    }
-
     const baseName: string = luObject.id;
 
-    const result: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
-        utteranceLabelsMap: new Map<string, Set<string>>(),
-        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
-        utteranceEntityLabelsMap: new Map<string, Label[]>(),
-        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+   
+    if (labelResolvers.has(baseName)) { 
+      // Use cached labelResolver
+      var labelResolver : any = labelResolvers.get(baseName);
+      
+      // Sync the label resolver with LU content.
+      await OrchestratorBuild.syncLabelResolver(labelResolver, luObject.content);
 
-    await OrchestratorHelper.parseLuContent(
-      luObject.id,
-      luObject.content,
-      routingName,
-      result.utteranceLabelsMap,
-      result.utteranceLabelDuplicateMap,
-      result.utteranceEntityLabelsMap,
-      result.utteranceEntityLabelDuplicateMap);
-
-    Utility.debuggingLog(`Processed ${luObject.id}`);
-    LabelResolver.addExamples(result, labelResolver);
-    const snapshot: any = labelResolver.createSnapshot();
-    const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
-    const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
-    return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+      const snapshot: any = labelResolver.createSnapshot();
+      const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+      const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
+      return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+    }
+    else {
+      // Create new label resolver 
+      if (!labelResolver) {
+        Utility.debuggingLog('OrchestratorHelper.processLuFile(), ready to call LabelResolver.createLabelResolver()');
+        labelResolver = LabelResolver.createLabelResolver();
+        Utility.debuggingLog('OrchestratorHelper.processLuFile(), after calling LabelResolver.createLabelResolver()');
+        Utility.debuggingLog('Created label resolver');
+        labelResolvers.set(luObject.id, labelResolver);
+      }
+      if (fullEmbedding) {
+        UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
+      }
+  
+      const result: {
+        'utteranceLabelsMap': Map<string, Set<string>>;
+        'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+        'utteranceEntityLabelsMap': Map<string, Label[]>;
+        'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
+          utteranceLabelsMap: new Map<string, Set<string>>(),
+          utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+          utteranceEntityLabelsMap: new Map<string, Label[]>(),
+          utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+  
+      await OrchestratorHelper.parseLuContent(
+        luObject.id,
+        luObject.content,
+        routingName,
+        result.utteranceLabelsMap,
+        result.utteranceLabelDuplicateMap,
+        result.utteranceEntityLabelsMap,
+        result.utteranceEntityLabelDuplicateMap);
+  
+      Utility.debuggingLog(`Processed ${luObject.id}`);
+      LabelResolver.addExamples(result, labelResolver);
+      const snapshot: any = labelResolver.createSnapshot();
+      const entities: any = await OrchestratorHelper.getEntitiesInLu(luObject);
+      const recognizer: any = isDialog ? OrchestratorHelper.getDialogFilesContent(baseName, entities, routingName, skillName) : undefined;
+      return {id: baseName, snapshot: snapshot, recognizer: recognizer};
+    }
   }
 }

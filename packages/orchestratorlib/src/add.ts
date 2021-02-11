@@ -37,10 +37,12 @@ export class OrchestratorAdd {
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
 
     const retPayload: any[] = [];
+    let labelResolvers: Map<string, LabelResolver> = new Map<string, LabelResolver>();
     for (const luObject of (luObsjects || [])) {
       const routingName: string =  Utility.isEmptyString(luObject.routingName) ? luObject.id : luObject.routingName;
+
       // eslint-disable-next-line no-await-in-loop
-      const retVal: any = await OrchestratorHelper.processLuContent(luObject, routingName, isDialog, fullEmbeddings, labelResolver, luObject.skillName);
+      const retVal: any = await OrchestratorHelper.processLuContent(luObject, labelResolvers, routingName, isDialog, fullEmbeddings, luObject.skillName);
       snapshot = retVal.snapshot;
       retPayload.push({id: luObject.id, recognizer: retVal.recognizer});
     }
