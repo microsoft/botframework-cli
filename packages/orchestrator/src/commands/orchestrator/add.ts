@@ -51,7 +51,7 @@ export default class OrchestratorAdd extends Command {
     const endpoint: string = (flags.endpoint || '');
     const version: string = (flags.version || '');
     const key: string = (flags.key || '');
-    const routingName: string = (flags.name || '');
+    const routingName: string = (flags.routingName || '');
 
     Utility.toPrintDebuggingLogToConsole = flags.debug;
     Utility.debuggingLog(`type=${type}`);

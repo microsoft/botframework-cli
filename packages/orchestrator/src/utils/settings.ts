@@ -5,6 +5,7 @@
 
 import {CLIError} from '@microsoft/bf-cli-command';
 import {OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
+import { settings } from 'cluster';
 
 import * as fs from 'fs-extra';
 import * as path from 'path';
@@ -63,8 +64,17 @@ export class OrchestratorDataSourceSettings {
 
   public inputs: OrchestratorDataSource[] = [];
 
-  constructor(inputs: OrchestratorDataSource[], hierarchical: boolean) {
-    this.inputs = inputs;
+  constructor(inputs: any, hierarchical: boolean) {
+    for (const input of inputs) {
+      this.inputs.push(new OrchestratorDataSource(
+        input.id,
+        input.key,
+        input.version,
+        input.endpoint,
+        input.type,
+        input.routingName,
+        input.filePath));
+    }
     this.hierarchical = hierarchical;
   }
 }
@@ -143,14 +153,12 @@ export class OrchestratorSettings {
     OrchestratorSettings.ModelPath = '';
     OrchestratorSettings.EntityModelPath = '';
     OrchestratorSettings.SnapshotPath = '';
-    OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings([], hierarchical);
-
     let settings: any;
     if (settingsFileExists) {
       settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
     }
-    //OrchestratorSettings.DataSettings = settingsFileExists && settings.dataSettings ? settings.dataSettings : new OrchestratorDataSettings();
 
+    OrchestratorSettings.ensureDataSources(hierarchical, settings);
     OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
     OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
     entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
@@ -168,11 +176,11 @@ export class OrchestratorSettings {
         modelPath: OrchestratorSettings.ModelPath,
         entityModelPath: OrchestratorSettings.EntityModelPath,
         snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSettings: OrchestratorSettings.DataSources,
+        dataSources: OrchestratorSettings.DataSources,
       } : {
         modelPath: OrchestratorSettings.ModelPath,
         snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSettings: OrchestratorSettings.DataSources,
+        dataSources: OrchestratorSettings.DataSources,
       };
 
       OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
@@ -233,5 +241,17 @@ export class OrchestratorSettings {
     }
 
     return snapshotPath;
+  }
+
+  static ensureDataSources(hierarchical: boolean, settings: any) {
+    const dataSourceSettings: OrchestratorDataSourceSettings = settings.dataSources;
+    let inputs: OrchestratorDataSource[] = [];
+    if (dataSourceSettings) {
+      if (dataSourceSettings.inputs) {
+        inputs = dataSourceSettings.inputs;
+      }
+      hierarchical = dataSourceSettings.hierarchical;
+    }
+    OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical);
   }
 }
