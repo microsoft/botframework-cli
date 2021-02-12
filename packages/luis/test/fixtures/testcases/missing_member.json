@@ -1,0 +1,774 @@
+{
+  "intents": [
+    {
+      "name": "Greeting",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserName",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "setThermostat",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "AskForUserName",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserNameRoles",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "BookFlight",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "DeleteAlarm",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserProfile",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserNameIntent",
+      "features": [
+        {
+          "modelName": "personName",
+          "isRequired": false
+        },
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserProfileI",
+      "features": [
+        {
+          "modelName": "getUserNameIntent",
+          "isRequired": false
+        },
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserProfileIntent",
+      "features": [
+        {
+          "featureName": "PLCity",
+          "isRequired": false
+        },
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "getUserP",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "None",
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "name": "customDevice",
+      "roles": [],
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "myCity",
+      "roles": [],
+      "features": [
+        {
+          "featureName": "PLCity",
+          "isRequired": false
+        },
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "address2",
+      "roles": [
+        "fromAddress2",
+        "toAddress2"
+      ],
+      "children": [
+        {
+          "name": "door number",
+          "children": [],
+          "features": [
+            {
+              "modelName": "number",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "streetName",
+          "children": []
+        },
+        {
+          "name": "location",
+          "children": [
+            {
+              "name": "city",
+              "children": [],
+              "features": [
+                {
+                  "featureName": "PLCity",
+                  "isRequired": false
+                }
+              ]
+            },
+            {
+              "name": "zipcode",
+              "children": [],
+              "features": [
+                {
+                  "modelName": "regexZipcode",
+                  "isRequired": true
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "userN",
+      "roles": [
+        "fistN",
+        "lastN"
+      ],
+      "features": [
+        {
+          "modelName": "personName",
+          "isRequired": false
+        },
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "address",
+      "roles": [
+        "fromAddress",
+        "toAddress"
+      ],
+      "children": [
+        {
+          "name": "door number",
+          "children": [],
+          "features": [
+            {
+              "modelName": "number",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "streetName",
+          "children": []
+        },
+        {
+          "name": "location",
+          "children": [
+            {
+              "name": "city",
+              "children": [],
+              "features": [
+                {
+                  "modelName": "listCity",
+                  "isRequired": true
+                }
+              ]
+            },
+            {
+              "name": "zipcode",
+              "children": [],
+              "features": [
+                {
+                  "modelName": "regexZipcode",
+                  "isRequired": true
+                }
+              ]
+            }
+          ],
+          "features": [
+            {
+              "modelName": "geographyV2",
+              "isRequired": false
+            }
+          ]
+        }
+      ],
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    },
+    {
+      "name": "userProfile",
+      "roles": [],
+      "children": [
+        {
+          "name": "fstN",
+          "children": [],
+          "features": [
+            {
+              "modelName": "personName",
+              "isRequired": true
+            }
+          ]
+        },
+        {
+          "name": "lstN",
+          "children": [],
+          "features": [
+            {
+              "modelName": "personName",
+              "isRequired": true
+            }
+          ]
+        }
+      ],
+      "features": [
+        {
+          "featureName": "Want",
+          "isRequired": false
+        },
+        {
+          "featureName": "question",
+          "isRequired": false
+        },
+        {
+          "featureName": "abc",
+          "isRequired": false
+        }
+      ]
+    }
+  ],
+  "composites": [
+    {
+      "name": "deviceTemperature",
+      "children": [
+        {
+          "name": "device"
+        },
+        {
+          "name": "customDevice"
+        },
+        {
+          "name": "temperature"
+        }
+      ],
+      "roles": []
+    }
+  ],
+  "closedLists": [
+    {
+      "name": "device",
+      "subLists": [
+        {
+          "canonicalForm": "thermostat",
+          "list": [
+            "Thermostat",
+            "Heater",
+            "AC",
+            "Air conditioner"
+          ]
+        },
+        {
+          "canonicalForm": "refrigerator",
+          "list": [
+            "Fridge",
+            "Cooler"
+          ]
+        }
+      ],
+      "roles": []
+    },
+    {
+      "name": "listCity",
+      "subLists": [],
+      "roles": []
+    },
+    {
+      "name": "city",
+      "subLists": [
+        {
+          "canonicalForm": "Seattle",
+          "list": [
+            "Seattle",
+            "Tacoma",
+            "SeaTac",
+            "SEA"
+          ]
+        },
+        {
+          "canonicalForm": "Portland",
+          "list": [
+            "Portland",
+            "PDX"
+          ]
+        }
+      ],
+      "roles": [
+        "fromCity",
+        "toCity"
+      ]
+    }
+  ],
+  "regex_entities": [
+    {
+      "name": "hrf-number",
+      "regexPattern": "hrf-[0-9]{6}",
+      "roles": [
+        "from",
+        "to"
+      ]
+    },
+    {
+      "name": "regexZipcode",
+      "regexPattern": "[0-9]{5}",
+      "roles": []
+    }
+  ],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "hi",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "hello",
+      "intent": "Greeting",
+      "entities": []
+    },
+    {
+      "text": "my name is vishwac",
+      "intent": "getUserName",
+      "entities": []
+    },
+    {
+      "text": "Please set thermostat to 72",
+      "intent": "setThermostat",
+      "entities": []
+    },
+    {
+      "text": "Set owen to 72",
+      "intent": "setThermostat",
+      "entities": [
+        {
+          "entity": "customDevice",
+          "startPos": 4,
+          "endPos": 7
+        }
+      ]
+    },
+    {
+      "text": "vishwac kannan",
+      "intent": "AskForUserName",
+      "entities": []
+    },
+    {
+      "text": "I'm vishwac",
+      "intent": "AskForUserName",
+      "entities": []
+    },
+    {
+      "text": "my first name is vishwac",
+      "intent": "AskForUserName",
+      "entities": []
+    },
+    {
+      "text": "vishwac is my name",
+      "intent": "AskForUserName",
+      "entities": []
+    },
+    {
+      "text": "utterances",
+      "intent": "getUserNameIntent",
+      "entities": []
+    },
+    {
+      "text": "my name is vishwac and I'm 36 years old",
+      "intent": "getUserP",
+      "entities": [
+        {
+          "entity": "userProfile",
+          "startPos": 11,
+          "endPos": 38,
+          "children": [
+            {
+              "entity": "fstN",
+              "startPos": 11,
+              "endPos": 17
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "i'm vishwac",
+      "intent": "getUserP",
+      "entities": [
+        {
+          "entity": "userProfile",
+          "startPos": 4,
+          "endPos": 10,
+          "children": [
+            {
+              "entity": "fstN",
+              "startPos": 4,
+              "endPos": 10
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "text": "help",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "I need help",
+      "intent": "None",
+      "entities": []
+    },
+    {
+      "text": "please help",
+      "intent": "None",
+      "entities": []
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "call me {name:userName}",
+      "intent": "getUserNameRoles"
+    },
+    {
+      "pattern": "I'm {name:userName}",
+      "intent": "getUserNameRoles"
+    },
+    {
+      "pattern": "my name is {name:userName}",
+      "intent": "getUserNameRoles"
+    },
+    {
+      "pattern": "book flight from {city:fromCity} to {city:toCity}",
+      "intent": "BookFlight"
+    },
+    {
+      "pattern": "[can you] get me a flight from {city:fromCity} to {city:toCity}",
+      "intent": "BookFlight"
+    },
+    {
+      "pattern": "get me a flight to {city:toCity}",
+      "intent": "BookFlight"
+    },
+    {
+      "pattern": "I need to fly from {city:fromCity}",
+      "intent": "BookFlight"
+    },
+    {
+      "pattern": "delete the {alarmTime} alarm",
+      "intent": "DeleteAlarm"
+    }
+  ],
+  "patternAnyEntities": [
+    {
+      "name": "name",
+      "explicitList": [],
+      "roles": [
+        "userName"
+      ]
+    },
+    {
+      "name": "alarmTime",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [
+    {
+      "name": "number",
+      "roles": [
+        "numOfGuests",
+        "age"
+      ]
+    },
+    {
+      "name": "temperature",
+      "roles": []
+    },
+    {
+      "name": "personName",
+      "roles": []
+    },
+    {
+      "name": "geographyV2",
+      "roles": []
+    }
+  ],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "",
+  "desc": "",
+  "culture": "en-us",
+  "phraselists": [
+    {
+      "name": "Want",
+      "words": "require,need,desire,know",
+      "mode": false,
+      "activated": true,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "question",
+      "words": "are you,you are",
+      "mode": true,
+      "activated": true,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "abc",
+      "words": "are you,you are",
+      "mode": true,
+      "activated": false,
+      "enabledForAllModels": true
+    },
+    {
+      "name": "PLCity",
+      "words": "seattle,space needle,SEATAC,SEA",
+      "mode": true,
+      "activated": true,
+      "enabledForAllModels": false
+    }
+  ]
+}
