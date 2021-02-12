@@ -83,7 +83,7 @@ export class OrchestratorSettings {
   public static OrchestratorSettingsFileName: string = 'orchestratorsettings.json';
 
   public static hasBaseModelSettings(settingsDir: string) {
-    const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName)
+    const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName);
     if (OrchestratorHelper.exists(settingsFile)) {
       const settings: any = JSON.parse(OrchestratorSettings.readFile(settingsFile));
       return settings.modelPath && settings.modelPath.length > 0;
@@ -216,7 +216,7 @@ export class OrchestratorSettings {
     return entityBaseModelPath;
   }
 
-  static ensureBaseModelPath(baseModelPath: string, settings: any) : string {
+  static ensureBaseModelPath(baseModelPath: string, settings: any): string {
     if (!Utility.isEmptyString(baseModelPath)) {
       baseModelPath = path.resolve(baseModelPath);
 
