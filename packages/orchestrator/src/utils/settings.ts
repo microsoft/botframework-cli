@@ -256,14 +256,18 @@ export class OrchestratorSettings {
   }
 
   static ensureDataSources(hierarchical: boolean, settings: any, settingsFolder: string) {
-    const dataSourceSettings: OrchestratorDataSourceSettings = settings.dataSources;
     let inputs: OrchestratorDataSource[] = [];
     let dataSourcePath: string = path.join(settingsFolder, 'dataSources');
-
     if (!OrchestratorHelper.exists(dataSourcePath)) {
       fs.mkdirSync(dataSourcePath, {recursive: true});
     }
 
+    if (!settings) {
+      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
+      return;
+    }
+
+    const dataSourceSettings: OrchestratorDataSourceSettings = settings.dataSources;
     if (dataSourceSettings) {
       if (dataSourceSettings.inputs) {
         inputs = dataSourceSettings.inputs;

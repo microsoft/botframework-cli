@@ -16,11 +16,11 @@ describe('LuisQnaHelperTests', () => {
       '');
     assert.ok(lu.length > 0);
   });
-  */
   it('export QnA kb', async () => {
     const qna: string = await LuisQnaHelper.getQnaFromKb(
       '213a48d3-855d-4083-af6d-339c03d497dd',
       '0c6d4b2072734dc194e8dba2793339d3');
     assert.ok(qna.length > 0);
   });
+  */
 });
