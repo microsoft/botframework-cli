@@ -98,14 +98,15 @@ export function exampleFunctionDataWithSubwordFeaturizer(): ColumnarDataWithSubw
     // ---- NOTE-TODO-PLACEHOLDER ---- Utility.debuggingLog(
     // ---- NOTE-TODO-PLACEHOLDER ----     `outputFilenamePrefix=${outputFilenamePrefix}`);
     const columnarContent: string = Utility.loadFile(filename);
-    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-        columnarContent,
-        new NgramSubwordFeaturizer(),
-        labelColumnIndex,
-        textColumnIndex,
-        weightColumnIndex,
-        linesToSkip,
-        true);
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+            columnarContent,
+            new NgramSubwordFeaturizer(),
+            labelColumnIndex,
+            textColumnIndex,
+            weightColumnIndex,
+            linesToSkip,
+            true);
     // ---- NOTE-TODO-PLACEHOLDER ---- columnarDataWithSubwordFeaturizer.dumpLuLuisJsonStructureInLuFormat(
     // ---- NOTE-TODO-PLACEHOLDER ----     outputFilenamePrefix + ".lu");
     // ---- NOTE-TODO-PLACEHOLDER ---- columnarDataWithSubwordFeaturizer.dumpLuLuisJsonStructure(

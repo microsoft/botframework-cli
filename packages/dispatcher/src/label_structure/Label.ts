@@ -43,6 +43,28 @@ export class Label {
         return new Label(labelType, label, new Span(spanStartPosition, spanEndPosition - spanStartPosition + 1));
     }
 
+    public static sort_fn(a: Label, b: Label) {
+        if (a.labeltype < b.labeltype) {
+            return -1;
+        }
+        if (a.labeltype > b.labeltype) {
+            return 1;
+        }
+        if (a.name < b.name) {
+            return -1;
+        }
+        if (a.name > b.name) {
+            return 1;
+        }
+        if (a.span < b.span) {
+            return -1;
+        }
+        if (a.span > b.span) {
+            return 1;
+        }
+        return 0;
+    }
+
     public labeltype: LabelType;
 
     public name: string;
@@ -248,27 +270,5 @@ export class Label {
             }
         }
         return false;
-    }
-
-    public static sort_fn(a: Label, b: Label) {
-        if (a.labeltype < b.labeltype) {
-            return -1;
-        }
-        if (a.labeltype > b.labeltype) {
-            return 1;
-        }
-        if (a.name < b.name) {
-            return -1;
-        }
-        if (a.name > b.name) {
-            return 1;
-        }
-        if (a.span < b.span) {
-            return -1;
-        }
-        if (a.span > b.span) {
-            return 1;
-        }
-        return 0;
     }
 }

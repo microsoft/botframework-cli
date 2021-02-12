@@ -14,15 +14,6 @@ export class Example {
         return new Example(text, labels.map((x: string) => Label.newIntentLabel(x, spanOffset, spanLength)));
     }
 
-    public text: string;
-
-    public labels: Label[];
-
-    constructor(text: string, labels: Label[]) {
-        this.text = text;
-        this.labels = labels;
-    }
-
     public static sort_fn(a: Example, b: Example) {
         if (a.text < b.text) {
             return -1;
@@ -40,13 +31,22 @@ export class Example {
         a.labels.sort(Label.sort_fn);
         b.labels.sort(Label.sort_fn);
 
-        for (let i=0; i< a.labels.length; i++) {
-            let compareLabel = Label.sort_fn(a.labels[i], b.labels[i]);
-            if (compareLabel != 0) {
+        for (let i = 0; i < a.labels.length; i++) {
+            const compareLabel = Label.sort_fn(a.labels[i], b.labels[i]);
+            if (compareLabel !== 0) {
                 return compareLabel;
             }
         }
         return 0;
+    }
+
+    public text: string;
+
+    public labels: Label[];
+
+    constructor(text: string, labels: Label[]) {
+        this.text = text;
+        this.labels = labels;
     }
 
     public toObject(): {
