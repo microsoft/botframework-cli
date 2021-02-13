@@ -42,49 +42,49 @@ export default class LuisGenerateCs extends Command {
   }
 
   async run() {
-    const {flags} = this.parse(LuisGenerateCs)
-    let space = 'Luis'
-    let stdInput = await this.readStdin()
-
-    if (!flags.in && !stdInput) {
-      throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
-    }
-
-    const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
-    let app: any
     try {
-      app = flags.in ? await fs.readJSON(path.join(pathPrefix, flags.in)) : JSON.parse(stdInput as string)
-    } catch (err) {
-      throw new CLIError(err)
-    }
+      const {flags} = this.parse(LuisGenerateCs)
+      let space = 'Luis'
+      let stdInput = await this.readStdin()
 
-    flags.className = flags.className || app.name
+      if (!flags.in && !stdInput) {
+        throw new CLIError('Missing input. Please use stdin or pass a file location with --in flag')
+      }
 
-    const dot_index = flags.className ? flags.className.lastIndexOf('.') : -1
-    if (dot_index !== -1) {
-      space = flags.className.substr(0, dot_index)
-      flags.className = flags.className.substr(dot_index + 1)
-    } else {
-      flags.className = upperFirst(camelCase(flags.className))
-    }
+      const pathPrefix = flags.in && path.isAbsolute(flags.in) ? '' : process.cwd()
+      let app: any
+      try {
+        app = flags.in ? await fs.readJSON(path.join(pathPrefix, flags.in)) : JSON.parse(stdInput as string)
+      } catch (err) {
+        throw new CLIError(err)
+      }
 
-    if ('regexEntities' in app) {
-      app = this.renameProp('regexEntities', 'regex_entities', app)
-    }
+      flags.className = flags.className || app.name
 
-    this.reorderEntities(app, 'entities')
-    this.reorderEntities(app, 'prebuiltEntities')
-    this.reorderEntities(app, 'closedLists')
-    this.reorderEntities(app, 'regex_entities')
-    this.reorderEntities(app, 'patternAnyEntities')
-    this.reorderEntities(app, 'composites')
+      const dot_index = flags.className ? flags.className.lastIndexOf('.') : -1
+      if (dot_index !== -1) {
+        space = flags.className.substr(0, dot_index)
+        flags.className = flags.className.substr(dot_index + 1)
+      } else {
+        flags.className = upperFirst(camelCase(flags.className))
+      }
 
-    const outputPath = flags.out ? file.validatePath(flags.out, flags.className + '.cs', flags.force) : flags.out
+      if ('regexEntities' in app) {
+        app = this.renameProp('regexEntities', 'regex_entities', app)
+      }
 
-    this.log(
-      `Generating file at ${outputPath || 'stdout'} that contains class ${space}.${flags.className}.`
-    )
-    try {
+      this.reorderEntities(app, 'entities')
+      this.reorderEntities(app, 'prebuiltEntities')
+      this.reorderEntities(app, 'closedLists')
+      this.reorderEntities(app, 'regex_entities')
+      this.reorderEntities(app, 'patternAnyEntities')
+      this.reorderEntities(app, 'composites')
+
+      const outputPath = flags.out ? file.validatePath(flags.out, flags.className + '.cs', flags.force) : flags.out
+
+      this.log(
+        `Generating file at ${outputPath || 'stdout'} that contains class ${space}.${flags.className}.`
+      )
       await LuisToCsConverter.writeFromLuisJson(app, flags.className, space, outputPath)
     } catch (err) {
       if (err instanceof exception) {

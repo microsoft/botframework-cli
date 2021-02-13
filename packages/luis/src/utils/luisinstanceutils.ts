@@ -9,7 +9,7 @@
 export function sort(luisInstance: any) {
   let props = ['intents', 'composites', 'entities', 'closedLists', 'regex_entities', 'model_features', 'patternAnyEntities', 'prebuiltEntities']
   for (const key of props) {
-    luisInstance[key].sort(sortComparers.compareNameFn)
+    luisInstance[key]?.sort(sortComparers.compareNameFn)
   }
 
   luisInstance.utterances.sort(sortComparers.compareIntentFn)

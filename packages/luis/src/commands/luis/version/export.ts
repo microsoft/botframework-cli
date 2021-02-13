@@ -20,6 +20,7 @@ export default class LuisVersionExport extends Command {
     help: flags.help({char: 'h'}),
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to export (defaults to config:LUIS:versionId)'}),
+    exportLU: flags.boolean({description: 'Export format type as LU'}),
     out: flags.string({char: 'o', description: 'Save exported application to specified file, uses STDOUT if not specified (optional)'}),
     force: flags.boolean({char: 'f', description: 'Overwrites output file if exists, otherwise creates a parallel numbered file (optional)', default: false}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
@@ -44,7 +45,7 @@ export default class LuisVersionExport extends Command {
     utils.validateRequiredProps(requiredProps)
 
     try {
-      const messageData = await Version.export({subscriptionKey, endpoint, appId}, versionId)
+      const messageData = await Version.export({subscriptionKey, endpoint, appId}, versionId, flags.exportLU ? 'lu' : 'json')
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)
@@ -54,7 +55,7 @@ export default class LuisVersionExport extends Command {
         const writtenFilePath: string = await utils.writeToFile(out, messageData, force)
         this.log(`File successfully written: ${writtenFilePath}`)
       } else {
-        await utils.writeToConsole(messageData)
+        this.log(flags.exportLU ? messageData : JSON.stringify(messageData, null, 2))
       }
     } catch (error) {
       throw new CLIError(error)
