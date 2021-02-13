@@ -23,8 +23,9 @@ export default {
 
   async export(
     param: EndpointParameters,
-    versionId: string) {
-    let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/export?format=json"`
+    versionId: string,
+    format = 'json') {
+    let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/export?format=${format}`
     return http.get(url, param.subscriptionKey)
   },
 
