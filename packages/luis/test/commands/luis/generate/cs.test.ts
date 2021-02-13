@@ -183,6 +183,6 @@ describe('luis:generate:cs', () => {
       '--out',
       `${path.join(__dirname, '../../../fixtures/generate/results/EntityPrebuiltType.cs')}`])
     .it('Generates class based on V6 with a composite entity with a prebuilt child', async () => {
-      await compareSourceFiles('../../../fixtures/generate/EntityPrebuiltType.cs', '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')
+      await compareSourceFiles('../../../fixtures/generate/EntityPrebuiltType.cs', '../../../fixtures/generate/results/EntityPrebuiltType.cs')
     })
 })
