@@ -71,7 +71,7 @@ describe('OrchestratorBuildTests', function () {
       'resources/data/LU/syncLabelResolver/same_as_code.lu';
     const fileContents: string = OrchestratorHelper.readFile(filename);
     const examples: Example[] = await OrchestratorBuild.getExamplesLU(fileContents);
-    // Utility.debuggingLog(`HHHHHHHHHHHHHHHHHHHH  !!!!!! Examples="${examples.length}"`);
+
     Utility.debuggingLog(`Examples[1]="${examples[0].text}"`);
     assert.ok(examples !== null);
     assert.ok(examples.length === 3);
@@ -228,6 +228,7 @@ describe('OrchestratorBuildTests', function () {
     // Assert
     const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
+    console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected:2)`);
     assert.ok(examples_after_sync.length === 2);
     examples_after_sync.sort(Example.sort_fn);
     assert.ok(examples_after_sync[0].text === 'book meeting with architect for Monday.');
@@ -290,6 +291,7 @@ describe('OrchestratorBuildTests', function () {
     const examples_after_sync: Example[] = LabelResolver.getExamples(labelResolver);
 
     assert.ok(examples_after_sync !== null);
+    console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected3)`);
     assert.ok(examples_after_sync.length === 3);
     examples_after_sync.sort(Example.sort_fn);
     assert.ok(examples_after_sync[2].labels.length === 1); // LU file has precedence over Label Resolver
@@ -375,7 +377,7 @@ describe('OrchestratorBuildTests', function () {
       OrchestratorHelper.getLuInputs('./test/fixtures/adaptive_modified/'),
       labelResolversById,
       true,
-      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luconfig.json')));
 
     // labelResolversById.forEach((labelResolver: LabelResolver, labelId: string) => {
     //   console.log(`  id: ${labelId}`);
