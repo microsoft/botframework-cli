@@ -345,7 +345,7 @@ describe('OrchestratorBuildTests', function () {
       OrchestratorHelper.getLuInputs('./test/fixtures/adaptive/'),
       labelResolversById,
       true,
-      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luConfig.json')));
+      JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luconfig.json')));
     // labelResolversById.forEach((labelResolver: LabelResolver, labelId: string) => {
     //   console.log(`  id: ${labelId}`);
     //   let examples_after_sync: Example[] = LabelResolver.getExamples(labelResolver);
