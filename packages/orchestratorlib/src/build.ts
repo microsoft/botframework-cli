@@ -134,9 +134,12 @@ export class OrchestratorBuild {
       result.push(new Example(text, labels));
     });
 
-    luFile.utteranceLabelsMap.forEach(async (labelNames: Set<string>, text: string) => {
-      result.push(new Example(text, await OrchestratorBuild.convertToIntentLabels(labelNames)));
-    });
+    for (let entry of luFile.utteranceLabelsMap)  {
+      let text=entry[0];
+      let labelNames=entry[1];
+      let example=new Example(text, await OrchestratorBuild.convertToIntentLabels(labelNames));
+      result.push(example);
+    }
 
     result.sort(Example.sort_fn);
     return result;
