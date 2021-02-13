@@ -461,6 +461,13 @@ describe('luis:convert sort option enabled', () => {
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
     expect(await compareLuFiles('./../../../results/root50.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
   })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing_member.json')}`, '--out', './results/root51.lu', '--sort'])
+  .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model with missing members', async () => {
+    expect(await compareLuFiles('./../../../results/root51.lu', './../../fixtures/verified/luis_sorted_missing_member.lu')).to.be.true
+  })
 })
 
 describe('luis:convert file creation', () => {

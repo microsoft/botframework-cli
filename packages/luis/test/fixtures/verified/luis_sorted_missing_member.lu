@@ -1,0 +1,191 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+
+
+> # Intent definitions
+
+# AskForUserName
+- vishwac kannan
+- I'm vishwac
+- my first name is vishwac
+- vishwac is my name
+
+
+@ intent AskForUserName usesFeatures Want,question,abc
+
+# BookFlight
+- book flight from {@city:fromCity} to {city:toCity}
+- [can you] get me a flight from {@city:fromCity} to {city:toCity}
+- get me a flight to {@city:toCity}
+- I need to fly from {@city:fromCity}
+
+
+@ intent BookFlight usesFeatures Want,question,abc
+
+# DeleteAlarm
+- delete the {@alarmTime} alarm
+
+
+@ intent DeleteAlarm usesFeatures Want,question,abc
+
+# getUserName
+- my name is vishwac
+
+
+@ intent getUserName usesFeatures Want,question,abc
+
+# getUserNameIntent
+- utterances
+
+
+@ intent getUserNameIntent usesFeatures personName,Want,question,abc
+
+# getUserNameRoles
+- call me {@name:userName}
+- I'm {@name:userName}
+- my name is {@name:userName}
+
+
+@ intent getUserNameRoles usesFeatures Want,question,abc
+
+# getUserP
+- my name is {@userProfile={@fstN=vishwac} and I'm 36 years old}
+- i'm {@userProfile={@fstN=vishwac}}
+
+
+@ intent getUserP usesFeatures Want,question,abc
+
+# getUserProfile
+
+
+@ intent getUserProfile usesFeatures Want,question,abc
+
+# getUserProfileI
+
+
+@ intent getUserProfileI usesFeatures getUserNameIntent,Want,question,abc
+
+# getUserProfileIntent
+
+
+@ intent getUserProfileIntent usesFeatures PLCity,Want,question,abc
+
+# Greeting
+- hi
+- hello
+
+
+@ intent Greeting usesFeatures Want,question,abc
+
+# None
+- help
+- I need help
+- please help
+
+
+@ intent None usesFeatures Want,question,abc
+
+# setThermostat
+- Please set thermostat to 72
+- Set {@customDevice=owen} to 72
+
+
+@ intent setThermostat usesFeatures Want,question,abc
+
+> # Entity definitions
+
+@ ml address hasRoles fromAddress,toAddress usesFeatures Want,question,abc
+    - @ number "door number"
+    - @ ml streetName
+    - @ ml location usesFeature geographyV2
+        - @ listCity city
+        - @ regexZipcode zipcode
+
+
+@ ml address2 hasRoles fromAddress2,toAddress2 usesFeatures Want,question,abc
+    - @ number "door number"
+    - @ ml streetName
+    - @ ml location
+        - @ ml city usesFeature PLCity
+        - @ regexZipcode zipcode
+
+
+@ ml customDevice usesFeatures Want,question,abc
+
+@ ml myCity usesFeatures PLCity,Want,question,abc
+
+@ ml userN hasRoles fistN,lastN usesFeatures personName,Want,question,abc
+
+@ ml userProfile usesFeatures Want,question,abc
+    - @ personName fstN
+    - @ personName lstN
+
+
+
+> # PREBUILT Entity definitions
+
+@ prebuilt geographyV2
+
+@ prebuilt number hasRoles numOfGuests,age
+
+@ prebuilt personName
+
+@ prebuilt temperature
+
+
+> # Phrase list definitions
+
+@ phraselist Want enabledForAllModels = 
+	- require,need,desire,know
+
+@ phraselist question(interchangeable) enabledForAllModels = 
+	- are you,you are
+
+@ phraselist abc(interchangeable) disabled, enabledForAllModels = 
+	- are you,you are
+
+@ phraselist PLCity(interchangeable) disabledForAllModels = 
+	- seattle,space needle,SEATAC,SEA
+
+
+> # List entities
+
+@ list city hasRoles fromCity,toCity = 
+	- Seattle :
+		- Seattle
+		- Tacoma
+		- SeaTac
+		- SEA
+	- Portland :
+		- Portland
+		- PDX
+
+
+@ list device = 
+	- thermostat :
+		- Thermostat
+		- Heater
+		- AC
+		- Air conditioner
+	- refrigerator :
+		- Fridge
+		- Cooler
+
+
+@ list listCity
+
+> # RegEx entities
+
+@ regex hrf-number hasRoles from,to = /hrf-[0-9]{6}/
+@ regex regexZipcode = /[0-9]{5}/
+
+> # Composite entities
+
+@ composite deviceTemperature = [device, customDevice, temperature]
+> # Pattern.Any entities
+
+@ patternany alarmTime
+@ patternany name hasRole userName
