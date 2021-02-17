@@ -6,6 +6,10 @@ botframework-cli
 [![Downloads](https://img.shields.io/npm/dt/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
+# Dependency
+Node v12
+
+
 # Usage
 
 ```sh-session
@@ -309,23 +313,34 @@ _See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/
 
 ## `bf dialog:merge PATTERNS`
 
-Merge component .schema files into an app.schema.
+Merge `<kind>.schema` and `<kind>[.<locale>].uischema` definitions from a project and its dependencies into a single .schema for describing .dialog files and a per locale .uischema for describing how Composer shows them.  If a dependent package has an "exported" directory it is copied to /<package> in the --imports directory. You can make use of negative patterns like !**/generated/** to exclude particular directories or files, although some directories like bin, obj and node_modules are automatically excluded.
 
 ```
 USAGE
   $ bf dialog:merge PATTERNS
 
 ARGUMENTS
-  PATTERNS  Any number of glob regex patterns to match .schema, .csproj, or package.json files.
+  PATTERNS  Any number of glob regex patterns to match .csproj, .nuspec or package.json files.
 
 OPTIONS
-  -h, --help           show CLI help
-  -o, --output=output  [default: app.schema] Output path and filename for merged schema.
-  -v, --verbose        Show verbose logging of files as they are processed.
+  -c, --checkOnly        Check and do not write files.
+  -h, --help             show CLI help
+
+  -o, --output=output    Output path and optional filename for merged .schema and .uischema.  Defaults to first project
+                         name.
+
+  -s, --schema=schema    Path to merged .schema file to use if merging .uischema only.
+
+  -v, --verbose          Show verbose logging of files as they are processed.
+
+  --extension=extension  [default: .dialog,.lg,.lu,.schema,.qna,.uischema] Extension to include as a resource.
+
+  --imports=imports      Output path for imported assets.  Defaults to the directory of --out with an imported
+                         directory.
 
 EXAMPLES
-  $ bf dialog:merge *.csproj
-  $ bf dialog:merge libraries/**/*.schema **/*.csproj -o app.schema
+  $ bf dialog:merge myProject.csproj plugins/*.nuspec
+  $ bf dialog:merge package.json -o app.schema
 ```
 
 _See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/merge.ts)_
@@ -342,8 +357,9 @@ ARGUMENTS
   PATTERNS  Any number of glob regex patterns to match .dialog files.
 
 OPTIONS
-  -h, --help     show CLI help
-  -v, --verbose  Show verbose output
+  -h, --help           show CLI help
+  -s, --schema=schema  Default schema to use if no $schema in dialog file.
+  -v, --verbose        Show verbose output
 ```
 
 _See code: [@microsoft/bf-dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/verify.ts)_
@@ -416,6 +432,7 @@ OPTIONS
   -i, --in=in                  (required) Folder that contains .lg file.
   -o, --out=out                Output file or folder name. If not specified stdout will be used as output
   -r, --recurse                Consider sub-folders to find .lg file(s)
+  --region=region              (required) The sub region.
   --srclang=srclang            Source lang code. Auto detect if missing.
   --tgtlang=tgtlang            (required) Comma separated list of target languages.
   --translate_comments         Machine translate all comments found in .lg file
@@ -624,14 +641,9 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
-
   --direct                           Available only in direct version query. Do not publish to staging or production
-                                     (default: false)
-
   --endpoint=endpoint                LUIS endpoint hostname
-
   --staging                          Publishes application version to Staging slot, otherwise publish to production
-                                     (default: false)
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -740,9 +752,9 @@ OPTIONS
   -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified, application
-                                   setting will be output to console
-                                   
+  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified,
+                                   application setting will be output to console
+
   --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
@@ -751,10 +763,17 @@ OPTIONS
 
   --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
-  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
+  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be
+                                   generated if not specified. Only valid if --out is set
+
+  --directVersionPublish           Available only in direct version query. Do not publish to staging or production
+
+  --endpoint=endpoint              Luis authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
+
+  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
   --log                            Writes out log messages to console
 
@@ -762,16 +781,11 @@ OPTIONS
 
   --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
 
+  --schema=schema                  Defines $schema for generated .dialog files
+
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
 
-  --endpoint                       Luis authoring endpoint for publishing
-
-  --schema=schema                  Defines $schema for generated .dialog files
-
-  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
-
-  --directVersionPublish           [default: false] Available only in direct version query. Do not publish to staging or production
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
@@ -813,18 +827,18 @@ USAGE
   $ bf luis:cross-train
 
 OPTIONS
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help               luis:cross-train command help
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               Luis:cross-train command help
   -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
-                           folder under folder of current command
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to
+                           cross-trained folder under folder of current command
 
   --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --log                    [default: false] Writes out log messages to console
+  --log                    Writes out log messages to console
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -939,6 +953,7 @@ OPTIONS
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
   --json                             Display output as JSON
+  --mode=mode                        Value specifying mode of training (Standard | Neural).
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -1077,6 +1092,8 @@ OPTIONS
 
   --endpoint=endpoint                LUIS endpoint hostname
 
+  --exportLU                         Export format type as LU
+
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
@@ -1113,7 +1130,7 @@ OPTIONS
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (defaults to config:LUIS:versionId)
+  --versionId=versionId              Version to import (defaults to config:LUIS:versionId)
 
 EXAMPLE
 
@@ -1339,37 +1356,42 @@ USAGE
   $ bf qnamaker:build
 
 OPTIONS
-  -b, --botName=botName                  (required) Bot name
-  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -b, --botName=botName                  Bot name
+
+  -f, --force                            If --out flag is provided with the path to an existing file, overwrites that
+                                         file
+
   -h, --help                             qnamaker:build command help
+
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified, knowledge base
-                                         setting will be output to console
+  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified,
+                                         knowledge base setting will be output to console
 
-  -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+  -s, --subscriptionKey=subscriptionKey  QnA maker subscription key
 
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
 
-  --dialog=dialog                        Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
+  --dialog=dialog                        Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will
+                                         be generated if not specified. Only valid if --out is set
+
+  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
                                          Only valid if --out is set
 
-  --log                                  [default: false] Writes out log messages to console
+  --log                                  Writes out log messages to console
 
-  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
+  --qnaConfig=qnaConfig                  Path to config for qna build which can contain switches for arguments
 
   --region=region                        [default: westus] Overrides public endpoint
                                          https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
 
+  --schema=schema                        Defines $schema for generated .dialog files
+
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
-                   
-  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
-
-  --schema=schema                        Defines $schema for generated .dialog files
 
 EXAMPLE
 
@@ -1409,18 +1431,18 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help               qnamaker:cross-train command help
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               luis:cross-train command help
   -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            Output folder name. If not specified, the cross trained files will be wrote to cross-trained
-                           folder under folder of current command
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to
+                           cross-trained folder under folder of current command
 
   --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --log                    [default: false] Writes out log messages to console
+  --log                    Writes out log messages to console
 ```
 
 _See code: [@microsoft/bf-qnamaker](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_
@@ -1618,9 +1640,9 @@ USAGE
   $ bf qnamaker:kb:export
 
 OPTIONS
-  -f, --force                        [default: false] If --out flag is provided with the path to an existing file, overwrites that file.
+  -f, --force                        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help                         qnamaker:kb:export command help
-  -o, --out                          Output file path. If not specified stdout will be used as output.
+  -o, --out=out                      Output file path. If not specified stdout will be used as output.
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --environment=environment          [default: Prod] Specifies whether environment is Test or Prod.
 

@@ -13,12 +13,9 @@ This package is intended for Microsoft use only and should be consumed through @
 
 # Commands
 <!-- commands -->
-- [@microsoft/bf-dialog](#microsoftbf-dialog)
-- [Relevant docs](#relevant-docs)
-- [Commands](#commands)
-  - [`bf dialog`](#bf-dialog)
-  - [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
-  - [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
+* [`bf dialog`](#bf-dialog)
+* [`bf dialog:merge PATTERNS`](#bf-dialogmerge-patterns)
+* [`bf dialog:verify PATTERNS`](#bf-dialogverify-patterns)
 
 ## `bf dialog`
 
@@ -32,7 +29,7 @@ OPTIONS
   -h, --help  Dialog command help
 ```
 
-_See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/index.ts)_
+_See code: [src/commands/dialog/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/index.ts)_
 
 ## `bf dialog:merge PATTERNS`
 
@@ -66,7 +63,7 @@ EXAMPLES
   $ bf dialog:merge package.json -o app.schema
 ```
 
-_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/merge.ts)_
+_See code: [src/commands/dialog/merge.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/merge.ts)_
 
 ## `bf dialog:verify PATTERNS`
 
@@ -85,5 +82,5 @@ OPTIONS
   -v, --verbose        Show verbose output
 ```
 
-_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/blob/v1.0.0/src/commands/dialog/verify.ts)_
+_See code: [src/commands/dialog/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog/src/commands/dialog/verify.ts)_
 <!-- commandsstop -->
