@@ -227,14 +227,9 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
-
   --direct                           Available only in direct version query. Do not publish to staging or production
-                                     (default: false)
-
   --endpoint=endpoint                LUIS endpoint hostname
-
   --staging                          Publishes application version to Staging slot, otherwise publish to production
-                                     (default: false)
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -343,9 +338,9 @@ OPTIONS
   -h, --help                       luis:build command help
   -i, --in=in                      Lu file or folder
 
-  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified, application
-                                   setting will be output to console
-                                   
+  -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified,
+                                   application setting will be output to console
+
   --authoringKey=authoringKey      LUIS authoring key
 
   --botName=botName                Bot name
@@ -354,10 +349,17 @@ OPTIONS
 
   --deleteOldVersion               Deletes old version of LUIS application after building new one.
 
-  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set
+  --dialog=dialog                  Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be
+                                   generated if not specified. Only valid if --out is set
+
+  --directVersionPublish           Available only in direct version query. Do not publish to staging or production
+
+  --endpoint=endpoint              Luis authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
+
+  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
 
   --log                            Writes out log messages to console
 
@@ -365,16 +367,11 @@ OPTIONS
 
   --region=region                  [default: westus] LUIS authoring region [westus|westeurope|australiaeast]
 
+  --schema=schema                  Defines $schema for generated .dialog files
+
   --suffix=suffix                  Environment name as a suffix identifier to include in LUIS app name. Defaults to
                                    current logged in user alias
 
-  --endpoint                       Luis authoring endpoint for publishing
-
-  --schema=schema                  Defines $schema for generated .dialog files
-
-  --isStaging                      Publishes luis application to staging slot if set. Default to production slot
-
-  --directVersionPublish           [default: false] Available only in direct version query. Do not publish to staging or production
 EXAMPLE
 
        $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
@@ -416,18 +413,18 @@ USAGE
   $ bf luis:cross-train
 
 OPTIONS
-  -f, --force              [default: false] If --out flag is provided with the path to an existing file, overwrites that file
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help               Luis:cross-train command help
   -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to cross-trained
-                           folder under folder of current command
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to
+                           cross-trained folder under folder of current command
 
   --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --log                    [default: false] Writes out log messages to console
+  --log                    Writes out log messages to console
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -542,6 +539,7 @@ OPTIONS
   --appId=appId                      (required) LUIS application Id (defaults to config:LUIS:appId)
   --endpoint=endpoint                LUIS endpoint hostname
   --json                             Display output as JSON
+  --mode=mode                        Value specifying mode of training (Standard | Neural).
 
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
@@ -680,6 +678,8 @@ OPTIONS
 
   --endpoint=endpoint                LUIS endpoint hostname
 
+  --exportLU                         Export format type as LU
+
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
@@ -716,7 +716,7 @@ OPTIONS
   --subscriptionKey=subscriptionKey  (required) LUIS cognitive services subscription key (default:
                                      config:LUIS:subscriptionKey)
 
-  --versionId=versionId              Version to export (defaults to config:LUIS:versionId)
+  --versionId=versionId              Version to import (defaults to config:LUIS:versionId)
 
 EXAMPLE
 

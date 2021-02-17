@@ -69,6 +69,7 @@ OPTIONS
   -i, --in=in                  (required) Folder that contains .lg file.
   -o, --out=out                Output file or folder name. If not specified stdout will be used as output
   -r, --recurse                Consider sub-folders to find .lg file(s)
+  --region=region              (required) The sub region.
   --srclang=srclang            Source lang code. Auto detect if missing.
   --tgtlang=tgtlang            (required) Comma separated list of target languages.
   --translate_comments         Machine translate all comments found in .lg file
