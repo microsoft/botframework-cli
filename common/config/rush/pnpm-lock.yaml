@@ -25,8 +25,7 @@ dependencies:
   ajv: 6.12.6
   antlr4: 4.8.0
   applicationinsights: 1.7.3
-  await-delay: 1.0.0
-  axios: 0.21.0
+  axios: 0.21.1
   botbuilder-lg: 4.8.0-preview
   botframework-schema: 4.7.2
   camelcase: 4.1.0
@@ -36,7 +35,6 @@ dependencies:
   console-stream: 0.1.1
   debug: 4.1.1
   deep-equal: 1.1.1
-  delay: 4.3.0
   eslint: 5.16.0
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@4.0.3
@@ -1042,10 +1040,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
-  /await-delay/1.0.0:
-    dev: false
-    resolution:
-      integrity: sha1-p0qw6qiAzTjhAM8fjYQY1EyrG00=
   /aws-sign2/0.7.0:
     dev: false
     resolution:
@@ -1054,12 +1048,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-wMHVg2EOHaMRxbzgFJ9gtjOOCrI80OHLG14rxi28XwOW8ux6IiEbRCGGGqCtdAIg4FQCbW20k9RsT4y3gJlFug==
-  /axios/0.21.0:
+  /axios/0.21.1:
     dependencies:
       follow-redirects: 1.13.0
     dev: false
     resolution:
-      integrity: sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
+      integrity: sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
   /babel-polyfill/6.26.0:
     dependencies:
       babel-runtime: 6.26.0
@@ -1798,6 +1792,12 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-Lwaf3zVFDMBop1yDuFZ19F9WyGcZcGacsbdlZtWjQmM50tOcMntm1njF/Nb/Vjij3KaSvCF+sEYGKrrjObu2NA==
+  /delay/5.0.0:
+    dev: false
+    engines:
+      node: '>=10'
+    resolution:
+      integrity: sha512-ReEBKkIfe4ya47wlPYf/gu5ib6yUG0/Aez0JQZQz94kiWtRQvZIQbTiehsnwHvLSWJnQdhVeqYue7Id1dKr0qw==
   /delayed-stream/1.0.0:
     dev: false
     engines:
@@ -6285,7 +6285,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-chatdown'
     resolution:
-      integrity: sha512-LwnxaJqorI7QZOxe9fA42tJiw9KC018EJ4/Nb5TJdhnH4W9jI6hsFnai/7KrPok+1l4hdb2Dp0p2Yqft0+MM+w==
+      integrity: sha512-L8f96JORWtP+IOkjYy17jqqR9jzwUtto/lUl0oziKUcZahrq6r7jJK2B9oH9u6RiwrXnzTw2q6SxVy9bxeNPlw==
       tarball: 'file:projects/bf-chatdown.tgz'
     version: 0.0.0
   'file:projects/bf-cli-command.tgz':
@@ -6326,7 +6326,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-command'
     resolution:
-      integrity: sha512-j/EQpgif6mijXWVVa6eTxJ1W/rvMNHJ/1JQy+CHJz/M6NkCVCvLFlR5modLisPLKCDRRT+29eygP/SMpCRrWcg==
+      integrity: sha512-GQhCR9Vo+N0KnJZsFAkZ5aERFQfnqqvsdN2SiaoumacyZVBUSX9FWrOW6Fgy7QL7vzs1IJXGsna32iwD9feW5Q==
       tarball: 'file:projects/bf-cli-command.tgz'
     version: 0.0.0
   'file:projects/bf-cli-config.tgz':
@@ -6355,7 +6355,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-config'
     resolution:
-      integrity: sha512-jROoKQr6sygYp+6RJDEF5Yo+W4e4mJtjih6nMCDl+jllo13ZLkvXgrrxTLmJiVp1BD2r2La0Ydgcu0LKwH0u5w==
+      integrity: sha512-6kmbihcW4qu947eZ8q+why5mF7l+XZm//mJEy2ywGrWPffSuZ3UcmYWGH+IeDUnHB/LAeKshDZhmH2oZrUgBFw==
       tarball: 'file:projects/bf-cli-config.tgz'
     version: 0.0.0
   'file:projects/bf-cli-plugins.tgz':
@@ -6384,7 +6384,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-cli-plugins'
     resolution:
-      integrity: sha512-f4KIJd3jxLMwW29Gf/E7a1PdcJa1LqZTxYgcsgivlfGedKFVho+BSoJxhhJ99c7RYqiMI8vvoNzKmwuzzFzAtw==
+      integrity: sha512-27aGEoJCBxYPdlut3sUGgrrk/ppyxmtWRonVUHngWz4gX/LyZUJhfzFqrv4Fr2ZMO05PaNWMeC5KWwWU9Ickhg==
       tarball: 'file:projects/bf-cli-plugins.tgz'
     version: 0.0.0
   'file:projects/bf-dialog.tgz':
@@ -6439,7 +6439,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-RKFohAxZBJ6lsydNs3Oel2pjEeFUqSZUGPjW20cdw0iRTYNoj4HN0hNJSqdYoslu9GKHtO7hHJfUSUE7uFPQXA==
+      integrity: sha512-yrNQ0XAbeOIR2D6LC3MhfVUWK3Tt4Ja4940zppLTVX0XsBRwoS0lBVsVt5I5B9NuiP0WmA4fuES9TPixuN3XrA==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-lg-cli.tgz':
@@ -6478,7 +6478,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lg-cli'
     resolution:
-      integrity: sha512-n/fsTdjvlGsrNbOvuBZiKxWCb2OTQS/Cqt+C6rqrGKibe3hnTFF24RjJhuU1CBkPw3CDHJkfA9pAPnwoXNM4Jg==
+      integrity: sha512-Gl8aNPJ19d1AYnUKAkb6YvLi4YL2JFRUWXqsQfJKRgfv8Wwkiq0nb5GpzrLkrp5lRSRV2qrv3JbccGsAQJnvlA==
       tarball: 'file:projects/bf-lg-cli.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -6520,7 +6520,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lu'
     resolution:
-      integrity: sha512-idgtiuhAkB8CwVNp0iQcGkBUCIbsmQab6zQujW1T1AOUwPZjE1Aml1y9NUizV4G5batuOhygJvtZHcYB4UZrKQ==
+      integrity: sha512-PcbcFj891AAZmRLglAIb6Y2i0MUEqS6rKXP6xyRFoNy6Kmf0uehGTWxbzBsNHDdWguIOHfomeFnxdnP1TvodlA==
       tarball: 'file:projects/bf-lu.tgz'
     version: 0.0.0
   'file:projects/bf-luis-cli.tgz':
@@ -6543,7 +6543,7 @@ packages:
       '@types/node-fetch': 2.5.5
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.2
-      axios: 0.21.0
+      axios: 0.21.1
       chai: 4.2.0
       cli-ux: 5.3.3
       fs-extra: 8.1.0
@@ -6564,7 +6564,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-IvEe5WBbavK6PUFtDRqATprW3PXQ4hZWSEqZ+wneCXq48Ow0/0YlXZf7D+pm6rTm6ij6EK93/DDK3rtktACnqA==
+      integrity: sha512-zWWdczvEg2WbVpEnEcFQJpGaQlgONml7bhtitHm28qPdC1cL7pQFFdwc6FScScOa8GIawpsQbK0iOxWRo9FW9w==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -6581,13 +6581,13 @@ packages:
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
-      await-delay: 1.0.0
-      axios: 0.21.0
+      axios: 0.21.1
       camelcase: 4.1.0
       chai: 4.2.0
       chalk: 2.4.1
       cli-table3: 0.5.1
       cli-ux: 5.4.5
+      delay: 5.0.0
       fetch-mock: 7.7.3_node-fetch@2.6.0
       fs-extra: 5.0.0
       get-stdin: 6.0.0
@@ -6615,7 +6615,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-GpMpI9b+pI8abjKmCCvp0BH2T/P0Di+k5dATmhcmgCHz8UOjkjGByZKqO+YirQGhjXEoaBImaVQ7dP5aj57Qsw==
+      integrity: sha512-DY3Y3SjuGgpNJ1YS+zBaaNCLDKh0rD0k7y9A2OvrKSidAUR1850RvNh/eCZbK8k7my7UKyeP4Nb7MIElb1ay9w==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -6651,7 +6651,7 @@ packages:
     dev: false
     name: '@rush-temp/botframework-cli'
     resolution:
-      integrity: sha512-9/0dyLrvSjgWsNXuBSOXqwjTbMLJAZYYvD7wX2OQWvadN/vq5ghqSNXuB78IZiFaClFOdiuueRHQqPDVNL8VVQ==
+      integrity: sha512-MA88uqV++fXNqhjAgX3pIyXzGS5e75NsIty7TY56R0tRKZQy9ADqnPlIrjiod0DActvsl2t/phyU6aehODXttQ==
       tarball: 'file:projects/botframework-cli.tgz'
     version: 0.0.0
 registry: ''
@@ -6682,8 +6682,7 @@ specifiers:
   ajv: ^6.12.2
   antlr4: ~4.8.0
   applicationinsights: ^1.0.8
-  await-delay: ^1.0.0
-  axios: ~0.21.0
+  axios: ~0.21.1
   botbuilder-lg: 4.8.0-preview
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
@@ -6693,7 +6692,6 @@ specifiers:
   console-stream: ^0.1.1
   debug: ^4.1.1
   deep-equal: ^1.0.1
-  delay: ^4.3.0
   eslint: ^5.16.0
   eslint-config-oclif: ^3.1.0
   eslint-config-oclif-typescript: ^0.1.0
