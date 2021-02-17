@@ -48,7 +48,7 @@
     "@oclif/errors": "~1.2.2",
     "@types/node-fetch": "~2.5.5",
     "@types/sinon": "^7.5.0",
-    "axios": "~0.21.0",
+    "axios": "~0.21.1",
     "cli-ux": "~5.3.3",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.19",
