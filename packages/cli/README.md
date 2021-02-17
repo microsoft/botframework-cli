@@ -6,6 +6,10 @@ botframework-cli
 [![Downloads](https://img.shields.io/npm/dt/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli)
 [![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
+# Dependency
+Node v12
+
+
 # Usage
 
 ```sh-session
