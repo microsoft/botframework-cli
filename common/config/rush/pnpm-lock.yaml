@@ -1040,10 +1040,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
-  /await-delay/1.0.0:
-    dev: false
-    resolution:
-      integrity: sha1-p0qw6qiAzTjhAM8fjYQY1EyrG00=
   /aws-sign2/0.7.0:
     dev: false
     resolution:
@@ -6585,7 +6581,6 @@ packages:
       '@types/mocha': 5.2.7
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
-      await-delay: 1.0.0
       axios: 0.21.1
       camelcase: 4.1.0
       chai: 4.2.0
