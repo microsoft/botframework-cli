@@ -1077,7 +1077,7 @@ export class OrchestratorHelper {
     const baseDir: string = path.dirname(srcId);
     const retPayload: any[] = [];
     (idsToFind || []).forEach((ask: any)  => {
-      const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.join(baseDir, ask.filePath);
+      const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
       if (!processedFiles.includes(resourceToFind)) {
         processedFiles.push(resourceToFind);

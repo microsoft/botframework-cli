@@ -6,11 +6,8 @@ import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
 import {OrchestratorBaseModel} from '../src/basemodel';
 import {LabelResolver} from '../src/labelresolver';
-// import {Orchestrator} from '../src/orchestrator';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-// import {Label, Span} from '@microsoft/bf-dispatcher';
-// import {LabelType} from '@microsoft/bf-dispatcher';
 import {Example} from '@microsoft/bf-dispatcher';
 
 import assert = require('assert');

@@ -10,62 +10,62 @@ import * as path from 'path';
 const ReadText: any = require('read-text-file');
 
 export class OrchestratorDataSource {
-  public type: string = '';
+  public Type: string = '';
 
-  public id: string = '';
+  public Id: string = '';
 
-  public version: string = '';
+  public Version: string = '';
 
-  public key: string = '';
+  public Key: string = '';
 
-  public endpoint: string = '';
+  public Endpoint: string = '';
 
-  public routingName: string = '';
+  public RoutingName: string = '';
 
-  public filePath: string = '';
+  public FilePath: string = '';
 
   // eslint-disable-next-line max-params
   constructor(id: string, key: string, version: string, endpoint: string, type: string, routingName: string, filePath: string) {
-    this.id = id;
-    this.key = key;
-    this.version = version;
-    this.endpoint = endpoint;
-    this.type = type;
-    this.filePath = filePath;
-    this.routingName = routingName;
+    this.Id = id;
+    this.Key = key;
+    this.Version = version;
+    this.Endpoint = endpoint;
+    this.Type = type;
+    this.FilePath = filePath;
+    this.RoutingName = routingName;
   }
 
   public update(input: OrchestratorDataSource) {
-    this.key = input.key;
+    this.Key = input.Key;
 
-    if (input.version.length > 0 && input.version !== this.version) {
-      this.version = input.version;
+    if (input.Version.length > 0 && input.Version !== this.Version) {
+      this.Version = input.Version;
     }
 
-    if (input.endpoint.length > 0 && input.endpoint !== this.endpoint) {
-      this.endpoint = input.endpoint;
+    if (input.Endpoint.length > 0 && input.Endpoint !== this.Endpoint) {
+      this.Endpoint = input.Endpoint;
     }
 
-    if (input.routingName.length > 0 && input.routingName !== this.routingName) {
-      this.routingName = input.routingName;
+    if (input.RoutingName.length > 0 && input.RoutingName !== this.RoutingName) {
+      this.RoutingName = input.RoutingName;
     }
 
-    if (input.filePath.length > 0 && input.filePath !== this.filePath) {
-      this.filePath = input.filePath;
+    if (input.FilePath.length > 0 && input.FilePath !== this.FilePath) {
+      this.FilePath = input.FilePath;
     }
   }
 }
 
 export class OrchestratorDataSourceSettings {
-  public hierarchical: boolean = false;
+  public Hierarchical: boolean = false;
 
-  public inputs: OrchestratorDataSource[] = [];
+  public Inputs: OrchestratorDataSource[] = [];
 
-  public path: string;
+  public Path: string;
 
   constructor(inputs: any, hierarchical: boolean, path: string) {
     for (const input of inputs) {
-      this.inputs.push(new OrchestratorDataSource(
+      this.Inputs.push(new OrchestratorDataSource(
         input.id,
         input.key,
         input.version,
@@ -74,8 +74,8 @@ export class OrchestratorDataSourceSettings {
         input.routingName,
         input.filePath));
     }
-    this.hierarchical = hierarchical;
-    this.path = path;
+    this.Hierarchical = hierarchical;
+    this.Path = path;
   }
 }
 
@@ -93,22 +93,22 @@ export class OrchestratorSettings {
   }
 
   public static hasDataSource(input: OrchestratorDataSource): boolean {
-    const existingSources: OrchestratorDataSource[] = OrchestratorSettings.DataSources.inputs;
+    const existingSources: OrchestratorDataSource[] = OrchestratorSettings.DataSources.Inputs;
     for (const existingSource of existingSources) {
-      if (existingSource.type !== input.type) {
+      if (existingSource.Type !== input.Type) {
         continue;
       }
 
-      switch (input.type) {
+      switch (input.Type) {
       case 'luis':
       case 'qna':
-        if (input.id === existingSource.id) {
+        if (input.Id === existingSource.Id) {
           existingSource.update(input);
           return true;
         }
         break;
       case 'file':
-        if (input.filePath === existingSource.filePath) {
+        if (input.FilePath === existingSource.FilePath) {
           return true;
         }
         break;
@@ -121,7 +121,7 @@ export class OrchestratorSettings {
   }
 
   public static addUpdateDataSource(data: OrchestratorDataSource) {
-    this.DataSources.inputs.push(data);
+    this.DataSources.Inputs.push(data);
   }
 
   public static ModelPath: string;
@@ -158,6 +158,7 @@ export class OrchestratorSettings {
     entityBaseModelPath: string,
     snapshotPath: string,
     hierarchical: boolean = false)  {
+    settingsDir = path.resolve(settingsDir);
     const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName);
     OrchestratorSettings.SettingsPath = settingsFile;
     const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile) || OrchestratorHelper.exists(path.join(settingsDir, 'orchestrator.json'));
@@ -267,13 +268,13 @@ export class OrchestratorSettings {
       return;
     }
 
-    const dataSourceSettings: OrchestratorDataSourceSettings = settings.dataSources;
+    const dataSourceSettings: any = settings.dataSources;
     if (dataSourceSettings) {
       if (dataSourceSettings.inputs) {
         inputs = dataSourceSettings.inputs;
       }
       hierarchical = dataSourceSettings.hierarchical;
-      dataSourcePath = dataSourceSettings.path;
+      dataSourcePath = path.resolve(dataSourceSettings.path);
     }
     OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
   }

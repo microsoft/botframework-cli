@@ -15,8 +15,8 @@ export class DataSourceHelper {
       throw new Error(`Failed parsing ${dispatchFile}`);
     }
 
-    dataSourceSettings.inputs = [];
-    Utility.emptyFolder(dataSourceSettings.path);
+    dataSourceSettings.Inputs = [];
+    Utility.emptyFolder(dataSourceSettings.Path);
 
     for (const service of dispatch.services) {
       let dataSource: OrchestratorDataSource;
@@ -33,7 +33,7 @@ export class DataSourceHelper {
           endpoint,
           service.type,
           routingName,
-          dataSourceSettings.path);
+          dataSourceSettings.Path);
         break;
       case 'qna':
         routingName = service.intentName ? service.intentName : `q_${service.name}`;
@@ -44,7 +44,7 @@ export class DataSourceHelper {
           endpoint,
           service.type,
           routingName,
-          dataSourceSettings.path);
+          dataSourceSettings.Path);
         break;
       case 'file':
         routingName = service.intentName ? service.intentName : service.name;
@@ -61,7 +61,7 @@ export class DataSourceHelper {
         throw new Error(`Failed parsing ${dispatchFile}, unsupported type ${service.type}`);
       }
 
-      dataSourceSettings.inputs.push(dataSource);
+      dataSourceSettings.Inputs.push(dataSource);
     }
   }
 
@@ -73,28 +73,28 @@ export class DataSourceHelper {
   }
 
   public static async getQnAFileFromQnaKb(input: OrchestratorDataSource, endpoint: string = ''): Promise<any> {
-    const qna: any = await LuisQnaHelper.getQnaFromKb(input.id, input.key, endpoint);
+    const qna: any = await LuisQnaHelper.getQnaFromKb(input.Id, input.Key, endpoint);
     return qna;
   }
 
   public static async getLuFileFromLuisApp(input: OrchestratorDataSource): Promise<string> {
-    const lu: string  = await LuisQnaHelper.getLuFromLuisApp(input.endpoint, input.id, input.key, input.version);
+    const lu: string  = await LuisQnaHelper.getLuFromLuisApp(input.Endpoint, input.Id, input.Key, input.Version);
     return lu;
   }
 
   public static async ensureDataSourceAsync(input: OrchestratorDataSource, dataSourcePath: string, updateSettings: boolean = true): Promise<void> {
     let content: string = '';
-    switch (input.type) {
+    switch (input.Type) {
     case 'luis':
       content = await DataSourceHelper.getLuFileFromLuisApp(input);
       if (content.length === 0) {
-        throw new Error(`LUIS app id ${input.id} - subscriptionKey ${input.key} not found`);
+        throw new Error(`LUIS app id ${input.Id} - subscriptionKey ${input.Key} not found`);
       }
       break;
     case 'qna':
       content = await DataSourceHelper.getQnAFileFromQnaKb(input);
       if (content.length === 0) {
-        throw new Error(`Qna kb id ${input.id} - subscriptionKey ${input.key} not found`);
+        throw new Error(`Qna kb id ${input.Id} - subscriptionKey ${input.Key} not found`);
       }
       break;
     case 'file':
@@ -109,7 +109,7 @@ export class DataSourceHelper {
     }
 
     if (content.length > 0) {
-      let filePath: string = input.filePath;
+      let filePath: string = input.FilePath;
       if (!OrchestratorHelper.isDirectory(filePath)) {
         filePath = path.dirname(filePath);
       }
@@ -118,36 +118,36 @@ export class DataSourceHelper {
         filePath = path.join(filePath, 'datasources');
       }
 
-      if (input.type === 'luis') {
-        if (Utility.isEmptyString(input.routingName)) {
-          input.routingName = LuisQnaHelper.getLuisAppNameFromLu(content);
+      if (input.Type === 'luis') {
+        if (Utility.isEmptyString(input.RoutingName)) {
+          input.RoutingName = LuisQnaHelper.getLuisAppNameFromLu(content);
         }
-        input.filePath = path.join(filePath, input.routingName + '.lu');
-      } else if (input.type === 'qna') {
-        if (Utility.isEmptyString(input.routingName)) {
-          input.routingName = `q_${input.id}`;
+        input.FilePath = path.join(filePath, input.RoutingName + '.lu');
+      } else if (input.Type === 'qna') {
+        if (Utility.isEmptyString(input.RoutingName)) {
+          input.RoutingName = `q_${input.Id}`;
         }
-        input.filePath = path.join(filePath, input.routingName + '.qna');
+        input.FilePath = path.join(filePath, input.RoutingName + '.qna');
       } else {
-        throw new Error(`Invalid content for type ${input.type}`);
+        throw new Error(`Invalid content for type ${input.Type}`);
       }
 
-      fs.writeFileSync(input.filePath, content);
+      fs.writeFileSync(input.FilePath, content);
     }
   }
 
   private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string) {
-    if (!Utility.exists(input.filePath)) {
-      throw new Error(`Input file ${input.filePath} not found`);
+    if (!Utility.exists(input.FilePath)) {
+      throw new Error(`Input file ${input.FilePath} not found`);
     }
 
-    if (OrchestratorHelper.isDirectory(input.filePath)) {
-      throw new Error(`Invalid input file path ${input.filePath}`);
+    if (OrchestratorHelper.isDirectory(input.FilePath)) {
+      throw new Error(`Invalid input file path ${input.FilePath}`);
     }
 
-    const destFilePath: string = path.join(dataSourceFolder, path.basename(input.filePath));
+    const destFilePath: string = path.join(dataSourceFolder, path.basename(input.FilePath));
     if (!Utility.exists(destFilePath)) {
-      fs.copyFileSync(input.filePath, destFilePath);
+      fs.copyFileSync(input.FilePath, destFilePath);
     }
   }
 }
