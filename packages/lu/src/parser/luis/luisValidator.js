@@ -146,8 +146,12 @@ const validateBoundaries = function(luisJSON) {
     // features - Maximum number of models that can be used as a descriptor (feature) to a specific model to be 10 models.
     ["intents", "entities"].forEach(scope => {
         luisJSON[scope].forEach(item => {
-            if (item.features && item.features.length > retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL) {
-                validationError(retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL, `${scope.substring(0, scope.length - 1)} ${item.name} has ${item.features.length} descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`)
+            if (item.features && item.features.filter(f => f.modelName).length > retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL) {
+                validationError(retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL, `${scope.substring(0, scope.length - 1)} ${item.name} has ${item.features.filter(f => f.modelName).length} phraselist descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`)
+            }
+
+            if (item.features && item.features.filter(f => f.featureName).length > retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL) {
+                validationError(retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL, `${scope.substring(0, scope.length - 1)} ${item.name} has ${item.features.filter(f => f.featureName).length} model descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`)
             }
         })
     })

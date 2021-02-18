@@ -156,7 +156,7 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL);
-                assert(err.text.includes(`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`));
+                assert(err.text.includes(`has ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL + 1} model descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`));
                 done();
             })
     })
