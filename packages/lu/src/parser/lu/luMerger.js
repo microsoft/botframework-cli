@@ -392,6 +392,8 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
             continue
         }
 
+        // Set includeInCollate in addtionalFilesToParse to be false if current parsedContent's includeInCollate is false
+        parsedContent.additionalFilesToParse.forEach(addtionFileToParse => addtionFileToParse.includeInCollate = luOb.includeInCollate ? addtionFileToParse.includeInCollate : luOb.includeInCollate)
         let foundLuFiles = await luSearchFn(luOb.id, parsedContent.additionalFilesToParse)    
         for( let i = 0; i < foundLuFiles.length; i++){ 
             if (parsedFiles.includes(foundLuFiles[i].id)) {

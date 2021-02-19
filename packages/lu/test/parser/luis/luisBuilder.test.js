@@ -96,4 +96,18 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.settings[1].name, 'UseAllTrainingData');
         assert.equal(luisObject.settings[1].value, true);
     });
+
+    it('Intent import can work correctly when imported lu files also have further imports', async () => {
+        let luFile = `
+        # Test
+        - [MyIntent](./test/fixtures/testcases/root.en-us.lu#MyIntent)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.intents.length, 1);
+        assert.equal(luisObject.intents[0].name, 'Test');
+        assert.equal(luisObject.utterances.length, 2);
+        assert.equal(luisObject.utterances[0].text, 'test 1');
+        assert.equal(luisObject.utterances[1].text, 'test 2');
+    });
 });
