@@ -623,6 +623,7 @@ export class SchemaMerger {
         this.expandInterfaces()
         this.addComponentProperties()
         this.sortImplementations()
+        this.validateAndExpandPolicies()
         const oneOf = Object.keys(this.definitions)
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
             .sort()
@@ -887,6 +888,36 @@ export class SchemaMerger {
             }
         }
         return imports
+    }
+
+    // Return all recursive extensions of a kind including the original kind
+    private allExtensions(kind: string): string[] {
+        let exts: string[] = [kind]
+        for (const [dkind, definition] of Object.entries(this.definitions)) {
+            for (const extension of this.roles(definition, 'extends')) {
+                if (extension === kind) {
+                    exts = [...exts, ...this.allExtensions(dkind)]
+                }
+            }
+        }
+        return exts
+    }
+    
+    // Ensure kinds in policies exist and we expand to any extensions
+    private validateAndExpandPolicies(): void {
+        walkJSON(this.definitions, (val, _obj, path) => {
+            if (val.$policies?.requiresKind) {
+                let expanded: string[] = []
+                for(const kind of val.$policies.requiresKind) {
+                    if (!this.definitions[kind]) {
+                        this.genericError(`Error ${path} has non-existent $kind ${kind}`)
+                    }
+                    expanded = [...expanded, ...this.allExtensions(kind)]
+                }
+                val.$policies.requiresKind = expanded
+            }
+            return false
+        })
     }
 
     // Given schema properties object and ui schema properties object, check to ensure 
@@ -1777,7 +1808,7 @@ export class SchemaMerger {
                             const ref = `#/definitions/${name}${pointer}`
                             const definition: any = ptr.get(schema, ref)
                             if (!definition) {
-                                this.refError(elt.$ref, ref)
+                                this.genericError(`Error could not bundle ${elt.$ref} into ${ref}`)
                             } else if (!elt.$bundled) {
                                 elt.$ref = ref
                                 elt.$bundled = true
@@ -2054,9 +2085,9 @@ export class SchemaMerger {
         this.failed = true
     }
 
-    // Missing $ref
-    private refError(original: string, modified: string): void {
-        this.error(`Error could not bundle ${original} into ${modified}`)
+    // Generic error message
+    private genericError(msg: string) {
+        this.error(msg)
         this.failed = true
     }
 }

@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schemas.botframework.com/schemas/component/v1.0/component.schema",
+    "$role": "extends(policyLevel1)",
+    "type": "object",
+    "properties": {
+        "level2": {
+            "title": "level2",
+            "description": "level2",
+            "type": "string"
+        }
+    }
+}
