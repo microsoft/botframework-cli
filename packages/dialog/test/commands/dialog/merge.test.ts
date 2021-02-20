@@ -5,7 +5,7 @@
 // tslint:disable:no-console
 // tslint:disable:no-object-literal-type-assertion
 
-import { assert } from 'chai'
+import {assert} from 'chai'
 import * as fs from 'fs-extra'
 import 'mocha'
 import * as os from 'os'
@@ -128,7 +128,7 @@ function checkMerged(merged: merger.Imports | undefined, adds: number, conflicts
 
 describe('dialog:merge', async () => {
     beforeEach(async () => {
-        // If you want to regenerate the oracle *.schema files, run schemas/makeschemas.cmd
+        // If you want to regenerate the oracle *.schema files, run makeOracles.cmd
         await fs.remove(tempDir)
         await fs.mkdirp(tempDir)
         process.chdir(srcDir)
@@ -205,6 +205,14 @@ describe('dialog:merge', async () => {
         assert(!merged, 'Merging should have failed')
         assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
         assert(countMatches('no implementations', lines) === 1, 'Did not detect missing implementations')
+    })
+
+    it('missing policy kind', async () => {
+        console.log('\nStart missing policy kind')
+        let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingPolicyKind.schema'])
+        assert(!merged, 'Merging should have failed')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
+        assert(countMatches('non-existent', lines) === 1, 'Did not detect missing $kind')
     })
 
     it('csproj', async () => {
