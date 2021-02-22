@@ -5,8 +5,7 @@
 
 import * as path from 'path';
 import {expect, test} from '@oclif/test';
-import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {OrchestratorSettings} from '../../../src/utils/settings';
+import {Orchestrator, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 const sinon: any = require('sinon');
 
 describe('orchestrator:create tests', () => {

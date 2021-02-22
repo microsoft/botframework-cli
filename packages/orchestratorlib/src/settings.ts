@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError} from '@microsoft/bf-cli-command';
-import {OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
+import {OrchestratorHelper} from './orchestratorhelper';
+import {Utility} from './utility';
 import * as fs from 'fs-extra';
 import * as path from 'path';
 const ReadText: any = require('read-text-file');
@@ -135,20 +135,12 @@ export class OrchestratorSettings {
   public static DataSources: OrchestratorDataSourceSettings;
 
   public static readFile(filePath: string): string {
-    try {
-      return ReadText.readSync(filePath);
-    } catch (error) {
-      throw new CLIError(error);
-    }
+    return ReadText.readSync(filePath);
   }
 
   public static writeToFile(filePath: string, content: string): string {
-    try {
-      fs.writeFileSync(filePath, content);
-      return filePath;
-    } catch (error) {
-      throw new CLIError(error);
-    }
+    fs.writeFileSync(filePath, content);
+    return filePath;
   }
 
   // eslint-disable-next-line max-params
@@ -182,7 +174,7 @@ export class OrchestratorSettings {
 
   public static persist()  {
     if (OrchestratorSettings.SettingsPath.length === 0) {
-      throw new CLIError('settings not initialized.');
+      throw new Error('settings not initialized.');
     }
     try {
       const settings: any = (OrchestratorSettings.EntityModelPath) ? {
@@ -198,7 +190,7 @@ export class OrchestratorSettings {
 
       OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
     } catch (error) {
-      throw new CLIError(error);
+      throw new Error(error);
     }
   }
 

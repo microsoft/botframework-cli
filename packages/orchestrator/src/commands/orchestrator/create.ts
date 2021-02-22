@@ -5,9 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {OrchestratorDataSourceSettings, OrchestratorSettings} from '../../utils/settings';
-import {DataSourceHelper} from '../../utils/datasourcehelper';
+import {DataSourceHelper, Orchestrator, OrchestratorDataSourceSettings, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorCreate extends Command {

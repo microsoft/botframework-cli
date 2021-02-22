@@ -4,8 +4,8 @@
  */
 
 import {} from 'mocha';
-import {OrchestratorSettings} from '../src/utils/settings';
-import {Utility} from '@microsoft/bf-orchestrator';
+import {OrchestratorSettings} from '../src/settings';
+import {Utility} from '../src/utility';
 import assert = require('assert');
 import * as path from 'path';
 import * as fs from 'fs-extra';

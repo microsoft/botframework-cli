@@ -5,7 +5,9 @@
 
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import {LuisQnaHelper, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
+import {LuisQnaHelper} from './luisqnahelper';
+import {Utility} from './utility';
+import {OrchestratorHelper} from './orchestratorhelper';
 import {OrchestratorSettings, OrchestratorDataSource, OrchestratorDataSourceSettings} from './settings';
 
 export class DataSourceHelper {

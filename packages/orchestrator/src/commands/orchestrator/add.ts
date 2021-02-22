@@ -5,9 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, Utility, OrchestratorHelper} from '@microsoft/bf-orchestrator';
-import {OrchestratorSettings, OrchestratorDataSource} from '../../utils/settings';
-import {DataSourceHelper} from '../../utils/datasourcehelper';
+import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file';

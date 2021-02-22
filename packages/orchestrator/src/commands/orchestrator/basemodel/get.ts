@@ -4,8 +4,7 @@
  */
 
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {Orchestrator, OrchestratorHelper, Utility} from '@microsoft/bf-orchestrator';
-import {OrchestratorSettings} from '../../../utils/settings';
+import {Orchestrator, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 import * as path from 'path';
 
 export default class OrchestratorBaseModelGet extends Command {
