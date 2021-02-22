@@ -8,7 +8,6 @@
 > # Intent definitions
 
 ## GetItemTitle
-- Please remind me to {@itemTitle=buy milk}
 - Please remember that I need to {@itemTitle=buy milk}
 - I need you to remember that {@itemTitle=my wife's birthday is Jan 9th}
 - Add a todo named {@itemTitle=send report over this weekend}

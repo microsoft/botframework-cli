@@ -352,7 +352,7 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(labelResolversById.size === 5);
     assert.ok(labelResolversById.has('AddToDoDialog'));
     assert.ok(labelResolversById.get('AddToDoDialog') !== null);
-    assert.ok(LabelResolver.getExamples(labelResolversById.get('AddToDoDialog')).length === 109);
+    assert.ok(LabelResolver.getExamples(labelResolversById.get('AddToDoDialog')).length === 108);
     assert.ok(labelResolversById.has('DeleteToDoDialog'));
     assert.ok(labelResolversById.get('DeleteToDoDialog') !== null);
     assert.ok(LabelResolver.getExamples(labelResolversById.get('DeleteToDoDialog')).length === 112);
@@ -371,7 +371,7 @@ describe('OrchestratorBuildTests', function () {
     const retPayload2: any = await OrchestratorBuild.runAsync(
       baseModelPath,
       '',
-      OrchestratorHelper.getLuInputs('./test/fixtures/adaptive_modified/'),
+      OrchestratorHelper.getLuInputs('./test/fixtures/adaptive/'),
       labelResolversById,
       true,
       JSON.parse(OrchestratorHelper.readFile('./test/fixtures/luconfig.json')));
