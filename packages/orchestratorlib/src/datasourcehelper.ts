@@ -11,16 +11,15 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import {OrchestratorSettings, OrchestratorDataSource, OrchestratorDataSourceSettings} from './settings';
 
 export class DataSourceHelper {
-  public static convertDispatchInputs(dispatchFile: string, dataSourceSettings: OrchestratorDataSourceSettings)  {
-    const dispatch: any = JSON.parse(OrchestratorHelper.readFile(dispatchFile));
-    if (!dispatch || !dispatch.services || dispatch.services.length === 0) {
-      throw new Error(`Failed parsing ${dispatchFile}`);
+  public static convertDispatchInputs(dispatchJson: any, dataSourceSettings: OrchestratorDataSourceSettings)  {
+    if (!dispatchJson || !dispatchJson.services || dispatchJson.services.length === 0) {
+      throw new Error(`Failed parsing ${dispatchJson}`);
     }
 
     dataSourceSettings.Inputs = [];
     Utility.emptyFolder(dataSourceSettings.Path);
 
-    for (const service of dispatch.services) {
+    for (const service of dispatchJson.services) {
       let dataSource: OrchestratorDataSource;
       let routingName: string;
       let endpoint: string = '';
@@ -60,10 +59,12 @@ export class DataSourceHelper {
           service.path);
         break;
       default:
-        throw new Error(`Failed parsing ${dispatchFile}, unsupported type ${service.type}`);
+        throw new Error(`Failed parsing ${dispatchJson}, unsupported type ${service.type}`);
       }
 
-      dataSourceSettings.Inputs.push(dataSource);
+      if (!dataSourceSettings.hasDataSource(dataSource, true)) {
+        dataSourceSettings.Inputs.push(dataSource);
+      }
     }
   }
 

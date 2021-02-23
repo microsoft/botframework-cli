@@ -19,7 +19,7 @@ describe('OrchestratorSettingsTests', () => {
   const SettingsDirJson: string = '.\\\\test\\\\fixtures';
   const DataSourcesPath: string = path.resolve(path.join(SettingsDir, 'dataSources'));
 
-  beforeEach(async () => {
+  beforeEach(() => {
     if (!Utility.exists(BaseModelDir)) {
       fs.mkdirSync(BaseModelDir);
     }
@@ -29,18 +29,18 @@ describe('OrchestratorSettingsTests', () => {
     }
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     if (Utility.exists(BaseModelDir)) {
       fs.rmdirSync(BaseModelDir);
     }
   });
 
-  it('init settings with no settings file', async () => {
+  it('init settings with no settings file', () => {
     OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
     assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
-    
+
     Utility.toPrintDebuggingLogToConsole = true;
     Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.Path}`)
 
@@ -49,7 +49,7 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.DataSources.Hierarchical === false);
   });
 
-  it('init settings with no data sources', async () => {
+  it('init settings with no data sources', () => {
     const settingsJson: string = `{
       "modelPath": "${BaseModelDirJson}",
       "snapshotPath": "${SettingsDirJson}",
@@ -70,7 +70,7 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.DataSources.Hierarchical);
   });
 
-  it('init settings with data sources', async () => {
+  it('init settings with data sources', () => {
     const settingsJson: string = `{
       "modelPath": "${BaseModelDirJson}",
       "snapshotPath": "${SettingsDirJson}",

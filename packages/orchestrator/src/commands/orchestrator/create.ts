@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorDataSourceSettings, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
+import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorDataSourceSettings, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorCreate extends Command {
@@ -55,7 +55,8 @@ export default class OrchestratorCreate extends Command {
       Utility.debuggingLog(`refresh=${refresh}`);
 
       if (DataSourceHelper.isDispatchInput(input)) {
-        DataSourceHelper.convertDispatchInputs(input, OrchestratorSettings.DataSources);
+        const dispatchJson: any = JSON.parse(OrchestratorHelper.readFile(input));
+        DataSourceHelper.convertDispatchInputs(dispatchJson, OrchestratorSettings.DataSources);
         refresh = true;
       }
 

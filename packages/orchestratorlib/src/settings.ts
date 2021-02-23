@@ -77,6 +77,38 @@ export class OrchestratorDataSourceSettings {
     this.Hierarchical = hierarchical;
     this.Path = path;
   }
+
+  public hasDataSource(input: OrchestratorDataSource, updateExisting: boolean = true): boolean {
+    for (const existingSource of this.Inputs) {
+      if (existingSource.Type !== input.Type) {
+        continue;
+      }
+
+      switch (input.Type) {
+      case 'luis':
+      case 'qna':
+        if (input.Id === existingSource.Id) {
+          if (updateExisting) {
+            existingSource.update(input);
+          }
+          return true;
+        }
+        break;
+      case 'file':
+        if (input.FilePath === existingSource.FilePath) {
+          if (updateExisting) {
+            existingSource.update(input);
+          }
+          return true;
+        }
+        break;
+      default:
+        throw new Error('Invalid input type');
+      }
+    }
+
+    return false;
+  }
 }
 
 export class OrchestratorSettings {
@@ -93,31 +125,7 @@ export class OrchestratorSettings {
   }
 
   public static hasDataSource(input: OrchestratorDataSource): boolean {
-    const existingSources: OrchestratorDataSource[] = OrchestratorSettings.DataSources.Inputs;
-    for (const existingSource of existingSources) {
-      if (existingSource.Type !== input.Type) {
-        continue;
-      }
-
-      switch (input.Type) {
-      case 'luis':
-      case 'qna':
-        if (input.Id === existingSource.Id) {
-          existingSource.update(input);
-          return true;
-        }
-        break;
-      case 'file':
-        if (input.FilePath === existingSource.FilePath) {
-          return true;
-        }
-        break;
-      default:
-        throw new Error('Invalid input type');
-      }
-    }
-
-    return false;
+    return OrchestratorSettings.DataSources.hasDataSource(input);
   }
 
   public static addUpdateDataSource(data: OrchestratorDataSource) {
