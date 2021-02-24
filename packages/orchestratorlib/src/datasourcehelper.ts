@@ -16,8 +16,8 @@ export class DataSourceHelper {
       throw new Error(`Failed parsing ${dispatchJson}`);
     }
 
-    dataSourceSettings.Inputs = [];
-    Utility.emptyFolder(dataSourceSettings.Path);
+    dataSourceSettings.inputs = [];
+    Utility.emptyFolder(dataSourceSettings.path);
 
     for (const service of dispatchJson.services) {
       let dataSource: OrchestratorDataSource;
@@ -34,7 +34,7 @@ export class DataSourceHelper {
           endpoint,
           service.type,
           routingName,
-          dataSourceSettings.Path);
+          dataSourceSettings.path);
         break;
       case 'qna':
         routingName = service.intentName ? service.intentName : `q_${service.name}`;
@@ -45,7 +45,7 @@ export class DataSourceHelper {
           endpoint,
           service.type,
           routingName,
-          dataSourceSettings.Path);
+          dataSourceSettings.path);
         break;
       case 'file':
         routingName = service.intentName ? service.intentName : service.name;
@@ -63,7 +63,7 @@ export class DataSourceHelper {
       }
 
       if (!dataSourceSettings.hasDataSource(dataSource, true)) {
-        dataSourceSettings.Inputs.push(dataSource);
+        dataSourceSettings.inputs.push(dataSource);
       }
     }
   }

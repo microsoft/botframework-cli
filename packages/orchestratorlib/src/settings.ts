@@ -57,15 +57,15 @@ export class OrchestratorDataSource {
 }
 
 export class OrchestratorDataSourceSettings {
-  public Hierarchical: boolean = false;
+  public hierarchical: boolean = false;
 
-  public Inputs: OrchestratorDataSource[] = [];
+  public inputs: OrchestratorDataSource[] = [];
 
-  public Path: string;
+  public path: string;
 
   constructor(inputs: any, hierarchical: boolean, path: string) {
     for (const input of inputs) {
-      this.Inputs.push(new OrchestratorDataSource(
+      this.inputs.push(new OrchestratorDataSource(
         input.id,
         input.key,
         input.version,
@@ -74,12 +74,12 @@ export class OrchestratorDataSourceSettings {
         input.routingName,
         input.filePath));
     }
-    this.Hierarchical = hierarchical;
-    this.Path = path;
+    this.hierarchical = hierarchical;
+    this.path = path;
   }
 
   public hasDataSource(input: OrchestratorDataSource, updateExisting: boolean = true): boolean {
-    for (const existingSource of this.Inputs) {
+    for (const existingSource of this.inputs) {
       if (existingSource.Type !== input.Type) {
         continue;
       }
@@ -129,7 +129,7 @@ export class OrchestratorSettings {
   }
 
   public static addUpdateDataSource(data: OrchestratorDataSource) {
-    this.DataSources.Inputs.push(data);
+    this.DataSources.inputs.push(data);
   }
 
   public static ModelPath: string;
@@ -270,11 +270,11 @@ export class OrchestratorSettings {
 
     const dataSourceSettings: any = settings.dataSources;
     if (dataSourceSettings) {
-      if (dataSourceSettings.Inputs) {
-        inputs = dataSourceSettings.Inputs;
+      if (dataSourceSettings.inputs) {
+        inputs = dataSourceSettings.inputs;
       }
-      hierarchical = dataSourceSettings.Hierarchical;
-      dataSourcePath = path.resolve(dataSourceSettings.Path);
+      hierarchical = dataSourceSettings.hierarchical;
+      dataSourcePath = path.resolve(dataSourceSettings.path);
     }
     OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
   }

@@ -103,19 +103,19 @@ describe('LuisQnaHelperTests', () => {
     }
     const dataSourceSettings: OrchestratorDataSourceSettings = new OrchestratorDataSourceSettings([], true, dataSourcePath);
     DataSourceHelper.convertDispatchInputs(dispatchJson, dataSourceSettings);
-    assert(dataSourceSettings.Inputs.length === 3);
-    assert(dataSourceSettings.Inputs[0].Type === 'luis');
-    assert(dataSourceSettings.Inputs[0].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
-    assert(dataSourceSettings.Inputs[0].RoutingName === 'l_Weather');
-    assert(dataSourceSettings.Inputs[0].Key === 'XYZXYZ');
+    assert(dataSourceSettings.inputs.length === 3);
+    assert(dataSourceSettings.inputs[0].Type === 'luis');
+    assert(dataSourceSettings.inputs[0].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
+    assert(dataSourceSettings.inputs[0].RoutingName === 'l_Weather');
+    assert(dataSourceSettings.inputs[0].Key === 'XYZXYZ');
 
-    assert(dataSourceSettings.Inputs[1].Type === 'qna');
-    assert(dataSourceSettings.Inputs[1].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
-    assert(dataSourceSettings.Inputs[1].RoutingName === 'q_ChitChat');
-    assert(dataSourceSettings.Inputs[1].Key === 'YYYYYY');
+    assert(dataSourceSettings.inputs[1].Type === 'qna');
+    assert(dataSourceSettings.inputs[1].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
+    assert(dataSourceSettings.inputs[1].RoutingName === 'q_ChitChat');
+    assert(dataSourceSettings.inputs[1].Key === 'YYYYYY');
 
-    assert(dataSourceSettings.Inputs[2].Type === 'file');
-    assert(dataSourceSettings.Inputs[2].RoutingName === 'l_HomeAutomation');
+    assert(dataSourceSettings.inputs[2].Type === 'file');
+    assert(dataSourceSettings.inputs[2].RoutingName === 'l_HomeAutomation');
     // assert(dataSourceSettings.Inputs[2].FilePath.replace(/[\\/]+/gm, '') === HomeAutomationFile);
   });
 
@@ -128,19 +128,19 @@ describe('LuisQnaHelperTests', () => {
     dispatchJson.services[1].intentName = 'q_Kb';
     dispatchJson.services[1].subscriptionKey = 'XXYYZZ';
     DataSourceHelper.convertDispatchInputs(dispatchJson, dataSourceSettings2);
-    assert(dataSourceSettings2.Inputs.length === 3);
-    assert(dataSourceSettings2.Inputs[0].Type === 'luis');
-    assert(dataSourceSettings2.Inputs[0].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
-    assert(dataSourceSettings2.Inputs[0].RoutingName === 'l_Weather1');
-    assert(dataSourceSettings2.Inputs[0].Key === 'XYZXYY');
+    assert(dataSourceSettings2.inputs.length === 3);
+    assert(dataSourceSettings2.inputs[0].Type === 'luis');
+    assert(dataSourceSettings2.inputs[0].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
+    assert(dataSourceSettings2.inputs[0].RoutingName === 'l_Weather1');
+    assert(dataSourceSettings2.inputs[0].Key === 'XYZXYY');
 
-    assert(dataSourceSettings2.Inputs[1].Type === 'qna');
-    assert(dataSourceSettings2.Inputs[1].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
-    assert(dataSourceSettings2.Inputs[1].RoutingName === 'q_Kb');
-    assert(dataSourceSettings2.Inputs[1].Key === 'XXYYZZ');
+    assert(dataSourceSettings2.inputs[1].Type === 'qna');
+    assert(dataSourceSettings2.inputs[1].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
+    assert(dataSourceSettings2.inputs[1].RoutingName === 'q_Kb');
+    assert(dataSourceSettings2.inputs[1].Key === 'XXYYZZ');
 
-    assert(dataSourceSettings2.Inputs[2].Type === 'file');
-    assert(dataSourceSettings2.Inputs[2].RoutingName === 'l_HomeAutomation');
+    assert(dataSourceSettings2.inputs[2].Type === 'file');
+    assert(dataSourceSettings2.inputs[2].RoutingName === 'l_HomeAutomation');
     // assert(dataSourceSettings2.Inputs[2].FilePath.replace(/[\\/]+/gm, '') === HomeAutomationFile);
   });
 

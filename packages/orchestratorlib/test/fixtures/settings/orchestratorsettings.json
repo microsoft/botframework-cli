@@ -3,8 +3,8 @@
     "entityModelPath": "D:\\src\\oc\\oc\\dep\\model\\bert_example_ner_multilingual",
     "snapshotPath": "D:\\src\\botframework-cli\\packages\\orchestrator\\output\\orchestrator.blu",
     "dataSources": {
-      "Hierarchical": false,
-      "Inputs": [],
-      "Path": "D:\\src\\botframework-cli\\dataSources"
+      "hierarchical": false,
+      "inputs": [],
+      "path": "D:\\src\\botframework-cli\\dataSources"
     }
   }

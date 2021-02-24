@@ -62,8 +62,8 @@ export default class OrchestratorAdd extends Command {
     try {
       if (type.length > 0) {
         OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true);
-        const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.Path);
-        await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.Path);
+        const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
+        await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
 
         if (dataSource.Type === 'file') {
           this.log(`Added ${dataSource.Type} source  ${dataSource.FilePath}`);

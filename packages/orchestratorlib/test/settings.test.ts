@@ -42,11 +42,11 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.EntityModelPath === '');
 
     Utility.toPrintDebuggingLogToConsole = true;
-    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.Path}`)
+    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.path}`);
 
-    assert.ok(OrchestratorSettings.DataSources.Path === DataSourcesPath);
-    assert.ok(OrchestratorSettings.DataSources.Inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.Hierarchical === false);
+    assert.ok(OrchestratorSettings.DataSources.path === DataSourcesPath);
+    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
+    assert.ok(OrchestratorSettings.DataSources.hierarchical === false);
   });
 
   it('init settings with no data sources', () => {
@@ -66,8 +66,8 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
     // assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
-    assert.ok(OrchestratorSettings.DataSources.Inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.Hierarchical);
+    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
+    assert.ok(OrchestratorSettings.DataSources.hierarchical);
   });
 
   it('init settings with data sources', () => {
@@ -106,18 +106,18 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
     // assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
-    assert.ok(OrchestratorSettings.DataSources.Inputs.length === 2);
-    assert.ok(OrchestratorSettings.DataSources.Inputs[0].Type === 'qna');
-    assert.ok(OrchestratorSettings.DataSources.Inputs[1].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.Hierarchical);
+    assert.ok(OrchestratorSettings.DataSources.inputs.length === 2);
+    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
+    assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'luis');
+    assert.ok(OrchestratorSettings.DataSources.hierarchical);
   });
 
   it('init settings with settings file', () => {
     OrchestratorSettings.init('./test/fixtures/settings', BaseModelDir, '', SettingsDir);
     assert.ok(OrchestratorSettings.SettingsPath.indexOf('settings') > 0);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath === '');
-    assert.ok(OrchestratorSettings.DataSources.Inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.Hierarchical === false);
+    assert.ok(OrchestratorSettings.EntityModelPath.indexOf('bert_example_ner_multilingual') > 0);
+    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
+    assert.ok(OrchestratorSettings.DataSources.hierarchical === false);
   });
 });

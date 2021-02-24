@@ -60,9 +60,9 @@ export default class OrchestratorCreate extends Command {
         refresh = true;
       }
 
-      const hasDataSources: boolean = OrchestratorSettings.DataSources && OrchestratorSettings.DataSources.Inputs.length > 0;
+      const hasDataSources: boolean = OrchestratorSettings.DataSources && OrchestratorSettings.DataSources.inputs.length > 0;
       if (hasDataSources) {
-        input = OrchestratorSettings.DataSources.Path;
+        input = OrchestratorSettings.DataSources.path;
         hierarchical = true;
       }
 
@@ -91,12 +91,12 @@ export default class OrchestratorCreate extends Command {
     if (!dataSources) {
       throw new CLIError('No data sources previously defined');
     }
-    for (const dataSource of dataSources.Inputs) {
+    for (const dataSource of dataSources.inputs) {
       if (dataSource.Type !== 'file') {
         this.log(`Refreshing ${dataSource.Type} data - id ${dataSource.Id}...`);
       }
       // eslint-disable-next-line no-await-in-loop
-      await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.Path, false);
+      await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path, false);
     }
   }
 }
