@@ -354,7 +354,6 @@ const updateModelBasedOnNDepthEntities = function(utterances, entityParentTree)
                 // Is the entity a root entity? 
                 let isRootEntity = parentsForEntity.find(t => t[0] == "$root$")
                 if (isRootEntity === undefined) {
-                    debugger
                     const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Child entity "${entityInUtterance.entity}" does not have its parent labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
                     throw (new exception(retCode.errorCode.INVALID_INPUT, errorMsg));
                 }
