@@ -21,6 +21,20 @@
       {
         "name": "userProfile",
         "roles": [],
+        "features": [
+          {
+            "modelName": "personName",
+            "isRequired": false
+          },
+          {
+            "modelName": "cities",
+            "isRequired": false
+          },
+          {
+            "modelName": "zipCode",
+            "isRequired": false
+          }
+        ],
         "children": [
           {
             "name": "userName",
