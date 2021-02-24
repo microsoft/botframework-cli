@@ -270,11 +270,11 @@ export class OrchestratorSettings {
 
     const dataSourceSettings: any = settings.dataSources;
     if (dataSourceSettings) {
-      if (dataSourceSettings.inputs) {
-        inputs = dataSourceSettings.inputs;
+      if (dataSourceSettings.Inputs) {
+        inputs = dataSourceSettings.Inputs;
       }
-      hierarchical = dataSourceSettings.hierarchical;
-      dataSourcePath = path.resolve(dataSourceSettings.path);
+      hierarchical = dataSourceSettings.Hierarchical;
+      dataSourcePath = path.resolve(dataSourceSettings.Path);
     }
     OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
   }

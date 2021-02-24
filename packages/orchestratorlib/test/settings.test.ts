@@ -111,4 +111,13 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.DataSources.Inputs[1].Type === 'luis');
     assert.ok(OrchestratorSettings.DataSources.Hierarchical);
   });
+
+  it('init settings with settings file', () => {
+    OrchestratorSettings.init('./test/fixtures/settings', BaseModelDir, '', SettingsDir);
+    assert.ok(OrchestratorSettings.SettingsPath.indexOf('settings') > 0);
+    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
+    assert.ok(OrchestratorSettings.EntityModelPath === '');
+    assert.ok(OrchestratorSettings.DataSources.Inputs.length === 0);
+    assert.ok(OrchestratorSettings.DataSources.Hierarchical === false);
+  });
 });
