@@ -65,8 +65,7 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
-    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.Path}, DataSourcesPath=${DataSourcesPath}`);
-    //assert.ok(OrchestratorSettings.DataSources.Path === DataSourcesPath);
+    assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
     assert.ok(OrchestratorSettings.DataSources.Inputs.length === 0);
     assert.ok(OrchestratorSettings.DataSources.Hierarchical);
   });
@@ -106,8 +105,7 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
-    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.Path}, DataSourcesPath=${DataSourcesPath}`);
-    //assert.ok(OrchestratorSettings.DataSources.Path === DataSourcesPath);
+    assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
     assert.ok(OrchestratorSettings.DataSources.Inputs.length === 2);
     assert.ok(OrchestratorSettings.DataSources.Inputs[0].Type === 'qna');
     assert.ok(OrchestratorSettings.DataSources.Inputs[1].Type === 'luis');

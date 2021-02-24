@@ -95,6 +95,7 @@ describe('LuisQnaHelperTests', () => {
     "path": "./test/fixtures/output/dataSources"
   }`;
   const dataSourceJson: any = JSON.parse(dataSourcesJsonString);
+  const HomeAutomationFile: string = '.testfixturesdispatchHomeAutomation.json';
 
   it('convert Dispatch inputs with existing data sources empty', () => {
     if (!Utility.exists(dataSourcePath)) {
@@ -115,7 +116,7 @@ describe('LuisQnaHelperTests', () => {
 
     assert(dataSourceSettings.Inputs[2].Type === 'file');
     assert(dataSourceSettings.Inputs[2].RoutingName === 'l_HomeAutomation');
-    assert(dataSourceSettings.Inputs[2].FilePath === '.\\test\\fixtures\\dispatch\\HomeAutomation.json');
+    assert(dataSourceSettings.Inputs[2].FilePath.replace(/[\\/]+/gm, '') === HomeAutomationFile);
   });
 
   it('convert Dispatch inputs with existing data sources not empty', () => {
@@ -140,7 +141,7 @@ describe('LuisQnaHelperTests', () => {
 
     assert(dataSourceSettings2.Inputs[2].Type === 'file');
     assert(dataSourceSettings2.Inputs[2].RoutingName === 'l_HomeAutomation');
-    assert(dataSourceSettings2.Inputs[2].FilePath === '.\\test\\fixtures\\dispatch\\HomeAutomation.json');
+    assert(dataSourceSettings2.Inputs[2].FilePath.replace(/[\\/]+/gm, '') === HomeAutomationFile);
   });
 
   /*
