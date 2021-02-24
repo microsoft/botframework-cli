@@ -1,2 +1,2 @@
-[labels](newEntityWithFeaturesLabels.lu)
-[definitions](newEntityWithFeatures.lu)
+[labels](./test/fixtures/examples/newEntityWithFeaturesLabels.lu)
+[definitions](./test/fixtures/examples/newEntityWithFeatures.lu)

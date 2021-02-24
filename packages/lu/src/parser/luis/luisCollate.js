@@ -205,6 +205,22 @@ const mergeResults = function (blob, finalCollection, type) {
                 break;
             }
 
+            if (type === LUISObjNameEnum.INTENT && finalCollection[type][fIndex].name === blobItem.name) {
+                itemExists = true;
+                (blobItem.features || []).forEach(blobFeature => {
+                    if (finalCollection[type][fIndex].features === undefined) {
+                        finalCollection[type][fIndex].features = [];
+                    }
+                    if (!finalCollection[type][fIndex].features.find(
+                        (feature) =>
+                          feature.modelName === blobFeature.modelName ||
+                          feature.featureName === blobFeature.featureName)) {
+                      finalCollection[type][fIndex].features.push(blobFeature);
+                    }
+                });
+                break;
+            }
+
             // if item name matches, merge roles if available for everything other than intent
             if (type === LUISObjNameEnum.INTENT ||
                 type === LUISObjNameEnum.PATTERNS ||
