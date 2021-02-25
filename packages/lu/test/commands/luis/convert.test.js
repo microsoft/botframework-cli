@@ -105,6 +105,10 @@ describe('luis:convert', () => {
         await assertToJSON('./../../fixtures/examples/13.lu', './../../fixtures/verified/13.json', '13')
     })
 
+    it('luis:convert hierarchical entities defined after labels parsed correctly', async () => {
+        await assertToJSON('./../../fixtures/examples/newEntityIncludes.lu', './../../fixtures/verified/newEntityIncludes.json')
+    })
+
     it('Parse to LU instance', async () => {
         let luFile = `
         @ ml test

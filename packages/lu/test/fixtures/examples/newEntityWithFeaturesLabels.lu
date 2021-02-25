@@ -1,0 +1,6 @@
+# GetUserProfile
+- I am {@userProfile = {@userAge = 36}} years old
+- My first name is {@userProfile = {@userName = {@firstName = vishwac}}}
+- My last name is {@userProfile = {@userName = {@lastName = kannan}}}
+- First of {@userProfile = {@userName = {@firstName = vishwac}}}
+- Age of {@userProfile = {@userAge = 36}}
