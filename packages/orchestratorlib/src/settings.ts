@@ -166,18 +166,20 @@ export class OrchestratorSettings {
     OrchestratorSettings.ModelPath = '';
     OrchestratorSettings.EntityModelPath = '';
     OrchestratorSettings.SnapshotPath = '';
-    let settings: any;
-    if (settingsFileExists) {
-      settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
-    }
 
-    OrchestratorSettings.ensureDataSources(hierarchical, settings, settingsDir);
-    OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
-    OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
-    entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
-    if (!Utility.isEmptyString(entityBaseModelPath)) {
-      OrchestratorSettings.EntityModelPath = entityBaseModelPath;
-    }
+    try {
+      let settings: any;
+      if (settingsFileExists) {
+        settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
+      }
+      OrchestratorSettings.ensureDataSources(hierarchical, settings, settingsDir);
+      OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
+      OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
+      entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
+      if (!Utility.isEmptyString(entityBaseModelPath)) {
+        OrchestratorSettings.EntityModelPath = entityBaseModelPath;
+      }
+    }  catch {}
   }
 
   public static persist()  {
@@ -257,25 +259,29 @@ export class OrchestratorSettings {
   }
 
   static ensureDataSources(hierarchical: boolean, settings: any, settingsFolder: string) {
-    let inputs: OrchestratorDataSource[] = [];
-    let dataSourcePath: string = path.join(settingsFolder, 'dataSources');
-    if (!OrchestratorHelper.exists(dataSourcePath)) {
-      fs.mkdirSync(dataSourcePath, {recursive: true});
-    }
-
-    if (!settings) {
-      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
-      return;
-    }
-
-    const dataSourceSettings: any = settings.dataSources;
-    if (dataSourceSettings) {
-      if (dataSourceSettings.inputs) {
-        inputs = dataSourceSettings.inputs;
+    try {
+      let inputs: OrchestratorDataSource[] = [];
+      let dataSourcePath: string = path.join(settingsFolder, 'dataSources');
+      if (!OrchestratorHelper.exists(dataSourcePath)) {
+        fs.mkdirSync(dataSourcePath, {recursive: true});
       }
-      hierarchical = dataSourceSettings.hierarchical;
-      dataSourcePath = path.resolve(dataSourceSettings.path);
+
+      if (!settings) {
+        OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
+        return;
+      }
+
+      const dataSourceSettings: any = settings.dataSources;
+      if (dataSourceSettings) {
+        if (dataSourceSettings.inputs) {
+          inputs = dataSourceSettings.inputs;
+        }
+        hierarchical = dataSourceSettings.hierarchical;
+        dataSourcePath = path.resolve(dataSourceSettings.path);
+      }
+      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
+    } catch {
+      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings([], false, '');
     }
-    OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
   }
 }
