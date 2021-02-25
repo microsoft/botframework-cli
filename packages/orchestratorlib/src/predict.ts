@@ -862,7 +862,7 @@ export class OrchestratorPredict {
     // ---- NOTE ---- integrated step to produce intent analysis reports.
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentIntentEvaluationOutput = Utility.generateLabelStringEvaluationReport(
-      UtilityLabelResolver.scoreStringLabels,
+      UtilityLabelResolver.scoreBatchStringLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreStringLabels,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -903,7 +903,7 @@ export class OrchestratorPredict {
     // ---- NOTE ---- integrated step to produce entity analysis reports.
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentEntityEvaluationOutput = Utility.generateLabelObjectEvaluationReport(
-      UtilityLabelResolver.scoreObjectLabels,
+      UtilityLabelResolver.scoreBatchObjectLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreObjectLabels,
       entityLabels,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap,

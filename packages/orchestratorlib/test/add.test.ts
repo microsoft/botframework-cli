@@ -6,7 +6,9 @@
 import {OrchestratorBaseModel} from '../src/basemodel';
 import {Orchestrator} from '../src/orchestrator';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
+
 import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 import assert = require('assert');
@@ -26,15 +28,15 @@ describe('OrchestratorAddTests', () => {
   });
 
   it('addAsync with empty snapshot', async () => {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     const retPayload: any = await Orchestrator.addAsync(
       baseModelPath,
       new Uint8Array(),
       luInputs,
       true);
-    // Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    Utility.debuggingLog1('luInputs=', luInputs);
-    Utility.debuggingLog1('retPayload.snapshot.length=', retPayload.snapshot.length);
+    UtilityDispatcher.debuggingNamedLog1('addAsync with empty snapshot', luInputs, 'luInputs');
+    UtilityDispatcher.debuggingNamedLog1('addAsync with empty snapshot', retPayload.snapshot.length, 'retPayload.snapshot.length=');
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.snapshot !== null);
@@ -46,8 +48,8 @@ describe('OrchestratorAddTests', () => {
     assert.ok(Utility.exists(snapshotFile));
 
     const snapshotContent: string = OrchestratorHelper.readFile(snapshotFile);
-    Utility.debuggingLog1('snapshotFile=', snapshotFile);
-    Utility.debuggingLog1('snapshotContent=', snapshotContent);
+    UtilityDispatcher.debuggingNamedLog1('addAsync with empty snapshot', snapshotFile, 'snapshotFile');
+    UtilityDispatcher.debuggingNamedLog1('addAsync with empty snapshot', snapshotContent, 'snapshotContent');
     for (const luInput of luInputs) {
       assert.ok(snapshotContent.indexOf(luInput.id) > 0);
     }
@@ -59,6 +61,7 @@ describe('OrchestratorAddTests', () => {
   });
 
   it('addAsync default', async () => {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     const retPayload: any = await Orchestrator.addAsync(
       baseModelPath,
@@ -87,6 +90,7 @@ describe('OrchestratorAddTests', () => {
   });
 
   it('addAsync with routing and skill names', async () => {
+    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     const luInputs: any = OrchestratorHelper.getLuInputs('./test/fixtures/skills/');
     for (const luInput of luInputs) {
       luInput.routingName = luInput.id + 'Ex';

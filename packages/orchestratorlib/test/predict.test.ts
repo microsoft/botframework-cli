@@ -10,12 +10,15 @@ import {} from 'mocha';
 import * as fs from 'fs';
 
 import {OrchestratorPredict} from '../src/predict';
+
 import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - the "predict" command', () => {
   it('Test.0000 OrchestratorPredict', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';
@@ -90,7 +93,7 @@ describe('Test Suite - the "predict" command', () => {
       try {
         Utility.deleteFile(predictingSetIntentSnapshotFilename);
       } catch (error) {
-        Utility.debuggingLog(`error for deleting output files ('s' commandlet), FAILED deleting output snapshot file="${predictingSetIntentSnapshotFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetIntentSnapshotFilename}", error=${error}`);
       }
       try {
         Utility.deleteFile(predictingSetEntityScoreOutputFilename);
@@ -120,7 +123,7 @@ describe('Test Suite - the "predict" command', () => {
       try {
         Utility.deleteFile(predictingSetEntitySnapshotFilename);
       } catch (error) {
-        Utility.debuggingLog(`error for deleting output files ('s' commandlet), FAILED deleting output snapshot file="${predictingSetEntitySnapshotFilename}", error=${error}`);
+        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetEntitySnapshotFilename}", error=${error}`);
       }
       try {
         fs.rmdirSync(outputPath);

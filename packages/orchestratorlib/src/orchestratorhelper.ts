@@ -18,8 +18,10 @@ import {UtilityLabelResolver} from './utilitylabelresolver';
 
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
 
-import {Utility} from './utility';
 import {OrchestratorBuild} from '.';
+
+import {Utility} from './utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 const ReadText: any = require('read-text-file');
 const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
@@ -411,7 +413,7 @@ export class OrchestratorHelper {
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      Utility.debuggingLog1('parseLuContent(): calling getIntentsEntitiesUtterances(), luisObject=', luisObject);
+      UtilityDispatcher.debuggingNamedLog1('parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
     }
     try {
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(

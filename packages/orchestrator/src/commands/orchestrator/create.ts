@@ -42,6 +42,9 @@ export default class OrchestratorCreate extends Command {
     const entityBaseModelPath: string = flags.entityModel;
     let refresh: boolean = flags.refresh;
 
+    Utility.toPrintDebuggingLogToConsole = flags.debug;
+    UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+
     try {
       OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
 
@@ -50,8 +53,6 @@ export default class OrchestratorCreate extends Command {
         fullEmbeddings = true;
       }
 
-      Utility.toPrintDebuggingLogToConsole = flags.debug;
-      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
       Utility.debuggingLog(`refresh=${refresh}`);
 
       if (DataSourceHelper.isDispatchInput(input)) {

@@ -14,6 +14,7 @@ import { CryptoUtility } from "./CryptoUtility";
 export class Utility {
 
     public static toPrintDebuggingLogToConsole: boolean = false;
+    public static toPrintDetailedDebuggingLogToConsole: boolean = false;
 
     public static toObfuscateLabelTextInReportUtility: boolean = true;
 
@@ -2385,11 +2386,291 @@ export class Utility {
         }
         return logMessage;
     }
+    public static debuggingLog1(
+        message: any,
+        objectArgument0: any): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0=${Utility.jsonStringify(objectArgument0)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    public static debuggingLog2(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0=${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1=${Utility.jsonStringify(objectArgument1)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    public static debuggingLog3(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0=${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1=${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2=${Utility.jsonStringify(objectArgument2)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingLog4(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0=${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1=${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2=${Utility.jsonStringify(objectArgument2)}` +
+            `, argument3=${Utility.jsonStringify(objectArgument3)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    public static debuggingNamedLog1(
+        message: any,
+        objectArgument0: any,
+        objectArgumentName0: string = ""): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    public static debuggingNamedLog2(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = ""): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    public static debuggingNamedLog3(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = ""): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingNamedLog4(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = "",
+        objectArgumentName3: string = ""): string {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] LOG-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
+            `, ${objectArgumentName3}=${Utility.jsonStringify(objectArgument3)}`;
+        if (Utility.toPrintDebuggingLogToConsole) {
+            // tslint:disable: no-console
+            // eslint-disable-next-line no-console
+            console.log(logMessage);
+        }
+        return logMessage;
+    }
 
     public static debuggingThrow(
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow1(
+        message: any,
+        objectArgument0: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow2(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow3(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2:${Utility.jsonStringify(objectArgument2)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingThrow4(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2:${Utility.jsonStringify(objectArgument2)}` +
+            `, argument3:${Utility.jsonStringify(objectArgument3)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow1(
+        message: any,
+        objectArgument0: any,
+        objectArgumentName0: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow2(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow3(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}`;
+        const error: Error = new Error(logMessage);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingNamedThrow4(
+        message: any,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = "",
+        objectArgumentName3: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
+            `, ${objectArgumentName3}=${Utility.jsonStringify(objectArgument3)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(stackTrace);

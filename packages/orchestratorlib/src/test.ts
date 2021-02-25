@@ -259,7 +259,7 @@ export class OrchestratorTest {
       'predictionJsonContent': string;
     } =
     Utility.generateLabelStringEvaluationReport(
-      UtilityLabelResolver.scoreStringLabels,
+      UtilityLabelResolver.scoreBatchStringLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreStringLabels,
       snapshotSetLabels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -357,7 +357,7 @@ export class OrchestratorTest {
       'predictionJsonContent': string;
     } =
     Utility.generateLabelObjectEvaluationReport(
-      UtilityLabelResolver.scoreObjectLabels,
+      UtilityLabelResolver.scoreBatchObjectLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreObjectLabels,
       snapshotSetEntityLabels,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap,

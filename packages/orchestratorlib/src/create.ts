@@ -60,9 +60,12 @@ export class OrchestratorCreate {
       await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addExamples()');
-    LabelResolver.addExamples(processedUtteranceLabelsMap);
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addExamples()');
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addBatch()');
+    LabelResolver.addBatch(processedUtteranceLabelsMap);
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addBatch()');
+    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addExamples()');
+    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- LabelResolver.addExamples(processedUtteranceLabelsMap);
+    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addExamples()');
     // ---- NOTE-FOR-DEBUGGING ---- const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
     // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), labels=${Utility.jsonStringify(labels)}`);
     // ---- NOTE-FOR-DEBUGGING ---- const examples: any = LabelResolver.getExamples();

@@ -11,12 +11,15 @@ import * as fs from 'fs';
 import {} from 'mocha';
 
 import {OrchestratorAssess} from '../src/assess';
+
 import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - the "assess" command', () => {
   it('Test.0000 OrchestratorAssess.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/EvaluationJsonFormat/va_ground_truth_instances.json';
@@ -64,6 +67,7 @@ describe('Test Suite - the "assess" command', () => {
 
   it('Test.0001 OrchestratorAssess.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/EvaluationJsonFormat/orchestrator_testing_set_ground_truth_instances.json';
