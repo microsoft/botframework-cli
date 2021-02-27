@@ -2,15 +2,21 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+
+ import assert = require('assert');
+
 import {} from 'mocha';
-import {OrchestratorBaseModel} from '../src/basemodel';
-import {OrchestratorCreate} from '../src/create';
-import {Utility} from '../src/utility';
-import {UnitTestHelper} from './utility.test';
 import * as path from 'path';
 import * as fs from 'fs-extra';
+
+import {OrchestratorBaseModel} from '../src/basemodel';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
-import assert = require('assert');
+
+import {OrchestratorCreate} from '../src/create';
+
+import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorCreateTests', () => {
   const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
@@ -28,6 +34,7 @@ describe('OrchestratorCreateTests', () => {
   xit('Create Dispatch Snapshot', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/dispatch';
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
 
     const snapshotPath: string = path.join(outputPath, OrchestratorHelper.SnapshotFileName);
