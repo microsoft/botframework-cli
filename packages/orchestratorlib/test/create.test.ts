@@ -31,7 +31,7 @@ describe('OrchestratorCreateTests', () => {
       OrchestratorBaseModel.defaultHandler);
   });
 
-  xit('Create Dispatch Snapshot', async function (): Promise<void> {
+  it('Create Dispatch Snapshot', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/dispatch';
     Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
@@ -54,7 +54,7 @@ describe('OrchestratorCreateTests', () => {
     assert.ok(snapshotContent.indexOf('Weather') > 0);
   });
 
-  xit('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
+  it('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/output/create';
     const inputFileName: string = 'RootDialogWithSkillRef';
     const inputPath: string = `./test/fixtures/${inputFileName}.lu`;

@@ -247,7 +247,7 @@ export class LabelResolver {
       } else {
         batchJsonifiedStringArray.push(',');
       }
-      batchJsonifiedStringArray.push(`{"text": "${utterance}",`);
+      batchJsonifiedStringArray.push(`{"text": ${JSON.stringify(utterance)},`);
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): processing utterance='${utterance}'`);
       }
@@ -265,7 +265,7 @@ export class LabelResolver {
             } else {
               batchJsonifiedStringArray.push(',');
             }
-            batchJsonifiedStringArray.push(`{"name": "${label}", "offset": 0, "length": 0}`);
+            batchJsonifiedStringArray.push(`{"name": ${JSON.stringify(label)}, "offset": 0, "length": 0}`);
           }
         }
         numberUtterancesProcessedUtteranceLabelsMap++;
@@ -291,7 +291,7 @@ export class LabelResolver {
               } else {
                 batchJsonifiedStringArray.push(',');
               }
-              batchJsonifiedStringArray.push(`{"name": "${labelEntity.name}", "offset": ${labelEntity.span.offset}, "length": ${labelEntity.span.length}}`);
+              batchJsonifiedStringArray.push(`{"name": ${JSON.stringify(labelEntity.name)}, "offset": ${labelEntity.span.offset}, "length": ${labelEntity.span.length}}`);
             }
           }
           numberUtterancesProcessedUtteranceEntityLabelsMap++;
