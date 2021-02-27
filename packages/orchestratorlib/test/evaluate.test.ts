@@ -17,7 +17,7 @@ import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - the "evaluate" command', () => {
-  it('Test.0000 OrchestratorEvaluate.runAsync()', async function (): Promise<void> {
+  xit('Test.0000 OrchestratorEvaluate.runAsync()', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
