@@ -3163,6 +3163,15 @@ export class Utility {
     }
 
     // -----------------------------------------------------------------------
+    // ---- NOTE ---- string to Uint8Array
+    // -----------------------------------------------------------------------
+
+    public static stringToUtf8EncodedUint8Array(input: string): Uint8Array {
+        const uint8Array: Uint8Array = new TextEncoder().encode(input);
+        return uint8Array;
+    }
+
+    // -----------------------------------------------------------------------
     // ---- NOTE ---- number processing
     // -----------------------------------------------------------------------
 

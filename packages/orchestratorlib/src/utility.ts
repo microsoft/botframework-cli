@@ -41,12 +41,12 @@ import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-temp
 // import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export class Utility {
-  public static toPrintDebuggingLogToConsole: boolean = true;
+  public static toPrintDebuggingLogToConsole: boolean = false;
 
   public static toPrintDetailedDebuggingLogToConsole: boolean = false;
 
   // ---- TO-REFACTOR ----
-  public static toObfuscateLabelTextInReportUtility: boolean = true;
+  public static toObfuscateLabelTextInReportUtility: boolean = false;
 
   public static NumberOfInstancesPerProgressDisplayBatch: number = 1000; // 10000;
 

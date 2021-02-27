@@ -180,10 +180,203 @@ export class LabelResolver {
     if (labelResolver === null) {
       labelResolver = LabelResolver.LabelResolver;
     }
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    // -----------------------------------------------------------------------
+    UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): ready to call LabelResolver.utteranceLabelsToJsonString()');
+    const batchJsonified: string = LabelResolver.utteranceLabelsToJsonString(
+      utteranceIntentEntityLabels);
+    UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): finished calling LabelResolver.utteranceLabelsToJsonString()');
+    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): batchJsonified', batchJsonified, 'batchJsonified');
+    }
+    // -----------------------------------------------------------------------
+    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
+    const batchUint8Array: Uint8Array =
+      UtilityDispatcher.stringToUtf8EncodedUint8Array(batchJsonified);
+    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
+    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingLog(`LabelResolver.addBatch(): batchUint8Array=${batchUint8Array}`);
+    }
+    // -----------------------------------------------------------------------
+    let batchResults: any;
+    try {
+      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call labelResolver.addBatch()', addBatchOption, 'addBatchOption');
+      batchResults = labelResolver.addBatch(batchUint8Array, '', addBatchOption);
+      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling labelResolver.addBatch()', batchResults, 'batchResults');
+    } catch (error) {
+      UtilityDispatcher.debuggingNamedThrow1('LabelResolver.addBatch(): Failed adding error:', error, 'error');
+    }
+    // -----------------------------------------------------------------------
+    Utility.debuggingLog('LEAVING LabelResolver.addBatch()');
+    return batchResults;
+  }
+
+  // eslint-disable-next-line complexity
+  public static utteranceLabelsToJsonString(
+    utteranceIntentEntityLabels: {
+      utteranceLabelsMap: Map<string, Set<string>>;
+      utteranceLabelDuplicateMap: Map<string, Set<string>>;
+      utteranceEntityLabelsMap: Map<string, Label[]>;
+      utteranceEntityLabelDuplicateMap: Map<string, Label[]>; }): string {
+    Utility.debuggingLog('CALLING LabelResolver.utteranceLabelsToJsonString()');
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    // -----------------------------------------------------------------------
+    const utteranceLabelsMap: Map<string, Set<string>> = utteranceIntentEntityLabels.utteranceLabelsMap;
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
+    // -----------------------------------------------------------------------
+    const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    let numberUtterancesProcessedUtteranceEntityLabelsMap: number = 0;
+    // -----------------------------------------------------------------------
+    // ---- Utility.toPrintDetailedDebuggingLogToConsole = true; // ---- NOTE ---- disable after detailed tracing is done.
+    const batchJsonifiedStringArray: string[] = [];
+    batchJsonifiedStringArray.push('{"examples": [');
+    let isFirstUtterance: boolean = true;
+    for (const utterance of utteranceLabelsMap.keys()) {
+      if (isFirstUtterance) {
+        isFirstUtterance = false;
+      } else {
+        batchJsonifiedStringArray.push(',');
+      }
+      batchJsonifiedStringArray.push(`{"text": "${utterance}",`);
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): processing utterance='${utterance}'`);
+      }
+      batchJsonifiedStringArray.push('"intents": [');
+      {
+        const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString()-Intent: Adding { labels.size: ${labels.size}, text: ${utterance} }`);
+        }
+        if (labels && (labels.size > 0)) {
+          let isFirst: boolean = true;
+          for (const label of labels) {
+            if (isFirst) {
+              isFirst = false;
+            } else {
+              batchJsonifiedStringArray.push(',');
+            }
+            batchJsonifiedStringArray.push(`{"name": "${label}", "offset": 0, "length": 0}`);
+          }
+        }
+        numberUtterancesProcessedUtteranceLabelsMap++;
+        if ((numberUtterancesProcessedUtteranceLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
+          Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
+        }
+      }
+      batchJsonifiedStringArray.push('],'); // ---- "intents"
+      batchJsonifiedStringArray.push('"entities": [');
+      // eslint-disable-next-line no-lone-blocks
+      {
+        if (utteranceEntityLabelsMap.has(utterance)) {
+          const labelsEntities: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];
+          if (Utility.toPrintDetailedDebuggingLogToConsole) {
+            Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString()-Entity: Adding { labelsEntities.length: ${labelsEntities.length}, text: ${utterance} }`);
+          }
+          if (labelsEntities && (labelsEntities.length > 0)) {
+            let isFirst: boolean = true;
+            for (const labelEntity of labelsEntities) {
+              // eslint-disable-next-line max-depth
+              if (isFirst) {
+                isFirst = false;
+              } else {
+                batchJsonifiedStringArray.push(',');
+              }
+              batchJsonifiedStringArray.push(`{"name": "${labelEntity.name}", "offset": ${labelEntity.span.offset}, "length": ${labelEntity.span.length}}`);
+            }
+          }
+          numberUtterancesProcessedUtteranceEntityLabelsMap++;
+          if ((numberUtterancesProcessedUtteranceEntityLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForEntity) === 0) {
+            Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
+          }
+        }
+      }
+      batchJsonifiedStringArray.push(']'); // ---- "entities"
+      batchJsonifiedStringArray.push('}'); // ---- example / "text"
+    }
+    batchJsonifiedStringArray.push(']}'); // ---- "examples"
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToJsonString(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
+    // -----------------------------------------------------------------------
+    Utility.debuggingLog('LEAVING LabelResolver.utteranceLabelsToJsonString()');
+    return batchJsonifiedStringArray.join(' ');
+  }
+
+  // eslint-disable-next-line complexity
+  public static utteranceLabelsToObjectJsonString(
+    utteranceIntentEntityLabels: {
+      utteranceLabelsMap: Map<string, Set<string>>;
+      utteranceLabelDuplicateMap: Map<string, Set<string>>;
+      utteranceEntityLabelsMap: Map<string, Label[]>;
+      utteranceEntityLabelDuplicateMap: Map<string, Label[]>; }): string {
+    Utility.debuggingLog('CALLING LabelResolver.utteranceLabelsToObjectJsonString()');
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObjectJsonString(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObjectJsonString(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObjectJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObjectJsonString(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    // -----------------------------------------------------------------------
+    const batch: {
+      'examples': Array<{
+        'text': string;
+        'intents': Array<{
+          'name': string;
+          'offset': number;
+          'length': number;
+        }>;
+        'entities': Array<{
+          'name': string;
+          'offset': number;
+          'length': number;
+        }>;
+      }>;
+    } = LabelResolver.utteranceLabelsToObject(utteranceIntentEntityLabels);
+    // -----------------------------------------------------------------------
+    UtilityDispatcher.debuggingLog('LabelResolver.utteranceLabelsToObjectJsonString(): ready to call JSON.stringify()');
+    const batchJsonified: string = JSON.stringify(batch);
+    UtilityDispatcher.debuggingLog('LabelResolver.utteranceLabelsToObjectJsonString(): finished calling JSON.stringify()');
+    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingNamedLog1('LabelResolver.utteranceLabelsToObjectJsonString(): batchJsonified', batchJsonified, 'batchJsonified');
+    }
+    // -----------------------------------------------------------------------
+    Utility.debuggingLog('LEAVING LabelResolver.utteranceLabelsToObjectJsonString()');
+    return batchJsonified;
+  }
+
+  // eslint-disable-next-line complexity
+  public static utteranceLabelsToObject(
+    utteranceIntentEntityLabels: {
+      utteranceLabelsMap: Map<string, Set<string>>;
+      utteranceLabelDuplicateMap: Map<string, Set<string>>;
+      utteranceEntityLabelsMap: Map<string, Label[]>;
+      utteranceEntityLabelDuplicateMap: Map<string, Label[]>; }): {
+        'examples': Array<{
+          'text': string;
+          'intents': Array<{
+            'name': string;
+            'offset': number;
+            'length': number;
+          }>;
+          'entities': Array<{
+            'name': string;
+            'offset': number;
+            'length': number;
+          }>;
+        }>;
+      } {
+    Utility.debuggingLog('CALLING LabelResolver.utteranceLabelsToObject()');
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
     const examples: Array<{
       'text': string;
@@ -228,22 +421,22 @@ export class LabelResolver {
       examples,
     };
     // -----------------------------------------------------------------------
-    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(), empty batch', batch, 'batch');
+    UtilityDispatcher.debuggingNamedLog1('LabelResolver.utteranceLabelsToObject(), empty batch', batch, 'batch');
     // -----------------------------------------------------------------------
     const utteranceLabelsMap: Map<string, Set<string>> = utteranceIntentEntityLabels.utteranceLabelsMap;
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
     let numberUtterancesProcessedUtteranceLabelsMap: number = 0;
     // -----------------------------------------------------------------------
     const utteranceEntityLabelsMap: Map<string, Label[]> = utteranceIntentEntityLabels.utteranceEntityLabelsMap;
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
-    Utility.debuggingLog(`processed utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
     let numberUtterancesProcessedUtteranceEntityLabelsMap: number = 0;
     // -----------------------------------------------------------------------
     // ---- Utility.toPrintDetailedDebuggingLogToConsole = true; // ---- NOTE ---- disable after detailed tracing is done.
     for (const utterance of utteranceLabelsMap.keys()) {
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        Utility.debuggingLog(`processing utterance=${utterance}`);
+        Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): processing utterance='${utterance}'`);
       }
       const intents: Array<{
         'name': string;
@@ -253,7 +446,7 @@ export class LabelResolver {
       {
         const labels: Set<string> = utteranceLabelsMap.get(utterance) as Set<string>;
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
-          Utility.debuggingLog(`LabelResolver.addBatch()-Intent: Adding { labels.size: ${labels.size}, text: ${utterance} }`);
+          Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject()-Intent: Adding { labels.size: ${labels.size}, text: ${utterance} }`);
         }
         if (labels && (labels.size > 0)) {
           for (const label of labels) {
@@ -266,7 +459,7 @@ export class LabelResolver {
         }
         numberUtterancesProcessedUtteranceLabelsMap++;
         if ((numberUtterancesProcessedUtteranceLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
-          Utility.debuggingLog(`LabelResolver.addBatch(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
+          Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
         }
       }
       const entities: Array<{
@@ -279,7 +472,7 @@ export class LabelResolver {
         if (utteranceEntityLabelsMap.has(utterance)) {
           const labelsEntities: Label[] = utteranceEntityLabelsMap.get(utterance) as Label[];
           if (Utility.toPrintDetailedDebuggingLogToConsole) {
-            Utility.debuggingLog(`LabelResolver.addBatch()-Entity: Adding { labelsEntities.length: ${labelsEntities.length}, text: ${utterance} }`);
+            Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject()-Entity: Adding { labelsEntities.length: ${labelsEntities.length}, text: ${utterance} }`);
           }
           if (labelsEntities && (labelsEntities.length > 0)) {
             for (const labelEntity of labelsEntities) {
@@ -292,7 +485,7 @@ export class LabelResolver {
           }
           numberUtterancesProcessedUtteranceEntityLabelsMap++;
           if ((numberUtterancesProcessedUtteranceEntityLabelsMap % Utility.NumberOfInstancesPerProgressDisplayBatchForEntity) === 0) {
-            Utility.debuggingLog(`LabelResolver.addBatch(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
+            Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
           }
         }
       }
@@ -302,21 +495,11 @@ export class LabelResolver {
         entities: entities,
       });
     }
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): Added numberUtterancesProcessedUtteranceLabelsMap=${numberUtterancesProcessedUtteranceLabelsMap}`);
+    Utility.debuggingLog(`LabelResolver.utteranceLabelsToObject(): Added numberUtterancesProcessedUtteranceEntityLabelsMap=${numberUtterancesProcessedUtteranceEntityLabelsMap}`);
     // -----------------------------------------------------------------------
-    const batchJsonified: string = JSON.stringify(batch);
-    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): batchJsonified', batchJsonified, 'batchJsonified');
-    const batchUint8Array: Uint8Array = new TextEncoder().encode(batchJsonified);
-    let rv: any;
-    try {
-      rv = labelResolver.addBatch(batchUint8Array, '', addBatchOption);
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): rv:', rv, 'rv');
-    } catch (error) {
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): Failed adding batch:', batch, 'batch');
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): Failed adding error:', error, 'error');
-    }
-    // -----------------------------------------------------------------------
-    Utility.debuggingLog('LEAVING LabelResolver.addBatch()');
-    return rv;
+    Utility.debuggingLog('LEAVING LabelResolver.utteranceLabelsToObject()');
+    return batch;
   }
 
   // eslint-disable-next-line complexity
@@ -365,7 +548,7 @@ export class LabelResolver {
               Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }`);
             }
           } catch (error) {
-            Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
+            Utility.debuggingThrow(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
           }
         }
       }
@@ -413,7 +596,7 @@ export class LabelResolver {
               Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
             }
           } catch (error) {
-            Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
+            Utility.debuggingThrow(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
           }
         }
       }
