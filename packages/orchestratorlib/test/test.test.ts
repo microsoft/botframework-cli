@@ -18,7 +18,7 @@ import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - test', () => {
-  it('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer', async function (): Promise<void> {
+  xit('Test.0100 OrchestratorTest.runAsync()-Bert-3-layer', async function (): Promise<void> {
     const ignore: boolean = UnitTestHelper.getIgnoreFlag();
     if (ignore) {
       return;
