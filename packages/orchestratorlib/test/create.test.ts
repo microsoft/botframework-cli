@@ -33,8 +33,8 @@ describe('OrchestratorCreateTests', () => {
 
   it('Create Dispatch Snapshot', async function (): Promise<void> {
     const outputPath: string = './test/fixtures/dispatch';
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
 
     const snapshotPath: string = path.join(outputPath, OrchestratorHelper.SnapshotFileName);
