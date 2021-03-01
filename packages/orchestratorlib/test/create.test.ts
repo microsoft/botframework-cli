@@ -31,11 +31,11 @@ describe('OrchestratorCreateTests', () => {
       OrchestratorBaseModel.defaultHandler);
   });
 
-  xit('Create Dispatch Snapshot', async function (): Promise<void> {
-    const outputPath: string = './test/fixtures/dispatch';
+  it('Create Dispatch Snapshot', async function (): Promise<void> {
     Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+    const outputPath: string = './test/fixtures/dispatch';
 
     const snapshotPath: string = path.join(outputPath, OrchestratorHelper.SnapshotFileName);
     if (Utility.exists(snapshotPath)) {
@@ -54,7 +54,10 @@ describe('OrchestratorCreateTests', () => {
     assert.ok(snapshotContent.indexOf('Weather') > 0);
   });
 
-  xit('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
+  it('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
+    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const outputPath: string = './test/fixtures/output/create';
     const inputFileName: string = 'RootDialogWithSkillRef';
     const inputPath: string = `./test/fixtures/${inputFileName}.lu`;
