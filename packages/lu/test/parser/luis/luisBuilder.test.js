@@ -110,4 +110,19 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.utterances[0].text, 'test 1');
         assert.equal(luisObject.utterances[1].text, 'test 2');
     });
+
+    it('Phraselist can merge correctly when defined in different imported lu files', async () => {
+        let luFile = `
+        [Import entity](./test/fixtures/testcases/entities.lu)
+        [Import phraselist](./test/fixtures/testcases/phraselists2.lu)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.entities.length, 1);
+        assert.equal(luisObject.entities[0].name, 'LowercaseAction');
+        assert.equal(luisObject.entities[0].features[0].featureName, 'LowercaseList');
+        assert.equal(luisObject.phraselists.length, 1);
+        assert.equal(luisObject.phraselists[0].name, 'LowercaseList');
+        assert.equal(luisObject.phraselists[0].words, 'all lowercase,down case,downcase,lower case,lower case from,lower cased,lowercase,lowercase from,lowercase letter,lowercase letters,lowercased,lowercases,lowercasing,non capitalized,uncapitalized');
+    });
 });

@@ -355,9 +355,12 @@ const buildModelFeatures = function (blob, FinalLUISJSON) {
                 // error.
                 throw (new exception(retCode.errorCode.INVALID_INPUT, '[ERROR]: Phrase list : "' + modelFeature.name + '" has conflicting definitions. One marked interchangeable and another not interchangeable'));
             } else {
+                let words = modelFeatureInMaster[0].words.split(',').map(word => word.trim()).filter(word => word !== '');
                 modelFeature.words.split(',').forEach(function (word) {
-                    if (!modelFeatureInMaster[0].words.includes(word)) modelFeatureInMaster[0].words += "," + word;
-                })
+                    if (!words.find(w => w === word.trim())) words.push(word.trim());
+                });
+
+                modelFeatureInMaster[0].words = words.join(',');
             }
         }
     });
