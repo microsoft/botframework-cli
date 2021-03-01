@@ -6,21 +6,22 @@
 import assert = require('assert');
 
 import {} from 'mocha';
-
-import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+import * as fs from 'fs-extra';
+import * as path from 'path';
 
 import {Label} from '@microsoft/bf-dispatcher';
 import {ScoreEntity} from '@microsoft/bf-dispatcher';
 import {ScoreIntent} from '@microsoft/bf-dispatcher';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
+
+import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-import * as fs from 'fs-extra';
-import * as path from 'path';
 
 describe('Test Suite - orchestratorhelper', () => {
   it('Test.0000 OrchestratorHelper.addNewLabelUtterance()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance: string = 'hi';
     const label: string = 'greeting';
@@ -39,7 +40,7 @@ describe('Test Suite - orchestratorhelper', () => {
     assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1);
   });
   it('Test.0001 OrchestratorHelper.addNewLabelUtterance() empty label', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance: string = 'hi';
     const label: string = '';
@@ -60,7 +61,7 @@ describe('Test Suite - orchestratorhelper', () => {
   });
 
   it('Test.0100 OrchestratorHelper.addNewEntityLabelUtterance()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
@@ -171,7 +172,7 @@ describe('Test Suite - orchestratorhelper', () => {
   });
 
   it('Test.0200 OrchestratorHelper.getJsonIntentsEntitiesUtterances()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance0: string = 'I want to see Medal for the General';
     const utterance1: string = 'Play the top music from The Railway Children off Last Fm .';
@@ -353,7 +354,7 @@ describe('Test Suite - orchestratorhelper', () => {
   });
 
   it('Test.0300 OrchestratorHelper.getJsonIntentEntityScoresUtterances()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance0: string = 'I want to see Medal for the General';
     const utterance1: string = 'Play the top music from The Railway Children off Last Fm .';

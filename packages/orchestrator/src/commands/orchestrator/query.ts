@@ -6,7 +6,6 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorQuery extends Command {
   static description: string = 'Query Orchestrator base model and a snapshot/train file';
@@ -100,8 +99,7 @@ export default class OrchestratorQuery extends Command {
           Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
         }
       }
-      Utility.toPrintDebuggingLogToConsole = flags.debug;
-      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
       Utility.debuggingLog(`OrchestratorQuery.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): query=${query}`);

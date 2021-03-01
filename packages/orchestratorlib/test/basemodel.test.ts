@@ -12,7 +12,7 @@ describe('OrchestratorBaseModelTests', async () => {
   const nlrVersions: any = await OrchestratorBaseModel.getVersionsAsync();
 
   it('listAsync', async function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const nlrVersionsAll: any = await OrchestratorBaseModel.listAsync(true);
     assert.ok(nlrVersionsAll);

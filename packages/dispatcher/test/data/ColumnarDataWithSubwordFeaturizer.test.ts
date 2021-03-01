@@ -795,7 +795,7 @@ export function exampleFunctionDataWithSubwordFeaturizerWithColumnarContent(
 
 describe("Test Suite - data/ColumnarDataWithSubwordFeaturizer - Email", () => {
     it("Test.0000 exampleFunctionDataWithSubwordFeaturizerWithColumnarContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
             exampleFunctionDataWithSubwordFeaturizerWithColumnarContent(

@@ -23,7 +23,7 @@ export default class OrchestratorBaseModelGet extends Command {
     const cwd: string = process.cwd();
     const output: string = flags.out || path.join(cwd, 'model');
     const basemodelId: any = flags.versionId || '';
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
+    Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
 
     try {
       if (!OrchestratorHelper.exists(output)) {

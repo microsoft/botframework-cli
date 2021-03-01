@@ -36,9 +36,9 @@ import {OrchestratorHelper} from './orchestratorhelper';
 
 import {AssessmentLabelSummaryTemplateHtml} from './resources/assessment-label-summary-template-html';
 import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-template-html';
-// import { UtilityLabelResolver } from './utilitylabelresolver';
+import {UtilityLabelResolver} from './utilitylabelresolver';
 
-// import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export class Utility {
   public static toPrintDebuggingLogToConsole: boolean = false;
@@ -6872,7 +6872,22 @@ export class Utility {
   // -------------------------------------------------------------------------
   // ---- NOTE ---- debugging
   // -------------------------------------------------------------------------
-  // ---- NOTE-TO-REFACTOR ----
+
+  public static resetFlagToPrintDebuggingLogToConsole(flag: boolean) {
+    Utility.toPrintDebuggingLogToConsole = flag;
+    UtilityDispatcher.resetFlagToPrintDebuggingLogToConsole(flag);
+  }
+
+  public static resetFlagToPrintDetailedDebuggingLogToConsole(flag: boolean) {
+    Utility.toPrintDetailedDebuggingLogToConsole = flag;
+    UtilityDispatcher.resetFlagToPrintDetailedDebuggingLogToConsole(flag);
+  }
+
+  public static resetFlagToObfuscateLabelTextInReportUtility(flag: boolean) {
+    Utility.toObfuscateLabelTextInReportUtility = flag;
+    UtilityDispatcher.resetFlagToObfuscateLabelTextInReportUtility(flag);
+    UtilityLabelResolver.resetFlagToObfuscateLabelTextInReportUtilityLabelResolver(flag);
+  }
 
   public static debuggingLog(
     message: any): string {
@@ -6897,6 +6912,10 @@ export class Utility {
     Utility.debuggingLog(stackTrace);
     throw error;
   }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- folder utility functions
+  // -------------------------------------------------------------------------
 
   public static emptyFolder(inputPath: string) {
     if (fs.existsSync(inputPath)) {

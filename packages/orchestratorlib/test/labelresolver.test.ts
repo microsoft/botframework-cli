@@ -24,8 +24,7 @@ describe('Test Suite - LabelResolver', () => {
     if (ignore) {
       return;
     }
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // -----------------------------------------------------------------------
     const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';

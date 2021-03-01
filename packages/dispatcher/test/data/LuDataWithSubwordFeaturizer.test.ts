@@ -902,7 +902,7 @@ export async function exampleFunctionDataWithSubwordFeaturizerWithLuContent(
 
 describe("Test Suite - data/LuDataWithSubwordFeaturizer", () => {
     it("Test.0000 exampleFunctionDataWithSubwordFeaturizerWithLuContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
             await exampleFunctionDataWithSubwordFeaturizerWithLuContent(

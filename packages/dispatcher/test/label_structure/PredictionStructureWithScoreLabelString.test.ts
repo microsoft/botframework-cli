@@ -20,7 +20,7 @@ import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - PredictionStructureWithScoreLabelString", () => {
   it("Test.0000 PredictionStructureWithScoreLabelString - constructor()", function() {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utterance: string = "utterance";
     const labelsPredictedEvaluation: number = 0;

@@ -6,7 +6,6 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorInteractive extends Command {
   static description: string = 'Real-time interaction with Orchestrator model and analysis. Can return score of given utterance using previously created orchestrator examples';
@@ -92,8 +91,7 @@ export default class OrchestratorInteractive extends Command {
           Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
         }
       }
-      Utility.toPrintDebuggingLogToConsole = flags.debug;
-      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
       Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): outputPath=${outputPath}`);

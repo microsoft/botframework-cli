@@ -13,7 +13,7 @@ import { UnitTestHelper } from "./Utility.test";
 
 describe("Test Suite - utility/CryptoUtility", () => {
     it("Test.0000 getStringMdgetCryptoHashes5Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const cryptoHashes: string[] = CryptoUtility.getCryptoHashes();
         Utility.debuggingLog(`cryptoHashes="${cryptoHashes}""`);
@@ -81,14 +81,14 @@ describe("Test Suite - utility/CryptoUtility", () => {
     */
 
     it("Test.0100 getStringMd5Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World!";
         const inputMd5: string = CryptoUtility.getStringMd5Hash(input) as string;
         Utility.debuggingLog(`Utility.jsonStringify(input)="${Utility.jsonStringify(input)}", inputMd5="${inputMd5}"`);
     });
     it("Test.0200 getObjectMd5Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["Hello, World!"];
         const inputMd5: string = CryptoUtility.getObjectMd5Hash(input) as string;
@@ -96,14 +96,14 @@ describe("Test Suite - utility/CryptoUtility", () => {
     });
 
     it("Test.0300 getStringSha256Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World!";
         const inputSha256: string = CryptoUtility.getStringSha256Hash(input) as string;
         Utility.debuggingLog(`Utility.jsonStringify(input)="${Utility.jsonStringify(input)}", inputSha256="${inputSha256}"`);
     });
     it("Test.0400 getObjectSha256Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["Hello, World!"];
         const inputSha256: string = CryptoUtility.getObjectSha256Hash(input) as string;
@@ -111,14 +111,14 @@ describe("Test Suite - utility/CryptoUtility", () => {
     });
 
     it("Test.0500 getStringSha512Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World!";
         const inputSha512: string = CryptoUtility.getStringSha512Hash(input) as string;
         Utility.debuggingLog(`Utility.jsonStringify(input)="${Utility.jsonStringify(input)}", inputSha512="${inputSha512}"`);
     });
     it("Test.0600 getObjectSha512Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["Hello, World!"];
         const inputSha512: string = CryptoUtility.getObjectSha512Hash(input) as string;
@@ -126,14 +126,14 @@ describe("Test Suite - utility/CryptoUtility", () => {
     });
 
     it("Test.0700 getStringSha384Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World!";
         const inputSha384: string = CryptoUtility.getStringSha384Hash(input) as string;
         Utility.debuggingLog(`Utility.jsonStringify(input)="${Utility.jsonStringify(input)}", inputSha384="${inputSha384}"`);
     });
     it("Test.0800 getObjectSha384Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["Hello, World!"];
         const inputSha384: string = CryptoUtility.getObjectSha384Hash(input) as string;
@@ -141,7 +141,7 @@ describe("Test Suite - utility/CryptoUtility", () => {
     });
 
     it("Test.0900 getStringSha1Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World!";
         const inputSha1: string = CryptoUtility.getStringSha1Hash(input) as string;
@@ -149,7 +149,7 @@ describe("Test Suite - utility/CryptoUtility", () => {
         Utility.debuggingLog(`Utility.jsonStringify(input)="${Utility.jsonStringify(input)}", inputSha1="${inputSha1}"`);
     });
     it("Test.1000 getObjectSha1Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["Hello, World!"];
         const inputSha1: string = CryptoUtility.getObjectSha1Hash(input) as string;

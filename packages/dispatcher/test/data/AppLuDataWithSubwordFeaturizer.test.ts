@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data/AppLuDataWithSubwordFeaturizer", () => {
     it("Test.0000 exampleFunctionDataWithSubwordFeaturizer", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
             "resources/data/LU/skills/emailskill/en/Email.lu";

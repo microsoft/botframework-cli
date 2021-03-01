@@ -51,7 +51,7 @@ export default class OrchestratorAdd extends Command {
     const key: string = (flags.key || '');
     const routingName: string = (flags.routingName || '');
 
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
+    Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
     Utility.debuggingLog(`type=${type}`);
     Utility.debuggingLog(`id=${id}`);
     Utility.debuggingLog(`key=${key}`);

@@ -18,7 +18,7 @@ const MathematicsHelperObject: IMathematicsHelper = MathematicsHelper.GetMathema
 
 describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/MathematicsHelper", () => {
     it("Test.0000 softmaxSingleFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmax: number =
             MathematicsHelperObject.softmaxSingleFunction(testArray, 2);
@@ -27,7 +27,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmax=${softmax}`);
     });
     it("Test.0001 smoothArgmaxApproximationSingleFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothArgmax: number =
             MathematicsHelperObject.smoothArgmaxApproximationSingleFunction(testArray, 2);
@@ -36,7 +36,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `smoothArgmax=${smoothArgmax}`);
     });
     it("Test.0002 softmaxFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmaxes: number[] =
             MathematicsHelperObject.softmaxFunction(testArray);
@@ -51,7 +51,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxes=${softmaxes}`);
     });
     it("Test.0003 smoothArgmaxApproximationFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothArgmaxes: number[] =
             MathematicsHelperObject.smoothArgmaxApproximationFunction(testArray);
@@ -67,7 +67,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0100 logsumexpStrictConvexSingleFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const logsumexpStrictConvex: number =
             MathematicsHelperObject.logsumexpStrictConvexSingleFunction(testArray);
@@ -76,7 +76,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `logsumexpStrictConvex=${logsumexpStrictConvex}`);
     });
     it("Test.0101 smoothMaxApproximationStrictConvexFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothMaxApproximationStrict: number =
             MathematicsHelperObject.smoothMaxApproximationStrictConvexFunction(testArray);
@@ -85,7 +85,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `smoothMaxApproximationStrict=${smoothMaxApproximationStrict}`);
     });
     it("Test.0102 logsumexpSingleFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const logsumexp: number =
             MathematicsHelperObject.logsumexpSingleFunction(testArray);
@@ -94,7 +94,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `logsumexp=${logsumexp}`);
     });
     it("Test.0103 smoothMaxApproximationFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const smoothMaxApproximation: number =
             MathematicsHelperObject.smoothMaxApproximationFunction(testArray);
@@ -104,7 +104,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0201 sigmoidLogisticGradientFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoidLogisticGradient: number =
             MathematicsHelperObject.sigmoidLogisticGradientFunction(testArray[1]);
@@ -114,7 +114,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0300 sigmoidLogisticFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidLogisticFunction(testArray[1]);
@@ -123,7 +123,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `sigmoid=${sigmoid}`);
     });
     it("Test.0301 sigmoidHyperbolicTangentFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidHyperbolicTangentFunction(testArray[1]);
@@ -132,7 +132,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `sigmoid=${sigmoid}`);
     });
     it("Test.0302 sigmoidArctangentFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidArctangentFunction(testArray[1]);
@@ -141,7 +141,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `sigmoid=${sigmoid}`);
     });
     it("Test.0303 sigmoidGudermannianFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidGudermannianFunction(testArray[1]);
@@ -150,7 +150,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `sigmoid=${sigmoid}`);
     });
     it("Test.0304 sigmoidGeneralizedLogisticFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidGeneralizedLogisticFunction(testArray[1], 1);
@@ -159,7 +159,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `sigmoid=${sigmoid}`);
     });
     it("Test.0305 sigmoidAlgebraicFunction()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sigmoid: number =
             MathematicsHelperObject.sigmoidAlgebraicFunction(testArray[1]);
@@ -169,7 +169,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0400 getL1Regularized()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 1;
         const value: number = 0.5;
@@ -182,7 +182,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0401 getL1Regularized()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = -1;
         const value: number = 0.5;
@@ -195,7 +195,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0402 getL1Regularized()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 0;
         const value: number = 0.5;
@@ -208,7 +208,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0403 getL2Regularized()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 2;
         const value: number = 0.5;
@@ -221,7 +221,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0404 getL1l2RegularizedWeightOptimizedSparse()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 1;
         const valueL1: number = 0.5;
@@ -235,7 +235,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0405 getL1l2RegularizedWeightOptimizedSparse()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = -1;
         const valueL1: number = 0.5;
@@ -249,7 +249,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0406 getL1l2RegularizedWeightOptimizedSparse()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 1;
         const valueL1: number = 0.5;
@@ -263,7 +263,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0407 getL1l2RegularizedWeightOptimizedSparse()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 0;
         const valueL1: number = 0.5;
@@ -277,7 +277,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0408 getL1l2RegularizedWeightOptimizedDense()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 1;
         const valueL1: number = 0.5;
@@ -291,7 +291,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0409 getL1l2RegularizedWeightOptimizedDense()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = -1;
         const valueL1: number = 0.5;
@@ -305,7 +305,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `regularization=${regularization}`);
     });
     it("Test.0410 getL1l2RegularizedWeightOptimizedDense()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const weight: number = 0;
         const valueL1: number = 0.5;
@@ -320,7 +320,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0500 softmaxLogLossGradientUpdate()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const groundTruthPositiveLabelIndexes: number[] = [0, 1];
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
@@ -356,7 +356,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmax=${softmax}`);
     });
     it("Test.0501 softmaxLogLossGradientUpdate()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const groundTruthPositiveLabelIndexes: number[] = [];
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
@@ -382,7 +382,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         }, "groundTruthPositiveLabelIndexes is empty");
     });
     it("Test.0502 softmaxLogLossGradientUpdate()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const groundTruthPositiveLabelIndexes: number[] = [0, 1];
         const featureVectorSparseIndexArrays: number[][] = [];
@@ -408,7 +408,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         }, "featureVectorSparseIndexArrays is empty");
     });
     it("Test.0503 softmaxLogLossGradientUpdate()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const groundTruthPositiveLabelIndexes: number[] = [0, 1];
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
@@ -434,7 +434,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         }, "matrixWeightDenseArrays is empty");
     });
     it("Test.0504 softmaxLogLossGradientUpdate()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const groundTruthPositiveLabelIndexes: number[] = [0, 1];
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
@@ -461,7 +461,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0600 logLoss()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const probabilityVector: number[] = testArray;
         const groundTruthPositiveLabelIndex: number = 1;
@@ -472,7 +472,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `logLossValue=${logLossValue}`);
     });
     it("Test.0601 logLossGeneric()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const probabilityVector: number[] = testArray;
         const labelArray: number[] = testArray;
@@ -484,7 +484,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0700 softmaxLogLoss()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmaxVectors: number[][] = [testArray, testArray];
         const groundTruthPositiveLabelIndexes: number[] = [1, 1];
@@ -495,7 +495,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxLogLossValue=${softmaxLogLossValue}`);
     });
     it("Test.0701 softmaxLogLossGeneric()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const softmaxVectors: number[][] = [testArray, testArray];
         const labelVectors: number[][] = [testArray, testArray];
@@ -507,7 +507,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0800 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(0.5, 0.5, 0.5, 0), nrow=2, byrow=TRUE)
@@ -553,7 +553,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0801 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [];
         const featureVectorSparseValueArrays: number[][] = [[0.5, 0.5], [0.5]];
@@ -573,7 +573,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0802 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const featureVectorSparseValueArrays: number[][] = [];
@@ -593,7 +593,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0803 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const featureVectorSparseValueArrays: number[][] = [[0.5, 0.5], [0.5]];
@@ -613,7 +613,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0804 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(0.5, 0.5, 0.5, 0), nrow=2, byrow=TRUE)
@@ -659,7 +659,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0805 matrixVectorProductSoftmaxSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const featureVectorSparseValueArrays: number[][] = [[0.5, 0.5], [0.5]];
@@ -689,7 +689,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0806 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(1, 1, 1, 0), nrow=2, byrow=TRUE)
@@ -733,7 +733,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0807 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -751,7 +751,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0808 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -779,7 +779,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0809 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const matrixWeightDenseArrays: number[][] = [];
@@ -797,7 +797,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0810 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(1, 1, 1, 0), nrow=2, byrow=TRUE)
@@ -841,7 +841,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0811 matrixVectorProductSoftmaxSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featureVectorSparseIndexArrays: number[][] = [[0, 1], [0]];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -869,7 +869,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0812 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(0.5, 0.5, 0.5, 0), nrow=2, byrow=TRUE)
@@ -913,7 +913,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0813 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const vectorDenseValueArrays: number[][] = [];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -931,7 +931,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0814 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const vectorDenseValueArrays: number[][] = [[0.5, 0.5], [0.5, 0]];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -959,7 +959,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0815 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const vectorDenseValueArrays: number[][] = [[0.5, 0.5], [0.5, 0]];
         const matrixWeightDenseArrays: number[][] = [];
@@ -977,7 +977,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
         });
     });
     it("Test.0816 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureMatrix = matrix(c(0.5, 0.5, 0.5, 0), nrow=2, byrow=TRUE)
@@ -1021,7 +1021,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `softmaxVectors=${softmaxVectors}`);
     });
     it("Test.0817 matrixVectorProductSoftmaxDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const vectorDenseValueArrays: number[][] = [[0.5, 0.5], [0.5, 0]];
         const matrixWeightDenseArrays: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -1050,7 +1050,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.0900 matrixVectorProductSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(0.5, 0.5)
@@ -1080,7 +1080,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `matrixVectorProduct=${matrixVectorProduct}`);
     });
     it("Test.0901 matrixVectorProductSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(1, 1)
@@ -1108,7 +1108,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `matrixVectorProduct=${matrixVectorProduct}`);
     });
     it("Test.0902 matrixVectorProductDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(0.5, 0.5)
@@ -1137,7 +1137,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1000 dotProductSparseIndexesValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(0.5, 0.5)
@@ -1163,7 +1163,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `dotProduct=${dotProduct}`);
     });
     it("Test.1001 dotProductSparseIndexes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(1, 1)
@@ -1187,7 +1187,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `dotProduct=${dotProduct}`);
     });
     it("Test.1002 dotProductDenseValues()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             featureVector = c(0.5, 0.5)
@@ -1212,7 +1212,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1100 matrixDenseL1l2RegularizedSparseTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -1263,7 +1263,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.1101 matrixDenseL1l2RegularizedDenseTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -1315,7 +1315,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1200 vectorDenseL1l2RegularizedSparseTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -1358,7 +1358,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.1201 vectorDenseL1l2RegularizedDenseTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -1402,7 +1402,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1300 matrixDenseAddConstantTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1433,7 +1433,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1301 matrixDenseMultiplyConstantTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1464,7 +1464,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1302 matrixDenseSubtractConstantFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1495,7 +1495,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1303 matrixDenseDivideConstantFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1527,7 +1527,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1400 matrixDenseAddTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1557,7 +1557,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1401 matrixDenseMultiplyTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1587,7 +1587,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1402 matrixDenseSubtractFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1617,7 +1617,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1403 matrixDenseDivideFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1648,7 +1648,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1500 matrixDenseAddScaledTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1681,7 +1681,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1501 matrixDenseMultiplyScaledTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1714,7 +1714,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1502 matrixDenseSubtractScaledFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1747,7 +1747,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1503 matrixDenseDivideScaledFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray0 = matrix(c(0.1, 0.2, 0.3, 0.4), nrow=2, byrow=TRUE)
@@ -1781,7 +1781,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1600 vectorDenseAddConstantTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1810,7 +1810,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1601 vectorDenseMultiplyConstantTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1839,7 +1839,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1602 vectorDenseSubtractConstantFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1868,7 +1868,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1603 vectorDenseDivideConstantFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -1898,7 +1898,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1700 vectorDenseAddTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray = c(0.1, 0.2, 0.3, 0.4)
@@ -1926,7 +1926,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1701 vectorDenseMultiplyTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray = c(0.1, 0.2, 0.3, 0.4)
@@ -1954,7 +1954,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1702 vectorDenseSubtractFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray = c(0.1, 0.2, 0.3, 0.4)
@@ -1982,7 +1982,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1703 vectorDenseDivideFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             valueArray = c(0.1, 0.2, 0.3, 0.4)
@@ -2011,7 +2011,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1800 vectorDenseAddScaledTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -2041,7 +2041,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1801 vectorDenseMultiplyScaledTo()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -2071,7 +2071,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1802 vectorDenseSubtractScaledFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -2101,7 +2101,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.1803 vectorDenseDivideScaledFrom()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             constant = 0.01;
@@ -2132,7 +2132,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.1900 matrixNewLikeWithRandomCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
@@ -2152,7 +2152,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1901 matrixNewLikeWithRandomCellsScaled()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2174,7 +2174,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1902 matrixNewLikeWithZeroCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
@@ -2194,7 +2194,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1903 matrixNewLikeWithConstantCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const constant: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2216,7 +2216,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1904 matrixNewLikeWithScaledCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2238,7 +2238,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.1905 matrixNewLikeWithL1l2RegularizedSparseCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2289,7 +2289,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.1906 matrixNewLikeWithL1l2RegularizedDenseCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2341,7 +2341,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2000 vectorNewLikeWithRandomElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
@@ -2361,7 +2361,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2001 vectorNewLikeWithRandomElementsScaled()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2383,7 +2383,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2002 vectorNewLikeWithZeroElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
@@ -2403,7 +2403,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2003 vectorNewLikeWithConstantElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const constant: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2425,7 +2425,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2004 vectorNewLikeWithScaledElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2447,7 +2447,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2005 vectorNewLikeWithL1l2RegularizedSparseElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2490,7 +2490,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.2006 vectorNewLikeWithL1l2RegularizedDenseElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2534,7 +2534,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2100 matrixNewWithRandomCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
@@ -2555,7 +2555,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.2101 matrixNewWithRandomCellsScaled()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2578,7 +2578,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.2102 matrixNewWithZeroCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
         const valueArrayResult: number[][] =
@@ -2599,7 +2599,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.2103 matrixNewWithConstantCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const constant: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2622,7 +2622,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.2104 matrixNewWithScaledCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[][] = [[0.1, 0.2], [0.3, 0.4]];
@@ -2644,7 +2644,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[1][1]=${valueArrayResult[1][1]}`);
     });
     it("Test.2105 matrixNewWithL1l2RegularizedSparseCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2695,7 +2695,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.2106 matrixNewWithL1l2RegularizedDenseCells()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2747,7 +2747,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2200 vectorNewWithRandomElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
@@ -2767,7 +2767,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2201 vectorNewWithRandomElementsScaled()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2789,7 +2789,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2202 vectorNewWithZeroElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
         const valueArrayResult: number[] =
@@ -2809,7 +2809,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2203 vectorNewWithConstantElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const constant: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2831,7 +2831,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2204 vectorNewWithScaledElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const scale: number = 2;
         const valueArray: number[] = [0.1, 0.2, 0.3, 0.4];
@@ -2853,7 +2853,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayResult[3]=${valueArrayResult[3]}`);
     });
     it("Test.2205 vectorNewWithL1l2RegularizedSparseElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2896,7 +2896,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `valueArrayRegularized=${valueArrayRegularized}`);
     });
     it("Test.2206 vectorNewWithL1l2RegularizedDenseElements()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const rTestCode: string = `
             l1RegularizationValue = 0.01;
@@ -2940,7 +2940,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2300 getIndexOnFirstMaxEntryOnArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([1, 4, 5, 3, 5, 3, 2]);
         const maxResult: { "indexMax": number, "max": number } =
@@ -2953,7 +2953,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `maxResult.max=${maxResult.max}`);
     });
     it("Test.2301 getIndexOnLastMaxEntryOnArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([1, 4, 5, 3, 5, 3, 2]);
         const maxResult: { "indexMax": number, "max": number } =
@@ -2966,7 +2966,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `maxResult.max=${maxResult.max}`);
     });
     it("Test.2302 getIndexOnFirstMaxEntry()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [1, 4, 5, 3, 5, 3, 2];
         const maxResult: { "indexMax": number, "max": number } =
@@ -2979,7 +2979,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `maxResult.max=${maxResult.max}`);
     });
     it("Test.2303 getIndexOnLastMaxEntry()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [1, 4, 5, 3, 5, 3, 2];
         const maxResult: { "indexMax": number, "max": number } =
@@ -2993,7 +2993,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2400 getIndexOnFirstMinEntryOnArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([6, 4, 5, 3, 5, 3, 6]);
         const minResult: { "indexMin": number, "min": number } =
@@ -3006,7 +3006,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `minResult.min=${minResult.min}`);
     });
     it("Test.2401 getIndexOnLastMinEntryOnArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: Int32Array = new Int32Array([6, 4, 5, 3, 5, 3, 6]);
         const minResult: { "indexMin": number, "min": number } =
@@ -3019,7 +3019,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `minResult.min=${minResult.min}`);
     });
     it("Test.2402 getIndexOnFirstMinEntry()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [6, 4, 5, 3, 5, 3, 6];
         const minResult: { "indexMin": number, "min": number } =
@@ -3032,7 +3032,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `minResult.min=${minResult.min}`);
     });
     it("Test.2403 getIndexOnLastMinEntry()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const valueArray: number[] = [6, 4, 5, 3, 5, 3, 6];
         const minResult: { "indexMin": number, "min": number } =
@@ -3046,7 +3046,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2500 safeDivide()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const numerator: number = 0;
         const denominator: number = 0;
@@ -3057,7 +3057,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2501 safeDivide()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const numerator: number = 0;
         const denominator: number = 1;
@@ -3068,7 +3068,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2502 safeDivide()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const numerator: number = 1;
         const denominator: number = 1;
@@ -3079,7 +3079,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2503 safeLog()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0;
         const result: number =
@@ -3089,7 +3089,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2504 safeLog()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = -1;
         const result: number =
@@ -3099,7 +3099,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2505 safeLog()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 1;
         const result: number =
@@ -3110,7 +3110,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
     });
 
     it("Test.2600 clipValue()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0;
         const result: number =
@@ -3120,7 +3120,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2601 clipValue()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 1;
         const result: number =
@@ -3130,7 +3130,7 @@ describe("Test Suite - mathematics/mathematics_helper/mathematics_helper/Mathema
             `result=${result}`);
     });
     it("Test.2602 clipValue()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const value: number = 0.5;
         const result: number =

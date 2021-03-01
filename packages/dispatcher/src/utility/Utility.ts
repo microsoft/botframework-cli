@@ -2375,6 +2375,16 @@ export class Utility {
         process.stderr.write(outputContents);
     }
 
+    public static resetFlagToPrintDebuggingLogToConsole(flag: boolean) {
+        Utility.toPrintDebuggingLogToConsole = flag;
+    }
+    public static resetFlagToPrintDetailedDebuggingLogToConsole(flag: boolean) {
+        Utility.toPrintDetailedDebuggingLogToConsole = flag;
+    }
+    public static resetFlagToObfuscateLabelTextInReportUtility(flag: boolean) {
+        Utility.toObfuscateLabelTextInReportUtility = flag;
+    }
+
     public static debuggingLog(
         message: any): string {
         const dateTimeString: string = (new Date()).toISOString();

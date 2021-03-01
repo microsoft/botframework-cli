@@ -22,7 +22,7 @@ import { UnitTestHelper } from "../../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/neural_network/learner/utility_learner", () => {
     it("Test.0000 LearnerUtility-exampleFunctionPredictAndEvaluateTestDataset", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
@@ -57,7 +57,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
     });
 
     it("Test.0100 LearnerUtility-exampleFunctionPredictAndEvaluateTestDatasetHashing", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const featurizer: NgramSubwordFeaturizer =
             LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
@@ -92,7 +92,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
     });
 
     it("Test.0200 LearnerUtility-exampleFunctionLoadFeaturizeTrainDataset", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         LearnerUtility.exampleFunctionLoadFeaturizeTrainDataset(
             0,
@@ -104,7 +104,7 @@ describe("Test Suite - model/supervised/classifier/neural_network/learner/utilit
     });
 
     it("Test.0300 LearnerUtility-exampleFunctionLoadTestDataset", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         LearnerUtility.exampleFunctionLoadTestDataset(
             "resources/data/Columnar/EmailTest.tsv",

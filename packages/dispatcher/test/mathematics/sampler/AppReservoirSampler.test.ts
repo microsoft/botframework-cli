@@ -16,12 +16,12 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/sampler/AppReservoirSampler", () => {
     it("Test.0000 exampleFunctionReservoirSampler", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionReservoirSampler();
     });
     it("Test.0001 exampleFunctionReservoirSamplerWithArrayInput", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionReservoirSamplerWithArrayInput();
     });

@@ -47,7 +47,7 @@ export async function exampleFunctionDataWithSubwordFeaturizer(): Promise<string
     Utility.debuggingLog(
         `unknownArgs=${Utility.jsonStringify(unknownArgs)}`);
     const debugFlag: boolean = Utility.toBoolean(args.debug);
-    Utility.toPrintDebuggingLogToConsole = debugFlag;
+    Utility.resetFlagToPrintDebuggingLogToConsole(debugFlag);
     // ---- NOTE-FOR-DEBUGGING ----  console.dir(args);
     // -----------------------------------------------------------------------
     const filename: string = args.filename;

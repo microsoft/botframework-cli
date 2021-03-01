@@ -36,7 +36,7 @@ export class UnitTestHelper {
 
 describe("Test Suite - utility/Utility", () => {
     it("Test.0000 incrementKeyValueNumberMap()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMap: Map<string, number> = new Map<string, number>();
         Utility.incrementKeyValueNumberMap(stringNumberMap, "a");
@@ -49,7 +49,7 @@ describe("Test Suite - utility/Utility", () => {
             `stringNumberMap.get("a")=${stringNumberMap.get("a")}`);
     });
     it("Test.0001 addKeyValueToNumberMapSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -62,7 +62,7 @@ describe("Test Suite - utility/Utility", () => {
             `(stringNumberMapSet.get("a") as Set<number>).size=${(stringNumberMapSet.get("a") as Set<number>).size}`);
     });
     it("Test.0002 addToNumberMapSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -98,7 +98,7 @@ describe("Test Suite - utility/Utility", () => {
             `(stringNumberMapSet.get("a") as Set<number>).size=${(stringNumberMapSetAddedTo.get("a") as Set<number>).size}`);
     });
     it("Test.0003 addKeyValueToNumberMapArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -111,7 +111,7 @@ describe("Test Suite - utility/Utility", () => {
             `(stringNumberMapArray.get("a") as number[]).length=${(stringNumberMapArray.get("a") as number[]).length}`);
     });
     it("Test.0004 addToNumberMapSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -148,7 +148,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0100 mapToJsonSerialization()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMap: Map<string, number> = new Map<string, number>();
         stringNumberMap.set("a", 1);
@@ -157,7 +157,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapInString=${mapInString}`);
     });
     it("Test.0101 jsonSerializationToMap()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMap: Map<string, number> = new Map<string, number>();
         stringNumberMap.set("a", 1);
@@ -169,7 +169,7 @@ describe("Test Suite - utility/Utility", () => {
             `stringNumberMapNew.get("a")=${stringNumberMapNew.get("a")}`);
     });
     it("Test.0102 setToJsonSerialization()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberSet: Set<string> = new Set<string>();
         stringNumberSet.add("a");
@@ -178,7 +178,7 @@ describe("Test Suite - utility/Utility", () => {
             `setInString=${setInString}`);
     });
     it("Test.0103 jsonSerializationToSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberSet: Set<string> = new Set<string>();
         stringNumberSet.add("a");
@@ -192,7 +192,7 @@ describe("Test Suite - utility/Utility", () => {
             `stringNumberSetNew.has("a")=${stringNumberSetNew.has("a")}`);
     });
     it("Test.0104 arrayToJsonSerialization()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberArray: string[] = [];
         stringNumberArray.push("a");
@@ -201,7 +201,7 @@ describe("Test Suite - utility/Utility", () => {
             `arrayInString=${arrayInString}`);
     });
     it("Test.0105 jsonSerializationToArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberArray: string[] = [];
         stringNumberArray.push("a");
@@ -217,7 +217,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0200 stringMapToObject()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMap: Map<string, number> = new Map<string, number>();
         stringNumberMap.set("a", 1);
@@ -228,7 +228,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapInJsonString=${mapInJsonString}`);
     });
     it("Test.0201 jsonToStringMap()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMap: Map<string, number> = new Map<string, number>();
         stringNumberMap.set("a", 1);
@@ -244,7 +244,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0300 stringMapSetToObject()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -256,7 +256,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapSetInJsonString=${mapSetInJsonString}`);
     });
     it("Test.0301 objectToStringMapSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -285,7 +285,7 @@ describe("Test Suite - utility/Utility", () => {
             `${(stringNumberMapSetNew.get("a") as Set<number>).has(1)}`);
     });
     it("Test.0302 stringMapArrayToObject()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -297,7 +297,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapArrayInJsonString=${mapArrayInJsonString}`);
     });
     it("Test.0303 objectToStringMapArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -328,7 +328,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0400 stringMapSetToJson()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -340,7 +340,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapSetInJsonString=${mapSetInJsonString}`);
     });
     it("Test.0401 jsonToStringMapSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapSet: Map<string, Set<number>> = new Map<string, Set<number>>();
         Utility.addKeyValueToNumberMapSet(stringNumberMapSet, "a", 1);
@@ -369,7 +369,7 @@ describe("Test Suite - utility/Utility", () => {
             `${(stringNumberMapSetNew.get("a") as Set<number>).has(1)}`);
     });
     it("Test.0402 stringMapArrayToJson()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -381,7 +381,7 @@ describe("Test Suite - utility/Utility", () => {
             `mapArrayInJsonString=${mapArrayInJsonString}`);
     });
     it("Test.0403 jsonToStringMapArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringNumberMapArray: Map<string, number[]> = new Map<string, number[]>();
         Utility.addKeyValueToNumberMapArray(stringNumberMapArray, "a", 1);
@@ -412,21 +412,21 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0500 getXorshift128plusState0()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState0: number = Utility.getXorshift128plusState0();
         Utility.debuggingLog(
             `xorshift128plusState0=${xorshift128plusState0}`);
     });
     it("Test.0501 getXorshift128plusState1()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState1: number = Utility.getXorshift128plusState1();
         Utility.debuggingLog(
             `xorshift128plusState1=${xorshift128plusState1}`);
     });
     it("Test.0502 rngSeedXorshift128plus()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.rngSeedXorshift128plus(3, 4);
         for (let i = 0; i < 16; i++) {
@@ -436,7 +436,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0503 rngNextXorshift128plus()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.rngSeedXorshift128plus(3, 4);
         const randomArray: number[] = [];
@@ -456,35 +456,35 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0504 getXorshift128plusState0WithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState0BigInt: bigint = Utility.getXorshift128plusState0WithBigIntStates();
         Utility.debuggingLog(
             `xorshift128plusState0BigInt=${xorshift128plusState0BigInt}`);
     });
     it("Test.0505 getXorshift128plusState1WithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusState1BigInt: bigint = Utility.getXorshift128plusState1WithBigIntStates();
         Utility.debuggingLog(
             `xorshift128plusState1BigInt=${xorshift128plusState1BigInt}`);
     });
     it("Test.0506 getXorshift128plusCycleWithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusCycleBigInt: bigint = Utility.getXorshift128plusCycleWithBigIntStates();
         Utility.debuggingLog(
             `xorshift128plusCycleBigInt=${xorshift128plusCycleBigInt}`);
     });
     it("Test.0507 getXorshift128plusCycleFloatWithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const xorshift128plusCycleBigIntFloat: number = Utility.getXorshift128plusCycleFloatWithBigIntStates();
         Utility.debuggingLog(
             `xorshift128plusCycleBigIntFloat=${xorshift128plusCycleBigIntFloat}`);
     });
     it("Test.0508 rngSeedXorshift128plusWithBigIntStatesWithNumberArguments()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.rngSeedXorshift128plusWithBigIntStatesWithNumberArguments(3, 4);
         for (let i = 0; i < 16; i++) {
@@ -494,7 +494,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0509 getXorshift128plusCycleWithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
         const bigint4: bigint = BigInt(4);
@@ -510,7 +510,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0510 rngNextXorshift128plusWithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
         const bigint4: bigint = BigInt(4);
@@ -539,7 +539,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0511 rngNextXorshift128plusFloatWithBigIntStates()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const bigint3: bigint = BigInt(3);
         const bigint4: bigint = BigInt(4);
@@ -572,7 +572,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.0512 rngNextXorshift128plusFloatWithBigIntStatesUniformTest()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampleSize: number = 100000;
         const sampleArray: number[] = [];
@@ -617,7 +617,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0513 getRandomInt()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const randomInt: number = Utility.getRandomInt(3);
         Utility.debuggingLog(
@@ -626,7 +626,7 @@ describe("Test Suite - utility/Utility", () => {
             `randomInt=${randomInt}`);
     });
     it("Test.0514 getRandomIntFromFloatLimit()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const randomInt: number = Utility.getRandomIntFromFloatLimit(3.14);
         Utility.debuggingLog(
@@ -635,7 +635,7 @@ describe("Test Suite - utility/Utility", () => {
             `randomInt=${randomInt}`);
     });
     it("Test.0515 getRandomIntFromIntLimit()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const randomInt: number = Utility.getRandomIntFromIntLimit(3.14);
         Utility.debuggingLog(
@@ -645,7 +645,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0600 shuffle()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const array: number[] = [1, 2, 3, 4, 5];
         const arrayInJsonString: string =
@@ -662,7 +662,7 @@ describe("Test Suite - utility/Utility", () => {
             "array!==arrayShuffled");
     });
     it("Test.0601 shuffle() Consistency", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const arrayOriginal: number[] = [1, 2, 3, 4, 5];
         const arrayOriginalInJsonString: string =
@@ -696,7 +696,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0700 buildStringIdNumberValueDictionaryFromUniqueStringArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "c", "d"];
         const stringArrayInJsonString: string =
@@ -711,7 +711,7 @@ describe("Test Suite - utility/Utility", () => {
             `stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0701 buildStringIdNumberValueDictionaryFromStringArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["b", "a", "b", "c", "a", "a", "b", "d"];
         const stringArrayInJsonString: string =
@@ -734,7 +734,7 @@ describe("Test Suite - utility/Utility", () => {
             `stringMappedMapInJsonString=${stringMappedMapInJsonString}`);
     });
     it("Test.0702 buildStringIdNumberValueDictionaryFromStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArrays: string[][] =
             [["b", "a", "b", "c", "a", "a", "b", "d"],
@@ -760,7 +760,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0800 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = ["b", "a", "c", "d"];
@@ -779,7 +779,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
     });
     it("Test.0801 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = [];
         const stringArray1: string[] = [];
@@ -798,7 +798,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
     });
     it("Test.0802 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = [];
         const stringArray1: string[] = ["b", "a", "c", "d"];
@@ -817,7 +817,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
     });
     it("Test.0803 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = [];
@@ -836,7 +836,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringArray1InJsonString=${stringArray1InJsonString}`);
     });
     it("Test.0804 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = [];
         const stringArray1: string[] = ["b", "f", "c", "d"];
@@ -852,7 +852,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0805 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = [];
@@ -868,7 +868,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0806 validateStringArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray0: string[] = ["b", "a", "c", "d"];
         const stringArray1: string[] = ["b", "f", "c", "d"];
@@ -884,7 +884,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringArrayPairEquality(stringArray0, stringArray1, true); });
     });
     it("Test.0807 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>(["a", "b", "c"]);
         const stringSet1: Set<string> = new Set<string>(["a", "b", "c"]);
@@ -903,7 +903,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
     });
     it("Test.0808 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>();
         const stringSet1: Set<string> = new Set<string>();
@@ -922,7 +922,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
     });
     it("Test.0809 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>();
         const stringSet1: Set<string> = new Set<string>(["a", "b", "c"]);
@@ -941,7 +941,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
     });
     it("Test.0810 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>(["a", "b", "c"]);
         const stringSet1: Set<string> = new Set<string>();
@@ -960,7 +960,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringSet1InJsonString=${stringSet1InJsonString}`);
     });
     it("Test.0811 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>();
         const stringSet1: Set<string> = new Set<string>(["a", "b", "c"]);
@@ -976,7 +976,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0812 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>(["a", "b", "c"]);
         const stringSet1: Set<string> = new Set<string>();
@@ -992,7 +992,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0813 validateStringSets()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringSet0: Set<string> = new Set<string>(["a", "b", "c"]);
         const stringSet1: Set<string> = new Set<string>(["a", "b", "d"]);
@@ -1008,7 +1008,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { Utility.validateStringSetPairEquality(stringSet0, stringSet1, true); });
     });
     it("Test.0814 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
@@ -1027,7 +1027,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
     });
     it("Test.0815 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
@@ -1046,7 +1046,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
     });
     it("Test.0816 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
@@ -1065,7 +1065,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
     });
     it("Test.0817 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
@@ -1084,7 +1084,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMap1InJsonString=${stringMap1InJsonString}`);
     });
     it("Test.0818 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = {};
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
@@ -1100,7 +1100,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, true); });
     });
     it("Test.0819 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = {};
@@ -1116,7 +1116,7 @@ describe("Test Suite - utility/Utility", () => {
             () => { DictionaryMapUtility.validateStringIdNumberValueDictionaryPair(stringMap0, stringMap1, true); });
     });
     it("Test.0820 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringMap0: IDictionaryStringIdGenericValue<number> = { a: 1, b: 2, c: 3 };
         const stringMap1: IDictionaryStringIdGenericValue<number> = { a: 2, b: 2, c: 3 };
@@ -1133,7 +1133,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.0900 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
@@ -1152,7 +1152,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0901 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = [];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
@@ -1171,7 +1171,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0902 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {};
@@ -1190,7 +1190,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0903 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {a: 0, b: 1, c: 2};
@@ -1209,7 +1209,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0904 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "d"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1228,7 +1228,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0905 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
@@ -1247,7 +1247,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0906 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = [];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1266,7 +1266,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0907 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = {};
@@ -1285,7 +1285,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0908 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1304,7 +1304,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0909 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "d"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1323,7 +1323,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0910 validateStringMaps()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const stringArray: string[] = ["a", "b", "c"];
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: -1, c: 2 };
@@ -1342,7 +1342,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0911 validateKeyId()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1359,7 +1359,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0912 validateKeyId()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = -1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1376,7 +1376,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0913 validateKeyId()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 3;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1393,7 +1393,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0914 validateKeyId()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = -1;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1409,7 +1409,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0915 validateKeyId()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const keyId: number = 3;
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1425,7 +1425,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0916 validateKey()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "b";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1442,7 +1442,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0917 validateKey()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "d";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1459,7 +1459,7 @@ describe("Test Suite - utility/Utility", () => {
             `, stringMapInJsonString=${stringMapInJsonString}`);
     });
     it("Test.0918 validateKey()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const key: string = "d";
         const stringMap: IDictionaryStringIdGenericValue<number> = { a: 0, b: 1, c: 2 };
@@ -1476,7 +1476,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1000 loadLabelTextColumnarFile()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1510,7 +1510,7 @@ describe("Test Suite - utility/Utility", () => {
             `utterances.length=${texts.length}`);
     });
     it("Test.1001 loadLabelTextColumnarContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1549,7 +1549,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1100 loadEntityAnnotatedCorpusFile()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1591,7 +1591,7 @@ describe("Test Suite - utility/Utility", () => {
             `entityTagArrays.length=${entityTagArrays.length}`);
     });
     it("Test.1101 loadEntityAnnotatedCorpusContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1634,7 +1634,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1200 loadFile()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1653,7 +1653,7 @@ describe("Test Suite - utility/Utility", () => {
             `fileContentReCombined.length=${fileContentReCombined.length}`);
     });
     it("Test.1201 dumpFile()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1678,7 +1678,7 @@ describe("Test Suite - utility/Utility", () => {
         }
     });
     it("Test.1202 exists()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1689,7 +1689,7 @@ describe("Test Suite - utility/Utility", () => {
             `filename=${filename}`);
     });
     it("Test.1203 exists()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         Utility.debuggingLog(
             `process.cwd()=${process.cwd()}`);
@@ -1701,7 +1701,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1300 getObjectMd5Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: string =
@@ -1712,7 +1712,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
     it("Test.1301 getStringMd5Hash()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: string =
@@ -1724,7 +1724,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1400 getPositiveObjectHashCode()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
@@ -1735,7 +1735,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
     it("Test.1401 getObjectHashCode()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
@@ -1746,7 +1746,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
     it("Test.1402 getPositiveStringHashCode()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
@@ -1757,7 +1757,7 @@ describe("Test Suite - utility/Utility", () => {
             `messageMd5Hash=${messageMd5Hash}`);
     });
     it("Test.1403 getStringHashCode()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const message: string = "Hello, World!";
         const messageMd5Hash: number =
@@ -1769,7 +1769,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1500 isEmptyNumberF32I32U8Array()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Float32Array = new Float32Array();
         const isEmpty: boolean =
@@ -1778,7 +1778,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1501 isEmptyNumberF32I32U8Array()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Float32Array = new Float32Array(1);
         const isEmpty: boolean =
@@ -1787,7 +1787,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1502 isEmptyBooleanArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[][] = [];
         const isEmpty: boolean =
@@ -1796,7 +1796,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1503 isEmptyBooleanArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[][] = [[false]];
         const isEmpty: boolean =
@@ -1805,7 +1805,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1504 isEmptyNumberArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[][] = [];
         const isEmpty: boolean =
@@ -1814,7 +1814,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1505 isEmptyNumberArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[][] = [[0]];
         const isEmpty: boolean =
@@ -1823,7 +1823,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1506 isEmptyArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[][] = [];
         const isEmpty: boolean =
@@ -1832,7 +1832,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1507 isEmptyArrays()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[][] = [["0" as any]];
         const isEmpty: boolean =
@@ -1841,7 +1841,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1508 isEmptyBooleanArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[] = [];
         const isEmpty: boolean =
@@ -1850,7 +1850,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1509 isEmptyBooleanArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: boolean[] = [false];
         const isEmpty: boolean =
@@ -1859,7 +1859,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1510 isEmptyNumberArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[] = [];
         const isEmpty: boolean =
@@ -1868,7 +1868,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1511 isEmptyNumberArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: number[] = [0];
         const isEmpty: boolean =
@@ -1877,7 +1877,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1512 isEmptyArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[] = [];
         const isEmpty: boolean =
@@ -1886,7 +1886,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1513 isEmptyArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: object[] = ["0" as any];
         const isEmpty: boolean =
@@ -1895,7 +1895,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1514 isEmptyStringArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = [];
         const isEmpty: boolean =
@@ -1904,7 +1904,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1515 isEmptyStringArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["0"];
         const isEmpty: boolean =
@@ -1913,7 +1913,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1516 isEmptyString()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "";
         const isEmpty: boolean =
@@ -1922,7 +1922,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}`);
     });
     it("Test.1517 isEmptyString()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "0";
         const isEmpty: boolean =
@@ -1932,7 +1932,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1600 getSetLength()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: Set<string> =
             new Set<string>(["0"]);
@@ -1952,7 +1952,7 @@ describe("Test Suite - utility/Utility", () => {
             `input=${input}, length20=${length20}`);
         });
     it("Test.1601 getMapLength()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: IDictionaryStringIdGenericValue<number> = {
             a: 0 };
@@ -1972,7 +1972,7 @@ describe("Test Suite - utility/Utility", () => {
            `input=${input}, length20=${length20}`);
         });
     it("Test.1602 getKeyMapLength()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: TMapStringKeyGenericValue<number> =
             DictionaryMapUtility.newTMapStringKeyGenericValue<number>();
@@ -1994,7 +1994,7 @@ describe("Test Suite - utility/Utility", () => {
         });
 
     it("Test.1700 getJsonStringified()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["a"];
         const jsonStringified: string =
@@ -2006,7 +2006,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1800 debuggingLog()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string[] = ["a"];
         const jsonStringified: string =
@@ -2018,7 +2018,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.1900 debuggingThrow()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.throws(
             () => {
@@ -2028,7 +2028,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2000 almostEqual()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
         const number1: number = 1.0002;
@@ -2040,7 +2040,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2001 almostEqual()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
         const number1: number = 1.002;
@@ -2052,7 +2052,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2002 almostEqualRough()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.01;
         const number1: number = 1.02;
@@ -2064,7 +2064,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2003 almostEqualRough()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.1;
         const number1: number = 1.2;
@@ -2076,7 +2076,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2004 getAlmostEqualPercentage()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
         const number1: number = 1.0002;
@@ -2090,7 +2090,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2005 almostEqualAbsolute()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
         const number1: number = 1.0002;
@@ -2102,7 +2102,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2006 almostEqualAbsolute()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
         const number1: number = 1.002;
@@ -2114,7 +2114,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2007 almostEqualAbsoluteRough()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.001;
         const number1: number = 1.002;
@@ -2126,7 +2126,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2008 almostEqualAbsoluteRough()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.01;
         const number1: number = 1.02;
@@ -2138,7 +2138,7 @@ describe("Test Suite - utility/Utility", () => {
             `number0=${number0}, number1=${number1}`);
     });
     it("Test.2009 getAlmostEqualAbsolute()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const number0: number = 1.0001;
         const number1: number = 1.0002;
@@ -2153,88 +2153,88 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2100 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean(true));
     });
     it("Test.2101 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("true"));
     });
     it("Test.2102 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean(1));
     });
     it("Test.2103 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("1"));
     });
     it("Test.2104 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("on"));
     });
     it("Test.2105 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("yes"));
     });
     it("Test.2106 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("positive"));
     });
     it("Test.2107 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean(false));
     });
     it("Test.2108 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("false"));
     });
     it("Test.2109 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean(0));
     });
     it("Test.2110 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("0"));
     });
     it("Test.2111 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("off"));
     });
     it("Test.2112 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("no"));
     });
     it("Test.2113 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("negative"));
     });
     it("Test.2114 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(Utility.toBoolean("TRUE"));
     });
     it("Test.2115 toBoolean()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         assert.ok(!Utility.toBoolean("FALSE"));
     });
 
     it("Test.2200 iterableIteratorToArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aMap: Map<string, string> = new Map<string, string>();
         aMap.set("a", "0");
@@ -2247,7 +2247,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2300 splitByPunctuation()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "Hello, World";
         const output: string[] = Utility.splitByPunctuation(input);
@@ -2260,7 +2260,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2400 splitStringWithCommaDelimitersFilteredByDoubleQuotes()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const input: string = "1,\"Hello, World\",Adam";
         const output: string[] = Utility.splitStringWithCommaDelimitersFilteredByDoubleQuotes(input);
@@ -2279,7 +2279,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2500 sortAnyArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: string[] = ["4", "1", "3", "9", "2"];
         const sortedArray: string[] = Utility.sortAnyArray(inputArray);
@@ -2290,7 +2290,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(sortedArray[sortedArray.length - 1] === "9");
     });
     it("Test.2501 sortNumberArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: number[] = [4, 1, 3, 9, 2];
         const sortedArray: number[] = Utility.sortNumberArray(inputArray);
@@ -2301,7 +2301,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(sortedArray[sortedArray.length - 1] === 9);
     });
     it("Test.2502 sortStringArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: string[] = ["4", "1", "3", "9", "2"];
         const sortedArray: string[] = Utility.sortStringArray(inputArray);
@@ -2312,7 +2312,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(sortedArray[sortedArray.length - 1] === "9");
     });
     it("Test.2503 sortValueCountPairArray()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
         const sortedArray: Array<[number, number]> = Utility.sortValueCountPairArray(inputArray);
@@ -2324,7 +2324,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2600 findMedian()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: number[] = [4, 1, 3, 9, 2];
         const median = Utility.findMedian(inputArray);
@@ -2333,7 +2333,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(median === 3, `median=${median}`);
     });
     it("Test.2601 findValueCountPairMedian()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
         const median: number = Utility.findValueCountPairMedian(inputArray) as number;
@@ -2343,7 +2343,7 @@ describe("Test Suite - utility/Utility", () => {
     });
 
     it("Test.2700 findQuantiles()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: number[] = [4, 1, 3, 9, 2];
         const quantiles: number[] = Utility.findQuantiles(inputArray, 4) as number[];
@@ -2352,7 +2352,7 @@ describe("Test Suite - utility/Utility", () => {
         assert.ok(quantiles[1] === 2, `quantiles[1]=${quantiles[1]}`);
     });
     it("Test.2701 findValueCountPairQuantiles()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
         const quantiles: number[] = Utility.findValueCountPairQuantiles(inputArray, 4) as number[];

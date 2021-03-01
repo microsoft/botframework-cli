@@ -6,7 +6,6 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorDataSourceSettings, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules';
@@ -42,8 +41,7 @@ export default class OrchestratorCreate extends Command {
     const entityBaseModelPath: string = flags.entityModel;
     let refresh: boolean = flags.refresh;
 
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
-    UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+    Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
 
     try {
       OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);

@@ -11,7 +11,7 @@ import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - span", () => {
   it("Test.0000 Span - constructor()", function() {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const span: Span = new Span(3, 4);
     Utility.debuggingLog(`span=${Utility.jsonStringify(span)}`);

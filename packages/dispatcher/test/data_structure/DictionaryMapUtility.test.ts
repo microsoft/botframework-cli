@@ -15,7 +15,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 describe("Test Suite - data_structure/DictionaryMapUtility", () => {
 
     it("Test.0000 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -70,7 +70,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok((utteranceLabelDuplicateMap.get("C") as Set<string>).has(DictionaryMapUtility.UnknownLabel));
     });
     it("Test.0001 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -130,7 +130,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
     });
 
     it("Test.0200 buildStringIdNumberValueDictionaryFromUniqueStringArray", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const uniqueStringArray: string[] = [ "a", "b", "c" ];
         const stringIdNumberValueDictionary: IDictionaryStringIdGenericValue<number> =
@@ -151,7 +151,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok(stringIdNumberValueDictionary.c === 2);
     });
     it("Test.0201 buildStringIdNumberValueDictionaryFromStringArray", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputStringArray: string[] = [ "a", "b", "a", "c" ];
         const stringIdNumberValueDictionary: {
@@ -182,7 +182,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         assert.ok(stringMap.c === 2);
     });
     it("Test.0202 buildStringIdNumberValueDictionaryFromStringArrays", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const inputStringArrays: string[][] = [ ["a", "b", "a", "c"], ["b", "c"] ];
         const stringIdNumberValueDictionary: {

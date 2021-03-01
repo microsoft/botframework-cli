@@ -59,7 +59,7 @@ export class UnitTestHelper {
 
 describe('Test Suite - utility', () => {
   it('Test.0200 Utility.buildStringIdNumberValueDictionaryFromStringArray()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const labels: string[] = ['A', 'B', 'C'];
     const labelArrayAndMap: {
@@ -81,7 +81,7 @@ describe('Test Suite - utility', () => {
   });
 
   it('Test.0100 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -136,7 +136,7 @@ describe('Test Suite - utility', () => {
     assert.ok((utteranceLabelDuplicateMap.get('C') as Set<string>).has(Utility.UnknownLabel));
   });
   it('Test.0101 Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
@@ -196,7 +196,7 @@ describe('Test Suite - utility', () => {
   });
 
   it('Test.0000 Utility.exists()', function () {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const doesExist: boolean = Utility.exists('resources/data/Columnar/Email.txt');

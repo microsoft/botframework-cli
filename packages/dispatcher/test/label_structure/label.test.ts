@@ -13,7 +13,7 @@ import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - label", () => {
   it("Test.0000 Label - constructor()", function() {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const label: Label = new Label(LabelType.Intent, "label", new Span(0, 0));
     Utility.debuggingLog(`label=${Utility.jsonStringify(label)}`);

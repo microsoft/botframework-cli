@@ -4,11 +4,15 @@
  */
 
 import {} from 'mocha';
-import {OrchestratorSettings} from '../src/settings';
-import {Utility} from '../src/utility';
+
 import assert = require('assert');
 import * as path from 'path';
 import * as fs from 'fs-extra';
+
+import {OrchestratorSettings} from '../src/settings';
+
+import {Utility} from '../src/utility';
+import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorSettingsTests', () => {
   const SettingsDir: string = './test/fixtures/';
@@ -41,7 +45,7 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
 
-    Utility.toPrintDebuggingLogToConsole = true;
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.path}`);
 
     assert.ok(OrchestratorSettings.DataSources.path === DataSourcesPath);

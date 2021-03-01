@@ -26,7 +26,7 @@ import { UnitTestHelper } from "../../../utility/Utility.test";
 
 describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () => {
     it("Test.0000 mainCrossValidatorWithLuContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const crossValidator: CrossValidator = await mainCrossValidatorWithLuContent(
             LuContentEmail,
@@ -39,7 +39,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
     });
 
     it("Test.0100 mainCrossValidatorWithColumnarContent()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const crossValidator: CrossValidator = mainCrossValidatorWithColumnarContent(
             ColumnarContentEmail,
@@ -56,7 +56,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
     });
 
     it("Test.0200 mainCrossValidator() - Email.tsv", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
             "resources/data/Columnar/Email.tsv";
@@ -95,7 +95,7 @@ describe("Test Suite - model/evaluation/cross_validator/AppCrossValidator", () =
         }
     });
     it("Test.0201 mainCrossValidator() - Email.lu", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
             "resources/data/LU/skills/emailskill/en/Email.lu";

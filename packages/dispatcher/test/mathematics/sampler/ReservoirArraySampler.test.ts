@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     it("Test.0000 addInstance()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         sampler.addInstance(0);
@@ -29,7 +29,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     });
 
     it("Test.0100 resetInstancesBeginEndIndex()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -76,7 +76,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     });
 
     it("Test.0200 getNumberInstances()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -101,7 +101,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
             `sampler.getInstancesEndIndex()=${sampler.getInstancesEndIndex()}`);
     });
     it("Test.0201 getInstances()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -132,7 +132,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     });
 
     it("Test.0300 getNumberInstancesSampling()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -174,7 +174,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
             `sampler.getInstancesEndIndex()=${sampler.getInstancesEndIndex()}`);
     });
     it("Test.0301 getInstancesBeginIndex()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -216,7 +216,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
             `sampler.getInstancesEndIndex()=${sampler.getInstancesEndIndex()}`);
     });
     it("Test.0302 getInstancesEndIndex()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {
@@ -259,7 +259,7 @@ describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     });
 
     it("Test.0500 sampleInstances()", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const sampler: ReservoirArraySampler<number> = new ReservoirArraySampler<number>();
         for (let index = 0; index < 100; index++) {

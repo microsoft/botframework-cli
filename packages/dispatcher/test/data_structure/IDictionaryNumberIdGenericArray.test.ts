@@ -14,7 +14,7 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 describe("Test Suite - data_structure/IDictionaryNumberIdGenericArray", () => {
     it("Test.0000 IDictionaryNumberIdGenericArray", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const dataStructure: IDictionaryNumberIdGenericArray<string> = {};
         const dataStructureLength: number =

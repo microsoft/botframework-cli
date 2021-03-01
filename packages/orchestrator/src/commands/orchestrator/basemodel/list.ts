@@ -18,7 +18,7 @@ export default class OrchestratorBaseModelList extends Command {
   async run(): Promise<number> {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelList);
     const all: boolean = flags.all;
-    Utility.toPrintDebuggingLogToConsole = flags.debug;
+    Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
 
     try {
       const baseModels: any = await Orchestrator.baseModelListAsync(all);

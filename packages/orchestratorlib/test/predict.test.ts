@@ -12,13 +12,11 @@ import * as fs from 'fs';
 import {OrchestratorPredict} from '../src/predict';
 
 import {Utility} from '../src/utility';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - the "predict" command', () => {
   it('Test.0000 OrchestratorPredict', async function (): Promise<void> {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     Utility.debuggingLog(`process.cwd()=${process.cwd()}`);
     const inputPath: string = './resources/data/Columnar/Email_roberta.blu';

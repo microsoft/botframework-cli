@@ -15,7 +15,6 @@ import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorCreate} from '../src/create';
 
 import {Utility} from '../src/utility';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorCreateTests', () => {
@@ -32,8 +31,7 @@ describe('OrchestratorCreateTests', () => {
   });
 
   it('Create Dispatch Snapshot', async function (): Promise<void> {
-    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const outputPath: string = './test/fixtures/dispatch';
 
@@ -55,8 +53,7 @@ describe('OrchestratorCreateTests', () => {
   });
 
   it('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
-    Utility.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = true; // UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const outputPath: string = './test/fixtures/output/create';
     const inputFileName: string = 'RootDialogWithSkillRef';
@@ -65,7 +62,7 @@ describe('OrchestratorCreateTests', () => {
       fs.mkdirSync(outputPath, {recursive: true});
     }
 
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
 
     const snapshotPath: string = path.join(outputPath, `${inputFileName}.blu`);

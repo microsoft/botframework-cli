@@ -63,7 +63,7 @@ describe('OrchestratorBuildTests', function () {
   });
 
   it('getExamplesLU should parse lu content into Examples', async () => {
-    // Utility.toPrintDebuggingLogToConsole = true;
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     const filename: string =
       'resources/data/LU/syncLabelResolver/same_as_code.lu';
     const fileContents: string = OrchestratorHelper.readFile(filename);
@@ -225,6 +225,7 @@ describe('OrchestratorBuildTests', function () {
     // Assert
     const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
+    // eslint-disable-next-line no-console
     console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected:2)`);
     assert.ok(examples_after_sync.length === 2);
     examples_after_sync.sort(Example.sort_fn);
@@ -288,6 +289,7 @@ describe('OrchestratorBuildTests', function () {
     const examples_after_sync: Example[] = LabelResolver.getExamples(labelResolver);
 
     assert.ok(examples_after_sync !== null);
+    // eslint-disable-next-line no-console
     console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected3)`);
     assert.ok(examples_after_sync.length === 3);
     examples_after_sync.sort(Example.sort_fn);

@@ -31,7 +31,7 @@ import { UnitTestHelper } from "../../../../utility/Utility.test";
 
 describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoActiveLearner", () => {
     it("Test.0000 mainAutoActiveLearnerWithLuContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newLuDataWithSubwordFeaturizer": LuDataWithSubwordFeaturizer,
@@ -51,7 +51,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
     });
 
     it("Test.0100 mainAutoActiveLearnerWithColumnarContent()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const aalResult: {
             "newColumnarDataWithSubwordFeaturizer": ColumnarDataWithSubwordFeaturizer,
@@ -75,7 +75,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
     });
 
     it("Test.0200 mainAutoActiveLearner()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
             "resources/data/LU/skills/emailskill/en/Email.lu";
@@ -111,7 +111,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/AppAutoA
         }
     });
     it("Test.0201 mainAutoActiveLearner()", async function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string =
             "resources/data/Columnar/Email.tsv";

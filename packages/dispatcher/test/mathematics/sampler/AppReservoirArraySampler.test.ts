@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/sampler/ReservoirArraySampler", () => {
     it("Test.0000 exampleFunctionReservoirArraySampler", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionReservoirArraySampler();
     });

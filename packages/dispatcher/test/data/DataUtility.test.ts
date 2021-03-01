@@ -14,7 +14,7 @@ import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/f
 
 describe("Test Suite - data/DataUtility", () => {
     it("Test.0000 getDataFileTypeFromFilenameExtension", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "resources/data/LU/skills/emailskill/en/Email.lu";
         const dataFileType: string = DataUtility.getDataFileTypeFromFilenameExtension(filename);
@@ -23,7 +23,7 @@ describe("Test Suite - data/DataUtility", () => {
         assert.ok(dataFileType === DataUtility.DATA_FORMAT_TYPE_LU);
     });
     it("Test.0001 getDataFileTypeFromFilenameExtension", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "resources/data/Columnar/Email.tsv";
         const dataFileType: string = DataUtility.getDataFileTypeFromFilenameExtension(filename);
@@ -32,7 +32,7 @@ describe("Test Suite - data/DataUtility", () => {
         assert.ok(dataFileType === DataUtility.DATA_FORMAT_TYPE_TAB_DELIMITED);
     });
     it("Test.0002 getDataFileTypeFromFilenameExtension", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "resources/data/EntityAnnotatedCorpus/ner_dataset.eac";
         const dataFileType: string = DataUtility.getDataFileTypeFromFilenameExtension(filename);
@@ -41,7 +41,7 @@ describe("Test Suite - data/DataUtility", () => {
         assert.ok(dataFileType === DataUtility.DATA_FORMAT_TYPE_ENTITY_ANNOTATED_CORPUS);
     });
     it("Test.0003 getDataFileTypeFromFilenameExtension", function() {
-        Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         const filename: string = "resources/data/LU/MicrosoftFAQ/MicrosoftFaqForWindows.qna";
         const dataFileType: string = DataUtility.getDataFileTypeFromFilenameExtension(filename);

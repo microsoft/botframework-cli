@@ -6,7 +6,6 @@
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export default class OrchestratorTest extends Command {
   static description: string = `The "test" command can operate in three modes: test, evaluation, assessment.
@@ -126,8 +125,7 @@ export default class OrchestratorTest extends Command {
           Utility.debuggingThrow(`unknown threshold parameter "${process.env.unknownLabelPredictionThreshold}" is not a number`);
         }
       }
-      Utility.toPrintDebuggingLogToConsole = flags.debug;
-      UtilityDispatcher.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
       Utility.debuggingLog(`OrchestratorTest.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorTest.run(): inputPathConfiguration=${inputPathConfiguration}`);
       Utility.debuggingLog(`OrchestratorTest.run(): outputPathConfiguration=${outputPathConfiguration}`);

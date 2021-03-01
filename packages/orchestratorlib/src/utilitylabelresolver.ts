@@ -85,12 +85,22 @@ export class UtilityLabelResolver {
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelString[] {
     // -----------------------------------------------------------------------
-    // Utility.debuggingLog('UtilityLabelResolver.scoreBatchStringLabels(), entering');
+    Utility.debuggingLog('UtilityLabelResolver.scoreBatchStringLabels(), entering');
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), multiLabelPredictionThreshold="${multiLabelPredictionThreshold}"`);
+    }
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), unknownLabelPredictionThreshold="${unknownLabelPredictionThreshold}"`);
+    }
     // -----------------------------------------------------------------------
-    // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;
+    // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.resetToPrintDetailedDebuggingLogToConsole(true);
     // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     // -----------------------------------------------------------------------
     const utterances: string[] = utteranceLabelsPairArray.map((x: [string, string[]]) => x[0]);
+    const predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[] = [];
+    if (UtilityDispatcher.isEmptyStringArray(utterances)) {
+      return predictionStructureWithScoreLabelStringArray;
+    }
     const scoreResultsBatch: any = LabelResolver.scoreBatch(utterances, LabelType.Intent);
     if (utterances.length !== scoreResultsBatch.length) {
       UtilityDispatcher.debuggingNamedThrow2(
@@ -108,7 +118,7 @@ export class UtilityLabelResolver {
     if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
       UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', scoreResultsBatch, 'scoreResultsBatch');
     }
-    const predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[] = [];
+    // -----------------------------------------------------------------------
     for (let index: number = 0; index < scoreResultsBatch.length; index++) {
       // ---------------------------------------------------------------------
       const utteranceLabels: [string, string[]] = utteranceLabelsPairArray[index];
@@ -121,6 +131,7 @@ export class UtilityLabelResolver {
       }
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
+        // -------------------------------------------------------------------
         const utterance: string = utteranceLabels[0];
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreBatchStringLabels() failed to produce a prediction for an empty utterance');
@@ -130,9 +141,13 @@ export class UtilityLabelResolver {
         const labels: string[] =
           utteranceLabels[1];
         const labelsIndexes: number[] =
-          labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
+          labels.map((x: string) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x));
         const labelsStringArray: string[] =
-          labels.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labels.map((label: string) => Utility.outputString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
           labelsStringArray);
@@ -174,7 +189,9 @@ export class UtilityLabelResolver {
         let labelsPredicted: string[] =
           labelsPredictedIndexes.map((x: number) => scoreResultArray[x].label.name);
         const labelsPredictedStringArray: string[] =
-          labelsPredicted.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labelsPredicted.map((label: string) => Utility.outputString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         let labelsPredictedClosestText: string[] =
           labelsPredictedIndexes.map((x: number) => scoreResultArray[x].closesttext);
         const unknownPrediction: boolean = labelsPredictedScore < unknownLabelPredictionThreshold;
@@ -273,9 +290,11 @@ export class UtilityLabelResolver {
         if ((predictionStructureWithScoreLabelStringArray.length % Utility.NumberOfInstancesPerProgressDisplayBatchForIntent) === 0) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(): Added predictionStructureWithScoreLabelStringArray.length=${predictionStructureWithScoreLabelStringArray.length}`);
         }
+        // -------------------------------------------------------------------
       }
       // ---------------------------------------------------------------------
     }
+    // -----------------------------------------------------------------------
     Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(): Total added predictionStructureWithScoreLabelStringArray.length=${predictionStructureWithScoreLabelStringArray.length}`);
     // Utility.debuggingLog('UtilityLabelResolver.scoreBatchStringLabels(), leaving');
     // -----------------------------------------------------------------------
@@ -292,12 +311,22 @@ export class UtilityLabelResolver {
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelObject[] {
     // -----------------------------------------------------------------------
-    // Utility.debuggingLog('UtilityLabelResolver.scoreBatchObjectLabels(), entering');
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), multiLabelPredictionThreshold="${multiLabelPredictionThreshold}"`);
+    }
+    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+      Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), unknownLabelPredictionThreshold="${unknownLabelPredictionThreshold}"`);
+    }
+    Utility.debuggingLog('UtilityLabelResolver.scoreBatchObjectLabels(), entering');
     // -----------------------------------------------------------------------
-    // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.toPrintDetailedDebuggingLogToConsole = true;
+    // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.resetToPrintDetailedDebuggingLogToConsole(true);
     // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     // -----------------------------------------------------------------------
     const utterances: string[] = utteranceLabelsPairArray.map((x: [string, Label[]]) => x[0]);
+    const predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[] = [];
+    if (UtilityDispatcher.isEmptyStringArray(utterances)) {
+      return predictionStructureWithScoreLabelObjectArray;
+    }
     const scoreResultsBatch: any = LabelResolver.scoreBatch(utterances, LabelType.Entity);
     if (utterances.length !== scoreResultsBatch.length) {
       UtilityDispatcher.debuggingNamedThrow2(
@@ -307,16 +336,28 @@ export class UtilityLabelResolver {
         'utterances.length',
         'scoreResultsBatch.length');
     }
-    const predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[] = [];
-    if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), unknownLabelPredictionThreshold="${unknownLabelPredictionThreshold}"`);
+    UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', utterances.length, 'utterances.length');
+    UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResultsBatch.length, 'scoreResultsBatch.length');
+    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', utterances, 'utterances');
     }
+    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResultsBatch, 'scoreResultsBatch');
+    }
+    // -----------------------------------------------------------------------
     for (let index: number = 0; index < scoreResultsBatch.length; index++) {
       // ---------------------------------------------------------------------
       const utteranceLabels: [string, Label[]] = utteranceLabelsPairArray[index];
       const scoreResults: any = scoreResultsBatch[index];
+      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', index, 'index');
+      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', utteranceLabels, 'utteranceLabels');
+      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResults.length, 'scoreResults.length');
+      if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResults, 'scoreResults');
+      }
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
+        // -------------------------------------------------------------------
         const utterance: string = utteranceLabels[0];
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreBatchObjectLabels() failed to produce a prediction for an empty utterance');
@@ -328,9 +369,13 @@ export class UtilityLabelResolver {
         const labels: Label[] =
           utteranceLabels[1];
         const labelsIndexes: number[] =
-          labels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+          labels.map((x: Label) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x.name));
         const labelsStringArray: string[] =
-          labels.map((label: Label) => Utility.outputLabelString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labels.map((label: Label) => Utility.outputLabelString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
           labelsStringArray);
@@ -394,9 +439,13 @@ export class UtilityLabelResolver {
         const labelsPredicted: Label[] =
           scoreResultArrayFiltered.map((x: Result) => x.label);
         const labelsPredictedIndexes: number[] =
-          labelsPredicted.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+          labelsPredicted.map((x: Label) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x.name));
         const labelsPredictedStringArray: string[] =
-          labelsPredicted.map((label: Label) => Utility.outputLabelString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labelsPredicted.map((label: Label) => Utility.outputLabelString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsPredictedClosestText: string[] =
           labelsPredictedIndexesMax.map((x: number) => scoreResultArrayFiltered[x].closesttext);
@@ -511,9 +560,11 @@ export class UtilityLabelResolver {
         if ((predictionStructureWithScoreLabelObjectArray.length % Utility.NumberOfInstancesPerProgressDisplayBatchForEntity) === 0) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(): Added predictionStructureWithScoreLabelObjectArray.length=${predictionStructureWithScoreLabelObjectArray.length}`);
         }
+        // -------------------------------------------------------------------
       }
       // ---------------------------------------------------------------------
     }
+    // -----------------------------------------------------------------------
     Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(): Total added predictionStructureWithScoreLabelObjectArray.length=${predictionStructureWithScoreLabelObjectArray.length}`);
     // Utility.debuggingLog('UtilityLabelResolver.scoreBatchObjectLabels(), leaving');
     // -----------------------------------------------------------------------
@@ -548,9 +599,13 @@ export class UtilityLabelResolver {
         const labels: string[] =
           utteranceLabels[1];
         const labelsIndexes: number[] =
-          labels.map((x: string) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x));
+          labels.map((x: string) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x));
         const labelsStringArray: string[] =
-          labels.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labels.map((label: string) => Utility.outputString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
           labelsStringArray);
@@ -592,7 +647,9 @@ export class UtilityLabelResolver {
         let labelsPredicted: string[] =
           labelsPredictedIndexes.map((x: number) => scoreResultArray[x].label.name);
         const labelsPredictedStringArray: string[] =
-          labelsPredicted.map((label: string) => Utility.outputString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labelsPredicted.map((label: string) => Utility.outputString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         let labelsPredictedClosestText: string[] =
           labelsPredictedIndexes.map((x: number) => scoreResultArray[x].closesttext);
         const unknownPrediction: boolean = labelsPredictedScore < unknownLabelPredictionThreshold;
@@ -732,9 +789,13 @@ export class UtilityLabelResolver {
         const labels: Label[] =
           utteranceLabels[1];
         const labelsIndexes: number[] =
-          labels.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+          labels.map((x: Label) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x.name));
         const labelsStringArray: string[] =
-          labels.map((label: Label) => Utility.outputLabelString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labels.map((label: Label) => Utility.outputLabelString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsConcatenated: string = Utility.concatenateDataArrayToDelimitedString(
           labelsStringArray);
@@ -798,9 +859,13 @@ export class UtilityLabelResolver {
         const labelsPredicted: Label[] =
           scoreResultArrayFiltered.map((x: Result) => x.label);
         const labelsPredictedIndexes: number[] =
-          labelsPredicted.map((x: Label) => Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.name));
+          labelsPredicted.map((x: Label) => Utility.carefullyAccessStringMap(
+            labelArrayAndMap.stringMap,
+            x.name));
         const labelsPredictedStringArray: string[] =
-          labelsPredicted.map((label: Label) => Utility.outputLabelString(label, UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
+          labelsPredicted.map((label: Label) => Utility.outputLabelString(
+            label,
+            UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver));
         // -------------------------------------------------------------------
         const labelsPredictedClosestText: string[] =
           labelsPredictedIndexesMax.map((x: number) => scoreResultArrayFiltered[x].closesttext);
@@ -922,5 +987,9 @@ export class UtilityLabelResolver {
     // Utility.debuggingLog('UtilityLabelResolver.scoreObjectLabels(), leaving');
     // -----------------------------------------------------------------------
     return predictionStructureWithScoreLabelObjectArray;
+  }
+
+  public static resetFlagToObfuscateLabelTextInReportUtilityLabelResolver(flag: boolean) {
+    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver = flag;
   }
 }

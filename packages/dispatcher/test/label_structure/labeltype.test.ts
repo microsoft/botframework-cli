@@ -11,7 +11,7 @@ import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - labeltype", () => {
   it("Test.0000 LabelType - constructor()", function() {
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const labelType: LabelType = LabelType.Intent;
     Utility.debuggingLog(`labelType=${labelType}`);

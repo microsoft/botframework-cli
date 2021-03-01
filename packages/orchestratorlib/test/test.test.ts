@@ -14,7 +14,6 @@ import {OrchestratorBaseModel} from '../src/basemodel';
 import {OrchestratorTest} from '../src/test';
 
 import {Utility} from '../src/utility';
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - test', () => {
@@ -23,8 +22,7 @@ describe('Test Suite - test', () => {
     if (ignore) {
       return;
     }
-    Utility.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
-    UtilityDispatcher.toPrintDebuggingLogToConsole = UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
