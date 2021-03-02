@@ -22,12 +22,12 @@ variables:
 - template: botframework-cli-version.yml  # Template reference ${{ variables.releaseVersion }}
 #  version: define this in Azure, settable at queue time
 
-stages:
-- stage: Build
-  variables:
-    runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
-  jobs:
-  - job:
-    steps:
-    - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-beta
-    - template: bf-cli-build-test-steps.yml
+# stages:
+# - stage: Build
+#   variables:
+#     runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
+#   jobs:
+#   - job:
+#     steps:
+#     - script: echo '##vso[task.setvariable variable=_version]${{ variables.releaseVersion }}-beta
+#     - template: bf-cli-build-test-steps.yml
