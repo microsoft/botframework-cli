@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - mathematics/confusion_matrix/app_binary_confusion_matrix", () => {
     it("Test.0000 exampleFunctionBinaryConfusionMatrix()", function() {
-        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionBinaryConfusionMatrix();
     });

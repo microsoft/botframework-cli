@@ -14,7 +14,7 @@ import {UnitTestHelper} from "../utility/Utility.test";
 
 describe("Test Suite - result", () => {
   it("Test.0000 Result - constructor()", function() {
-    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const result: Result = new Result(new Label(LabelType.Intent, "label", new Span(0, 0)), 0.99, "utterance");
     Utility.debuggingLog(`result=${Utility.jsonStringify(result)}`);

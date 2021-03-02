@@ -13,7 +13,7 @@ import { UnitTestHelper } from "../../utility/Utility.test";
 
 describe("Test Suite - model/evaluation/confusion_matrix/app_confusion_matrix", () => {
     it("Test.0000 exampleFunctionConfusionMatrix()", function() {
-        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag();
+        Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
         exampleFunctionConfusionMatrix();
     });
