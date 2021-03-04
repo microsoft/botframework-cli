@@ -123,10 +123,10 @@ export class UtilityLabelResolver {
       // ---------------------------------------------------------------------
       const utteranceLabels: [string, string[]] = utteranceLabelsPairArray[index];
       const scoreResults: any = scoreResultsBatch[index];
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', index, 'index');
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', utteranceLabels, 'utteranceLabels');
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', scoreResults.length, 'scoreResults.length');
       if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', index, 'index');
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', utteranceLabels, 'utteranceLabels');
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', scoreResults.length, 'scoreResults.length');
         UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', scoreResults, 'scoreResults');
       }
       // ---------------------------------------------------------------------
@@ -136,7 +136,9 @@ export class UtilityLabelResolver {
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreBatchStringLabels() failed to produce a prediction for an empty utterance');
         }
-        // Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(), utterance=${utterance}`);
+        if (Utility.toPrintDetailedDebuggingLogToConsole) {
+          Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), utterance=${utterance}`);
+        }
         // -------------------------------------------------------------------
         const labels: string[] =
           utteranceLabels[1];
@@ -349,10 +351,10 @@ export class UtilityLabelResolver {
       // ---------------------------------------------------------------------
       const utteranceLabels: [string, Label[]] = utteranceLabelsPairArray[index];
       const scoreResults: any = scoreResultsBatch[index];
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', index, 'index');
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', utteranceLabels, 'utteranceLabels');
-      UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResults.length, 'scoreResults.length');
       if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', index, 'index');
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', utteranceLabels, 'utteranceLabels');
+        UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResults.length, 'scoreResults.length');
         UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', scoreResults, 'scoreResults');
       }
       // ---------------------------------------------------------------------

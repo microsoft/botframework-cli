@@ -20,7 +20,9 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
 import {UtilityLabelResolver} from './utilitylabelresolver';
+
 import {Utility} from './utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 export class OrchestratorEvaluate {
   public static readonly snapshotSetIntentScoresOutputFilename: string = 'orchestrator_snapshot_set_intent_scores.txt';
@@ -304,6 +306,16 @@ export class OrchestratorEvaluate {
     Utility.debuggingLog('OrchestratorEvaluate.runAsync(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`evaluationOutput=${Utility.jsonStringify(evaluationOutput)}`);
+    }
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- Transfer non-object-label utterance from
+    // ---- NOTE ---- utteranceLabelsMap to utteranceEntityLabelsMap
+    // ---- NOTE ---- only do this when there is a entity model for evaluation.
+    if (!UtilityDispatcher.isEmptyString(entityBaseModelPath)) {
+      const numberUtterancesCopied: number = Utility.copyNonExistentUtteranceLabelsFromStringToObjectStructure(
+        utteranceLabelsMap,
+        utteranceEntityLabelsMap);
+      UtilityDispatcher.debuggingNamedLog1('OrchestratorEvaluate.runAsync()', numberUtterancesCopied, 'numberUtterancesCopied');
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce entity analysis reports.

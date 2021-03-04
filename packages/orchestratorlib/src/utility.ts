@@ -638,7 +638,7 @@ export class Utility {
       'labelStatisticsHtml': string; } = Utility.generateLabelStringLabelStatisticsAndHtmlTable(
         Utility.convertUtteranceEntityLabelsMap(utteranceEntityLabelsMap),
         labelArrayAndMap);
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStringLabelStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelStringLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
@@ -646,7 +646,7 @@ export class Utility {
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelStringUtteranceStatisticsAndHtmlTable(
         Utility.convertUtteranceEntityLabelsMap(utteranceEntityLabelsMap));
-    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStringUtteranceStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelStringUtteranceStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation LABEL_TEXT_STATISTICS summary from template.
     const labelsUtterancesStatisticsHtml: string =
       labelStatisticsAndHtmlTable.labelStatisticsHtml + utteranceStatisticsAndHtmlTable.utteranceStatisticsHtml;
@@ -662,7 +662,7 @@ export class Utility {
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----     utteranceEntityLabelsMap,
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----     labelArrayAndMap);
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
+    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCE_LABELS summary from template.
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- const spuriousLabelsUtterancesStatisticsHtml: string =
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   spuriousLabelStatisticsAndHtmlTable.spuriousLabelStatisticsHtml;
@@ -2731,7 +2731,7 @@ export class Utility {
       'labelStatisticsHtml': string; } = Utility.generateLabelStringLabelStatisticsAndHtmlTable(
         utteranceLabelsMap,
         labelArrayAndMap);
-    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStringLabelStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelStringLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
@@ -2739,7 +2739,7 @@ export class Utility {
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelStringUtteranceStatisticsAndHtmlTable(
         utteranceLabelsMap);
-    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStringUtteranceStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelStringUtteranceStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation LABEL_TEXT_STATISTICS summary from template.
     const labelsUtterancesStatisticsHtml: string =
       labelStatisticsAndHtmlTable.labelStatisticsHtml + utteranceStatisticsAndHtmlTable.utteranceStatisticsHtml;
@@ -2754,7 +2754,7 @@ export class Utility {
       'spuriousLabelStatistics': string[][];
       'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelStringSpuriousLabelStatisticsAndHtmlTable(
         unknownSpuriousLabelsProcessed);
-    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelStringSpuriousLabelStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelStringSpuriousLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCE_LABELS summary from template.
     const spuriousLabelsUtterancesStatisticsHtml: string =
       spuriousLabelStatisticsAndHtmlTable.spuriousLabelStatisticsHtml;
@@ -3647,7 +3647,7 @@ export class Utility {
       'labelStatisticsHtml': string; } = Utility.generateLabelObjectLabelStatisticsAndHtmlTable(
         utteranceLabelsMap,
         labelArrayAndMap);
-    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelObjectLabelStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
@@ -3655,7 +3655,7 @@ export class Utility {
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelObjectUtteranceStatisticsAndHtmlTable(
         utteranceLabelsMap);
-    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelObjectUtteranceStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectUtteranceStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation LABEL_TEXT_STATISTICS summary from template.
     const labelsUtterancesStatisticsHtml: string =
       labelStatisticsAndHtmlTable.labelStatisticsHtml + utteranceStatisticsAndHtmlTable.utteranceStatisticsHtml;
@@ -3670,7 +3670,7 @@ export class Utility {
       'spuriousLabelStatistics': string[][];
       'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
         unknownSpuriousEntityLabelsProcessed);
-    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finish calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
+    Utility.debuggingLog('Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCE_LABELS summary from template.
     const spuriousLabelsUtterancesStatisticsHtml: string =
       spuriousLabelStatisticsAndHtmlTable.spuriousLabelStatisticsHtml;
@@ -6489,6 +6489,27 @@ export class Utility {
       labelSet.push(value);
     }
     return stringKeyLabelSetMap;
+  }
+
+  // -------------------------------------------------------------------------
+  // ---- NOTE ---- label management
+  // -------------------------------------------------------------------------
+
+  public static copyNonExistentUtteranceLabelsFromStringToObjectStructure(
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>): number {
+    let numberUtterancesCopied: number = 0;
+    for (const utteranceKey of utteranceLabelsMap.keys()) {
+      if (utteranceEntityLabelsMap.has(utteranceKey)) {
+        continue;
+      }
+      if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+        UtilityDispatcher.debuggingNamedLog1('Utility.copyNonExistentUtteranceLabelsFromStringToObjectStructure()', utteranceKey, 'utteranceKey');
+      }
+      utteranceEntityLabelsMap.set(utteranceKey, []);
+      numberUtterancesCopied++;
+    }
+    return numberUtterancesCopied;
   }
 
   // -------------------------------------------------------------------------

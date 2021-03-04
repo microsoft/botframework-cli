@@ -22,11 +22,10 @@ import {LabelType} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelString} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
 
-import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
-
 import {UtilityLabelResolver} from './utilitylabelresolver';
 
 import {Utility} from './utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 /* eslint-disable no-console */
 export class OrchestratorPredict {
@@ -898,6 +897,16 @@ export class OrchestratorPredict {
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), finished calling Utility.generateEvaluationReportFiles()');
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       Utility.debuggingLog(`this.currentIntentEvaluationOutput=${Utility.jsonStringify(this.currentIntentEvaluationOutput)}`);
+    }
+    // -----------------------------------------------------------------------
+    // ---- NOTE ---- Transfer non-object-label utterance from
+    // ---- NOTE ---- utteranceLabelsMap to utteranceEntityLabelsMap
+    // ---- NOTE ---- only do this when there is a entity model for evaluation.
+    if (!UtilityDispatcher.isEmptyString(this.entityBaseModelPath)) {
+      const numberUtterancesCopied: number = Utility.copyNonExistentUtteranceLabelsFromStringToObjectStructure(
+        utteranceLabelsMap,
+        utteranceEntityLabelsMap);
+      UtilityDispatcher.debuggingNamedLog1('OrchestratorEvaluate.runAsync()', numberUtterancesCopied, 'numberUtterancesCopied');
     }
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce entity analysis reports.
