@@ -195,6 +195,22 @@ describe('luis:convert version 7 upgrade test', () => {
     it('Child entities names with spaces in them parse correctly to .lu format', async () => {
         await assertToLu('./../../fixtures/testcases/Child_Entity_With_Spaces.json', './../../fixtures/verified/Child_Entity_With_Spaces.lu')
     })
+
+    it('luis:convert successfully converts LUIS JSON model with required feature defined at top level to .lu format)', async () => {
+        await assertToJSON('./../../fixtures/verified/requiredFeatureAtTopLevel.lu', './../../fixtures/verified/requiredFeatureAtTopLevel.json')
+    })
+
+    it('luis:convert successfully converts .lu format with required feature defined at top level to LUIS JSON model', async () => {
+        await assertToLu('./../../fixtures/verified/requiredFeatureAtTopLevel.json', './../../fixtures/verified/requiredFeatureAtTopLevel.lu')
+    })
+
+    it('luis:convert successfully converts LUIS JSON model with space in child entity definition to .lu format', async () => {
+        await assertToJSON('./../../fixtures/verified/childEntityDefinitionWithSpace.lu', './../../fixtures/verified/childEntityDefinitionWithSpace.json')
+    })
+
+    it('luis:convert successfully converts .lu format with space in child entity definition to LUIS JSON model', async () => {
+        await assertToLu('./../../fixtures/verified/childEntityDefinitionWithSpace.json', './../../fixtures/verified/childEntityDefinitionWithSpace.lu')
+    })
   })
 
 describe('luis:convert negative tests', () => {

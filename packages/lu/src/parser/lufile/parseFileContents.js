@@ -1455,7 +1455,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
     entityLines.forEach(child => {
         currentParentEntity = undefined;
         defLine++;
-        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
+        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+)) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
             let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
@@ -1466,7 +1466,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
-        let childEntityType = groupsFound.groups.instanceOf.trim();
+        let childEntityType = groupsFound.groups.instanceOf.trim().replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()).filter(s => s) : undefined;
 
         // Get current tab level
