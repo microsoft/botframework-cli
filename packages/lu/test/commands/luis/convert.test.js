@@ -272,8 +272,43 @@ describe('luis:convert negative tests', () => {
                 LuisBuilder.fromLUAsync(res)
                     .then(res => done(res))
                     .catch(err => {
-                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
-                        assert.isTrue(err.text.includes('[ERROR] line 4:0 - line 4:20: Invalid entity line, entity name delete$Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property in this utterance cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when entity name defined at top level contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad6.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid entity line, entity name location* cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when intent name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad7.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid intent line, intent name greeting* cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when phraselist name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad8.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid phraselist line, phraselist name pl* can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]'))
                         done()
                     })
             })
