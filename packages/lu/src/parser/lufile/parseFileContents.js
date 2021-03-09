@@ -27,6 +27,7 @@ const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
 const qnaContext = require('../qna/qnamaker/qnaContext');
 const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const LUResource = require('./luResource');
+const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
@@ -924,6 +925,16 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
         let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
         for (const intent of intents) {
             let intentName = intent.Name;
+            if (InvalidCharsInIntentOrEntityName.some(x => intentName.includes(x))) {
+                let errorMsg = `Invalid intent line, intent name ${intentName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: intent.Range.Start.Line
+                })
+    
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            }
+
             // insert only if the intent is not already present.
             addItemIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.INTENT, intentName);
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
@@ -953,6 +964,22 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
+               
+                (utteranceAndEntities.entities || []).forEach(entity => {
+                    let errors = []
+                    if (InvalidCharsInIntentOrEntityName.some(x => entity.entity.includes(x))) {
+                        let errorMsg = `Invalid utterance line, entity name ${entity.entity} in this utterance cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                        let error = BuildDiagnostic({
+                            message: errorMsg,
+                            range: utteranceAndEntities.range
+                        });
+                        errors.push(error);
+                    }
+
+                    if (errors.length > 0) {
+                        throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n'), errors));
+                    }
+                })
 
                 if (utteranceAndEntities.entities.length > 0) {
                     let entitiesFound = utteranceAndEntities.entities;
@@ -1358,6 +1385,15 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                     throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 };
 
+                if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+                    let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        line: entity.Range.Start.Line
+                    })
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                }
+
                 if (entityType === entityName) {
                     let errorMsg = `Entity name "${entityName}" cannot be the same as entity type "${entityType}"`;
                     let error = BuildDiagnostic({
@@ -1455,7 +1491,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
     entityLines.forEach(child => {
         currentParentEntity = undefined;
         defLine++;
-        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
+        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+)) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
             let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
@@ -1466,7 +1502,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
-        let childEntityType = groupsFound.groups.instanceOf.trim();
+        let childEntityType = groupsFound.groups.instanceOf.trim().replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()).filter(s => s) : undefined;
 
         // Get current tab level
@@ -1640,6 +1676,16 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
       });
       throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
+
+    // phraselist name can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]
+    if (!/[a-zA-Z0-9@#_,.,^\\\[\]]+$/.test(entityName.toLowerCase().includes('interchangeable') ? entityName.split(/\(.*\)/g)[0] : entityName)) {
+        const error = BuildDiagnostic({
+            message: `Invalid phraselist line, phraselist name ${entityName} can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]`,
+            line: range.Start.Line
+        });
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    };
+
     let isPLEnabledForAllModels = undefined;
     let isPLEnabled = undefined;
     if (entityRoles.length !== 0) {
@@ -1946,6 +1992,16 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
         for (const entity of entities) {
             let entityName = entity.Name;
             let entityType = entity.Type;
+
+            if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+                let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: entity.Range.Start.Line
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            }
+
             let parsedRoleAndType = helpers.getRolesAndType(entityType);
             let entityRoles = parsedRoleAndType.roles;
             entityType = parsedRoleAndType.entityType;

@@ -569,6 +569,16 @@ const addIsRequiredProperty = function(item, phraseListInFinal = []) {
             delete feature.modelName;
         }
 
+        if (feature.featureName && feature.featureName.endsWith('*')) {
+            feature.featureName = feature.featureName.slice(0, feature.featureName.length - 1);
+            feature.isRequired = true;
+        }
+
+        if (feature.modelName && feature.modelName.endsWith('*')) {
+            feature.modelName = feature.modelName.slice(0, feature.modelName.length - 1);
+            feature.isRequired = true;
+        }
+
         delete feature.featureType;
         delete feature.modelType;
     });
