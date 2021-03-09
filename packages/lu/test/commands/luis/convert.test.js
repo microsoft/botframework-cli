@@ -109,6 +109,14 @@ describe('luis:convert', () => {
         await assertToJSON('./../../fixtures/examples/newEntityIncludes.lu', './../../fixtures/verified/newEntityIncludes.json')
     })
 
+    it('luis:convert utterance escaping square brackets and parenthesis correctly to json', async () => {
+        await assertToJSON('./../../fixtures/verified/escapeSquareBrackets.lu', './../../fixtures/verified/escapeSquareBrackets.json')
+    })
+
+    it('luis:convert utterance escaping square brackets and parenthesis correctly to json to lu', async () => {
+        await assertToLu('./../../fixtures/verified/escapeSquareBrackets.json', './../../fixtures/verified/escapeSquareBrackets.lu')
+    })
+
     it('Parse to LU instance', async () => {
         let luFile = `
         @ ml test
