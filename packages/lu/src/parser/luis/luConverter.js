@@ -234,7 +234,7 @@ const parseEntitiesToLu =  function(luisJson){
                 }
                 fileContent += NEWLINE + NEWLINE;
             }
-            fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
+            fileContent += `@ ml ${writeEntityName(entity.name)}`;
             fileContent += addRolesAndFeatures(entity);
             fileContent += NEWLINE + NEWLINE;
         } else {
@@ -417,7 +417,7 @@ const addAppMetaData = function(LUISJSON) {
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
-    fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
+    fileContent += `@ ml ${writeEntityName(entity.name)}`;
     fileContent += addRolesAndFeatures(entity);
     fileContent += NEWLINE;
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
@@ -434,7 +434,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
         myFileContent += `- @ ${getEntityType(child.features)} ${writeEntityName(child.name)}`;
-        myFileContent += addRolesAndFeatures(child);
+        myFileContent += addRolesAndFeatures(child, true);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
             myFileContent += addNDepthChildDefinitions(child.children, tabStop + 1, myFileContent);
@@ -446,7 +446,7 @@ const getEntityType = function(features) {
     // find constraint
     let constraint = (features || []).find(feature => feature.isRequired == true);
     if (constraint !== undefined) {
-        return constraint.modelName;
+        return writeEntityName(constraint.modelName);
     } else {
         return EntityTypeEnum.ML;
     }
@@ -454,9 +454,10 @@ const getEntityType = function(features) {
 /**
  * Helper to construt role and features list for an entity
  * @param {Object} entity 
+ * @param {boolean} isInNDepth
  * @returns {String} file content to include.
  */
-const addRolesAndFeatures = function(entity) {
+const addRolesAndFeatures = function(entity, isInNDepth = false) {
     let roleAndFeatureContent = ''
     if (entity.roles && entity.roles.length > 0) {
         roleAndFeatureContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} `;
@@ -474,8 +475,11 @@ const addRolesAndFeatures = function(entity) {
         if (item.featureName) featuresList.push(item.featureName);
         if (item.modelName) {
             if (item.isRequired !== undefined) {
-                if (item.isRequired !== true) 
+                if (item.isRequired !== true) {
                     featuresList.push(item.modelName);
+                } else if (!isInNDepth) {
+                    featuresList.push(item.modelName + '*');
+                }           
             } else {
                 featuresList.push(item.modelName);
             }

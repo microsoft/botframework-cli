@@ -1,0 +1,40 @@
+{
+  "intents": [],
+  "entities": [
+    {
+      "name": "some entity",
+      "roles": []
+    },
+    {
+      "name": "another entity",
+      "roles": [],
+      "children": [
+        {
+          "name": "child entity",
+          "children": [],
+          "features": [
+            {
+              "modelName": "some entity",
+              "isRequired": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [],
+  "patterns": [],
+  "patternAnyEntities": [],
+  "prebuiltEntities": [],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "LuTest",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "phraselists": []
+}
