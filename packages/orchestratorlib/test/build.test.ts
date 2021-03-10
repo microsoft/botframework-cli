@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+import {Orchestrator} from '../src/orchestrator';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
 import {OrchestratorBaseModel} from '../src/basemodel';
@@ -314,7 +315,20 @@ describe('OrchestratorBuildTests', function () {
 
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
+    assert.ok(retPayload.outputs.length === 5);
     assert.ok(retPayload.settings.orchestrator.modelFolder === baseModelPath);
+
+    const payLoadOutputs: any[] = retPayload.outputs;
+    const snapshots: Uint8Array[] = [];
+    let output: any;
+    // eslint-disable-next-line guard-for-in
+    for (output in payLoadOutputs) {
+      snapshots.push(output.snapshot);
+    }
+
+    assert.ok(snapshots.length === 5);
+    const resolvers: LabelResolver[] = await Orchestrator.getLabelResolversAsync(baseModelPath, snapshots);
+    assert.ok(resolvers.length === 5);
   });
 
   it('runAsync with luConfig json', async () => {

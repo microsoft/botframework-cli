@@ -56,12 +56,20 @@ export class LabelResolver {
     return LabelResolver.Orchestrator;
   }
 
-  public static createLabelResolver() {
+  public static createLabelResolver(snapshot?: Uint8Array) {
+    if (snapshot) {
+      return LabelResolver.Orchestrator.createLabelResolver(snapshot);
+    }
+
     return LabelResolver.Orchestrator.createLabelResolver();
   }
 
-  public static async createAsync(baseModelPath: string, entityBaseModelPath: string = '') {
+  public static async createAsync(baseModelPath: string, entityBaseModelPath: string = '', useLoadedNlr: boolean = false) {
     Utility.debuggingLog(`LabelResolver.createAsync(): baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`);
+    // don't need to reload base model again if one is already loaded
+    if (useLoadedNlr && LabelResolver.Orchestrator && LabelResolver.LabelResolver) {
+      return LabelResolver.LabelResolver;
+    }
     const hasEntityBaseModel: boolean = !Utility.isEmptyString(entityBaseModelPath);
     if (hasEntityBaseModel) {
       await LabelResolver.loadNlrAsync(baseModelPath, entityBaseModelPath);
