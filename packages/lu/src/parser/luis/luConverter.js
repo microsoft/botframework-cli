@@ -512,9 +512,9 @@ const updateUtterancesList = function (srcCollection, tgtCollection, attribute) 
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }
-        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute])) {
+        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute] && ((item.isPattern && attribute !== 'text') || (!item.isPattern && attribute === 'text')))) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
-            return;
+            return; 
         }
     });
 }
