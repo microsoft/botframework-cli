@@ -213,4 +213,13 @@ export class Orchestrator {
       outputPath,
       obfuscateEvaluationReport);
   }
+
+  public static async getLabelResolversAsync(baseModelPath: string, entityBaseModelPath: string, snapshots: Uint8Array[], useLoadedNlr: boolean = true): Promise<LabelResolver[]> {
+    const labelResolvers: LabelResolver[] = [];
+    await LabelResolver.createAsync(baseModelPath, entityBaseModelPath, useLoadedNlr);
+    for (const snapshot of snapshots) {
+      labelResolvers.push(LabelResolver.createLabelResolver(snapshot));
+    }
+    return labelResolvers;
+  }
 }

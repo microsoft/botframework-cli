@@ -30,27 +30,16 @@ export class OrchestratorBaseModel {
       Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): basemodelId=${basemodelId}`);
       Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): baseModelPath=${baseModelPath}`);
 
-      const versions: any = await OrchestratorBaseModel.getVersionsAsync();
-      Utility.debuggingLog(`OrchestratorBaseModel.getAsync(): versions=${versions}`);
+      if (basemodelId === '') {
+        basemodelId = await OrchestratorBaseModel.getDefaultModelId(null, modelType, lang);
+      }
+
+      if (basemodelId === '') {
+        throw new Error('ERROR: no model version id specified');
+      }
+
       onProgress('Downloading model...');
-      if (!versions) {
-        throw new Error('ERROR: failed getting basemodel configuration from https://aka.ms/nlrversions');
-      }
-
-      if (basemodelId === '') {
-        basemodelId = OrchestratorBaseModel.getDefaultModelId(versions, modelType, lang);
-      }
-
-      if (basemodelId === '') {
-        throw new Error('ERROR: no default model found');
-      }
-
-      const modelInfo: any = versions.models[basemodelId];
-      if (!modelInfo) {
-        throw new Error(`ERROR: Model info for model ${basemodelId} not found`);
-      }
-
-      const modelUrl: string = modelInfo.modelUri;
+      const modelUrl: string = 'https://aka.ms/' + basemodelId;
       await OrchestratorBaseModel.getModelAsync(baseModelPath, modelUrl, onProgress, onFinish);
     } catch (error) {
       throw error;
@@ -137,9 +126,13 @@ export class OrchestratorBaseModel {
     Utility.debuggingLog(status);
   }
 
-  public static getDefaultModelId(nlrVersions: any, modelType: string = 'intent', lang: string = 'en'): string {
+  public static async getDefaultModelId(nlrVersions: any = null, modelType: string = 'intent', lang: string = 'en'): Promise<string> {
     let defaultVersion: any = '';
     try {
+      if (nlrVersions === null) {
+        nlrVersions = await OrchestratorBaseModel.getVersionsAsync();
+      }
+
       const defaultVersions: any = nlrVersions.defaults;
       const requestedVersion: string = `${lang}_${modelType}`;
       // eslint-disable-next-line no-prototype-builtins
@@ -152,17 +145,38 @@ export class OrchestratorBaseModel {
     defaultVersion = '';
     const models: any = nlrVersions.models;
     for (const modelVersion in models) {
-      if (modelType === 'entity' && modelVersion.indexOf('example_ner') > 0 && modelVersion.indexOf(lang) > 0) {
+      if (OrchestratorBaseModel.isEntityModelVersion(modelType, modelVersion) && modelVersion.indexOf(lang) > 0) {
         defaultVersion =  modelVersion;
         break;
-      } else if (modelType === 'entity' && modelVersion.indexOf('example_ner') === 0 && modelVersion.indexOf(lang) > 0) {
+      } else if (OrchestratorBaseModel.isIntentModelVersion(modelType, modelVersion) && modelVersion.indexOf(lang) > 0) {
         defaultVersion = modelVersion;
         break;
-      } else {
+      } else if (OrchestratorBaseModel.isEntityModelVersion(modelType, modelVersion) ||
+          OrchestratorBaseModel.isIntentModelVersion(modelType, modelVersion)) {
         defaultVersion = modelVersion;
       }
     }
 
     return defaultVersion;
+  }
+
+  public static getModelLanguageFromVersionId(versionId: string): string {
+    const idx1: number = versionId.lastIndexOf('.');
+    const str: string = versionId.substr(0, idx1);
+    const idx2: number = str.lastIndexOf('.');
+    let lang: string = versionId.substring(idx2 + 1, idx1);
+    const idxUnderscore: number = lang.indexOf('_');
+    if (idxUnderscore > 0) {
+      lang = lang.substr(idxUnderscore + 1);
+    }
+    return lang;
+  }
+
+  public static isEntityModelVersion(modelType: string, modelVersion: string): boolean {
+    return modelType === 'entity' && modelVersion.indexOf('example_ner') > 0;
+  }
+
+  public static isIntentModelVersion(modelType: string, modelVersion: string): boolean {
+    return modelType === 'intent' && modelVersion.indexOf('example_ner') === 0;
   }
 }

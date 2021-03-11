@@ -45,7 +45,7 @@ export class OrchestratorHelper {
   }
 
   public static mkDir(path: string): void {
-    fs.mkdirSync(path);
+    fs.mkdirSync(path, {recursive: true});
   }
 
   public static readBluSnapshotFile(filePath: string): string {
