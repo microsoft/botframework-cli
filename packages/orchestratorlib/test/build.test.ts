@@ -327,7 +327,7 @@ describe('OrchestratorBuildTests', function () {
     }
 
     assert.ok(snapshots.length === 5);
-    const resolvers: LabelResolver[] = await Orchestrator.getLabelResolversAsync(baseModelPath, snapshots);
+    const resolvers: LabelResolver[] = await Orchestrator.getLabelResolversAsync(baseModelPath, '', snapshots);
     assert.ok(resolvers.length === 5);
   });
 
