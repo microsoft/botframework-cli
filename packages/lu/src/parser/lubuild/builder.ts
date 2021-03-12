@@ -459,7 +459,7 @@ export class Builder {
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(timeBucket)
     await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging, directVersionPublish)
-    this.handler(`${recognizer.getLuPath()} publishing finished for ${directVersionPublish ? 'directVersionPublish mode' : isStaging ? 'Staging' : 'Production'} slot\n`)
+    this.handler(`${recognizer.getLuPath()} publishing finished for ${directVersionPublish ? 'directVersionPublish mode' : isStaging ? 'Staging slot' : 'Production slot'}\n`)
   }
 
   generateDeclarativeAssets(assets: Array<any>): Array<any> {
