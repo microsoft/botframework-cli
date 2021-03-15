@@ -1,0 +1,31 @@
+
+> LUIS application information
+> !# @app.name = LuTest
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 7.0.0
+> !# @app.tokenizerVersion = 1.0.0
+
+
+> # Intent definitions
+
+> # Entity definitions
+
+@ ml "some entity"
+
+@ ml "another entity"
+    - @ "some entity" "child entity"
+
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+

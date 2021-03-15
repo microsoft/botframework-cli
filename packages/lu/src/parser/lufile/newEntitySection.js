@@ -2,7 +2,6 @@ const NewEntitySectionContext = require('./generated/LUFileParser').LUFileParser
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
-const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 const BaseSection = require('./baseSection');
 const Range = require('./diagnostic').Range;
 const Position = require('./diagnostic').Position;
@@ -42,14 +41,7 @@ class NewEntitySection  extends BaseSection {
             }))
         }
 
-        if (entityName && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
-            this.Errors.push(BuildDiagnostic({
-                message: `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`,
-                context: parseTree.newEntityDefinition().newEntityLine()
-            }));
-        } else {
-            return entityName;
-        }
+        return entityName;
     }
 
     ExtractType(parseTree) {
