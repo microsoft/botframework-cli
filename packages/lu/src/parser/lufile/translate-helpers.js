@@ -14,6 +14,16 @@ const MAX_TRANSLATE_BATCH_SIZE = 25;
 const MAX_CHAR_IN_REQUEST = 4990;
 
 const translateHelpers = {
+    translationSettings : class {
+        subscriptionKey = '';
+        to_lang = '';
+        src_lang = '';
+        translate_comments = false;
+        translate_link_text = false;
+        log = false;
+        batch_translate = MAX_TRANSLATE_BATCH_SIZE;
+        region = '';
+    },
     /**
      * Helper function to parseAndTranslate lu file content
      * @param {string} fileContent file content
@@ -27,8 +37,10 @@ const translateHelpers = {
      * @returns {string} Localized file content
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    parseAndTranslate : async function(fileContent, subscriptionKey, to_lang, src_lang, translate_comments, translate_link_text, log, batch_translate) {
-        let batch_translate_size = batch_translate ? parseInt(batch_translate) : MAX_TRANSLATE_BATCH_SIZE;
+    parseAndTranslate : async function(fileContent, ts) {
+        const initializeTS = new this.translationSettings();
+        const translationSettings = {...initializeTS, ...ts};
+        let batch_translate_size = translationSettings.batch_translate;
         fileContent = helpers.sanitizeNewLines(fileContent);
         let linesInFile = fileContent.split(NEWLINE);
         let linesToTranslate = [];
@@ -46,7 +58,7 @@ const translateHelpers = {
                     addSegment(linesToTranslate, NEWLINE, false);
                     continue;
                 }
-                if(translate_comments) {
+                if(translationSettings.translate_comments) {
                     addSegment(linesToTranslate, currentLine.charAt(0), false);
                     addSegment(linesToTranslate, currentLine.substring(1), true);
                 } else {
@@ -186,7 +198,7 @@ const translateHelpers = {
                     continue;
                 }
                 currentSectionType = PARSERCONSTS.URLORFILEREF;
-                if(translate_link_text) {
+                if(translationSettings.translate_link_text) {
                     const linkValueRegEx = new RegExp(/\(.*?\)/g);
                     let linkValueList = currentLine.trim().match(linkValueRegEx);
                     let linkValue = linkValueList[0].replace('(','').replace(')','');
@@ -222,7 +234,7 @@ const translateHelpers = {
             // do we have any payload to localize? and have we hit the batch size limit?
             if ((linesToTranslate.length !== 0) && (lineCtr % batch_translate_size === 0)) {
                 try {
-                    localizedContent += await batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
+                    localizedContent += await batchTranslateText(linesToTranslate, translationSettings);
                     linesToTranslate = [];
                 } catch (err) {
                     throw (err)
@@ -231,7 +243,7 @@ const translateHelpers = {
         }
         if (linesToTranslate.length !== 0) {
             try {
-                localizedContent += await batchTranslateText(linesToTranslate, subscriptionKey, to_lang, src_lang, log);
+                localizedContent += await batchTranslateText(linesToTranslate, translationSettings);
                 linesToTranslate = [];
             } catch (err) {
                 throw (err)
@@ -251,19 +263,24 @@ const translateHelpers = {
      * @returns {object} response from MT call.
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
-    translateText: async function(text, subscriptionKey, to_lang, from_lang) {
+    translateText: async function(text, translationSettings) {
         let payload = Array.isArray(text) ? text : [{'Text' : text}];
-        let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + to_lang + '&includeAlignment=true';
-        if(from_lang) tUri += '&from=' + from_lang;
+        let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + translationSettings.to_lang + '&includeAlignment=true';
+        if(translationSettings.src_lang) tUri += '&from=' + translationSettings.src_lang;
         const options = {
             method: 'POST',
             body: JSON.stringify (payload),
             headers: {
                 'Content-Type': 'application/json',
-                'Ocp-Apim-Subscription-Key' : subscriptionKey,
+                'Ocp-Apim-Subscription-Key' : translationSettings.subscriptionKey,
                 'X-ClientTraceId' : get_guid (),
             }
         };
+
+        if (translationSettings.region) {
+            options.headers['Ocp-Apim-Subscription-Region'] = translationSettings.region
+        }
+
         const res = await fetch(tUri, options);
         if (!res.ok) {
             throw(new exception(retCode.errorCode.TRANSLATE_SERVICE_FAIL,'Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'));
@@ -301,7 +318,7 @@ const addSegment = function (linesToTranslate, text, localize) {
  * @returns {string} translated content
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_lang, src_lang, log) {
+const batchTranslateText = async function(linesToTranslate, translationSettings) {
     // responsible for breaking localizable text into chunks that are 
     // - not more than 5000 characters in combined length 
     // - not more than 25 segments in one chunk
@@ -312,13 +329,13 @@ const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_
     for (var idx in linesToTranslate) {
         let item = linesToTranslate[idx];
         if (item.text.length + charCountInChunk >= MAX_CHAR_IN_REQUEST) {
-            await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+            await translateAndMap(batchTranslate, linesToTranslate, translationSettings);
             batchTranslate = [];
             charCountInChunk = 0;
         }
         let currentBatchSize = batchTranslate.length > 0 ? batchTranslate.length : 1;
         if (currentBatchSize % MAX_TRANSLATE_BATCH_SIZE === 0) {
-            await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+            await translateAndMap(batchTranslate, linesToTranslate, translationSettings);
             batchTranslate = [];
             charCountInChunk = 0;
         }
@@ -329,12 +346,12 @@ const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_
         }
     }
     if (batchTranslate.length !== 0) {
-        await translateAndMap(batchTranslate, subscriptionKey, to_lang, src_lang, linesToTranslate);
+        await translateAndMap(batchTranslate, linesToTranslate, translationSettings);
         batchTranslate = [];
         charCountInChunk = 0;
     }
     linesToTranslate.forEach(item => retValue += item.text);
-    if(log) process.stdout.write(chalk.default.gray(retValue));
+    if(translationSettings.log) process.stdout.write(chalk.default.gray(retValue));
     return retValue;
 };
 
@@ -347,10 +364,10 @@ const batchTranslateText = async function(linesToTranslate, subscriptionKey, to_
  * @param {translateLine []} linesToTranslateCopy Array of translateLine objects
  * @returns {void} 
  */
-const translateAndMap = async function (batchRequest, subscriptionKey, to_lang, src_lang, linesToTranslateCopy) {
+const translateAndMap = async function (batchRequest, linesToTranslateCopy, translationSettings) {
     if (batchRequest.length === 0) return;
     let data;
-    data = await translateHelpers.translateText(batchRequest, subscriptionKey, to_lang, src_lang);
+    data = await translateHelpers.translateText(batchRequest, translationSettings);
     data.forEach((item, idx) => {
         // find the correponding item in linesToTranslate
         let itemInLine = linesToTranslateCopy.find(item => item.idx === idx);
