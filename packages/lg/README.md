@@ -97,7 +97,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/lg/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/verify.ts)_
-<!-- commandsstop -->
 
 ## `bf lg:analyze`
 
