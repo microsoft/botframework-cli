@@ -403,4 +403,75 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(retPayload2 !== null);
     assert.ok(retPayload2.outputs !== null);
   });
+
+  it('Test.0100 - intent-only snapshot should not contain entity labels after calling syncLabelResolver()', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+    await LabelResolver.createAsync(baseModelPath, '');
+    const example1: any = {
+      labels: [{
+        name: 'travel',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}, {
+        name: 'city',
+        span: {
+          length: 5,
+          offset: 17},
+        label_type: 2}],
+      text: 'book a flight to miami.',
+    };
+    const example2: any = {
+      labels: [{name: 'schedule',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'book meeting with architect for Monday.',
+    };
+    const example3: any = {
+      labels: [{name: 'music',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'play some mozart and metallica.',
+    };
+    LabelResolver.addExample(example1);
+    LabelResolver.addExample(example2);
+    LabelResolver.addExample(example3);
+    const snapshot: any = LabelResolver.createSnapshot();
+    Utility.debuggingLog('OrchestratorBuildTests Test.0100, after calling LabelResolver.createSnapshot() - A');
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshot=${snapshot}`);
+    const snapshotInString: string = (new TextDecoder()).decode(snapshot);
+    Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotInString=${snapshotInString}`);
+    const luContent: string = `
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+> # Intent definitions
+
+## travel
+- book a flight to {@city=miami}.
+
+## schedule
+- book meeting with architect for Monday.
+
+## music
+- play some mozart and metallica.
+`;
+    await OrchestratorBuild.syncLabelResolver(LabelResolver.LabelResolver, luContent);
+    const snapshotAfterSync: any = LabelResolver.createSnapshot();
+    Utility.debuggingLog('OrchestratorBuildTests Test.0100, after calling LabelResolver.createSnapshot() - B');
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotAfterSync=${snapshotAfterSync}`);
+    const snapshotAfterSyncInString: string = (new TextDecoder()).decode(snapshotAfterSync);
+    Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotAfterSyncInString=${snapshotAfterSyncInString}`);
+    assert.ok(snapshot.length === snapshotAfterSync.length);
+    for (let i: number = 0; i < snapshot.length; i++) {
+      assert.ok(snapshot[i] === snapshotAfterSync[i]);
+    }
+  });
 });
