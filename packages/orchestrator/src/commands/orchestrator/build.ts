@@ -47,7 +47,7 @@ export default class OrchestratorBuild extends Command {
 
     const luInputs: any[] = OrchestratorHelper.getLuInputs(input);
     const snapshots: Map<string, Uint8Array> = OrchestratorHelper.getSnapshots(output);
-    const labelResolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversExAsync(OrchestratorSettings.ModelPath, entityBaseModelPath, snapshots);
+    const labelResolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversAsync(OrchestratorSettings.ModelPath, entityBaseModelPath, snapshots);
 
     try {
       let fullEmbeddings: boolean = false;
