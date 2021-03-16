@@ -1,5 +1,5 @@
 # AddItemReadBack
-- {"lgType":"Activity","text":"Sure, I have added "**Sunday ToDo**" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
-- {"lgType":"Activity","text":"You bet, I have added "**Sunday ToDo**" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
-- {"lgType":"Activity","text":"Absolutely, I have added "**Sunday ToDo**" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
+- {"lgType":"Activity","text":"Sure, I have added \"**Sunday ToDo**\" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
+- {"lgType":"Activity","text":"You bet, I have added \"**Sunday ToDo**\" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
+- {"lgType":"Activity","text":"Absolutely, I have added \"**Sunday ToDo**\" to your **reminder** list. You have **3** items in your reminder list.","suggestedactions":["Add item ","View lists ","Remove item ","Profile ","Cancel ","Help"]}
 

@@ -1,0 +1,7 @@
+# stop
+- stop that task
+- stop that
+- stop the task
+
+# abort
+- ${stop()}
