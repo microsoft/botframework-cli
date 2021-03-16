@@ -21,6 +21,7 @@ describe('command', () => {
   })
   .catch(err => {
     expect(err.message).to.include('EEXIT: 1')
+    expect(process.exitCode).to.equal(1)
   })
   .finally(output => expect(output.stderr).to.equal('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues\nfailure\n'))
   .it('Errors out')
