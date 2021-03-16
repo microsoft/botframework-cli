@@ -16,13 +16,13 @@
             ],
             "args": [
                 "orchestrator:build",
-                "--dialog",
                 "--in",
-                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Dialogs",
+                "D:/src/botframework-cli/packages/orchestrator/cs",
                 "--out",
-                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Generated",
+                "D:/src/botframework-cli/packages/orchestrator/out",
                 "--model",
-                "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/02.todo-bot-with-adaptive-dialog/Model",
+                "D:/src/botframework-cli/packages/orchestrator/model",
+                "--dialog",
             ],
             "internalConsoleOptions": "openOnSessionStart",
             "cwd": "${workspaceFolder}"

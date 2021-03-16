@@ -35,7 +35,7 @@ export default class OrchestratorBuild extends Command {
     let luConfig: any = null;
     let luConfigPath: string = flags.luconfig;
     const entityBaseModelPath: string = flags.entityModel;
-    
+
     if (luConfigPath && luConfigPath.length > 0) {
       luConfigPath = path.resolve(luConfigPath);
       luConfig = JSON.parse(OrchestratorHelper.readFile(luConfigPath));
@@ -44,6 +44,10 @@ export default class OrchestratorBuild extends Command {
     if (!OrchestratorHelper.isDirectory(output)) {
       output = path.dirname(output);
     }
+
+    const luInputs: any[] = OrchestratorHelper.getLuInputs(input);
+    const snapshots: Map<string, Uint8Array> = OrchestratorHelper.getSnapshots(output);
+    const labelResolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversExAsync(OrchestratorSettings.ModelPath, entityBaseModelPath, snapshots);
 
     try {
       let fullEmbeddings: boolean = false;
@@ -54,8 +58,8 @@ export default class OrchestratorBuild extends Command {
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
         OrchestratorSettings.ModelPath,
-        OrchestratorHelper.getLuInputs(input),
-        new Map<string, LabelResolver>(),
+        luInputs,
+        labelResolvers,
         isDialog,
         entityBaseModelPath,
         luConfig,

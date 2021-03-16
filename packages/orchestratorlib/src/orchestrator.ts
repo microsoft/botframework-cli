@@ -222,4 +222,13 @@ export class Orchestrator {
     }
     return labelResolvers;
   }
+
+  public static async getLabelResolversExAsync(baseModelPath: string, entityBaseModelPath: string, snapshots: Map<string, Uint8Array>, useLoadedNlr: boolean = true): Promise<Map<string, LabelResolver>> {
+    const labelResolvers: Map<string, LabelResolver> = new Map<string, LabelResolver>();
+    await LabelResolver.createAsync(baseModelPath, entityBaseModelPath, useLoadedNlr);
+    for (const [key, value] of snapshots.entries()) {
+      labelResolvers.set(key, LabelResolver.createLabelResolver(value));
+    }
+    return labelResolvers;
+  }
 }
