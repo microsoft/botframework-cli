@@ -214,11 +214,11 @@ export class Orchestrator {
       obfuscateEvaluationReport);
   }
 
-  public static async getLabelResolversAsync(baseModelPath: string, entityBaseModelPath: string, snapshots: Uint8Array[], useLoadedNlr: boolean = true): Promise<LabelResolver[]> {
-    const labelResolvers: LabelResolver[] = [];
+  public static async getLabelResolversAsync(baseModelPath: string, entityBaseModelPath: string, snapshots: Map<string, Uint8Array>, useLoadedNlr: boolean = true): Promise<Map<string, LabelResolver>> {
+    const labelResolvers: Map<string, LabelResolver> = new Map<string, LabelResolver>();
     await LabelResolver.createAsync(baseModelPath, entityBaseModelPath, useLoadedNlr);
-    for (const snapshot of snapshots) {
-      labelResolvers.push(LabelResolver.createLabelResolver(snapshot));
+    for (const [key, value] of snapshots.entries()) {
+      labelResolvers.set(key, LabelResolver.createLabelResolver(value));
     }
     return labelResolvers;
   }

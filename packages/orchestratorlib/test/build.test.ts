@@ -319,16 +319,15 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(retPayload.settings.orchestrator.modelFolder === baseModelPath);
 
     const payLoadOutputs: any[] = retPayload.outputs;
-    const snapshots: Uint8Array[] = [];
-    let output: any;
+    const snapshots: Map<string, Uint8Array> = new Map<string, Uint8Array>();
     // eslint-disable-next-line guard-for-in
-    for (output in payLoadOutputs) {
-      snapshots.push(output.snapshot);
+    for (const output of payLoadOutputs) {
+      snapshots.set(output.id, output.snapshot);
     }
 
-    assert.ok(snapshots.length === 5);
-    const resolvers: LabelResolver[] = await Orchestrator.getLabelResolversAsync(baseModelPath, '', snapshots);
-    assert.ok(resolvers.length === 5);
+    assert.ok(snapshots.size === 5);
+    const resolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversAsync(baseModelPath, '', snapshots);
+    assert.ok(resolvers.size === 5);
   });
 
   it('runAsync with luConfig json', async () => {

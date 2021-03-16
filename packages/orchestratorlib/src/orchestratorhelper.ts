@@ -1122,6 +1122,27 @@ export class OrchestratorHelper {
     return retPayload;
   }
 
+  public static getSnapshots(inputPath: string): Map<string, Uint8Array> {
+    const snapshots: Map<string, Uint8Array> = new Map<string, Uint8Array>();
+    OrchestratorHelper.getSnapshotsEx(inputPath, snapshots);
+    return snapshots;
+  }
+
+  public static getSnapshotsEx(outputPath: string, snapshots: Map<string, Uint8Array>): void {
+    if (OrchestratorHelper.isDirectory(outputPath)) {
+      const items: string[] = fs.readdirSync(outputPath);
+      for (const item of items) {
+        const currentItemPath: string = path.join(outputPath, item);
+        OrchestratorHelper.getSnapshotsEx(currentItemPath, snapshots);
+      }
+    } else {
+      const ext: string = path.extname(outputPath);
+      if (ext === '.blu') {
+        snapshots.set(path.basename(outputPath, '.blu'), OrchestratorHelper.getSnapshotFromFile(outputPath));
+      }
+    }
+  }
+
   public static  writeBuildOutputFiles(outputPath: string, retPayload: any): void {
     const buildOutputs: any[] = retPayload.outputs;
     const bluPaths: any = retPayload.settings.orchestrator.snapshots;
