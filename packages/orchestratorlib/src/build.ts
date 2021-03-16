@@ -130,14 +130,11 @@ export class OrchestratorBuild {
       luFile.utteranceEntityLabelDuplicateMap);
 
     const result: Example[] = new Array<Example>();
-    luFile.utteranceEntityLabelsMap.forEach((labels: Label[], text: string) => {
-      result.push(new Example(text, labels));
-    });
 
-    for (let entry of luFile.utteranceLabelsMap)  {
-      let text=entry[0];
-      let labelNames=entry[1];
-      let example=new Example(text, await OrchestratorBuild.convertToIntentLabels(labelNames));
+    for (const entry of luFile.utteranceLabelsMap)  {
+      const text: string = entry[0];
+      const labelNames: Set<string> = entry[1];
+      const example: Example = new Example(text, await OrchestratorBuild.convertToIntentLabels(labelNames));
       result.push(example);
     }
 
