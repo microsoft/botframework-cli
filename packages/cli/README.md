@@ -456,7 +456,7 @@ OPTIONS
   -h, --help     lg:verify help
   -i, --in=in    (required) Folder that contains .lg file.
   -o, --out=out  Output file or folder name. If not specified stdout will be used as output
-  -r, --recurse  Considere sub-folders to find .lg file(s)
+  -r, --recurse  Considers sub-folders to find .lg file(s)
 ```
 
 _See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/verify.ts)_
@@ -474,7 +474,7 @@ OPTIONS
   -h, --help     lg:analyze help
   -i, --in=in    (required) LG File or folder that contains .lg file(s)
   -o, --out=out  Output file or folder name. If not specified stdout will be used as output
-  -r, --recurse  Considere sub-folders to find .lg file(s)
+  -r, --recurse  Considers sub-folders to find .lg file(s)
 ```
 
 _See code: [src/commands/lg/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
