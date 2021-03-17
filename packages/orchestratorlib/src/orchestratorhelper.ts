@@ -1034,7 +1034,7 @@ export class OrchestratorHelper {
 
   // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
-  static addNewLabelUtteranceToObejctDictionary(
+  static addNewLabelUtteranceToObjectDictionary(
     utterance: string,
     label: string,
     hierarchicalLabel: string,
@@ -1061,14 +1061,14 @@ export class OrchestratorHelper {
         utteranceLabelsMap[utterance] = [label];
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObejctDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObjectDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
       throw error;
     }
   }
 
   // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
-  static addNewEntityLabelUtteranceToObejctDictionary(
+  static addNewEntityLabelUtteranceToObjectDictionary(
     utterance: string,
     entityEntry: any,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
@@ -1091,7 +1091,7 @@ export class OrchestratorHelper {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObejctDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObjectDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }
