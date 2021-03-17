@@ -4,6 +4,7 @@
  */
 
 const translateHelpers = require('./../lufile/translate-helpers')
+
 const luOptions = require('./luOptions')
 
 class Lu {
@@ -21,8 +22,14 @@ class Lu {
         }
     }
 
-    async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false){
-        this.content = await translateHelpers.parseAndTranslate(this.content, translate_key, tgt_lang, '', translate_comments, translate_link_text)
+    async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false, region = ''){
+        const translateSettings = new translateHelpers.translationSettings();
+        translateSettings.subscriptionKey = translate_key
+        translateSettings.translate_link_text = translate_link_text
+        translateSettings.translate_comments = translate_comments
+        translateSettings.to_lang = tgt_lang
+        translateSettings.region = region
+        this.content = await translateHelpers.parseAndTranslate(this.content, translateSettings)
     }
 }
 

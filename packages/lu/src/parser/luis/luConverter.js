@@ -111,10 +111,11 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         } else {
             // will not add escape char for pattern utterances since brackets are strictly used in pattern
             // so there are no exceptions that need to be handled in pattern
-            if (helpers.isUtterancePattern(utterance)) {
+            if (utterance.isPattern) {
                 updatedText = utterance.text;
             } else {
-                let tokenizedText = utterance.text.split('');
+                updatedText = utterance.text.replace(/[\[\]\(\)]/gi, match => `\\${match}`);
+                let tokenizedText = updatedText.split('');
                 tokenizedText.forEach(function (token, index) {
                     tokenizedText[index] = EscapeCharsInUtterance.includes(token) ? `\\${token}` : token;
                 });
@@ -511,9 +512,9 @@ const updateUtterancesList = function (srcCollection, tgtCollection, attribute) 
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }
-        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute])) {
+        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute] && ((item.isPattern && attribute !== 'text') || (!item.isPattern && attribute === 'text')))) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
-            return;
+            return; 
         }
     });
 }
@@ -528,7 +529,9 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
     if(attribute === 'text') {
         matchInTarget.utterances.push(srcItem); 
     } else {
-        matchInTarget.utterances.push(new helperClasses.utterances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]));
+        let utteranceFromPattern = new helperClasses.utterances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]);
+        utteranceFromPattern.isPattern = true;
+        matchInTarget.utterances.push(utteranceFromPattern);
     }
 }
 

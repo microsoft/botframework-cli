@@ -114,7 +114,7 @@ describe('Update available to stdout', () => {
     .loadConfig({root: upgradeavailable})
     .stub(semver, 'gt', () => true)
     .stdout()
-    .hook('init', {argv: ['arg']}, {root: upgradeavailable})
+    .hook('init', {id: '-v', argv: ['arg']}, {root: upgradeavailable})
     .do(output => {
       expect(output.stdout).to.contain('Update available')
     })
@@ -132,7 +132,7 @@ describe('Update available to stdout', () => {
     .loadConfig({root: lastversioncheck})
     .stub(semver, 'gt', () => true)
     .stdout()
-    .hook('init', {argv: ['arg']}, {root: lastversioncheck})
+    .hook('init', {id: '-v', argv: ['arg']}, {root: lastversioncheck})
     .do(output => {
       expect(output.stdout).to.contain('Update available')
     })
