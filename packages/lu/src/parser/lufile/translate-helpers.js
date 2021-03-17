@@ -27,13 +27,7 @@ const translateHelpers = {
     /**
      * Helper function to parseAndTranslate lu file content
      * @param {string} fileContent file content
-     * @param {string} subscriptionKey translate text API key
-     * @param {string} to_lang language code to translate content to
-     * @param {string} src_lang language code for source content
-     * @param {boolean} translate_comments translate comments in .lu files if this is set to true
-     * @param {boolean} translate_link_text translate URL or LU reference link text in .lu files if this is set to true
-     * @param {boolean} log indicates if this function should write verbose messages to process.stdout
-     * @param {number} batch_translate indicates number of input lines to batch up before calling translation API
+     * @param {translationSettings} ts translation settings
      * @returns {string} Localized file content
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
@@ -257,9 +251,7 @@ const translateHelpers = {
     /**
      * Helper function to call MT rest API to translate content
      * @param {string} text Text to translate
-     * @param {string} subscriptionKey user provided subscription to text translation API
-     * @param {string} to_lang target language to localize to
-     * @param {string} from_lang source language of text
+     * @param {translationSettings} translationSettings translation settings
      * @returns {object} response from MT call.
      * @throws {exception} Throws on errors. exception object includes errCode and text. 
      */
@@ -311,10 +303,7 @@ const addSegment = function (linesToTranslate, text, localize) {
 /**
  * Helper function to batch calls to translate API
  * @param {translateLine []} linesToTranslate Array of translateLine objects
- * @param {string} subscriptionKey translate text API key
- * @param {string} to_lang language code to translate content to
- * @param {string} src_lang language code for source content
- * @param {boolean} log indicates if this function should write verbose messages to process.stdout
+ * @param {translationSettings} translationSettings translation settings
  * @returns {string} translated content
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
@@ -358,9 +347,7 @@ const batchTranslateText = async function(linesToTranslate, translationSettings)
 /**
  * Helper function to call translate and update text with localized result
  * @param {object []} batchRequest Array of {'Text':'value'} objects
- * @param {string} subscriptionKey translate text API key
- * @param {string} to_lang language code to translate content to
- * @param {string} src_lang language code for source content
+ * @param {translationSettings} translationSettings translation settings
  * @param {translateLine []} linesToTranslateCopy Array of translateLine objects
  * @returns {void} 
  */
