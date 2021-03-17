@@ -11,6 +11,7 @@ const exception = require('@microsoft/bf-lu').V2.Exception
 const QnaMaker = require('@microsoft/bf-lu').V2.KB
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const translate = require('@microsoft/bf-lu').translate.translationSettings
 const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
 
 
@@ -26,6 +27,7 @@ export default class QnamakerTranslate extends Command {
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
     translate_comments: flags.boolean({description: 'When set, machine translate comments found in .qna file'}),
     translate_link_text: flags.boolean({description: 'When set, machine translate link description in .qna file'}),
+    subscription_region: flags.string({description: 'Required request header if using a Cognitive Services Resource. Optional if using a Translator Resource.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'qnamaker:translate help'}),
   }
@@ -36,12 +38,20 @@ export default class QnamakerTranslate extends Command {
       const {flags} = this.parse(QnamakerTranslate)
       // Check if data piped in stdin
       const stdin = await this.readStdin()
+      let translationSettings: InstanceType<typeof translate> = {
+        subscriptionKey : flags.translatekey,
+        to_lang : flags.tgtlang,
+        src_lang : flags.srclang,
+        translate_comments : flags.translate_comments,
+        translate_link_text : flags.translate_link_text,
+        region : flags.subscription_region
+      }
 
       const isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any = {}
       if (isLu) {
         const luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.QnAFile)
-        const translatedLuFiles = await luTranslator.translateQnAList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        const translatedLuFiles = await luTranslator.translateQnAList(luFiles, translationSettings)
         luFiles.forEach((lu: any) => {
           if (!result[lu.id]) {
             result[lu.id] = {}
@@ -54,7 +64,7 @@ export default class QnamakerTranslate extends Command {
         const json = flags.in ? await fileHelper.getContentFromFile(flags.in) : stdin
         const qnaM = new QnaMaker(fileHelper.parseJSON(json, 'QnA'))
         const qna = new QnA(qnaM.parseToLuContent())
-        const qnaTranslation = await luTranslator.translateQnA(qna, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        const qnaTranslation = await luTranslator.translateQnA(qna, translationSettings)
         const key = flags.in ? path.basename(flags.in) : 'stdin'
         result = {
           [key]: {},
@@ -75,6 +85,7 @@ export default class QnamakerTranslate extends Command {
         this.log(JSON.stringify(result, null, 2))
       }
     } catch (error) {
+      console.log(error)
       if (error instanceof exception) {
         throw new CLIError(error.text)
       }
