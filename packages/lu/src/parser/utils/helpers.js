@@ -187,7 +187,7 @@ const helpers = {
         if (this.isUtteranceLinkRef(utterance)) return false;
 
         // patterns must have at least one [optional] and or one (group | text)
-        let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
+        let detectPatternRegex = /(\[.*(?<!\\)\])|(\(.*?(\|.*?)+(?<!\\)\))/gi;
         return detectPatternRegex.test(utterance);
     },
     hashCode : function(s) {
