@@ -1257,7 +1257,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         }
                     } else {
                         if(!hashTable[uttHash]) {
-                            let utteranceObject = new helperClass.utterances(utterance, intentName, []);
+                            let utteranceObject = new helperClass.utterances(utterance.replace(/\\[\[\]\(\)]/gi, match => match.slice(1)), intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                             hashTable[uttHash] = utteranceObject;
                         }
