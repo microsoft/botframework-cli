@@ -13,6 +13,7 @@ const modules = {
         constructMdFromQnAAlteration: require('./qna/alterations/qnaConverter')
     },
     translate: {
+        translationSettings: require('./lufile/translate-helpers').translationSettings,
         parseAndTranslate: require('./lufile/translate-helpers').parseAndTranslate,
         translateText: require('./lufile/translate-helpers').translateText
     },

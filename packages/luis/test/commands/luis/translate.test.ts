@@ -19,17 +19,25 @@ describe('luis:translate lu file', async () => {
   })
 
   before(function(){
-    nock('https://api.cognitive.microsofttranslator.com')
+    nock('https://api.cognitive.microsofttranslator.com', {
+      reqheaders: {
+        'Ocp-Apim-Subscription-Region': () => true,
+      },
+    })
     .post(/.*/)
     .reply(200, response)
 
-    nock('https://api.cognitive.microsofttranslator.com')
+    nock('https://api.cognitive.microsofttranslator.com', {
+      reqheaders: {
+        'Ocp-Apim-Subscription-Region': () => true,
+      },
+    })
     .post(/.*/)
     .reply(200, response2)
   })
 
   test
-    .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/file.lu')}`, '--tgtlang', 'fr', '--out', './'])
+    .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/file.lu')}`, '--tgtlang', 'fr', '--out', './', '--subscription_region', 'westus2'])
     .it('', async () => {
         await compareLuFiles('./../../../fr/file.lu', './../../fixtures/fr/file.lu')
     })
