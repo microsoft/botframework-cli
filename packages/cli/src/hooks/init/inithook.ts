@@ -58,7 +58,9 @@ const hook: Hook<'init'> = async function (opts) {
     // if there's no timestamp in config, create one and check for updates
     // if there is a timestamp in config and it's not from today, check for updates
     const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
-    if (!isToday(lastCheck, curDateTime)) {
+    if ((opts.id === '-v'
+        || opts.id === '--version')
+        && !isToday(lastCheck, curDateTime)) {
       await checkForUpdate()
       await updateUserConfig(curDateTime)
     }
