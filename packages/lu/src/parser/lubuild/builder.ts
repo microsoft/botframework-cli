@@ -511,14 +511,10 @@ export class Builder {
   forcePublish(endpoints: any, versionId: string, directVersionPublish: boolean, isStaging: boolean) {
     let forcePublish = false
     if (endpoints !== undefined) {
-      if (directVersionPublish && !Object.keys(endpoints).find(version => version.includes(versionId))) {
+      if (directVersionPublish && !Object.keys(endpoints).find(version => version.includes(versionId))
+        || !directVersionPublish && (isStaging && (!endpoints.STAGING || endpoints.STAGING.versionId !== versionId)
+          || !isStaging && (!endpoints.PRODUCTION || endpoints.PRODUCTION.versionId !== versionId))) {
         forcePublish = true
-      } else if (!directVersionPublish) {
-        if (isStaging && (!endpoints.STAGING || endpoints.STAGING.versionId !== versionId)) {
-          forcePublish = true
-        } else if (!isStaging && (!endpoints.PRODUCTION || endpoints.PRODUCTION.versionId !== versionId)) {
-          forcePublish = true
-        }
       }
     }
 
