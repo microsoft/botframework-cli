@@ -52,6 +52,7 @@ export abstract class Command extends Base {
     }
 
     // return exit code
+    process.exitCode = 1
     this.exit(1)
   }
 
