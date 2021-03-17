@@ -10,7 +10,7 @@ import {Utility} from './utility';
 // import {stringify} from 'querystring';
 import {Label, Span} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
-import {Example} from '@microsoft/bf-dispatcher';
+// import {Example} from '@microsoft/bf-dispatcher';
 
 export class OrchestratorBuild {
   public static Orchestrator: any;
@@ -100,17 +100,25 @@ export class OrchestratorBuild {
   }
 
   // Get sorted examples from Label Resolver.
-  static async getExamplesLR(
-    labelResolver: LabelResolver): Promise<Example[]> {
-    const result: Example[] = LabelResolver.getExamples(labelResolver);
-    result.sort(Example.sort_fn);
-    return result;
-  }
-
-  // Get sorted examples from LU file
-  static async getExamplesLU(
-    luContent: string): Promise<Example[]> {
-    const luFile: {
+  static getExamplesLR(
+    labelResolver: LabelResolver): {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } {
+    const labelResolverExamples: any = LabelResolver.getExamples(labelResolver);
+    // ---- NOTE-FOR-REFERENCE ---- const labelResolverExamples: Example[] = LabelResolver.getExamples(labelResolver).map(
+    // ---- NOTE-FOR-REFERENCE ----   (x: any) => new Example(
+    // ---- NOTE-FOR-REFERENCE ----     x.text,
+    // ---- NOTE-FOR-REFERENCE ----     x.labels.map((y: any) => new Label(
+    // ---- NOTE-FOR-REFERENCE ----       y.label_type,
+    // ---- NOTE-FOR-REFERENCE ----       y.name,
+    // ---- NOTE-FOR-REFERENCE ----       new Span(
+    // ---- NOTE-FOR-REFERENCE ----         y.span.offset,
+    // ---- NOTE-FOR-REFERENCE ----         y.span.length)))));
+    // ---- NOTE-FOR-REFERENCE ---- labelResolverExamples.sort(Example.sort_fn);
+    // ---- NOTE-FOR-REFERENCE ---- return labelResolverExamples;
+    const exampleIntentsEntitiesUtterances: {
       'utteranceLabelsMap': Map<string, Set<string>>;
       'utteranceLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceEntityLabelsMap': Map<string, Label[]>;
@@ -119,67 +127,175 @@ export class OrchestratorBuild {
         utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
         utteranceEntityLabelsMap: new Map<string, Label[]>(),
         utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    OrchestratorHelper.getExampleArrayIntentsEntitiesUtterances(
+      labelResolverExamples,
+      '',
+      exampleIntentsEntitiesUtterances.utteranceLabelsMap,
+      exampleIntentsEntitiesUtterances.utteranceLabelDuplicateMap,
+      exampleIntentsEntitiesUtterances.utteranceEntityLabelsMap,
+      exampleIntentsEntitiesUtterances.utteranceEntityLabelDuplicateMap);
+    return exampleIntentsEntitiesUtterances;
+  }
 
+  // Get sorted examples from LU file
+  static async getExamplesLU(
+    luContent: string): Promise<{
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
+    const luIntentsEntitiesUtterances: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
+        utteranceLabelsMap: new Map<string, Set<string>>(),
+        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+        utteranceEntityLabelsMap: new Map<string, Label[]>(),
+        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
     await OrchestratorHelper.parseLuContent(
       '',
       luContent,
       '',
-      luFile.utteranceLabelsMap,
-      luFile.utteranceLabelDuplicateMap,
-      luFile.utteranceEntityLabelsMap,
-      luFile.utteranceEntityLabelDuplicateMap);
-
-    const result: Example[] = new Array<Example>();
-    luFile.utteranceEntityLabelsMap.forEach((labels: Label[], text: string) => {
-      result.push(new Example(text, labels));
-    });
-
-    for (let entry of luFile.utteranceLabelsMap)  {
-      let text=entry[0];
-      let labelNames=entry[1];
-      let example=new Example(text, await OrchestratorBuild.convertToIntentLabels(labelNames));
-      result.push(example);
-    }
-
-    result.sort(Example.sort_fn);
-    return result;
+      luIntentsEntitiesUtterances.utteranceLabelsMap,
+      luIntentsEntitiesUtterances.utteranceLabelDuplicateMap,
+      luIntentsEntitiesUtterances.utteranceEntityLabelsMap,
+      luIntentsEntitiesUtterances.utteranceEntityLabelDuplicateMap);
+    Utility.debuggingLog(`OrchestratorBuild.getExamplesLU(), luIntentsEntitiesUtterances.utteranceLabelsMap.size=${luIntentsEntitiesUtterances.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.getExamplesLU(), luIntentsEntitiesUtterances.utteranceEntityLabelsMap.size=${luIntentsEntitiesUtterances.utteranceEntityLabelsMap.size}`);
+    return luIntentsEntitiesUtterances;
   }
 
   // Synchronize an active LabelResolver instance with with an LU file.
   static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
-    const subject: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
-    const target: Example[] = await OrchestratorBuild.getExamplesLU(luContent);
-    // http://www.mlsite.net/blog/?p=2250
-    let x: number = 0;
-    let y: number = 0;
-    const inserts: {[k: string]: any}[] = new Array<{[k: string]: any}>();
-    const deletes: number[] = new Array<number>();
-
-    while ((x < subject.length) || (y < target.length)) {
-      if (y >= target.length) {
-        deletes.push(x);
-        x += 1;
-      } else if (x >= subject.length) {
-        inserts.push({index: y, value: target[y]});
-        y += 1;
-      } else if (Example.sort_fn(subject[x], target[y]) < 0) {
-        deletes.push(x);
-        x += 1;
-      } else if (Example.sort_fn(subject[x], target[y]) > 0) {
-        inserts.push({index: y, value: target[y]});
-        y += 1;
+    const subject: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceLabelsMap.size=${subject.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
+    const target: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorBuild.getExamplesLU(luContent);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceLabelsMap.size=${target.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceEntityLabelsMap.size=${target.utteranceEntityLabelsMap.size}`);
+    // ---- NOTE ---- delete example intent label if it is not in target.
+    subject.utteranceLabelsMap.forEach((labels: Set<string>, utterance: string) => {
+      if (target.utteranceLabelsMap.has(utterance)) {
+        const targetUtteranceLabels: Set<string> = target.utteranceLabelsMap.get(utterance) as Set<string>;
+        for (const label of labels) {
+          if (!targetUtteranceLabels.has(label)) {
+            LabelResolver.removeExample({
+              text: utterance,
+              label: label,
+            },
+            labelResolver);
+          }
+        }
       } else {
-        x += 1;
-        y += 1;
+        LabelResolver.removeExample({
+          text: utterance,
+          labels: [...labels.keys()].map((label: string) => {
+            return {
+              name: label,
+            };
+          }),
+        },
+        labelResolver);
       }
-    }
-    //  Process deletes
-    deletes.forEach((element: number) => {
-      LabelResolver.removeExample(subject[element], labelResolver);
     });
-    //  Process inserts
-    inserts.forEach((element: {[k: string]: any}) => {
-      LabelResolver.addExample(target[element.index], labelResolver);
+    // ---- NOTE ---- insert example intent label if it is not in subject.
+    target.utteranceLabelsMap.forEach((labels: Set<string>, utterance: string) => {
+      if (subject.utteranceLabelsMap.has(utterance)) {
+        const subjectUtteranceLabels: Set<string> = subject.utteranceLabelsMap.get(utterance) as Set<string>;
+        for (const label of labels) {
+          if (!subjectUtteranceLabels.has(label)) {
+            LabelResolver.addExample({
+              text: utterance,
+              label: label,
+            },
+            labelResolver);
+          }
+        }
+      } else {
+        Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), LabelResolver.addExample(), utterance=${utterance}, labels=${[...labels.keys()]}`);
+        LabelResolver.addExample({
+          text: utterance,
+          labels: [...labels.keys()].map((label: string) => {
+            return {
+              name: label,
+            };
+          }),
+        },
+        labelResolver);
+      }
+    });
+    // ---- NOTE ---- delete example entity label if it is not in target.
+    subject.utteranceEntityLabelsMap.forEach((labels: Label[], utterance: string) => {
+      if (target.utteranceEntityLabelsMap.has(utterance)) {
+        const targetUtteranceEntityLabels: Label[] = target.utteranceEntityLabelsMap.get(utterance) as Label[];
+        const labelsToRemove: Label[] = [];
+        for (const label of labels) {
+          let labelIsInTarget: boolean = false;
+          for (const targetUtteranceEntityLabel of targetUtteranceEntityLabels) {
+            if (label.equals(targetUtteranceEntityLabel)) {
+              labelIsInTarget = true;
+              break;
+            }
+          }
+          if (!labelIsInTarget) {
+            labelsToRemove.push(label);
+          }
+        }
+        if (!Utility.isEmptyGenericArray(labelsToRemove)) {
+          LabelResolver.removeExample({
+            text: utterance,
+            labels: labelsToRemove.map((x: Label) => x.toAlternateObject()),
+          },
+          labelResolver);
+        }
+      } else {
+        LabelResolver.removeExample({
+          text: utterance,
+          labels: labels.map((x: Label) => x.toAlternateObject()),
+        },
+        labelResolver);
+      }
+    });
+    // ---- NOTE ---- insert example entity label if it is not in subject.
+    target.utteranceEntityLabelsMap.forEach((labels: Label[], utterance: string) => {
+      if (subject.utteranceEntityLabelsMap.has(utterance)) {
+        const subjectUtteranceEntityLabels: Label[] = subject.utteranceEntityLabelsMap.get(utterance) as Label[];
+        const labelsToInsert: Label[] = [];
+        for (const label of labels) {
+          let labelIsInSubject: boolean = false;
+          for (const subjectUtteranceEntityLabel of subjectUtteranceEntityLabels) {
+            if (label.equals(subjectUtteranceEntityLabel)) {
+              labelIsInSubject = true;
+              break;
+            }
+          }
+          if (!labelIsInSubject) {
+            labelsToInsert.push(label);
+          }
+        }
+        if (!Utility.isEmptyGenericArray(labelsToInsert)) {
+          LabelResolver.addExample({
+            text: utterance,
+            labels: labelsToInsert.map((x: Label) => x.toAlternateObject()),
+          },
+          labelResolver);
+        }
+      } else {
+        LabelResolver.addExample({
+          text: utterance,
+          labels: labels.map((x: Label) => x.toAlternateObject()),
+        },
+        labelResolver);
+      }
     });
   }
 

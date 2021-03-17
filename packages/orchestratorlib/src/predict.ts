@@ -1269,12 +1269,12 @@ export class OrchestratorPredict {
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejct: any = example.toObject();
-    Utility.debuggingLog(`exampleObejct=${Utility.jsonStringify(exampleObejct)}`);
-    const rvAddExample: any = LabelResolver.addExample(exampleObejct);
+    const exampleObject: any = example.toAlternateObject();
+    Utility.debuggingLog(`exampleObject=${Utility.jsonStringify(exampleObject)}`);
+    const rvAddExample: any = LabelResolver.addExample(exampleObject);
     Utility.debuggingLog(`rv=${rvAddExample}`);
     if (!rvAddExample) {
-      console.log(`ERROR: There is an error, the example was not added, example: ${Utility.jsonStringify(exampleObejct)}`);
+      console.log(`ERROR: There is an error, the example was not added, example: ${Utility.jsonStringify(exampleObject)}`);
       return -1;
     }
     console.log(`> Utterance '${this.currentUtterance}' has been added to '${Utility.jsonStringify(this.currentIntentLabels)}'`);
@@ -1289,12 +1289,12 @@ export class OrchestratorPredict {
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejct: any = example.toObject();
-    Utility.debuggingLog(`exampleObejct=${Utility.jsonStringify(exampleObejct)}`);
-    const rvRemoveExample: any = LabelResolver.removeExample(exampleObejct);
+    const exampleObject: any = example.toAlternateObject();
+    Utility.debuggingLog(`exampleObject=${Utility.jsonStringify(exampleObject)}`);
+    const rvRemoveExample: any = LabelResolver.removeExample(exampleObject);
     Utility.debuggingLog(`rv=${rvRemoveExample}`);
     if (!rvRemoveExample) {
-      console.log(`ERROR: There is an error, the example was not removed, example: ${Utility.jsonStringify(exampleObejct)}`);
+      console.log(`ERROR: There is an error, the example was not removed, example: ${Utility.jsonStringify(exampleObject)}`);
       return -1;
     }
     console.log(`> Utterance '${this.currentUtterance}' has been removed from '${Utility.jsonStringify(this.currentIntentLabels)}'`);
@@ -1309,23 +1309,23 @@ export class OrchestratorPredict {
     const exampleToRemove: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejctToRemove: any = exampleToRemove.toObject();
-    Utility.debuggingLog(`exampleObejctToRemove=${Utility.jsonStringify(exampleObejctToRemove)}`);
-    const rvRemoveExample: any = LabelResolver.removeExample(exampleObejctToRemove);
+    const exampleObjectToRemove: any = exampleToRemove.toAlternateObject();
+    Utility.debuggingLog(`exampleObjectToRemove=${Utility.jsonStringify(exampleObjectToRemove)}`);
+    const rvRemoveExample: any = LabelResolver.removeExample(exampleObjectToRemove);
     Utility.debuggingLog(`rvRemoveExample=${rvRemoveExample}`);
     if (!rvRemoveExample) {
-      console.log(`ERROR: There is an error, the example was not removed, example: ${Utility.jsonStringify(exampleObejctToRemove)}`);
+      console.log(`ERROR: There is an error, the example was not removed, example: ${Utility.jsonStringify(exampleObjectToRemove)}`);
       return -1;
     }
     const exampleToAdd: Example = Example.newIntentExample(
       this.currentUtterance,
       this.newIntentLabels);
-    const exampleObejctToAdd: any = exampleToAdd.toObject();
-    Utility.debuggingLog(`exampleObejctToAdd=${Utility.jsonStringify(exampleObejctToAdd)}`);
-    const rvAddExample: any = LabelResolver.addExample(exampleObejctToAdd);
+    const exampleObjectToAdd: any = exampleToAdd.toAlternateObject();
+    Utility.debuggingLog(`exampleObjectToAdd=${Utility.jsonStringify(exampleObjectToAdd)}`);
+    const rvAddExample: any = LabelResolver.addExample(exampleObjectToAdd);
     Utility.debuggingLog(`rvAddExample=${rvAddExample}`);
     if (!rvAddExample) {
-      console.log(`ERROR: There is an error, the example was not added, example: ${Utility.jsonStringify(exampleObejctToAdd)}`);
+      console.log(`ERROR: There is an error, the example was not added, example: ${Utility.jsonStringify(exampleObjectToAdd)}`);
       return -2;
     }
     console.log(`> Utterance '${this.currentUtterance}' has been moved from '${Utility.jsonStringify(this.currentIntentLabels)}' to '${Utility.jsonStringify(this.newIntentLabels)}'`);

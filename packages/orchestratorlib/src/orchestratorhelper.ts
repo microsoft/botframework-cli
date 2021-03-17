@@ -7,8 +7,9 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
-import {LabelType} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
+import {LabelStructureUtility} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
 import {ScoreEntity} from '@microsoft/bf-dispatcher';
 import {ScoreIntent} from '@microsoft/bf-dispatcher';
 // import {Span} from '@microsoft/bf-dispatcher';
@@ -413,7 +414,7 @@ export class OrchestratorHelper {
     };
     const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      UtilityDispatcher.debuggingNamedLog1('parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
+      UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
     }
     try {
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
@@ -811,6 +812,60 @@ export class OrchestratorHelper {
     return false;
   }
 
+  // eslint-disable-next-line max-params
+  static getExampleArrayIntentsEntitiesUtterances(
+    exampleArray: any,
+    hierarchicalLabel: string,
+    utteranceLabelsMap: Map<string, Set<string>>,
+    utteranceLabelDuplicateMap: Map<string, Set<string>>,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): boolean {
+    try {
+      if (exampleArray.length > 0)  {
+        exampleArray.forEach((example: any) => {
+          const utterance: string = example.text.trim();
+          // eslint-disable-next-line no-prototype-builtins
+          if (example.hasOwnProperty('labels')) {
+            const labels: any[] = example.labels;
+            labels.forEach((label: any) => {
+              // eslint-disable-next-line no-prototype-builtins
+              if (label.hasOwnProperty('label_type')) {
+                const labelName: string = label.name;
+                const labelType: LabelType = LabelStructureUtility.numberToLabelType(label.label_type);
+                if (labelType === LabelType.Intent) {
+                  OrchestratorHelper.addNewLabelUtterance(
+                    utterance,
+                    labelName,
+                    hierarchicalLabel,
+                    utteranceLabelsMap,
+                    utteranceLabelDuplicateMap);
+                } else if (labelType === LabelType.Entity) {
+                  const labelSpanOffset: number = label.span.offset;
+                  const labelSpanLength: number = label.span.length;
+                  OrchestratorHelper.addNewEntityLabelUtterance(
+                    utterance,
+                    Label.newEntityLabel(labelName, labelSpanOffset, labelSpanLength),
+                    utteranceEntityLabelsMap,
+                    utteranceEntityLabelDuplicateMap);
+                }
+              } else {
+                UtilityDispatcher.debuggingNamedLog1(
+                  'OrchestratorHelper.getExampleArrayIntentsEntitiesUtterances(), input example does not have label type',
+                  label,
+                  'label');
+              }
+            });
+          }
+        });
+        return true;
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling getExampleArrayIntentsEntitiesUtterances(), error=${error}`);
+      throw error;
+    }
+    return false;
+  }
+
   static getJsonIntentEntityScoresUtterances(
     jsonObjectArray: any,
     utteranceLabelScoresMap: Map<string, ScoreIntent[]>,
@@ -979,7 +1034,7 @@ export class OrchestratorHelper {
 
   // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
-  static addNewLabelUtteranceToObejctDictionary(
+  static addNewLabelUtteranceToObjectDictionary(
     utterance: string,
     label: string,
     hierarchicalLabel: string,
@@ -1006,14 +1061,14 @@ export class OrchestratorHelper {
         utteranceLabelsMap[utterance] = [label];
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObejctDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObjectDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
       throw error;
     }
   }
 
   // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
-  static addNewEntityLabelUtteranceToObejctDictionary(
+  static addNewEntityLabelUtteranceToObjectDictionary(
     utterance: string,
     entityEntry: any,
     utteranceEntityLabelsMap: { [id: string]: Label[] },
@@ -1036,7 +1091,7 @@ export class OrchestratorHelper {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObejctDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObjectDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }

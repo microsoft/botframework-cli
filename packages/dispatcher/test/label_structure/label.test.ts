@@ -30,4 +30,22 @@ describe("Test Suite - label", () => {
     assert.ok(labelObject.span.offset === 0);
     assert.ok(labelObject.span.length === 0);
   });
+  it("Test.0001 Label - toAlternateObject()", function() {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    const label: Label = new Label(LabelType.Intent, "label", new Span(0, 0));
+    Utility.debuggingLog(`label=${Utility.jsonStringify(label)}`);
+    const labelObject: {
+      name: string;
+      label_type: number;
+      span: {
+          offset: number;
+          length: number;
+      };
+    } = label.toAlternateObject();
+    assert.ok(label.name === "label");
+    assert.ok(label.labeltype === LabelType.Intent);
+    assert.ok(labelObject.span.offset === 0);
+    assert.ok(labelObject.span.length === 0);
+  });
 });

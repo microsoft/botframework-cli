@@ -13,6 +13,15 @@ import {OrchestratorQuery} from './query';
 import {OrchestratorAssess} from './assess';
 import {LabelResolver, Utility} from '.';
 
+//
+// Notice the following functions are used by Composer.
+//   1) Orchestrator.baseModelGetVersionsAsync()
+//   2) Orchestrator.baseModelGetAsync()
+//   3) Orchestrator.buildAsync()
+//   4) Orchestrator.addAsync() (starting in R12)
+//   5) Orchestrator.getLabelResolversAsync()
+//
+
 export class Orchestrator {
   // eslint-disable-next-line max-params
   public static async baseModelGetAsync(
