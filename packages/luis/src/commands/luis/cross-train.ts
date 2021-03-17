@@ -20,13 +20,14 @@ export default class LuisCrossTrain extends Command {
     config: flags.string({description: 'Path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    log: flags.boolean({description: 'Writes out log messages to console', default: false})
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
+    omitLuis: flags.boolean({description: 'Only do Qna:cross-train', default: false}),
+    omitQna: flags.boolean({description: 'Only do Luis:cross-train', default: false})
   }
 
   async run() {
     try {
       const {flags} = this.parse(LuisCrossTrain)
-
       if (!flags.in) {
         throw new CLIError('Missing input. Please specify a folder with --in flag')
       }
@@ -39,7 +40,7 @@ export default class LuisCrossTrain extends Command {
         throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log)
+      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, flags.omitLuis, flags.omitQna)
 
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')

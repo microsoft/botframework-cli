@@ -1036,4 +1036,45 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('main').Sections[foundIndex].Questions.length, 1)
     assert.equal(qnaResult.get('main').Sections[foundIndex].Questions[0], 'book a hotel for me')
   })
+
+  it('luis:cross training can set flag for ignoring qna cross train', async () => {
+    let luContentArray = []
+    let qnaContentArray = []
+
+    luContentArray.push({
+      content:
+        `# dia1_trigger
+        - book a hotel for me`,
+      id: 'main'
+    })
+
+    qnaContentArray.push({
+      content:
+        `#? What does const [thing, setThing] = useState() mean?
+        - how to use it?
+        \`\`\`
+        Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\``,
+      id: 'main'
+    })
+
+    let crossTrainConfig = {
+      'main': {
+        'rootDialog': true,
+        'triggers': {}
+      }
+    }
+
+    const options = {omitLuis: false, omitQna: true}
+
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, options)
+    const luResult = trainedResult.luResult
+    const qnaResult = trainedResult.qnaResult
+
+    let luisContent = luResult.get('main').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === false)
+
+    let qnaContent = qnaResult.get('main').Content;
+    assert.isTrue(qnaContent.includes('# DeferToRecognizer_') === false)
+  })
 })
