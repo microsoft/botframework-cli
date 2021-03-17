@@ -118,9 +118,11 @@ function ParseEntitiyResult(entities: any, result: any) {
         }
       }
     } else {
-      for (const subEntity of entities[name]) {
-        if (typeof subEntity === 'object') {
-          ParseEntitiyResult(subEntity, result)
+      if (typeof entities[name][Symbol.iterator] === 'function') {
+        for (const subEntity of entities[name]) {
+          if (typeof subEntity === 'object') {
+            ParseEntitiyResult(subEntity, result)
+          }
         }
       }
     }
