@@ -236,11 +236,14 @@ export class Builder {
               const dialogFile = path.join(path.dirname(content.path), `${content.name}.dialog`)
               let recognizer = new Recognizer(content.path, content.name, dialogFile, schema)
 
+              // found existing app endpoints
+              let appEndpoints
               // find if there is a matched name with current app under current authoring key
               if (!recognizer.getAppId()) {
                 for (let app of apps) {
                   if (app.name.toLowerCase() === currentApp.name.toLowerCase()) {
                     recognizer.setAppId(app.id)
+                    appEndpoints = app.endpoints
                     break
                   }
                 }
@@ -252,7 +255,7 @@ export class Builder {
               // otherwise create a new application
               if (recognizer.getAppId() && recognizer.getAppId() !== '') {
                 // To see if need update the model
-                needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests, keptVersionCount)
+                needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests, keptVersionCount) || this.forcePublish(appEndpoints, recognizer.versionId, directVersionPublish, isStaging)
               } else {
                 // create a new application
                 needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
@@ -456,7 +459,7 @@ export class Builder {
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(timeBucket)
     await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging, directVersionPublish)
-    this.handler(`${recognizer.getLuPath()} publishing finished for ${isStaging ? 'Staging' : 'Production'} slot\n`)
+    this.handler(`${recognizer.getLuPath()} publishing finished for ${directVersionPublish ? 'directVersionPublish mode' : isStaging ? 'Staging slot' : 'Production slot'}\n`)
   }
 
   generateDeclarativeAssets(assets: Array<any>): Array<any> {
@@ -503,5 +506,18 @@ export class Builder {
       this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
     }
+  }
+
+  forcePublish(endpoints: any, versionId: string, directVersionPublish: boolean, isStaging: boolean) {
+    let forcePublish = false
+    if (endpoints !== undefined) {
+      if (directVersionPublish && !Object.keys(endpoints).find(version => version.includes(versionId))
+        || !directVersionPublish && (isStaging && (!endpoints.STAGING || endpoints.STAGING.versionId !== versionId)
+          || !isStaging && (!endpoints.PRODUCTION || endpoints.PRODUCTION.versionId !== versionId))) {
+        forcePublish = true
+      }
+    }
+
+    return forcePublish
   }
 }
