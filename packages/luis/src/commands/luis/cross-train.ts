@@ -21,8 +21,8 @@ export default class LuisCrossTrain extends Command {
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
-    omitLuis: flags.boolean({description: 'Only do Qna:cross-train', default: false}),
-    omitQna: flags.boolean({description: 'Only do Luis:cross-train', default: false})
+    inner_dialog: flags.boolean({description: 'Only do inner dialog cross train', default: false}),
+    intra_dialog: flags.boolean({description: 'Only do intra dialog cross train', default: false})
   }
 
   async run() {
@@ -40,7 +40,20 @@ export default class LuisCrossTrain extends Command {
         throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, flags.omitLuis, flags.omitQna)
+      let enrichDialogOpt = {};
+      if (!flags.inner_dialog && !flags.intra_dialog) {
+        enrichDialogOpt = {
+          inner: true,
+          intra: true
+        }
+      } else {
+        enrichDialogOpt = {
+          inner: flags.inner_dialog,
+          intra: flags.intra_dialog
+        }
+      }
+
+      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, enrichDialogOpt)
 
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')

@@ -127,7 +127,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
       '--out', './interruptionGen',
-      '--omitQna'])
+      '--inner_dialog'])
     .it('luis:cross-train can igore qna cross train', async () => {
       expect(await includesString('./../../../interruptionGen/main(2).lu', '# DeferToRecognizer_')).to.be.false
       expect(await includesString('./../../../interruptionGen/main(2).qna', '# DeferToRecognizer_')).to.be.false

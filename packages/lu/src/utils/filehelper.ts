@@ -229,7 +229,7 @@ export function getParsedObjects(contents: {id: string, content: string}[], extT
   return parsedObjects
 }
 
-export function getConfigObject(configObject: any, intentName: string, verbose: boolean, omitLuis: boolean, omitQna: boolean) {
+export function getConfigObject(configObject: any, intentName: string, verbose: boolean, enrichDialogOpt: {inner: boolean; intra: boolean}) {
   let finalConfigObj = Object.create(null)
   let rootFileIds: string[] = []
   if (configObject) {
@@ -273,8 +273,7 @@ export function getConfigObject(configObject: any, intentName: string, verbose: 
     triggerRules: finalConfigObj,
     intentName,
     verbose,
-    omitLuis,
-    omitQna
+    enrichDialogOpt
   }
 
   return crossTrainConfig

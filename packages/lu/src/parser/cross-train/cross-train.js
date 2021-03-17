@@ -17,7 +17,7 @@ module.exports = {
    * @param {boolean} verbose verbose to indicate whether log warnings and errors or not when parsing cross-train files.
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose, omitLuis, omitQna) {
+  train: async function (input, intentName, config, verbose, enrichDialogOpt) {
     // Get all related file content.
     const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
@@ -54,8 +54,7 @@ module.exports = {
       intentName,
       verbose,
       importResolver,
-      omitLuis,
-      omitQna
+      enrichDialogOpt
     })
 
     return trainedResult

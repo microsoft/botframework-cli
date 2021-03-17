@@ -1037,7 +1037,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('main').Sections[foundIndex].Questions[0], 'book a hotel for me')
   })
 
-  it('luis:cross training can set flag for ignoring qna cross train', async () => {
+  it.only('luis:cross training can set flag for ignoring qna cross train', async () => {
     let luContentArray = []
     let qnaContentArray = []
 
@@ -1065,7 +1065,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       }
     }
 
-    const options = {omitLuis: false, omitQna: true}
+    const options = {enrichDialogOpt: {inner: true, intra: false}}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, options)
     const luResult = trainedResult.luResult
