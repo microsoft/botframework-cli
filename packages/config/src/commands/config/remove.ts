@@ -10,7 +10,7 @@ export default class ConfigRemove extends Command {
   static description = 'Removes the specified key from the config file'
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
+    help: flags.help({char: 'h', description: 'config:remove help'}),
     key: flags.string({char: 'k', description: 'Name of the key to remove', required: true}),
   }
 
