@@ -10,6 +10,10 @@ import {LabelResolver} from '../src/labelresolver';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 import {Example} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
+
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 import assert = require('assert');
 import * as path from 'path';
@@ -26,7 +30,9 @@ describe('OrchestratorBuildTests', function () {
       OrchestratorBaseModel.defaultHandler);
   });
 
-  it('getExamplesLR should pull examples from labelResolver', async () => {
+  it('Test.0000 - getExamplesLR should pull examples from labelResolver', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // const orchestrator: any = await LabelResolver.loadNlrAsync(baseModelPath);
     const labelResolver: any = LabelResolver.createLabelResolver();
     const example1: any = {
@@ -58,24 +64,33 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example2, labelResolver);
     LabelResolver.addExample(example3, labelResolver);
 
-    const examples: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples !== null);
-    assert.ok(examples.length === 3);
+    assert.ok(examples.utteranceLabelsMap.size === 3);
   });
 
-  it('getExamplesLU should parse lu content into Examples', async () => {
+  it('Test.0001 - getExamplesLU should parse lu content into Examples', async () => {
     Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const filename: string =
       'resources/data/LU/syncLabelResolver/same_as_code.lu';
     const fileContents: string = OrchestratorHelper.readFile(filename);
-    const examples: Example[] = await OrchestratorBuild.getExamplesLU(fileContents);
-
-    Utility.debuggingLog(`Examples[1]="${examples[0].text}"`);
+    const examples: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorBuild.getExamplesLU(fileContents);
     assert.ok(examples !== null);
-    assert.ok(examples.length === 3);
+    assert.ok(examples.utteranceLabelsMap.size === 3);
   });
 
-  it('syncLabelResolver-no differences LabelResolver/LU', async () => {
+  it('Test.0002 - syncLabelResolver-no differences LabelResolver/LU', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // Arrange
     // Load up Label Resolver
     const labelResolver: any = LabelResolver.createLabelResolver();
@@ -115,15 +130,20 @@ describe('OrchestratorBuildTests', function () {
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
 
     // Assert
-    const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
-    assert.ok(examples_after_sync.length === 3);
-    examples_after_sync.sort(Example.sort_fn);
-    assert.ok(examples_after_sync[0].text === 'book a flight to miami.');
-    assert.ok(examples_after_sync[2].text === 'play some mozart and metallica.');
+    assert.ok(examples_after_sync.utteranceLabelsMap.size === 3);
+    assert.ok(examples_after_sync.utteranceLabelsMap.has('book a flight to miami.'));
+    assert.ok(examples_after_sync.utteranceLabelsMap.has('play some mozart and metallica.'));
   });
 
-  it('syncLabelResolver-LU adds new travel intent', async () => {
+  it('Test.0003 - syncLabelResolver-LU adds new travel intent', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // Arrange
     // Load up Label Resolver
     const labelResolver: any = LabelResolver.createLabelResolver();
@@ -157,9 +177,15 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example3, labelResolver);
 
     // Check  examples before sync
-    const examples_before_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_before_sync: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-A');
     assert.ok(examples_before_sync !== null);
-    assert.ok(examples_before_sync.length === 3);
+    assert.ok(examples_before_sync.utteranceLabelsMap.size === 3);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-B');
 
     // Load up LU
     const filename: string =
@@ -170,14 +196,23 @@ describe('OrchestratorBuildTests', function () {
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
 
     // Assert
-    const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-C');
     assert.ok(examples_after_sync !== null);
-    assert.ok(examples_after_sync.length === 4);
-    examples_after_sync.sort(Example.sort_fn);
-    assert.ok(examples_after_sync[0].text === 'book a flight to miami.');
+    Utility.debuggingLog(`OrchestratorBuildTests Test.0003, checkpoint-D: examples_after_sync.utteranceLabelsMap.size=${examples_after_sync.utteranceLabelsMap.size}`);
+    assert.ok(examples_after_sync.utteranceLabelsMap.size === 4);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-E');
+    assert.ok(examples_after_sync.utteranceLabelsMap.has('book a flight to miami.'));
+    Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-F');
   });
 
-  it('syncLabelResolver-LU removes travel intent', async () => {
+  it('Test.0004 - syncLabelResolver-LU removes travel intent', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // Arrange
     // Load up Label Resolver
     const labelResolver: any = LabelResolver.createLabelResolver();
@@ -211,9 +246,13 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example3, labelResolver);
 
     // Check  examples before sync
-    const examples_before_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_before_sync: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_before_sync !== null);
-    assert.ok(examples_before_sync.length === 3);
+    assert.ok(examples_before_sync.utteranceLabelsMap.size === 3);
 
     // Load up LU
     const filename: string =
@@ -222,18 +261,24 @@ describe('OrchestratorBuildTests', function () {
 
     // Action
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0004, after calling OrchestratorBuild.syncLabelResolver()');
 
     // Assert
-    const examples_after_sync: Example[] = await OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: {
+      'utteranceLabelsMap': Map<string, Set<string>>;
+      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
+      'utteranceEntityLabelsMap': Map<string, Label[]>;
+      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
     // eslint-disable-next-line no-console
-    console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected:2)`);
-    assert.ok(examples_after_sync.length === 2);
-    examples_after_sync.sort(Example.sort_fn);
-    assert.ok(examples_after_sync[0].text === 'book meeting with architect for Monday.');
+    console.log(`>>>>>>>examples after sync: ${examples_after_sync.utteranceLabelsMap.size} (expected:2)`);
+    assert.ok(examples_after_sync.utteranceLabelsMap.size === 2);
+    assert.ok(examples_after_sync.utteranceLabelsMap.has('book meeting with architect for Monday.'));
   });
 
-  it('syncLabelResolver-detect multi-intent music label', async () => {
+  it('Test.0005 - syncLabelResolver-detect multi-intent music label', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     // Arrange
     // Load up Label Resolver.
     // Note: LU file should override example3 - Composer can't see this type of
@@ -260,15 +305,15 @@ describe('OrchestratorBuildTests', function () {
       labels: [{
         name: 'travel',
         span: {
-          length: 6,
-          offset: 9,
+          length: 0,
+          offset: 0,
         },
         label_type: 1,
       },
       {
         name: 'city',
         span: {
-          length: 7,
+          length: 0,
           offset: 0,
         },
         label_type: 1,
@@ -286,14 +331,24 @@ describe('OrchestratorBuildTests', function () {
     const luContents: string = OrchestratorHelper.readFile(filename);
 
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
+    Utility.debuggingLog('OrchestratorBuildTests Test.0005, after calling OrchestratorBuild.syncLabelResolver()');
 
-    const examples_after_sync: Example[] = LabelResolver.getExamples(labelResolver);
+    const examples_after_sync: Example[] = LabelResolver.getExamples(labelResolver).map(
+      (x: any) => new Example(
+        x.text,
+        x.labels.map((y: any) => new Label(
+          y.label_type,
+          y.name,
+          new Span(
+            y.span.offset,
+            y.span.length)))));
 
     assert.ok(examples_after_sync !== null);
     // eslint-disable-next-line no-console
     console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected3)`);
     assert.ok(examples_after_sync.length === 3);
     examples_after_sync.sort(Example.sort_fn);
+    UtilityDispatcher.debuggingNamedLog1('OrchestratorBuildTests Test.0005', examples_after_sync, 'examples_after_sync');
     assert.ok(examples_after_sync[2].labels.length === 1); // LU file has precedence over Label Resolver
 
     // examples_after_sync.forEach(element => {
@@ -302,8 +357,9 @@ describe('OrchestratorBuildTests', function () {
     // });
   });
 
-  it('runAsync should work', async function () {
-    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout() + 50000);
+  it('Test.0006 - runAsync should work', async function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const labelResolversById: Map<string, LabelResolver> = new Map<string, LabelResolver>();
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
@@ -330,7 +386,9 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(resolvers.size === 5);
   });
 
-  it('runAsync with luConfig json', async () => {
+  it('Test.0007 - runAsync with luConfig json', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const labelResolversById: Map<string, LabelResolver> = new Map<string, LabelResolver>();
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
@@ -348,8 +406,9 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(Utility.exists('./test/fixtures/output/RootDialog.lu.dialog'));
   });
 
-  it('runAsync changing files', async function () {
-    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout() + 50000);
+  it('Test.0008 - runAsync changing files', async function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
     const labelResolversById: Map<string, LabelResolver> = new Map<string, LabelResolver>();
     const retPayload: any = await OrchestratorBuild.runAsync(
       baseModelPath,
@@ -415,5 +474,76 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(LabelResolver.getExamples(labelResolversById.get('ViewToDoDialog')).length === 90);
     assert.ok(retPayload2 !== null);
     assert.ok(retPayload2.outputs !== null);
+  });
+
+  it('Test.0100 - intent-only snapshot should not contain entity labels after calling syncLabelResolver()', async () => {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+    await LabelResolver.createAsync(baseModelPath, '');
+    const example1: any = {
+      labels: [{
+        name: 'travel',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}, {
+        name: 'city',
+        span: {
+          length: 5,
+          offset: 17},
+        label_type: 2}],
+      text: 'book a flight to miami.',
+    };
+    const example2: any = {
+      labels: [{name: 'schedule',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'book meeting with architect for Monday.',
+    };
+    const example3: any = {
+      labels: [{name: 'music',
+        span: {
+          length: 0,
+          offset: 0},
+        label_type: 1}],
+      text: 'play some mozart and metallica.',
+    };
+    LabelResolver.addExample(example1);
+    LabelResolver.addExample(example2);
+    LabelResolver.addExample(example3);
+    const snapshot: any = LabelResolver.createSnapshot();
+    Utility.debuggingLog('OrchestratorBuildTests Test.0100, after calling LabelResolver.createSnapshot() - A');
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshot=${snapshot}`);
+    const snapshotInString: string = (new TextDecoder()).decode(snapshot);
+    Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotInString=${snapshotInString}`);
+    const luContent: string = `
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+> # Intent definitions
+
+## travel
+- book a flight to {@city=miami}.
+
+## schedule
+- book meeting with architect for Monday.
+
+## music
+- play some mozart and metallica.
+`;
+    await OrchestratorBuild.syncLabelResolver(LabelResolver.LabelResolver, luContent);
+    const snapshotAfterSync: any = LabelResolver.createSnapshot();
+    Utility.debuggingLog('OrchestratorBuildTests Test.0100, after calling LabelResolver.createSnapshot() - B');
+    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotAfterSync=${snapshotAfterSync}`);
+    const snapshotAfterSyncInString: string = (new TextDecoder()).decode(snapshotAfterSync);
+    Utility.debuggingLog(`OrchestratorBuildTests Test.0100, snapshotAfterSyncInString=${snapshotAfterSyncInString}`);
+    assert.ok(snapshot.length === snapshotAfterSync.length);
+    for (let i: number = 0; i < snapshot.length; i++) {
+      assert.ok(snapshot[i] === snapshotAfterSync[i]);
+    }
   });
 });

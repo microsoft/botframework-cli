@@ -19,7 +19,7 @@ export default class OrchestratorQuery extends Command {
     // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
     model: flags.string({char: 'm', description: '(required) Path to Orchestrator base model directory.'}),
     entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    limit: flags.string({char: 'l', description: '(optional) Limit of number of predictions.'}),
+    limit: flags.string({char: 'l', description: '(optional) Limit of number of predictions. Default to 3. Less or equal to 0 for listing all predictions.'}),
     debug: flags.boolean({char: 'd'}),
     help: flags.help({char: 'h'}),
   }

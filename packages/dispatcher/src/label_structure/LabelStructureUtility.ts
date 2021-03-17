@@ -42,6 +42,25 @@ export class LabelStructureUtility {
         return 0;
     }
 
+    public static numberToLabelType(labelType: number): LabelType {
+        if (labelType === 1) {
+            return LabelType.Intent;
+        }
+        if (labelType === 2) {
+            return LabelType.Entity;
+        }
+        if (labelType === 4) {
+            return LabelType.Summarization;
+        }
+        if (labelType === 0xFFFF) {
+            return LabelType.All;
+        }
+        if (labelType === 0) {
+            return LabelType.Unknown;
+        }
+        return LabelType.Unknown;
+    }
+
     // =======================================================================
     // without weight
     // =======================================================================
