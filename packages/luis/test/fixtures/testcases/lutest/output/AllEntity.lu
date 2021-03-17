@@ -67,7 +67,7 @@
 
 > # PREBUILT Entity definitions
 
-@ prebuilt ordinal
+@ prebuilt ordinalV2
 
 @ prebuilt personName hasRoles Female,Male
 
