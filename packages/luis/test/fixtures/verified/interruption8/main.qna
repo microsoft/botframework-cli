@@ -1046,5 +1046,5 @@ Thank you
 - dialogName=main
 
 ```
-intent=DeferToRecognizer_Orchestrator_main
+intent=DeferToRecognizer_ORCHESTRATOR_main
 ```

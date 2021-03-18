@@ -28,6 +28,18 @@ describe('luis:cross-train tests for cli parameters', () => {
     .it('displays an error if config is not provided', ctx => {
       expect(ctx.stderr).to.contain('Missing cross train config. Please provide config file path by --config')
     })
+
+  test
+  .stdout()
+  .stderr()
+  .command(['luis:cross-train',
+    '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`,
+    '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption2/config.json')}`,
+    '--luRecognizerID', 'Natural'])
+    .exit(1)
+    .it('displays an error if luRecognizerID is invalid', ctx => {
+      expect(ctx.stderr).to.contain('luRecognizerID should be either "Luis" and "Orchestrator".')
+    })
 })
 
 describe('luis:cross-train tests for lu and qna contents', () => {
@@ -157,7 +169,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--force',
       '--innerDialog',
       '--luRecognizerID', 'Orchestrator'])
-    .it('luis:cross training only do intra dialog', async () => {
+    .it('luis:cross set luRecognizerID to Orchestator', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption8/main.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption8/main.qna')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption8/dia1.lu')).to.be.true
