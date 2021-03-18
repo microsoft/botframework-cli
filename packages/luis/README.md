@@ -426,9 +426,9 @@ OPTIONS
 
   --log                    Writes out log messages to console
 
-  --innerDialog            Only perform the inner dialog cross train
+  --innerDialog            Only performs the inner dialog cross train
 
-  --intraDialog            Only perform the intra dialog cross train
+  --intraDialog            Only performs the intra dialog cross train
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_

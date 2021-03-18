@@ -27,7 +27,7 @@ module.exports = {
    * @param {any[]} luContents the lu content array whose element includes path and content
    * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} configObject cross train config json object
-   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver, enrichDialogOpt
+   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver, trainingOpt
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
