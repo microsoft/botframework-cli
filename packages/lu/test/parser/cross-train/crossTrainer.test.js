@@ -1173,7 +1173,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       }
     }
 
-    const options = {enrichDialogOpt: {inner: true, intra: false}}
+    const options = {trainingOpt: {inner: true, intra: false}}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, options)
     const luResult = trainedResult.luResult
@@ -1206,7 +1206,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
     assert.isTrue(qnaContent.includes('_Interruption') === false)
 
-    const optionsIntra = {enrichDialogOpt: {inner: false, intra: true}}
+    const optionsIntra = {trainingOpt: {inner: false, intra: true}}
 
     const trainedResult2 = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsIntra)
     const luResult2 = trainedResult2.luResult

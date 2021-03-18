@@ -116,7 +116,6 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     })
 
     test
-    .only()
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,

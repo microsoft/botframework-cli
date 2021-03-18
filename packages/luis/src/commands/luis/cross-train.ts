@@ -40,20 +40,20 @@ export default class LuisCrossTrain extends Command {
         throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      let enrichDialogOpt = {};
+      let trainingOpt = {};
       if (!flags.innerDialog && !flags.intraDialog) {
-        enrichDialogOpt = {
+        trainingOpt = {
           inner: true,
           intra: true
         }
       } else {
-        enrichDialogOpt = {
+        trainingOpt = {
           inner: flags.innerDialog,
           intra: flags.intraDialog
         }
       }
 
-      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, enrichDialogOpt)
+      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, trainingOpt)
 
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')
