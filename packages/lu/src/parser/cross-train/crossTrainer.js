@@ -27,7 +27,7 @@ module.exports = {
    * @param {any[]} luContents the lu content array whose element includes path and content
    * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} configObject cross train config json object
-   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver, luOnly
+   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver, enrichDialogOpt
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
@@ -39,7 +39,7 @@ module.exports = {
         configObject,
         options.intentName || '_Interruption',
         options.verbose || true,
-        options.enrichDialogOpt)
+        options.enrichDialogOpt || {inner: true, intra: true})
 
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose, enrichDialogOpt} = crossTrainConfig
@@ -50,7 +50,7 @@ module.exports = {
       // parse qna content to LUResource object
       let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, importResolver, fileExtEnum.QnAFile)
 
-      if (!allLuEmpty && enrichDialogOpt.inner) {
+      if (!allLuEmpty && enrichDialogOpt.intra) {
         // construct resource tree to build the father-children relationship among lu files
         let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
@@ -68,7 +68,7 @@ module.exports = {
         }
       }
 
-      if (!allQnAEmpty && enrichDialogOpt.intra) {
+      if (!allQnAEmpty && enrichDialogOpt.inner) {
         // do qna cross training with lu files
         qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName, allLuEmpty)
       }

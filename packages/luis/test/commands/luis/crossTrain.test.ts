@@ -10,11 +10,6 @@ const compareLuFiles = async function (file1: string, file2: string) {
   return result === fixtureFile
 }
 
-const includesString = async function (file1: string, content: string) {
-  let result = await fs.readFile(path.join(__dirname, file1))
-  return result.includes(content);
-}
-
 describe('luis:cross-train tests for cli parameters', () => {
   test
     .stdout()
@@ -121,17 +116,37 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     })
 
     test
+    .only()
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
       '--out', './interruptionGen',
-      '--inner_dialog'])
-    .it('luis:cross-train can igore qna cross train', async () => {
-      expect(await includesString('./../../../interruptionGen/main(2).lu', '# DeferToRecognizer_')).to.be.false
-      expect(await includesString('./../../../interruptionGen/main(2).qna', '# DeferToRecognizer_')).to.be.false
-      expect(await includesString('./../../../interruptionGen/dia1(2).lu', '# DeferToRecognizer_')).to.be.false
-      expect(await includesString('./../../../interruptionGen/dia1(2).qna', '# DeferToRecognizer_')).to.be.false
+      '--force',
+      '--intraDialog'])
+    .it('luis:cross training only do inner dialog', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/chitchat.qna', './../../fixtures/verified/interruption6/chitchat.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption6/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption6/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption6/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption6/dia1.qna')).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
+      '--intentName', '_Interruption',
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
+      '--out', './interruptionGen',
+      '--force',
+      '--innerDialog'])
+    .it('luis:cross training only do intra dialog', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/chitchat.qna', './../../fixtures/verified/interruption7/chitchat.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption7/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption7/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption7/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption7/dia1.qna')).to.be.true
     })
 })

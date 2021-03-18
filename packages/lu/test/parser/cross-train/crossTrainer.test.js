@@ -1037,44 +1037,195 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.equal(qnaResult.get('main').Sections[foundIndex].Questions[0], 'book a hotel for me')
   })
 
-  it.only('luis:cross training can set flag for ignoring qna cross train', async () => {
+  it('luis:cross training can do inner or intra training seperately', async () => {
     let luContentArray = []
     let qnaContentArray = []
 
     luContentArray.push({
       content:
         `# dia1_trigger
-        - book a hotel for me`,
-      id: 'main'
-    })
+        - book a hotel for me
+        
+        # dia2_trigger
+        - book a flight for me
+        - book a train ticket for me`,
+      id: 'Main'})
 
     qnaContentArray.push({
       content:
-        `#? What does const [thing, setThing] = useState() mean?
-        - how to use it?
+        `# ?user guide
+
+        **Filters:**
+        - aa=bb
+        
         \`\`\`
-        Here is the [user guide](http://contoso.com/userguide.pdf)
+            Here is the [user guide](http://contoso.com/userguide.pdf)
+        \`\`\`
+        
+        # ?tell joke
+        \`\`\`
+            tell a funny joke
         \`\`\``,
-      id: 'main'
+      id: 'Main'}
+    )
+
+    luContentArray.push({
+      content:
+        `> !# @app.name = my luis application
+        
+        # hotelLevel
+        - I need a four star hotel
+        
+        # hotelLocation
+        - can I book a hotel near Space Needle`,
+      id: 'Dia1'}
+    )
+
+    qnaContentArray.push({
+      content:
+        `> !# @qna.pair.source = xyz
+        <a id = "1"></a>
+        
+        # ?tell Joke
+        - tell me a joke
+        
+        \`\`\`
+            ha ha ha
+        \`\`\`
+        
+        # ?can I book a hotel near space needle
+        \`\`\`
+            of course you can
+        \`\`\``,
+      id: 'dia1'}
+    )
+
+    luContentArray.push({
+      content:
+        `# dia3_trigger
+        - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
+        
+        # dia4_trigger
+        - book a train ticket from Seattle to Portland`,
+      id: 'Dia2'}
+    )
+
+    qnaContentArray.push({
+      content:
+        `# ?sing song
+        \`\`\`
+            sure, I can sing song.
+        \`\`\`
+        
+        # ?tell a joke
+        \`\`\`
+            ha ha ha
+        \`\`\``,
+     id: 'dia2'}
+    )
+
+    luContentArray.push({
+      content:
+        `# flightDestination
+        - book a flight to {toLocation = Beijing}
+        
+        # flightTime
+        - which {flightTime} do you prefer`,
+      id: 'dia3'}
+    )
+
+    qnaContentArray.push({
+      content: ``,
+      id: 'dia3'
     })
 
-    let crossTrainConfig = {
+    luContentArray.push({
+      content:
+        `# railwayStation
+        - which station will you leave from
+        
+        # railwayTime
+        - when do you want to leave from Seattle train station`,
+      id: 'dia4'})
+
+    qnaContentArray.push({
+      content:
+      `# ? there is only qna for this dialog
+      \`\`\`
+      should add filter meta data here
+      \`\`\``,
+      id: 'dia5'
+    })
+
+    const configObject = {
       'main': {
         'rootDialog': true,
-        'triggers': {}
+        'triggers': {
+          'dia1_trigger': 'dia1',
+          'dia2_trigger': 'dia2'
+        }
+      },
+      'dia2': {
+        'triggers': {
+          'dia3_trigger': 'dia3',
+          'dia4_trigger': 'dia4'
+        }
       }
     }
 
     const options = {enrichDialogOpt: {inner: true, intra: false}}
 
-    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, crossTrainConfig, options)
+    const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, options)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
-    let luisContent = luResult.get('main').Content;
-    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === false)
+    let luisContent = luResult.get('Main').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    assert.isTrue(luisContent.includes('_Interruption') === false)
+    
+    luisContent = luResult.get('Dia1').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    assert.isTrue(luisContent.includes('_Interruption') === false)
 
-    let qnaContent = qnaResult.get('main').Content;
-    assert.isTrue(qnaContent.includes('# DeferToRecognizer_') === false)
+    
+
+    luisContent = luResult.get('Dia2').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    assert.isTrue(luisContent.includes('_Interruption') === false)
+
+    
+    let qnaContent = qnaResult.get('Main').Content;
+    assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
+    assert.isTrue(qnaContent.includes('_Interruption') === false)
+
+    qnaContent = qnaResult.get('dia1').Content;
+    assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
+    assert.isTrue(qnaContent.includes('_Interruption') === false)
+
+    qnaContent = qnaResult.get('dia2').Content;
+    assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
+    assert.isTrue(qnaContent.includes('_Interruption') === false)
+
+    const optionsIntra = {enrichDialogOpt: {inner: false, intra: true}}
+
+    const trainedResult2 = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsIntra)
+    const luResult2 = trainedResult2.luResult
+    const qnaResult2 = trainedResult2.qnaResult
+    
+    luisContent = luResult2.get('Dia1').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === false)
+    assert.isTrue(luisContent.includes('_Interruption') === true)
+
+    luisContent = luResult2.get('Dia2').Content;
+    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === false)
+    assert.isTrue(luisContent.includes('_Interruption') === true)
+
+    qnaContent = qnaResult2.get('dia1').Content;
+    assert.isTrue(qnaContent.includes('DeferToRecognizer_') === false)
+    assert.isTrue(qnaContent.includes('_Interruption') === false)
+
+    qnaContent = qnaResult2.get('dia2').Content;
+    assert.isTrue(qnaContent.includes('DeferToRecognizer_') === false)
+    assert.isTrue(qnaContent.includes('_Interruption') === false)
   })
 })
