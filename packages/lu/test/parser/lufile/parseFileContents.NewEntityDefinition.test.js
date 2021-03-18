@@ -745,7 +745,7 @@ describe('V2 Entity definitions using @ notation', function () {
                 .then(res => {
                     assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 2);
                     assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
-                    assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'phoneNumber');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[1].name, 'phoneNumber');
                     done();
                 })
                 .catch(err => done(err))
