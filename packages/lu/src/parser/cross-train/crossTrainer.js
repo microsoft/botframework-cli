@@ -39,7 +39,7 @@ module.exports = {
         configObject,
         options.intentName || '_Interruption',
         options.verbose || true,
-        options.trainingOpt || {inner: true, intra: true})
+        options.trainingOpt || {inner: {enabled: true, luRecognizerID: 'Luis'}, intra:  {enabled: true, qnaRecognizerID: 'QnA'}})
 
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
       const {rootIds, triggerRules, intentName, verbose, trainingOpt} = crossTrainConfig
@@ -50,7 +50,7 @@ module.exports = {
       // parse qna content to LUResource object
       let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, importResolver, fileExtEnum.QnAFile)
 
-      if (!allLuEmpty && trainingOpt.intra) {
+      if (!allLuEmpty && trainingOpt.intra.enabled) {
         // construct resource tree to build the father-children relationship among lu files
         let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
@@ -58,7 +58,7 @@ module.exports = {
         for (const rootObjectId of rootIds) {
           if (resources.some(r => r.id.toLowerCase() === rootObjectId.toLowerCase())) {
             // do cross training for each root at top level
-            const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName)
+            const result = luCrossTrain(rootObjectId, resources, qnaFileIdToResourceMap, intentName, trainingOpt)
             for (const res of result) {
               luFileIdToResourceMap.set(res.id, res.content)
             }
@@ -68,9 +68,9 @@ module.exports = {
         }
       }
 
-      if (!allQnAEmpty && trainingOpt.inner) {
+      if (!allQnAEmpty && trainingOpt.inner.enabled) {
         // do qna cross training with lu files
-        qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName, allLuEmpty)
+        qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName, allLuEmpty, trainingOpt)
       }
 
       return { luResult: luFileIdToResourceMap, qnaResult: qnaFileIdToResourceMap }
@@ -350,9 +350,10 @@ const extractIntentUtterances = function(resource, intentName) {
  * @param {Map<string, LUResource>} luFileIdToResourceMap map of lu file id and resource
  * @param {string} interruptionIntentName interruption intent name
  * @param {boolean} allLuEmpty indicate if all lu files are section empty
+ * @param {inner: {enabled: boolean, luRecognizerID: string}, intra: {enabled: boolean, qnaRecognizerID: string}} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately, and the corresponding recognizer 
  * @throws {exception} throws errors
  */
-const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName, allLuEmpty) {
+const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, interruptionIntentName, allLuEmpty, trainingOpt) {
   try {
     for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
       let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
@@ -361,7 +362,7 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, i
 
       const luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId.toLowerCase())
       if (luObjectId) {
-        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName, allLuEmpty)
+        const { luResource, qnaResource } = qnaCrossTrainCore(luFileIdToResourceMap.get(luObjectId), qnaFileIdToResourceMap.get(qnaObjectId), fileName, interruptionIntentName, allLuEmpty, trainingOpt)
         luFileIdToResourceMap.set(luObjectId, luResource)
         qnaFileIdToResourceMap.set(qnaObjectId, qnaResource)
       } else {
@@ -381,9 +382,10 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, i
  * @param {string} fileName file name
  * @param {string} interruptionIntentName interruption intent name
  * @param {boolean} allLuEmpty indicate if all lu files are section empty
+ * @param {inner: {enabled: boolean, luRecognizerID: string}, intra: {enabled: boolean, qnaRecognizerID: string}} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately, and the corresponding recognizer 
  * @returns {luResource: LUResource, qnaResource: LUResource} cross trained lu resource and qna resource
  */
-const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interruptionIntentName, allLuEmpty) {
+const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interruptionIntentName, allLuEmpty, trainingOpt) {
   let trainedLuResource = luResource
   let trainedQnaResource = qnaResource
 
@@ -433,7 +435,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
 
   // add questions from qna file to corresponding lu file with intent named DeferToRecognizer_QnA_${fileName}
   if (!allLuEmpty && questionsContent && questionsContent !== '') {
-    const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_QnA_${fileName}${NEWLINE}${questionsContent}`
+    const questionsToUtterances = `${NEWLINE}${crossTrainingComments}${NEWLINE}# DeferToRecognizer_${trainingOpt.intra.qnaRecognizerID}_${fileName}${NEWLINE}${questionsContent}`
     trainedLuResource = new SectionOperator(trainedLuResource).addSection(questionsToUtterances)
   }
 
@@ -453,7 +455,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
     let subDedupedUtterances = dedupedUtterances.splice(0, MAX_QUESTIONS_PER_ANSWER)
     // construct new question content for qna resource
     let utterancesContent = subDedupedUtterances.join(NEWLINE + '- ')
-    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}> !# @qna.pair.source = crosstrained${NEWLINE}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_LUIS_${fileName}${NEWLINE}\`\`\``
+    let utterancesToQuestion = `${NEWLINE}${crossTrainingComments}${NEWLINE}> !# @qna.pair.source = crosstrained${NEWLINE}${NEWLINE}# ? ${utterancesContent}${NEWLINE}${NEWLINE}**Filters:**${NEWLINE}- dialogName=${fileName}${NEWLINE}${NEWLINE}\`\`\`${NEWLINE}intent=DeferToRecognizer_${trainingOpt.inner.luRecognizerID.toUpperCase()}_${fileName}${NEWLINE}\`\`\``
     trainedQnaResource = new SectionOperator(trainedQnaResource).addSection(utterancesToQuestion)
   }
 

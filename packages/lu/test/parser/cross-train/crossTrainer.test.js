@@ -199,7 +199,6 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
-
     let foundIndex = luResult.get('Main').Sections.findIndex(s => s.Name === 'DeferToRecognizer_QnA_Main')
     assert.isTrue(foundIndex > -1)
     assert.equal(luResult.get('Main').Sections[foundIndex].Body, `- user guide${NEWLINE}- tell joke`)
@@ -1173,24 +1172,25 @@ describe('luis:cross training tests among lu and qna contents', () => {
       }
     }
 
-    const options = {trainingOpt: {inner: true, intra: false}}
+    const options = {trainingOpt: {inner: {enabled: true, luRecognizerID: 'Luis'}, intra:  {enabled: false, qnaRecognizerID: 'QnA'}}}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, options)
     const luResult = trainedResult.luResult
     const qnaResult = trainedResult.qnaResult
 
     let luisContent = luResult.get('Main').Content;
-    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    console.log(luisContent)
+    assert.isTrue(luisContent.includes('DeferToRecognizer_QnA') === true)
     assert.isTrue(luisContent.includes('_Interruption') === false)
     
     luisContent = luResult.get('Dia1').Content;
-    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    assert.isTrue(luisContent.includes('DeferToRecognizer_QnA') === true)
     assert.isTrue(luisContent.includes('_Interruption') === false)
 
     
 
     luisContent = luResult.get('Dia2').Content;
-    assert.isTrue(luisContent.includes('# DeferToRecognizer_') === true)
+    assert.isTrue(luisContent.includes('DeferToRecognizer_QnA') === true)
     assert.isTrue(luisContent.includes('_Interruption') === false)
 
     
@@ -1206,7 +1206,25 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
     assert.isTrue(qnaContent.includes('_Interruption') === false)
 
-    const optionsIntra = {trainingOpt: {inner: false, intra: true}}
+
+    const optionsOrch = {trainingOpt: {inner: {enabled: true, luRecognizerID: 'Orchestrator'}, intra:  {enabled: true, qnaRecognizerID: 'QnA'}}}
+
+    const trainedResultOrch = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsOrch)
+    const qnaResultOrch = trainedResultOrch.qnaResult
+    
+    let qnaContentOrch = qnaResultOrch.get('Main').Content;
+    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
+    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
+
+    qnaContentOrch = qnaResultOrch.get('dia1').Content;
+    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
+    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
+
+    qnaContentOrch = qnaResultOrch.get('dia2').Content;
+    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
+    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
+
+    const optionsIntra = {trainingOpt: {inner: {enabled: false, luRecognizerID: 'Luis'}, intra:  {enabled: true, qnaRecognizerID: 'QnA'}}}
 
     const trainedResult2 = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsIntra)
     const luResult2 = trainedResult2.luResult

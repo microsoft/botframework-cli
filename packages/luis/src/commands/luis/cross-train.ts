@@ -22,7 +22,8 @@ export default class LuisCrossTrain extends Command {
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     innerDialog: flags.boolean({description: 'Only do inner dialog cross train', default: false}),
-    intraDialog: flags.boolean({description: 'Only do intra dialog cross train', default: false})
+    intraDialog: flags.boolean({description: 'Only do intra dialog cross train', default: false}),
+    luRecognizerID: flags.string({description: 'Recognizer ID for language understanding, should be either Luis or Orchestrator', default: 'Luis'})
   }
 
   async run() {
@@ -40,16 +41,32 @@ export default class LuisCrossTrain extends Command {
         throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      let trainingOpt = {};
+      if (flags.luRecognizerID !== 'Luis' && flags.luRecognizerID !== 'Orchestrator') {
+        throw new CLIError('luRecognizerID should be either "Luis" and "Orchestrator".')
+      }
+
+      let trainingOpt = {}
       if (!flags.innerDialog && !flags.intraDialog) {
         trainingOpt = {
-          inner: true,
-          intra: true
+          inner: {
+            enabled: true,
+            luRecognizerID: flags.luRecognizerID
+          },
+          intra: {
+            enabled: true,
+            qnaRecognizerID: "QnA"
+          }
         }
       } else {
         trainingOpt = {
-          inner: flags.innerDialog,
-          intra: flags.intraDialog
+          inner: {
+            enabled: flags.innerDialog,
+            luRecognizerID: flags.luRecognizerID
+          },
+          intra: {
+            enabled: flags.intraDialog,
+            qnaRecognizerID: "QnA"
+          }
         }
       }
 

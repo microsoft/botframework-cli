@@ -1,17 +1,39 @@
-> # QnA pairs
 
-> !# @qna.pair.source = custom editorial
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
 
-# ? Can I add multiple items?
+
+> # Intent definitions
+
+# dia1_trigger
+- book a hotel for me
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
+
+
+> Source: cross training. Please do not edit these directly!
+# DeferToRecognizer_QnA_main
+- user guide
+- tell joke
+- Can I add multiple items?
 - more than one item at a time
-
-```markdown
-No, I do not support that yet. But I will let the development team know you are looking for it!
-```
-
-> !# @qna.pair.source = custom editorial
-
-# ? Please remind me to buy milk
+- Please remind me to buy milk
 - Please remember that I need to buy milk
 - I need you to remember that my wife's birthday is Jan 9th
 - Add a todo named send report over this weekend
@@ -1013,10 +1035,3 @@ No, I do not support that yet. But I will let the development team know you are 
 - Feeling cheerful today?
 - Have you ever met Cortana?
 - Have you ever met Eliza?
-
-```markdown
-Thank you
-```
-
-> # QnA Alterations
-

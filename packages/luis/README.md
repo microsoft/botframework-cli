@@ -429,6 +429,8 @@ OPTIONS
   --innerDialog            Only performs the inner dialog cross train
 
   --intraDialog            Only performs the intra dialog cross train
+
+  --luRecognizerID         Recognizer ID of language understanding, shoule be one of Luis or Orchestrator, default is Luis
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_

@@ -1,8 +1,27 @@
+# ? user guide
+
+**Filters:**
+- aa=bb
+- dialogName=main
+
+```
+Here is the [user guide](http://contoso.com/userguide.pdf)
+```
+
+# ? tell joke
+
+**Filters:**
+- dialogName=main
+
+```
+Tell a funny joke
+```
+
 # ? Can I add multiple items?
 - more than one item at a time
 
 **Filters:**
-- dialogName=chitchat
+- dialogName=main
 
 ```
 No, I do not support that yet. But I will let the development team know you are looking for it!
@@ -1012,8 +1031,20 @@ No, I do not support that yet. But I will let the development team know you are 
 - Have you ever met Eliza?
 
 **Filters:**
-- dialogName=chitchat
+- dialogName=main
 
 ```
 Thank you
+```
+
+> Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
+# ? book a hotel for me
+
+**Filters:**
+- dialogName=main
+
+```
+intent=DeferToRecognizer_Orchestrator_main
 ```
