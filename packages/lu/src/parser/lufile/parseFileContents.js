@@ -1004,7 +1004,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
-                        let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.includes(item.entity));
+                        let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.map(prebuiltEntity => prebuiltEntity.toLowerCase()).includes(item.entityType.toLowerCase()));
                         prebuiltEntities.forEach(prebuiltEntity => {
                             if (parsedContent.LUISJsonStructure.prebuiltEntities.findIndex(e => e.name === prebuiltEntity.entity) < 0) {
                                 let errorMsg = `Pattern "${utteranceAndEntities.contextText}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
@@ -1290,7 +1290,7 @@ const getEntityType = function(entityName, entities) {
     let entityFound = (entities || []).find(item => item.Name == entityName || item.Name == `${entityName}(interchangeable)`);
     if (entityFound && entityFound.Type !== undefined) return entityFound.Type
     // see if this one of the prebuilt type
-    if (builtInTypes.consolidatedList.includes(entityName)) return EntityTypeEnum.PREBUILT
+    if (builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) return EntityTypeEnum.PREBUILT
     return undefined;
 };
 
@@ -1786,7 +1786,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
         throw (err);
     }
     // verify if the requested entityType is available in the requested locale
-    if (!builtInTypes.consolidatedList.includes(entityType)) {
+    if (!builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) {
         let errorMsg = `Unknown PREBUILT entity '${entityType}'. Available pre-built types are ${builtInTypes.consolidatedList.join(',')}`;
         let error = BuildDiagnostic({
             message: errorMsg,
@@ -2016,7 +2016,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
 
             // add this entity to appropriate place
             // is this a builtin type?
-            if (builtInTypes.consolidatedList.includes(entityType)) {
+            if (builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) {
                 handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.Range, config);
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist
