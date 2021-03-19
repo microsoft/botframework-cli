@@ -1,6 +1,6 @@
 dependencies:
-  '@microsoft/bf-cli-command': 4.13.0-dev.20210303.7004e0b
-  '@microsoft/bf-lu': 4.13.0-dev.20210303.7004e0b
+  '@microsoft/bf-cli-command': 4.12.0-rc0
+  '@microsoft/bf-lu': 4.12.0-rc0
   '@oclif/dev-cli': 1.26.0
   '@oclif/errors': 1.2.2
   '@oclif/test': 1.2.8
@@ -13,9 +13,9 @@ dependencies:
   '@types/fs-extra': 8.1.1
   '@types/mocha': 5.2.7
   '@types/node-fetch': 2.5.8
-  '@types/sinon': 9.0.10
+  '@types/sinon': 9.0.11
   argparse: 1.0.10
-  chai: 4.3.3
+  chai: 4.3.4
   eslint: 5.16.0
   eslint-config-oclif: 3.1.0_eslint@5.16.0
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
@@ -24,7 +24,7 @@ dependencies:
   nock: 11.9.1
   node-fetch: 2.6.1
   nyc: 14.1.1
-  orchestrator-core: 4.13.0-dev.20210304.0399672h
+  orchestrator-core: 4.12.0-beta.1
   read-text-file: 1.1.0
   readline-sync: 1.4.10
   sinon: 9.2.4
@@ -34,14 +34,14 @@ dependencies:
   unzip-stream: 0.3.1
 lockfileVersion: 5.1
 packages:
-  /@azure/abort-controller/1.0.3:
+  /@azure/abort-controller/1.0.4:
     dependencies:
       tslib: 2.1.0
     dev: false
     engines:
       node: '>=8.0.0'
     resolution:
-      integrity: sha512-kCibMwqffnwlw3c+e879rCE1Am1I2BfhjOeO54XNA8i/cEuzktnBQbTrzh67XwibHO05YuNgZzSWy9ocVfFAGw==
+      integrity: sha512-lNUmDRVGpanCsiUN3NWxFTdwmdFI53xwhkTFfHDGTYk46ca7Ind3nanJc+U6Zj9Tv+9nTCWRBscWEW1DyKOpTw==
   /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
     dependencies:
       '@azure/ms-rest-js': 2.2.3
@@ -51,7 +51,7 @@ packages:
       integrity: sha512-HAhnf+57iHn1s7U5H7Rr51JZQINeJeT0uxtXr/Ksa6wbmZDOm+VApWnFwp/+QH1ZnW8S6Qf0roKtuTeEBjmBZA==
   /@azure/core-auth/1.2.0:
     dependencies:
-      '@azure/abort-controller': 1.0.3
+      '@azure/abort-controller': 1.0.4
       tslib: 2.1.0
     dev: false
     engines:
@@ -83,7 +83,7 @@ packages:
       integrity: sha512-sXOhOu/37Tr8428f32Jwuwga975Xw64pYg1UeUwOBMhkNgtn5vUuNRa3fhmem+I6f8EKoi6hOsYDFlaHeZ52jA==
   /@babel/code-frame/7.12.13:
     dependencies:
-      '@babel/highlight': 7.13.8
+      '@babel/highlight': 7.13.10
     dev: false
     resolution:
       integrity: sha512-HV1Cm0Q3ZrpCR93tkWOYiuYIgLxZXZFVG2VgK+MBWjUqZTundupbfx2aXarXuw5Ko5aMcjtJgbSs4vUGBS5v6g==
@@ -119,25 +119,25 @@ packages:
     dev: false
     resolution:
       integrity: sha512-np/lG3uARFybkoHokJUmf1QfEvRVCPbmQeUQpKow5cQ3xWrV9i3rUHodKDJPQfTVX61qKi+UdYk8kik84n7XOw==
-  /@babel/highlight/7.13.8:
+  /@babel/highlight/7.13.10:
     dependencies:
       '@babel/helper-validator-identifier': 7.12.11
       chalk: 2.4.2
       js-tokens: 4.0.0
     dev: false
     resolution:
-      integrity: sha512-4vrIhfJyfNf+lCtXC2ck1rKSzDwciqF7IWFhXXrSOUC2O5DrVp+w4c6ed4AllTxhTkUP5x2tYj41VaxdVMMRDw==
-  /@babel/parser/7.13.9:
+      integrity: sha512-5aPpe5XQPzflQrFwL1/QoeHkP2MsA4JCntcXHRhEsdsfPVkvPi2w7Qix4iV7t5S/oC9OodGrggd8aco1g3SZFg==
+  /@babel/parser/7.13.11:
     dev: false
     engines:
       node: '>=6.0.0'
     hasBin: true
     resolution:
-      integrity: sha512-nEUfRiARCcaVo3ny3ZQjURjHQZUo/JkEw7rLlSZy/psWGnvwXFtPcr6jb7Yb41DVW5LTe6KRq9LGleRNsg1Frw==
+      integrity: sha512-PhuoqeHoO9fc4ffMEVk4qb/w/s2iOSWohvbHxLtxui0eBg3Lg5gN1U8wp1V1u61hOWkPQJJyJzGH6Y+grwkq8Q==
   /@babel/template/7.12.13:
     dependencies:
       '@babel/code-frame': 7.12.13
-      '@babel/parser': 7.13.9
+      '@babel/parser': 7.13.11
       '@babel/types': 7.13.0
     dev: false
     resolution:
@@ -148,7 +148,7 @@ packages:
       '@babel/generator': 7.13.9
       '@babel/helper-function-name': 7.12.13
       '@babel/helper-split-export-declaration': 7.12.13
-      '@babel/parser': 7.13.9
+      '@babel/parser': 7.13.11
       '@babel/types': 7.13.0
       debug: 4.3.1
       globals: 11.12.0
@@ -166,11 +166,11 @@ packages:
       integrity: sha512-hE+HE8rnG1Z6Wzo+MhaKE5lM5eMx71T4EHJgku2E3xIfaULhDcxiiRxUYgwX8qwP1BBSlag+TdGOt6JAidIZTA==
   /@fimbul/bifrost/0.21.0_tslint@5.20.1:
     dependencies:
-      '@fimbul/ymir': 0.21.0_tsutils@3.20.0
+      '@fimbul/ymir': 0.21.0_tsutils@3.21.0
       get-caller-file: 2.0.5
       tslib: 1.14.1
       tslint: 5.20.1
-      tsutils: 3.20.0
+      tsutils: 3.21.0
     dev: false
     peerDependencies:
       tslint: ^5.0.0
@@ -179,11 +179,11 @@ packages:
       integrity: sha512-ou8VU+nTmOW1jeg+FT+sn+an/M0Xb9G16RucrfhjXGWv1Q97kCoM5CG9Qj7GYOSdu7km72k7nY83Eyr53Bkakg==
   /@fimbul/bifrost/0.21.0_tslint@5.20.1+typescript@3.9.9:
     dependencies:
-      '@fimbul/ymir': 0.21.0_tsutils@3.20.0+typescript@3.9.9
+      '@fimbul/ymir': 0.21.0_tsutils@3.21.0+typescript@3.9.9
       get-caller-file: 2.0.5
       tslib: 1.14.1
       tslint: 5.20.1_typescript@3.9.9
-      tsutils: 3.20.0_typescript@3.9.9
+      tsutils: 3.21.0_typescript@3.9.9
       typescript: 3.9.9
     dev: false
     peerDependencies:
@@ -191,24 +191,24 @@ packages:
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-ou8VU+nTmOW1jeg+FT+sn+an/M0Xb9G16RucrfhjXGWv1Q97kCoM5CG9Qj7GYOSdu7km72k7nY83Eyr53Bkakg==
-  /@fimbul/ymir/0.21.0_tsutils@3.20.0:
+  /@fimbul/ymir/0.21.0_tsutils@3.21.0:
     dependencies:
       inversify: 5.0.5
       reflect-metadata: 0.1.13
       tslib: 1.14.1
-      tsutils: 3.20.0
+      tsutils: 3.21.0
     dev: false
     peerDependencies:
       tsutils: '>=2.29.0'
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-T/y7WqPsm4n3zhT08EpB5sfdm2Kvw3gurAxr2Lr5dQeLi8ZsMlNT/Jby+ZmuuAAd1PnXYzKp+2SXgIkQIIMCUg==
-  /@fimbul/ymir/0.21.0_tsutils@3.20.0+typescript@3.9.9:
+  /@fimbul/ymir/0.21.0_tsutils@3.21.0+typescript@3.9.9:
     dependencies:
       inversify: 5.0.5
       reflect-metadata: 0.1.13
       tslib: 1.14.1
-      tsutils: 3.20.0_typescript@3.9.9
+      tsutils: 3.21.0_typescript@3.9.9
       typescript: 3.9.9
     dev: false
     peerDependencies:
@@ -216,7 +216,7 @@ packages:
       typescript: '>= 3.3.0 || >= 3.6.0-dev || >= 3.7.0-dev'
     resolution:
       integrity: sha512-T/y7WqPsm4n3zhT08EpB5sfdm2Kvw3gurAxr2Lr5dQeLi8ZsMlNT/Jby+ZmuuAAd1PnXYzKp+2SXgIkQIIMCUg==
-  /@microsoft/bf-cli-command/4.13.0-dev.20210303.7004e0b:
+  /@microsoft/bf-cli-command/4.12.0-rc0:
     dependencies:
       '@oclif/command': 1.5.20
       '@oclif/config': 1.13.3
@@ -231,8 +231,8 @@ packages:
     engines:
       node: '>=6.0.0'
     resolution:
-      integrity: sha512-FHxrKsGiNA146RaQp5bz9lLEm/Q/gFb9KZGobr7g880aPMn0902EsBLaVExTVRTAsKKw0mEtdAWa0bQ1YfCzjA==
-  /@microsoft/bf-lu/4.13.0-dev.20210303.7004e0b:
+      integrity: sha512-SVQ6h24JGY2NUVEKs22DK8pkdiksu0Ov8Kd3A869wRzk/FQVt4kbU/VVKO/edaes/oXLesY+biTPKLoYDahPPQ==
+  /@microsoft/bf-lu/4.12.0-rc0:
     dependencies:
       '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
       '@azure/ms-rest-azure-js': 2.0.1
@@ -254,7 +254,7 @@ packages:
     engines:
       node: '>=8.0.0'
     resolution:
-      integrity: sha512-ca7B1RBIXxS/sY53La4/Ssbja3kP0MT507v6sIdPz18hBoLls7VqBZdCcZ/8vXx+mZ/Ispk6GOLjqXxMl2yQ2Q==
+      integrity: sha512-bz5BPQsIh+BwXZ+YAMG15wTndF/Ug3EviSjOs0GtryRSkgJkmAqAhdpU0SRjVAVuy7XzTRpltxbMmSoiYVnHtA==
   /@nodelib/fs.scandir/2.1.4:
     dependencies:
       '@nodelib/fs.stat': 2.0.4
@@ -340,7 +340,7 @@ packages:
       fs-extra: 8.1.0
       github-slugger: 1.3.0
       lodash: 4.17.21
-      normalize-package-data: 3.0.0
+      normalize-package-data: 3.0.2
       qqjs: 0.3.11
       tslib: 2.1.0
     dev: false
@@ -496,14 +496,14 @@ packages:
       integrity: sha512-OCutwjDZ4aFS6PB1UZ988C4YgwlBHJd6wCeQqaLdmadZ/7e+w79+hbMUFC1QXDNCmdyoRfAFdm0RypzwR+Qpag==
   /@types/fs-extra/8.1.1:
     dependencies:
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
     dev: false
     resolution:
       integrity: sha512-TcUlBem321DFQzBNuz8p0CLLKp0VvF/XH9E4KHNmgwyp4E3AfgI5cjiIVZWlbfThBop2qxFIh4+LeY6hVWWZ2w==
   /@types/glob/7.1.3:
     dependencies:
       '@types/minimatch': 3.0.3
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
     dev: false
     resolution:
       integrity: sha512-SEYeGAIQIQX8NN6LDKprLjbrd5dARM5EXsd8GI/A5l0apYI1fGMWgPHSe4ZKL4eozlAyI+doUE9XbYS4xCkQ1w==
@@ -525,32 +525,32 @@ packages:
       integrity: sha512-NYrtPht0wGzhwe9+/idPaBB+TqkY9AhTvOLMkThm0IoEfLaiVQZwBwyJ5puCkO3AUCWrmcoePjp2mbFocKy4SQ==
   /@types/node-fetch/2.5.8:
     dependencies:
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
       form-data: 3.0.1
     dev: false
     resolution:
       integrity: sha512-fbjI6ja0N5ZA8TV53RUqzsKNkl9fv8Oj3T7zxW7FGv1GSH7gwJaNF8dzCjrqKaxKeUpTz4yT1DaJFq/omNpGfw==
-  /@types/node/10.17.54:
+  /@types/node/10.17.55:
     dev: false
     resolution:
-      integrity: sha512-c8Lm7+hXdSPmWH4B9z/P/xIXhFK3mCQin4yCYMd2p1qpMG5AfgyJuYZ+3q2dT7qLiMMMGMd5dnkFpdqJARlvtQ==
-  /@types/node/14.14.31:
+      integrity: sha512-koZJ89uLZufDvToeWO5BrC4CR4OUfHnUz2qoPs/daQH6qq3IN62QFxCTZ+bKaCE0xaoCAJYE4AXre8AbghCrhg==
+  /@types/node/14.14.35:
     dev: false
     resolution:
-      integrity: sha512-vFHy/ezP5qI0rFgJ7aQnjDXwAMrG0KqqIH7tQG5PPv3BWBayOPIQNBjVc/P6hhdZfMx51REc6tfDNXHUio893g==
-  /@types/sinon/9.0.10:
+      integrity: sha512-Lt+wj8NVPx0zUmUwumiVXapmaLUcAk3yPuHCFVXras9k5VT9TdhJqKqGVUQCD60OTMCl0qxJ57OiTL0Mic3Iag==
+  /@types/sinon/9.0.11:
     dependencies:
       '@types/sinonjs__fake-timers': 6.0.2
     dev: false
     resolution:
-      integrity: sha512-/faDC0erR06wMdybwI/uR8wEKV/E83T0k4sepIpB7gXuy2gzx2xiOjmztq6a2Y6rIGJ04D+6UU0VBmWy+4HEMA==
+      integrity: sha512-PwP4UY33SeeVKodNE37ZlOsR9cReypbMJOhZ7BVE0lB+Hix3efCOxiJWiE5Ia+yL9Cn2Ch72EjFTRze8RZsNtg==
   /@types/sinonjs__fake-timers/6.0.2:
     dev: false
     resolution:
       integrity: sha512-dIPoZ3g5gcx9zZEszaxLSVTvMReD3xxyyDnQUjA6IYDG9Ba2AV0otMPs+77sG9ojB4Qr2N2Vk5RnKeuA0X/0bg==
   /@types/tunnel/0.0.1:
     dependencies:
-      '@types/node': 14.14.31
+      '@types/node': 14.14.35
     dev: false
     resolution:
       integrity: sha512-AOqu6bQu5MSWwYvehMXLukFHnupHrpZ8nvgae5Ggie9UwzDR1CCwoXgSSWNZJuyOlCdfdsWMA5F2LlmvyoTv8A==
@@ -561,7 +561,7 @@ packages:
       eslint: 5.16.0
       functional-red-black-tree: 1.0.1
       regexpp: 3.1.0
-      tsutils: 3.20.0_typescript@3.9.9
+      tsutils: 3.21.0_typescript@3.9.9
       typescript: 3.9.9
     dev: false
     engines:
@@ -582,7 +582,7 @@ packages:
       eslint: 5.16.0
       functional-red-black-tree: 1.0.1
       regexpp: 3.1.0
-      tsutils: 3.20.0
+      tsutils: 3.21.0
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -670,7 +670,7 @@ packages:
       is-glob: 4.0.1
       lodash: 4.17.21
       semver: 7.3.4
-      tsutils: 3.20.0
+      tsutils: 3.21.0
     dev: false
     engines:
       node: ^8.10.0 || ^10.13.0 || >=11.10.1
@@ -689,7 +689,7 @@ packages:
       is-glob: 4.0.1
       lodash: 4.17.21
       semver: 7.3.4
-      tsutils: 3.20.0_typescript@3.9.9
+      tsutils: 3.21.0_typescript@3.9.9
       typescript: 3.9.9
     dev: false
     engines:
@@ -1027,7 +1027,7 @@ packages:
     dev: false
     resolution:
       integrity: sha1-G2gcIf+EAzyCZUMJBolCDRhxUdw=
-  /chai/4.3.3:
+  /chai/4.3.4:
     dependencies:
       assertion-error: 1.1.0
       check-error: 1.0.2
@@ -1039,7 +1039,7 @@ packages:
     engines:
       node: '>=4'
     resolution:
-      integrity: sha512-MPSLOZwxxnA0DhLE84klnGPojWFK5KuhP7/j5dTsxpr2S3XlkqJP5WbyYl1gCTWvG2Z5N+HD4F472WsbEZL6Pw==
+      integrity: sha512-yS5H68VYOCtN1cjfwumDSuzn/9c+yza4f3reKXlE5rUg7SFcCEy90gJvydNgOYtblyf4Zi6jIWRnXOgErta0KA==
   /chainsaw/0.1.0:
     dependencies:
       traverse: 0.3.9
@@ -1186,7 +1186,7 @@ packages:
       js-yaml: 3.14.1
       lodash: 4.17.21
       natural-orderby: 2.0.3
-      object-treeify: 1.1.31
+      object-treeify: 1.1.33
       password-prompt: 1.1.2
       semver: 7.3.4
       string-width: 4.2.2
@@ -1543,12 +1543,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-+uw1inIHVPQoaVuHzRyXd21icM+cnt4CzD5rW+NC1wjOUSTOs+Te7FOv7AhN7vS9x/oIyhLP5PR1H+phQAHu5Q==
-  /env-paths/2.2.0:
+  /env-paths/2.2.1:
     dev: false
     engines:
       node: '>=6'
     resolution:
-      integrity: sha512-6u0VYSCo/OW6IoD5WCLLy9JUGARbamfSavcNXry/eu8aHVFei6CD3Sw+VGX5alea1i9pgPHW0mbu6Xj0uBh7gA==
+      integrity: sha512-+h1lkLKhZMTYjog1VEpJNG7NZJWcuc2DDk/qsqSTRRCOXiLjeQ1d1/udrUGhqMxUgAlwKNZ0cf2uqan5GLuS2A==
   /error-ex/1.3.2:
     dependencies:
       is-arrayish: 0.2.1
@@ -1935,11 +1935,11 @@ packages:
     dependencies:
       '@types/chai': 4.2.15
       '@types/lodash': 4.14.168
-      '@types/node': 14.14.31
-      '@types/sinon': 9.0.10
+      '@types/node': 14.14.35
+      '@types/sinon': 9.0.11
       lodash: 4.17.21
       mock-stdin: 1.0.0
-      nock: 13.0.10
+      nock: 13.0.11
       stdout-stderr: 0.1.13
     dev: false
     engines:
@@ -1954,7 +1954,7 @@ packages:
     dependencies:
       '@nodelib/fs.stat': 2.0.4
       '@nodelib/fs.walk': 1.2.6
-      glob-parent: 5.1.1
+      glob-parent: 5.1.2
       merge2: 1.4.1
       micromatch: 4.0.2
       picomatch: 2.2.2
@@ -2232,14 +2232,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-gwJScWVNhFYSRDvURk/8yhcFBee6aFjye2a7Lhb2bUyRulpIoek9p0I9Kt7PT67d/nUlZbFu8L9RLiA0woQN8Q==
-  /glob-parent/5.1.1:
+  /glob-parent/5.1.2:
     dependencies:
       is-glob: 4.0.1
     dev: false
     engines:
       node: '>= 6'
     resolution:
-      integrity: sha512-FnI+VGOpnlGHWZxthPGR+QhR78fuiK0sNLkHQv+bL9fQi57lNNdquIbna/WrfROrolq8GK5Ek6BiMwqL/voRYQ==
+      integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==
   /glob/7.1.2:
     dependencies:
       fs.realpath: 1.0.0
@@ -2395,14 +2395,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-f/wzC2QaWBs7t9IYqB4T3sR1xviIViXJRJTWBlx2Gf3g0Xi5vI7Yy4koXQ1c9OYDGHN9sBy1DQ2AB8fqZBWhUg==
-  /hosted-git-info/3.0.8:
+  /hosted-git-info/4.0.1:
     dependencies:
       lru-cache: 6.0.0
     dev: false
     engines:
       node: '>=10'
     resolution:
-      integrity: sha512-aXpmwoOhRBrw6X3j0h5RloK4x1OzsxMPyxqIHyNfSe2pypkVTZFpEiRoSipPEPlMrh0HW/XsjkJ5WgnCirpNUw==
+      integrity: sha512-eT7NrxAsppPRQEBSwKSosReE+v8OzABwEScQYk5d4uxaEPlzxTIku7LINXtBGalthkLhJnq5lBI89PfK43zAKg==
   /html-escaper/2.0.2:
     dev: false
     resolution:
@@ -2756,7 +2756,7 @@ packages:
   /istanbul-lib-instrument/3.3.0:
     dependencies:
       '@babel/generator': 7.13.9
-      '@babel/parser': 7.13.9
+      '@babel/parser': 7.13.11
       '@babel/template': 7.12.13
       '@babel/traverse': 7.13.0
       '@babel/types': 7.13.0
@@ -3314,7 +3314,7 @@ packages:
       node: '>= 8.0'
     resolution:
       integrity: sha512-U5wPctaY4/ar2JJ5Jg4wJxlbBfayxgKbiAeGh+a1kk6Pwnc2ZEuKviLyDSG6t0uXl56q7AALIxoM6FJrBSsVXA==
-  /nock/13.0.10:
+  /nock/13.0.11:
     dependencies:
       debug: 4.3.1
       json-stringify-safe: 5.0.1
@@ -3324,7 +3324,7 @@ packages:
     engines:
       node: '>= 10.13'
     resolution:
-      integrity: sha512-AvUO/tbiWVBjlC3WsuIutPXltPbPmHWfcLwDSYzykKBJhOeo9eZPczo8n9aV4AHHCgpeL70zBXLwiSE+mzx89g==
+      integrity: sha512-sKZltNkkWblkqqPAsjYW0bm3s9DcHRPiMOyKO/PkfJ+ANHZ2+LA2PLe22r4lLrKgXaiSaDQwW3qGsJFtIpQIeQ==
   /node-addon-api/3.1.0:
     dev: false
     resolution:
@@ -3344,7 +3344,7 @@ packages:
       integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
   /node-gyp/7.1.2:
     dependencies:
-      env-paths: 2.2.0
+      env-paths: 2.2.1
       glob: 7.1.6
       graceful-fs: 4.2.6
       nopt: 5.0.0
@@ -3403,9 +3403,9 @@ packages:
     dev: false
     resolution:
       integrity: sha512-/5CMN3T0R4XTj4DcGaexo+roZSdSFW/0AOOTROrjxzCG1wrWXEsGbRKevjlIL+ZDE4sZlJr5ED4YW0yqmkK+eA==
-  /normalize-package-data/3.0.0:
+  /normalize-package-data/3.0.2:
     dependencies:
-      hosted-git-info: 3.0.8
+      hosted-git-info: 4.0.1
       resolve: 1.20.0
       semver: 7.3.4
       validate-npm-package-license: 3.0.4
@@ -3413,7 +3413,7 @@ packages:
     engines:
       node: '>=10'
     resolution:
-      integrity: sha512-6lUjEI0d3v6kFrtgA/lOx4zHCWULXsFNIjHolnZCKCTLA6m/G625cdn3O7eNmT0iD3jfo6HZ9cdImGZwf21prw==
+      integrity: sha512-6CdZocmfGaKnIHPVFhJJZ3GuR8SsLKvDANFp47Jmy51aKIr8akjAWTSxtpI+MBgBFdSMRyo4hMpDlT6dTffgZg==
   /npm-bundled/1.1.1:
     dependencies:
       npm-normalize-package-bin: 1.0.1
@@ -3517,12 +3517,12 @@ packages:
       node: '>= 0.4'
     resolution:
       integrity: sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
-  /object-treeify/1.1.31:
+  /object-treeify/1.1.33:
     dev: false
     engines:
       node: '>= 10'
     resolution:
-      integrity: sha512-kt2UuyHDTH+J6w0pv2c+3uuEApGuwgfjWogbqPWAvk4nOM/T3No0SzDtp6CuJ/XBUy//nFNuerb8ms7CqjD9Tw==
+      integrity: sha512-EFVjAYfzWqWsBMRHPMAXLCDIJnpMhdWAqR7xG6M6a2cs6PMFpl/+Z20w9zDW4vkxOFfddegBKq9Rehd0bxWE7A==
   /object.assign/4.1.0:
     dependencies:
       define-properties: 1.1.3
@@ -3582,7 +3582,7 @@ packages:
       node: '>= 0.8.0'
     resolution:
       integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==
-  /orchestrator-core/4.13.0-dev.20210304.0399672h:
+  /orchestrator-core/4.12.0-beta.1:
     cpu:
       - x64
       - ia32
@@ -3600,7 +3600,7 @@ packages:
       - win32
     requiresBuild: true
     resolution:
-      integrity: sha512-yuEtJP7qDVeFukn4YA72g7pXvhrIM4hP7DlmWLuD17ZrF+su8mkIGS55nL+R0ncrjHYbMfdG1Qv/PVY7FbeNfg==
+      integrity: sha512-4Q+Ui/6rsiBJU1fwQAvxthMNWDY/qKvhrNYLnQNQ7llN/XI8Rk3yzUxfJ04V2WAa3Dm3GEXgix6/inWaiHjKdg==
   /os-homedir/1.0.2:
     dev: false
     engines:
@@ -4656,7 +4656,7 @@ packages:
       doctrine: 0.7.2
       tslib: 1.9.0
       tslint: 5.20.1
-      tsutils: 3.20.0
+      tsutils: 3.21.0
     dev: false
     peerDependencies:
       tslint: ^5.0.0
@@ -4668,7 +4668,7 @@ packages:
       doctrine: 0.7.2
       tslib: 1.9.0
       tslint: 5.20.1_typescript@3.9.9
-      tsutils: 3.20.0_typescript@3.9.9
+      tsutils: 3.21.0_typescript@3.9.9
       typescript: 3.9.9
     dev: false
     peerDependencies:
@@ -4806,7 +4806,7 @@ packages:
       typescript: '>=2.1.0 || >=2.1.0-dev || >=2.2.0-dev || >=2.3.0-dev || >=2.4.0-dev || >=2.5.0-dev || >=2.6.0-dev || >=2.7.0-dev || >=2.8.0-dev || >=2.9.0-dev || >= 3.0.0-dev || >= 3.1.0-dev'
     resolution:
       integrity: sha512-g5JVHCIJwzfISaXpXE1qvNalca5Jwob6FjI4AoPlqMusJ6ftFE7IkkFoMhVLRgK+4Kx3gkzb8UZK5t5yTTvEmA==
-  /tsutils/3.20.0:
+  /tsutils/3.21.0:
     dependencies:
       tslib: 1.14.1
     dev: false
@@ -4815,8 +4815,8 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     resolution:
-      integrity: sha512-RYbuQuvkhuqVeXweWT3tJLKOEJ/UUw9GjNEZGWdrLLlM+611o1gwLHBpxoFJKKl25fLprp2eVthtKs5JOrNeXg==
-  /tsutils/3.20.0_typescript@3.9.9:
+      integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
+  /tsutils/3.21.0_typescript@3.9.9:
     dependencies:
       tslib: 1.14.1
       typescript: 3.9.9
@@ -4826,7 +4826,7 @@ packages:
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     resolution:
-      integrity: sha512-RYbuQuvkhuqVeXweWT3tJLKOEJ/UUw9GjNEZGWdrLLlM+611o1gwLHBpxoFJKKl25fLprp2eVthtKs5JOrNeXg==
+      integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==
   /tunnel-agent/0.6.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -5149,7 +5149,7 @@ packages:
       integrity: sha512-Ux4ygGWsu2c7isFWe8Yu1YluJmqVhxqK2cLXNQA5AcC3QfbGNpM7fu0Y8b/z16pXLnFxZYvWhd3fhBY9DLmC6Q==
   'file:projects/bf-dispatcher.tgz':
     dependencies:
-      '@microsoft/bf-lu': 4.13.0-dev.20210303.7004e0b
+      '@microsoft/bf-lu': 4.12.0-rc0
       '@oclif/command': 1.5.20
       '@oclif/config': 1.13.3
       '@oclif/dev-cli': 1.26.0
@@ -5159,9 +5159,9 @@ packages:
       '@types/argparse': 1.0.38
       '@types/chai': 4.2.15
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.54
+      '@types/node': 10.17.55
       argparse: 1.0.10
-      chai: 4.3.3
+      chai: 4.3.4
       globby: 10.0.2
       mocha: 5.2.0
       nyc: 14.1.1
@@ -5175,13 +5175,13 @@ packages:
     dev: false
     name: '@rush-temp/bf-dispatcher'
     resolution:
-      integrity: sha512-IxE1kszkFawowpmicVuprR5yI4lIbXmkUn4lQ/v5fPYUBd1NUIHlyW+9VM0w3LeXFlKQ676zNl3qvfRAEOsfcw==
+      integrity: sha512-dA+dCt1PLnujzZRuYmF84mIgh23vN0ChQjDZynyTX6aClDRIF4F4KDPDt9ZiJSb6kgtwNRjDbKN5qZ+aldcEFA==
       tarball: 'file:projects/bf-dispatcher.tgz'
     version: 0.0.0
   'file:projects/bf-orchestrator-cli.tgz':
     dependencies:
-      '@microsoft/bf-cli-command': 4.13.0-dev.20210303.7004e0b
-      '@microsoft/bf-lu': 4.13.0-dev.20210303.7004e0b
+      '@microsoft/bf-cli-command': 4.12.0-rc0
+      '@microsoft/bf-lu': 4.12.0-rc0
       '@oclif/command': 1.8.0
       '@oclif/config': 1.17.0
       '@oclif/dev-cli': 1.26.0
@@ -5191,9 +5191,9 @@ packages:
       '@types/chai': 4.2.15
       '@types/fs-extra': 8.1.1
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.54
-      '@types/sinon': 9.0.10
-      chai: 4.3.3
+      '@types/node': 10.17.55
+      '@types/sinon': 9.0.11
+      chai: 4.3.4
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.9.9
@@ -5210,20 +5210,20 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator-cli'
     resolution:
-      integrity: sha512-SqJDnmCtfPFHzThWvvXX1pGNjvJVVaFvVx+K5lffJ+3GNcBV4A6cNjkUB2PgzO43L5ea8ppQAaZNjGI6k/LrvQ==
+      integrity: sha512-lSP0zkV+fcysQLMeVs0PtuCVxceD0pF5uETy0fd7ux5MJFyySFX9w9vlVGGkRMhutKUAHKCHqnYezXuxq7CCpQ==
       tarball: 'file:projects/bf-orchestrator-cli.tgz'
     version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
     dependencies:
-      '@microsoft/bf-lu': 4.13.0-dev.20210303.7004e0b
+      '@microsoft/bf-lu': 4.12.0-rc0
       '@oclif/test': 1.2.8
       '@types/chai': 4.2.15
       '@types/fs-extra': 8.1.1
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.54
+      '@types/node': 10.17.55
       '@types/node-fetch': 2.5.8
-      '@types/sinon': 9.0.10
-      chai: 4.3.3
+      '@types/sinon': 9.0.11
+      chai: 4.3.4
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.9.9
@@ -5233,7 +5233,7 @@ packages:
       nock: 11.9.1
       node-fetch: 2.6.1
       nyc: 14.1.1
-      orchestrator-core: 4.13.0-dev.20210304.0399672h
+      orchestrator-core: 4.12.0-beta.1
       read-text-file: 1.1.0
       rimraf: 2.7.1
       sinon: 9.2.4
@@ -5244,13 +5244,13 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-sihPllqYgGlWMfP72E2atskgv8reTT8oT/jDU4Aq7zEgZZMRgCUjqwoFUmp22qjDHPWL36jNJMyFQqWj0e3OJQ==
+      integrity: sha512-h+w2O2T5lNMXOnyQYzkh7AktnC93o49bIX15rIQYGI3m7C5J8LsAgXN3VM4ljBLGvKVBozWr0N4RNmkdRH5iPg==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-sampler-cli.tgz':
     dependencies:
-      '@microsoft/bf-cli-command': 4.13.0-dev.20210303.7004e0b
-      '@microsoft/bf-lu': 4.13.0-dev.20210303.7004e0b
+      '@microsoft/bf-cli-command': 4.12.0-rc0
+      '@microsoft/bf-lu': 4.12.0-rc0
       '@oclif/command': 1.8.0
       '@oclif/config': 1.17.0
       '@oclif/dev-cli': 1.26.0
@@ -5259,7 +5259,7 @@ packages:
       '@oclif/test': 1.2.8
       '@types/fs-extra': 8.1.1
       '@types/mocha': 5.2.7
-      '@types/node': 10.17.54
+      '@types/node': 10.17.55
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@3.9.9
@@ -5273,12 +5273,12 @@ packages:
     dev: false
     name: '@rush-temp/bf-sampler-cli'
     resolution:
-      integrity: sha512-a06m0FqpH0ZrFA3pHGJdQ/MfDYzPWcOiIlZcAQIPZQrxgfEBdNMV6KY67TB9dUeNMbUMR1OwGx4AdQeWDbD+5A==
+      integrity: sha512-i/sc5f/SNfkE850jZoLjtmU2oP148zNwhjzMFgCMnp+IhE/oE3qyEdQy3zzY31UQ9cGp1AIcVumvKPxJK42KYQ==
       tarball: 'file:projects/bf-sampler-cli.tgz'
     version: 0.0.0
 specifiers:
-  '@microsoft/bf-cli-command': next
-  '@microsoft/bf-lu': next
+  '@microsoft/bf-cli-command': 4.12.0-rc0
+  '@microsoft/bf-lu': 4.12.0-rc0
   '@oclif/dev-cli': ^1.22.2
   '@oclif/errors': ~1.2.2
   '@oclif/test': ^1.2.5
@@ -5302,7 +5302,7 @@ specifiers:
   nock: ^11.7.0
   node-fetch: ~2.6.0
   nyc: ^14.1.1
-  orchestrator-core: beta
+  orchestrator-core: 4.12.0-beta.1
   read-text-file: ~1.1.0
   readline-sync: ^1.4.10
   sinon: ^9.0.2

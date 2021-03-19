@@ -268,7 +268,7 @@ export class OrchestratorEvaluate {
       'predictionJsonContent': string;
     } =
     Utility.generateLabelStringEvaluationReport(
-      UtilityLabelResolver.scoreBatchStringLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreStringLabels,
+      UtilityLabelResolver.scoreStringLabels, // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- UtilityLabelResolver.scoreBatchStringLabels,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -360,7 +360,7 @@ export class OrchestratorEvaluate {
       'predictionJsonContent': string;
     } =
     Utility.generateLabelObjectEvaluationReport(
-      UtilityLabelResolver.scoreBatchObjectLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreObjectLabels,
+      UtilityLabelResolver.scoreObjectLabels, // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- UtilityLabelResolver.scoreBatchObjectLabels,
       entityLabels,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap,

@@ -152,10 +152,10 @@ export class LabelResolver {
     return labelResolver.score(utterance, labelType);
   }
 
-  public static scoreBatch(utterances: string[], labelType: LabelType, labelResolver: any = null) {
-    labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
-    return labelResolver.scoreBatch(utterances, labelType);
-  }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- public static scoreBatch(utterances: string[], labelType: LabelType, labelResolver: any = null) {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   return labelResolver.scoreBatch(utterances, labelType);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- }
 
   public static getConfigJson(labelResolver: any = null) {
     labelResolver = LabelResolver.ensureLabelResolver(labelResolver);
@@ -167,52 +167,52 @@ export class LabelResolver {
     return labelResolver.setRuntimeParams(config, resetAll);
   }
 
-  // eslint-disable-next-line complexity
-  public static addBatch(
-    utteranceIntentEntityLabels: {
-      utteranceLabelsMap: Map<string, Set<string>>;
-      utteranceLabelDuplicateMap: Map<string, Set<string>>;
-      utteranceEntityLabelsMap: Map<string, Label[]>;
-      utteranceEntityLabelDuplicateMap: Map<string, Label[]>; },
-    labelResolver: any = null,
-    addBatchOption: number = 2): any {
-    Utility.debuggingLog('CALLING LabelResolver.addBatch()');
-    if (labelResolver === null) {
-      labelResolver = LabelResolver.LabelResolver;
-    }
-    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
-    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
-    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
-    Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
-    // -----------------------------------------------------------------------
-    UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): ready to call LabelResolver.utteranceLabelsToJsonString()');
-    const batchJsonified: string = LabelResolver.utteranceLabelsToJsonString(
-      utteranceIntentEntityLabels);
-    UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): finished calling LabelResolver.utteranceLabelsToJsonString()');
-    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): batchJsonified', batchJsonified, 'batchJsonified');
-    }
-    // -----------------------------------------------------------------------
-    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
-    const batchUint8Array: Uint8Array =
-      UtilityDispatcher.stringToUtf8EncodedUint8Array(batchJsonified);
-    UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
-    if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
-      UtilityDispatcher.debuggingLog(`LabelResolver.addBatch(): batchUint8Array=${batchUint8Array}`);
-    }
-    // -----------------------------------------------------------------------
-    let batchResults: any;
-    try {
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call labelResolver.addBatch()', addBatchOption, 'addBatchOption');
-      batchResults = labelResolver.addBatch(batchUint8Array, '', addBatchOption);
-      UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling labelResolver.addBatch()', batchResults, 'batchResults');
-    } catch (error) {
-      UtilityDispatcher.debuggingNamedThrow1('LabelResolver.addBatch(): Failed adding error:', error, 'error');
-    }
-    // -----------------------------------------------------------------------
-    Utility.debuggingLog('LEAVING LabelResolver.addBatch()');
-    return batchResults;
-  }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- // eslint-disable-next-line complexity
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- public static addBatch(
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   utteranceIntentEntityLabels: {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     utteranceLabelsMap: Map<string, Set<string>>;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     utteranceLabelDuplicateMap: Map<string, Set<string>>;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     utteranceEntityLabelsMap: Map<string, Label[]>;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     utteranceEntityLabelDuplicateMap: Map<string, Label[]>; },
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   labelResolver: any = null,
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   addBatchOption: number = 2): any {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog('CALLING LabelResolver.addBatch()');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   if (labelResolver === null) {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     labelResolver = LabelResolver.LabelResolver;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelsMap.size=${utteranceIntentEntityLabels.utteranceLabelsMap.size}`);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceLabelDuplicateMap.size}`);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelsMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelsMap.size}`);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog(`LabelResolver.addBatch(): utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size=${utteranceIntentEntityLabels.utteranceEntityLabelDuplicateMap.size}`);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   // -----------------------------------------------------------------------
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): ready to call LabelResolver.utteranceLabelsToJsonString()');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   const batchJsonified: string = LabelResolver.utteranceLabelsToJsonString(
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     utteranceIntentEntityLabels);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   UtilityDispatcher.debuggingLog('LabelResolver.addBatch(): finished calling LabelResolver.utteranceLabelsToJsonString()');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): batchJsonified', batchJsonified, 'batchJsonified');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   // -----------------------------------------------------------------------
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   const batchUint8Array: Uint8Array =
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.stringToUtf8EncodedUint8Array(batchJsonified);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.debuggingLog(`LabelResolver.addBatch(): batchUint8Array=${batchUint8Array}`);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   // -----------------------------------------------------------------------
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   let batchResults: any;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   try {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call labelResolver.addBatch()', addBatchOption, 'addBatchOption');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     batchResults = labelResolver.addBatch(batchUint8Array, '', addBatchOption);
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling labelResolver.addBatch()', batchResults, 'batchResults');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   } catch (error) {
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----     UtilityDispatcher.debuggingNamedThrow1('LabelResolver.addBatch(): Failed adding error:', error, 'error');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   }
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   // -----------------------------------------------------------------------
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   Utility.debuggingLog('LEAVING LabelResolver.addBatch()');
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ----   return batchResults;
+  // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- }
 
   // eslint-disable-next-line complexity
   public static utteranceLabelsToJsonString(

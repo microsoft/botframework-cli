@@ -102,7 +102,15 @@ export class OrchestratorBuild {
   // Get sorted examples from Label Resolver.
   static async getExamplesLR(
     labelResolver: LabelResolver): Promise<Example[]> {
-    const result: Example[] = LabelResolver.getExamples(labelResolver);
+    const result: Example[] = LabelResolver.getExamples(labelResolver).map(
+        (x: any) => new Example(
+          x.text,
+          x.labels.map((y: any) => new Label(
+            y.label_type,
+            y.name,
+            new Span(
+              y.span.offset,
+              y.span.length)))));
     result.sort(Example.sort_fn);
     return result;
   }

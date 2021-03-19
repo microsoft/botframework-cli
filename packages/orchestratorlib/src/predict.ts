@@ -862,7 +862,7 @@ export class OrchestratorPredict {
     // ---- NOTE ---- integrated step to produce intent analysis reports.
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentIntentEvaluationOutput = Utility.generateLabelStringEvaluationReport(
-      UtilityLabelResolver.scoreBatchStringLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreStringLabels,
+      UtilityLabelResolver.scoreStringLabels, // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- UtilityLabelResolver.scoreBatchStringLabels,
       labels,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -903,7 +903,7 @@ export class OrchestratorPredict {
     // ---- NOTE ---- integrated step to produce entity analysis reports.
     Utility.debuggingLog('OrchestratorPredict.commandLetV(), ready to call UtilityLabelResolver.generateEvaluationReport()');
     this.currentEntityEvaluationOutput = Utility.generateLabelObjectEvaluationReport(
-      UtilityLabelResolver.scoreBatchObjectLabels, // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- UtilityLabelResolver.scoreObjectLabels,
+      UtilityLabelResolver.scoreObjectLabels, // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-FUTURE-LOGIC ---- UtilityLabelResolver.scoreBatchObjectLabels,
       entityLabels,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap,
@@ -1260,7 +1260,7 @@ export class OrchestratorPredict {
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejct: any = example.toObject();
+    const exampleObejct: any = example.toAlternateObject();
     Utility.debuggingLog(`exampleObejct=${Utility.jsonStringify(exampleObejct)}`);
     const rvAddExample: any = LabelResolver.addExample(exampleObejct);
     Utility.debuggingLog(`rv=${rvAddExample}`);
@@ -1280,7 +1280,7 @@ export class OrchestratorPredict {
     const example: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejct: any = example.toObject();
+    const exampleObejct: any = example.toAlternateObject();
     Utility.debuggingLog(`exampleObejct=${Utility.jsonStringify(exampleObejct)}`);
     const rvRemoveExample: any = LabelResolver.removeExample(exampleObejct);
     Utility.debuggingLog(`rv=${rvRemoveExample}`);
@@ -1300,7 +1300,7 @@ export class OrchestratorPredict {
     const exampleToRemove: Example = Example.newIntentExample(
       this.currentUtterance,
       this.currentIntentLabels);
-    const exampleObejctToRemove: any = exampleToRemove.toObject();
+    const exampleObejctToRemove: any = exampleToRemove.toAlternateObject();
     Utility.debuggingLog(`exampleObejctToRemove=${Utility.jsonStringify(exampleObejctToRemove)}`);
     const rvRemoveExample: any = LabelResolver.removeExample(exampleObejctToRemove);
     Utility.debuggingLog(`rvRemoveExample=${rvRemoveExample}`);
@@ -1311,7 +1311,7 @@ export class OrchestratorPredict {
     const exampleToAdd: Example = Example.newIntentExample(
       this.currentUtterance,
       this.newIntentLabels);
-    const exampleObejctToAdd: any = exampleToAdd.toObject();
+    const exampleObejctToAdd: any = exampleToAdd.toAlternateObject();
     Utility.debuggingLog(`exampleObejctToAdd=${Utility.jsonStringify(exampleObejctToAdd)}`);
     const rvAddExample: any = LabelResolver.addExample(exampleObejctToAdd);
     Utility.debuggingLog(`rvAddExample=${rvAddExample}`);

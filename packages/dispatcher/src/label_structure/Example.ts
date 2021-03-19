@@ -62,4 +62,18 @@ export class Example {
           labels: this.labels.map((x: Label) => x.toObject()),
         };
     }
+
+    public toAlternateObject(): {
+        "text": string;
+        "labels": Array<{
+            "name": string;
+            "label_type": number;
+            "span": {
+                "offset": number;
+                "length": number; }; }>; } {
+        return {
+          text: this.text,
+          labels: this.labels.map((x: Label) => x.toAlternateObject()),
+        };
+    }
 }
