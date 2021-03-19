@@ -54,7 +54,7 @@ export default class LuisCrossTrain extends Command {
           },
           intra: {
             enabled: true,
-            qnaRecognizerID: "QnA"
+            qnaRecognizerID: 'QnA'
           }
         }
       } else {
@@ -65,7 +65,7 @@ export default class LuisCrossTrain extends Command {
           },
           intra: {
             enabled: flags.intraDialog,
-            qnaRecognizerID: "QnA"
+            qnaRecognizerID: 'QnA'
           }
         }
       }
