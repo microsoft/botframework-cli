@@ -30,6 +30,11 @@
       "projectFolder": "packages/dispatcher"
     },
     {
+      "packageName": "@microsoft/bf-orchestrator",
+      "projectFolder": "packages/orchestratorlib"
+    },
+   
+    {
       "packageName": "@microsoft/bf-lg-cli",
       "projectFolder": "packages/lg"
     },

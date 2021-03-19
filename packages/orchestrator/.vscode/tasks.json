@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tscversion",
+            "command": "tsc", // Could be any other shell command
+            "args": [
+                "--version"
+            ],
+            "type": "shell"
+        },
+        {
+            "label": "nodeversion",
+            "command": "node", // Could be any other shell command
+            "args": [
+                "--version"
+            ],
+            "type": "shell"
+        },
+        {
+            "label": "npmversion",
+            "command": "npm", // Could be any other shell command
+            "args": [
+                "--version"
+            ],
+            "type": "shell"
+        },
+    ]
+}

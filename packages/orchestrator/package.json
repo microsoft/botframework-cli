@@ -1,0 +1,88 @@
+{
+  "name": "@microsoft/bf-orchestrator-cli",
+  "description": "Bot Orchestrator",
+  "version": "1.0.0",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "cpu": [
+    "x64",
+    "ia32"
+  ],
+  "engines": {
+    "node": "^10.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0"
+  },
+  "author": "Microsoft",
+  "bugs": "https://github.com/microsoft/botframework-cli/issues",
+  "dependencies": {
+    "@microsoft/bf-cli-command": "1.0.0",
+    "@microsoft/bf-dispatcher": "1.0.0",
+    "@oclif/command": "^1.5.19",
+    "@oclif/config": "^1.14.0",
+    "@oclif/errors": "~1.2.2",
+    "@oclif/plugin-help": "^2",
+    "@types/fs-extra": "~8.1.0",
+    "fs-extra": "~9.0.0",
+    "read-text-file": "~1.1.0",
+    "tslib": "^2.0.3",
+    "@microsoft/bf-orchestrator": "1.0.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/plugin-help": "^2.2.3",
+    "@oclif/test": "^1.2.5",
+    "@types/chai": "^4.2.9",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.17.15",
+    "@types/sinon": "^9.0.4",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
+    "globby": "^10.0.2",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.6.2",
+    "typescript": "^4.0.3",
+    "sinon": "^9.0.2"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/yarn.lock"
+  ],
+  "homepage": "https://github.com/microsoft/botframework-cli",
+  "keywords": [
+    "oclif-plugin"
+  ],
+  "license": "MIT",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "bf",
+    "devPlugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "microsoft/botframework-cli",
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "postpack": "rimraf oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "tsc -b && oclif-dev manifest",
+    "build": "tsc -b",
+    "clean": "rimraf ./.nyc_output ./package-lock.json ./tsconfig.tsbuildinfo",
+    "test": "mocha",
+    "coverage": "nyc npm run test",
+    "report:coverage": "npm run coverage && nyc report --reporter=text-lcov | coveralls",
+    "doc": "npm run build && npm run doc:readme && rimraf oclif.manifest.json",
+    "doc:readme": "oclif-dev manifest && oclif-dev readme",
+    "version": ""
+  }
+}
