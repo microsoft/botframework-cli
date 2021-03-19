@@ -15,6 +15,7 @@ dependencies:
   '@rush-temp/bf-lu': 'file:projects/bf-lu.tgz'
   '@rush-temp/bf-luis-cli': 'file:projects/bf-luis-cli.tgz'
   '@rush-temp/bf-orchestrator': 'file:projects/bf-orchestrator.tgz'
+  '@rush-temp/bf-orchestrator-cli': 'file:projects/bf-orchestrator-cli.tgz'
   '@rush-temp/bf-qnamaker': 'file:projects/bf-qnamaker.tgz'
   '@rush-temp/botframework-cli': 'file:projects/botframework-cli.tgz'
   '@snyk/nuget-semver': 1.3.0
@@ -6340,6 +6341,22 @@ packages:
       typescript: '>=2.7'
     resolution:
       integrity: sha512-ISJJGgkIpDdBhWVu3jufsWpK3Rzo7bdiIXJjQc0ynKxVOVcg2oIrf2H2cejminGrptVc6q6/uynAHNCuWGbpVA==
+  /ts-node/8.10.2_typescript@4.0.3:
+    dependencies:
+      arg: 4.1.3
+      diff: 4.0.2
+      make-error: 1.3.6
+      source-map-support: 0.5.19
+      typescript: 4.0.3
+      yn: 3.1.1
+    dev: false
+    engines:
+      node: '>=6.0.0'
+    hasBin: true
+    peerDependencies:
+      typescript: '>=2.7'
+    resolution:
+      integrity: sha512-ISJJGgkIpDdBhWVu3jufsWpK3Rzo7bdiIXJjQc0ynKxVOVcg2oIrf2H2cejminGrptVc6q6/uynAHNCuWGbpVA==
   /ts-node/9.0.0_typescript@4.0.3:
     dependencies:
       arg: 4.1.3
@@ -7369,6 +7386,39 @@ packages:
       integrity: sha512-fg5B1E3kaqUNQDT45ZWxBSAHE/gNVmIAbz2VCKEcK1/xK7DYLvcGlX5bFMC4AaYw7vSnJZ4Q5S3JYugPG6TinQ==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
+  'file:projects/bf-orchestrator-cli.tgz':
+    dependencies:
+      '@oclif/command': 1.5.19
+      '@oclif/config': 1.15.1
+      '@oclif/dev-cli': 1.22.2
+      '@oclif/errors': 1.2.2
+      '@oclif/plugin-help': 2.2.3
+      '@oclif/test': 1.2.5
+      '@types/chai': 4.2.10
+      '@types/fs-extra': 8.1.0
+      '@types/mocha': 5.2.7
+      '@types/node': 10.17.17
+      '@types/sinon': 9.0.11
+      chai: 4.2.0
+      eslint: 5.16.0
+      eslint-config-oclif: 3.1.0_eslint@5.16.0
+      eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0+typescript@4.0.3
+      fs-extra: 9.0.1
+      globby: 10.0.2
+      mocha: 6.2.2
+      nyc: 14.1.1
+      read-text-file: 1.1.0
+      rimraf: 3.0.2
+      sinon: 9.2.4
+      ts-node: 8.10.2_typescript@4.0.3
+      tslib: 2.0.3
+      typescript: 4.0.3
+    dev: false
+    name: '@rush-temp/bf-orchestrator-cli'
+    resolution:
+      integrity: sha512-8U9/hKGB7ZcUmuVQ0PrfljDn4bE5HNPX5NSdqexBpG1s4hCGtiCnptyfrFcgQX+slH8Zz/6iz/uOF4ccDFTk9w==
+      tarball: 'file:projects/bf-orchestrator-cli.tgz'
+    version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
     dependencies:
       '@oclif/test': 1.2.5
@@ -7507,6 +7557,7 @@ specifiers:
   '@rush-temp/bf-lu': 'file:./projects/bf-lu.tgz'
   '@rush-temp/bf-luis-cli': 'file:./projects/bf-luis-cli.tgz'
   '@rush-temp/bf-orchestrator': 'file:./projects/bf-orchestrator.tgz'
+  '@rush-temp/bf-orchestrator-cli': 'file:./projects/bf-orchestrator-cli.tgz'
   '@rush-temp/bf-qnamaker': 'file:./projects/bf-qnamaker.tgz'
   '@rush-temp/botframework-cli': 'file:./projects/botframework-cli.tgz'
   '@snyk/nuget-semver': ~1.3.0

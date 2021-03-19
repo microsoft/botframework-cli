@@ -33,7 +33,10 @@
       "packageName": "@microsoft/bf-orchestrator",
       "projectFolder": "packages/orchestratorlib"
     },
-   
+    {
+      "packageName": "@microsoft/bf-orchestrator-cli",
+      "projectFolder": "packages/orchestrator"
+    },
     {
       "packageName": "@microsoft/bf-lg-cli",
       "projectFolder": "packages/lg"
