@@ -88,7 +88,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/dia3.lu', './../../fixtures/verified/interruption3/dia3.lu')).to.be.true
     })
 
-    test
+  test
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
@@ -115,7 +115,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:15: no utterances found for intent definition: "# hotelLocation"')
     })
 
-    test
+  test
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
@@ -132,7 +132,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption6/dia1.qna')).to.be.true
     })
 
-    test
+  test
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
