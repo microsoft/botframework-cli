@@ -21,9 +21,9 @@ export default class LuisCrossTrain extends Command {
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
-    innerDialog: flags.boolean({description: 'Only do inner dialog cross train', default: false}),
-    intraDialog: flags.boolean({description: 'Only do intra dialog cross train', default: false}),
-    luRecognizerID: flags.string({description: 'Recognizer ID for language understanding, should be either Luis or Orchestrator', default: 'Luis'})
+    'inner-dialog': flags.boolean({description: 'Only do inner dialog cross train', default: false}),
+    'intra-dialog': flags.boolean({description: 'Only do intra dialog cross train', default: false}),
+    'lu-recognizer-id': flags.string({description: 'Recognizer ID for language understanding, should be either Luis or Orchestrator', default: 'Luis', options: ['Luis', 'Orchestrator']})
   }
 
   async run() {
@@ -41,32 +41,20 @@ export default class LuisCrossTrain extends Command {
         throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      if (flags.luRecognizerID !== 'Luis' && flags.luRecognizerID !== 'Orchestrator') {
-        throw new CLIError('luRecognizerID should be either "Luis" and "Orchestrator".')
+      let trainingOpt = {}
+      if (!flags['inner-dialog'] && !flags['intra-dialog']) {
+        flags['inner-dialog'] = true
+        flags['intra-dialog'] = true
       }
 
-      let trainingOpt = {}
-      if (!flags.innerDialog && !flags.intraDialog) {
-        trainingOpt = {
-          inner: {
-            enabled: true,
-            luRecognizerID: flags.luRecognizerID
-          },
-          intra: {
-            enabled: true,
-            qnaRecognizerID: 'QnA'
-          }
-        }
-      } else {
-        trainingOpt = {
-          inner: {
-            enabled: flags.innerDialog,
-            luRecognizerID: flags.luRecognizerID
-          },
-          intra: {
-            enabled: flags.intraDialog,
-            qnaRecognizerID: 'QnA'
-          }
+      trainingOpt = {
+        inner: {
+          enabled: flags['inner-dialog'],
+          luRecognizerID: flags['lu-recognizer-id']
+        },
+        intra: {
+          enabled: flags['intra-dialog'],
+          qnaRecognizerID: 'QnA'
         }
       }
 
