@@ -1172,7 +1172,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
       }
     }
 
-    const options = {trainingOpt: {inner: {enabled: true, luRecognizerID: 'Luis'}, intra:  {enabled: false, qnaRecognizerID: 'QnA'}}}
+    const options = {trainingOpt: {inner: true, intra:  false}}
 
     const trainedResult = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, options)
     const luResult = trainedResult.luResult
@@ -1206,25 +1206,7 @@ describe('luis:cross training tests among lu and qna contents', () => {
     assert.isTrue(qnaContent.includes('DeferToRecognizer_') === true)
     assert.isTrue(qnaContent.includes('_Interruption') === false)
 
-
-    const optionsOrch = {trainingOpt: {inner: {enabled: true, luRecognizerID: 'Orchestrator'}, intra:  {enabled: true, qnaRecognizerID: 'QnA'}}}
-
-    const trainedResultOrch = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsOrch)
-    const qnaResultOrch = trainedResultOrch.qnaResult
-    
-    let qnaContentOrch = qnaResultOrch.get('Main').Content;
-    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
-    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
-
-    qnaContentOrch = qnaResultOrch.get('dia1').Content;
-    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
-    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
-
-    qnaContentOrch = qnaResultOrch.get('dia2').Content;
-    assert.isTrue(qnaContentOrch.includes('DeferToRecognizer_ORCHESTRATOR') === true)
-    assert.isTrue(qnaContentOrch.includes('_Interruption') === false)
-
-    const optionsIntra = {trainingOpt: {inner: {enabled: false, luRecognizerID: 'Luis'}, intra:  {enabled: true, qnaRecognizerID: 'QnA'}}}
+    const optionsIntra = {trainingOpt: {inner: false, intra: true}}
 
     const trainedResult2 = await crossTrainer.crossTrain(luContentArray, qnaContentArray, configObject, optionsIntra)
     const luResult2 = trainedResult2.luResult

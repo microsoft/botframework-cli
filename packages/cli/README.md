@@ -840,11 +840,9 @@ OPTIONS
 
   --log                    Writes out log messages to console
 
-  --innerDialog            Only performs the inner dialog cross train
+  --inner-dialog            Only performs the inner dialog cross train, defalt is true, to set it as false, use --no-inner-dialog
 
-  --intraDialog            Only performs the intra dialog cross train
-
-  --luRecognizerID         Recognizer ID of language understanding, shoule be one of Luis or Orchestrator, default is Luis
+  --intra-dialog            Only performs the intra dialog cross train, defalt is true, to set it as false, use --no-intra-dialog
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
