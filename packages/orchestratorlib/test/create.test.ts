@@ -18,7 +18,7 @@ import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorCreateTests', () => {
-  const basemodelId: string = 'pretrained.20200924.microsoft.dte.00.03.en.onnx';
+  const basemodelId: string = 'orchestrator_test_3_layer';
   const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
 
   beforeEach(async () => {

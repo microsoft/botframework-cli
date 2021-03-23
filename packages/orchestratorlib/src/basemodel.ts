@@ -55,7 +55,6 @@ export class OrchestratorBaseModel {
     try {
       fs.mkdirSync(baseModelPath, {recursive: true});
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  modelUrl=${modelUrl}`);
-      // modelUrl = 'https://bcmodelsprod.azureedge.net/models/dte/onnx/pretrained.20200924.microsoft.dte.00.03.en.onnx.zip';
       const fileName: string = modelUrl.substring(modelUrl.lastIndexOf('/') + 1);
       const modelZipPath: string = path.join(baseModelPath, fileName);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  fileName=${fileName}`);

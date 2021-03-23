@@ -1,7 +1,7 @@
-﻿@microsoft/bf-dispatcher
-========================
+﻿This package is intended for Microsoft use only. It is not designed to be consumed as an independent package.
 
-This package is intended to be consumed by other 'command' packages in the Botframework CLI suite, one example is 'bf-orchestrator'.
+@microsoft/bf-dispatcher
+========================
 
 'bf-dispatcher' is a generic NLP intent classification package/library.
 It currently can do:

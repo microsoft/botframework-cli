@@ -7,7 +7,7 @@ import {OrchestratorBaseModel} from '../src/basemodel';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 import assert = require('assert');
-import { OrchestratorHelper } from '../lib';
+import {OrchestratorHelper} from '../lib';
 
 describe('OrchestratorBaseModelTests', async () => {
   const nlrVersions: any = await OrchestratorBaseModel.getVersionsAsync();

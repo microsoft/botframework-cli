@@ -22,6 +22,31 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "bf Orchestrator CLI",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/packages/orchestrator/lib/**"
+      ],
+      "args": [
+        "orchestrator:create",
+        "--in",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/CognitiveModels",
+        "--out",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/generated",
+        "--model",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model",
+        "--entityModel",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model/entity",
+        "--hierarchical"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Dialog Merge Tests",
       "preLaunchTask": "${defaultBuildTask}",
       "runtimeExecutable": "npm",
