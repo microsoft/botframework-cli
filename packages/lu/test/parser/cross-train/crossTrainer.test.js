@@ -1179,7 +1179,6 @@ describe('luis:cross training tests among lu and qna contents', () => {
     const qnaResult = trainedResult.qnaResult
 
     let luisContent = luResult.get('Main').Content;
-    console.log(luisContent)
     assert.isTrue(luisContent.includes('DeferToRecognizer_QnA') === true)
     assert.isTrue(luisContent.includes('_Interruption') === false)
     
