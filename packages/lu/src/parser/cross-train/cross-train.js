@@ -15,9 +15,10 @@ module.exports = {
    * @param {string} intentName interruption intent name. Default value is _Interruption.
    * @param {string} config path to config file of mapping rules.
    * @param {boolean} verbose verbose to indicate whether log warnings and errors or not when parsing cross-train files.
+   * @param {inner: boolean, intra: boolean} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose) {
+  train: async function (input, intentName, config, verbose, trainingOpt) {
     // Get all related file content.
     const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
@@ -53,7 +54,8 @@ module.exports = {
       configId: configContent.id,
       intentName,
       verbose,
-      importResolver
+      importResolver,
+      trainingOpt
     })
 
     return trainedResult
