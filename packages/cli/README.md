@@ -839,6 +839,10 @@ OPTIONS
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
   --log                    Writes out log messages to console
+
+  --inner-dialog            Only performs the inner dialog cross train, defalt is true, to set it as false, use --no-inner-dialog
+
+  --intra-dialog            Only performs the intra dialog cross train, defalt is true, to set it as false, use --no-intra-dialog
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
