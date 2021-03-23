@@ -25,7 +25,6 @@ export default class OrchestratorAdd extends Command {
     out: flags.string({char: 'o', description: 'Path where generated Orchestrator example file will be placed. Default to current working directory.'}),
     dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
-    fullEmbeddings: flags.boolean({description: 'Use full embeddings.'}),
     id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
     key: flags.string({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna.'}),
     endpoint: flags.string({description: 'LUIS/QnAMaker endpoint.'}),
@@ -60,6 +59,11 @@ export default class OrchestratorAdd extends Command {
     Utility.debuggingLog(`routingName=${routingName}`);
 
     try {
+      let fullEmbeddings: boolean = false;
+      if (process.env.fullEmbeddings) {
+        fullEmbeddings = true;
+      }
+
       if (type.length > 0) {
         OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true);
         const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
@@ -80,7 +84,7 @@ export default class OrchestratorAdd extends Command {
           inputs,
           isDialog,
           entityBaseModelPath,
-          flags.fullEmbeddings);
+          fullEmbeddings);
       }
 
       OrchestratorSettings.persist();
