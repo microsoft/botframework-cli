@@ -1155,14 +1155,16 @@ export class AppAutoActiveLearner {
             aalResult.learner;
         // -------------------------------------------------------------------
         const outputFilenames: string[] = [];
-        const outputFilenameDump: string = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructureInLuFormat(
-            outputFilename);
-        outputFilenames.push(outputFilenameDump);
-        const outputFilenameLuis: string =
-            outputFilename + ".luis";
-        const outputFilenameLuisAfterDumpfile = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructure(
-            outputFilenameLuis, undefined, 4);
-        outputFilenames.push(outputFilenameLuisAfterDumpfile);
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-PACE-HOLDER ---- const outputFilenameDump: string = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructureInLuFormat(
+        // ---- NOTE-PACE-HOLDER ----     outputFilename);
+        // ---- NOTE-PACE-HOLDER ---- outputFilenames.push(outputFilenameDump);
+        // ---- NOTE-PACE-HOLDER ---- const outputFilenameLuis: string =
+        // ---- NOTE-PACE-HOLDER ----     outputFilename + ".luis";
+        // tslint:disable-next-line: max-line-length
+        // ---- NOTE-PACE-HOLDER ---- const outputFilenameLuisAfterDumpfile = newDataWithSubwordFeaturizer.dumpLuLuisJsonStructure(
+        // ---- NOTE-PACE-HOLDER ----     outputFilenameLuis, undefined, 4);
+        // ---- NOTE-PACE-HOLDER ---- outputFilenames.push(outputFilenameLuisAfterDumpfile);
         if (!Utility.isEmptyString(outputModelFilename)) {
             const outputModelFilenameAfterDumpfile: string = Utility.dumpFile(
                 outputModelFilename,

@@ -3,6 +3,11 @@
  * Licensed under the MIT License.
  */
 
+import { IEntityAnnotationObject } from "./IEntityAnnotationObject";
+// import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
+// import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
+
 import { Data } from "./Data";
 import { DataWithSubwordFeaturizer } from "./DataWithSubwordFeaturizer";
 
@@ -26,20 +31,8 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances;
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] =
+            entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances;
         const lengthUtterancesArray: number =
             luUtterances.length;
         entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances = [];
@@ -58,52 +51,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -128,50 +82,12 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances;
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] =
+            entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances;
         entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances = luUtterances.filter(
-            (value: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number },
+            (value: ITextIntentSequenceLabelObjectByPosition,
              index: number,
-             array: Array<{
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }>) => {
+             array: ITextIntentSequenceLabelObjectByPosition[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
@@ -183,52 +99,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -264,52 +141,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -373,25 +211,8 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
-        useIdForIntent: boolean = true): Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> {
-        const entityAnnotatedCorpusTypes: {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } =
+        useIdForIntent: boolean = true): ITextIntentSequenceLabelObjectByPosition[] {
+        const entityAnnotatedCorpusTypes: IEntityAnnotationObject =
             Utility.loadEntityAnnotatedCorpusContent(
                 content,               // ---- filename: string,
                 this.getLinesToSkip(), // ---- lineIndexToStart: number = 0,
@@ -399,20 +220,7 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 "\n",                  // ---- rowDelimiter: string = "\n",
                 -1,                    // ---- lineIndexToEnd: number = -1
             );
-        const entityAnnotatedCorpusUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> =
+        const entityAnnotatedCorpusUtterances: ITextIntentSequenceLabelObjectByPosition[] =
             Utility.entityAnnotatedCorpusTypesToEntityAnnotatedCorpusUtterances(
                 entityAnnotatedCorpusTypes,
                 includePartOfSpeechTagTagAsEntities,
@@ -422,65 +230,24 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         return entityAnnotatedCorpusUtterances;
     }
 
-    public getLuObject(): any {
-        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusDataWithSubwordFeaturizer file.
+    public getLuObject(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "EntityAnnotatedCorpusDataWithSubwordFeaturizer object to generate a LU object.");
     }
-    public getLuLuisJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusDataWithSubwordFeaturizer file.
+    public getLuLuisJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "EntityAnnotatedCorpusDataWithSubwordFeaturizer object to generate a LUIS JSON object.");
     }
-    public getLuQnaJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusDataWithSubwordFeaturizer file.
+    public getLuQnaJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "EntityAnnotatedCorpusDataWithSubwordFeaturizer object to generate a QnA JSON object.");
     }
-    public getLuQnaAlterationsJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from an EntityAnnotatedCorpusDataWithSubwordFeaturizer file.
+    public getLuQnaAlterationsJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "EntityAnnotatedCorpusDataWithSubwordFeaturizer to generate a QnA Alterations JSON object.");
     }
 
     public getLinesToSkip(): number {
         return this.linesToSkip;
-    }
-
-    public dumpLuObject(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        // tslint:disable-next-line: max-line-length
-        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
-        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusDataWithSubwordFeaturizer content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
-        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
-        // ---- NOTE-TODO-PLACEHOLDER ----         space));
-        return "";
-    }
-    public dumpLuLuisJsonStructure(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        // tslint:disable-next-line: max-line-length
-        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
-        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusDataWithSubwordFeaturizer content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
-        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
-        // ---- NOTE-TODO-PLACEHOLDER ----         space));
-        return "";
-    }
-    public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): string {
-        // tslint:disable-next-line: max-line-length
-        // ==== NOTE-TODO ==== a EntityAnnotatedCorpusDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure
-        // ==== NOTE-TODO ==== out of EntityAnnotatedCorpusDataWithSubwordFeaturizer content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
-        return "";
     }
 }

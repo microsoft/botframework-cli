@@ -3,6 +3,10 @@
  * Licensed under the MIT License.
  */
 
+// import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
+// import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
+
 import { Data } from "./Data";
 import { DataWithSubwordFeaturizer } from "./DataWithSubwordFeaturizer";
 
@@ -31,20 +35,7 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = columnarDataWithSubwordFeaturizer.luUtterances;
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] = columnarDataWithSubwordFeaturizer.luUtterances;
         const lengthUtterancesArray: number =
             luUtterances.length;
         columnarDataWithSubwordFeaturizer.luUtterances = [];
@@ -61,52 +52,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -136,51 +88,12 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
                 linesToSkip,
                 toResetFeaturizerLabelFeatureMaps);
         // -------------------------------------------------------------------
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> =
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] =
             columnarDataWithSubwordFeaturizer.luUtterances;
         columnarDataWithSubwordFeaturizer.luUtterances = luUtterances.filter(
-            (value: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number },
+            (value: ITextIntentSequenceLabelObjectByPosition,
              index: number,
-             array: Array<{
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }>) => {
+             array: ITextIntentSequenceLabelObjectByPosition[]) => {
                 return (filteringIndexSet.has(index));
             });
         // -------------------------------------------------------------------
@@ -190,52 +103,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -274,52 +148,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number }) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -386,20 +221,8 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
                 toResetFeaturizerLabelFeatureMaps);
     }
 
-    public retrieveColumnarUtterances(content: string): Array<{ // ---- NOTE the return is newly allocated, unlike the one of LuData
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }> {
+    public retrieveColumnarUtterances(content: string): ITextIntentSequenceLabelObjectByPosition[] {
+        // ---- NOTE the return is newly allocated, unlike the one of LuData
         const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
             Utility.loadLabelUtteranceColumnarContent(
                 content,               // ---- filename: string,
@@ -412,20 +235,7 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
                 "utf8",                // ---- encoding: string = "utf8",
                 -1,                    // ---- lineIndexToEnd: number = -1
                 );
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = [];
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] = [];
         const intents: string[] = intentsUtterancesWeights.intents;
         const utterances: string[] = intentsUtterancesWeights.utterances;
         const weights: number[] = intentsUtterancesWeights.weights;
@@ -433,42 +243,33 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             const intent: string = intents[i];
             const text: string = utterances[i];
             const weight: number = weights[i];
-            const luUtterance: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number } = {
-                    entities: [],
-                    partOfSpeechTags: [],
-                    intent,
-                    text,
-                    weight,
+            const luUtterance: ITextIntentSequenceLabelObjectByPosition = {
+                entities: [],
+                partOfSpeechTags: [],
+                intent,
+                text,
+                weight,
             };
             luUtterances.push(luUtterance);
         }
         return luUtterances;
     }
 
-    public getLuObject(): any {
-        return null; // ---- NOTE: not constructued from a ColumnarDataWithSubwordFeaturizer file.
+    public getLuObject(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "ColumnarDataWithSubwordFeaturizer object to generate a LU object.");
     }
-    public getLuLuisJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from a ColumnarDataWithSubwordFeaturizer file.
+    public getLuLuisJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "ColumnarDataWithSubwordFeaturizer object to generate a LUIS JSON object.");
     }
-    public getLuQnaJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from a ColumnarDataWithSubwordFeaturizer file.
+    public getLuQnaJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "ColumnarDataWithSubwordFeaturizer object to generate a QnA JSON object.");
     }
-    public getLuQnaAlterationsJsonStructure(): any {
-        return null; // ---- NOTE: not constructued from a ColumnarDataWithSubwordFeaturizer file.
+    public getLuQnaAlterationsJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("Logical error as it's not implemented for a " +
+            "ColumnarDataWithSubwordFeaturizer to generate a QnA Alterations JSON object.");
     }
 
     public getLabelColumnIndex(): number {
@@ -482,44 +283,5 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
     }
     public getLinesToSkip(): number {
         return this.linesToSkip;
-    }
-
-    public dumpLuObject(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        // ==== NOTE-TODO ==== a ColumnarDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuObject(),
-        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
-        // ---- NOTE-TODO-PLACEHOLDER ----         space));
-        return "";
-    }
-    public dumpLuLuisJsonStructure(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        // ==== NOTE-TODO ==== a ColumnarDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     JSON.stringify(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure(),
-        // ---- NOTE-TODO-PLACEHOLDER ----         replacer,
-        // ---- NOTE-TODO-PLACEHOLDER ----         space));
-        return "";
-    }
-    public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): string {
-        // ==== NOTE-TODO ==== a ColumnarDataWithSubwordFeaturizer source does not have a LU LUIS structure,
-        // ==== NOTE-TODO ==== need to develop logic for creating a LU LUIS structure out of columnar content!
-        // ---- NOTE-TODO-PLACEHOLDER ---- Utility.dumpFile(
-        // ---- NOTE-TODO-PLACEHOLDER ----     filename,
-        // ---- NOTE-TODO-PLACEHOLDER ----     constructMdFromLUIS(
-        // ---- NOTE-TODO-PLACEHOLDER ----         this.getLuLuisJsonStructure()));
-        return "";
     }
 }

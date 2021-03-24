@@ -5,8 +5,10 @@
 
 // tslint:disable-next-line: no-var-requires
 const parseFile = require("@microsoft/bf-lu").parser.parseFile;
-// tslint:disable-next-line: no-var-requires
-const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromLUIS;
+
+import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
+import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
 
 import { Data } from "./Data";
 import { DataWithSubwordFeaturizer } from "./DataWithSubwordFeaturizer";
@@ -206,49 +208,15 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
     public retrieveLuisLuUtterances(luLuisJsonStructure: any): any[] { // ---- NOTE: a shallow copy
         return (luLuisJsonStructure.utterances as any[]);
     }
-    public retrieveLuUtterances(luLuisJsonStructure: any): Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }> {
+    public retrieveLuUtterances(luLuisJsonStructure: any): ITextIntentSequenceLabelObjectByPosition[] {
         const weight: number = 1;
         const utterancesArray: any[] =
             this.retrieveLuisLuUtterances(luLuisJsonStructure);
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = [];
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] = [];
         utterancesArray.forEach(
             (entry: any) => {
-                const entities: Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }> = entry.entities;
-                const partOfSpeechTags: Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }> = [];
+                const entities: IEntityObjectByPosition[] = entry.entities;
+                const partOfSpeechTags: IPartOfSpeechTagObjectByPosition[] = [];
                 const intent: string =
                     entry.intent;
                 const text: string =
@@ -276,35 +244,5 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
     }
     public getLuQnaAlterationsJsonStructure(): any {
         return this.luObject.qnaAlterations;
-    }
-
-    public dumpLuObject(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        return Utility.dumpFile(
-            filename,
-            JSON.stringify(
-                this.getLuObject(),
-                replacer,
-                space));
-    }
-    public dumpLuLuisJsonStructure(
-        filename: string,
-        replacer?: (this: any, key: string, value: any) => any,
-        space?: string | number): string {
-        return Utility.dumpFile(
-            filename,
-            JSON.stringify(
-                this.getLuLuisJsonStructure(),
-                replacer,
-                space));
-    }
-    public dumpLuLuisJsonStructureInLuFormat(
-        filename: string): string {
-        return Utility.dumpFile(
-            filename,
-            constructMdFromLUIS(
-                this.getLuLuisJsonStructure()));
     }
 }

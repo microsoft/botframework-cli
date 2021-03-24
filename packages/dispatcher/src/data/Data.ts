@@ -8,28 +8,22 @@
 // ---- NOTE-FOR-REFERENCE ---- import { isNull } from "util";
 // ---- NOTE-FOR-REFERENCE ---- import { isUndefined } from "util";
 
+// tslint:disable-next-line: no-var-requires
+const constructMdFromLUIS = require("@microsoft/bf-lu").refresh.constructMdFromLUIS;
+
 // tslint:disable-next-line: max-line-length
 // ---- NOTE-FOR-REFERENCE-REFACTORED-TO-CHILDREN ---- import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
+
+import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
+// import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
 
 import { Utility } from "../utility/Utility";
 
 export abstract class Data {
 
     protected content: string = "";
-    protected luUtterances: Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }> = [];
+    protected luUtterances: ITextIntentSequenceLabelObjectByPosition[] = [];
     protected intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
     protected entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
 
@@ -68,47 +62,13 @@ export abstract class Data {
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data>;
 
-    public collectEntityTypes(luUtterances: Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }>): Map<string, number[]> {
+    public collectEntityTypes(luUtterances: ITextIntentSequenceLabelObjectByPosition[]): Map<string, number[]> {
         const entityTypeInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
         luUtterances.forEach(
-            (element: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number },
+            (element: ITextIntentSequenceLabelObjectByPosition,
              index: number) => {
-                const entities: Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }> = element.entities;
-                entities.forEach((entityElement: {
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }) => {
+                const entities: IEntityObjectByPosition[] = element.entities;
+                entities.forEach((entityElement: IEntityObjectByPosition) => {
                     const entityType: string = entityElement.entity as string;
                     if (entityType) {
                         Utility.addKeyValueToNumberMapArray(
@@ -120,36 +80,10 @@ export abstract class Data {
         });
         return entityTypeInstanceIndexMapArray;
     }
-    public collectIntents(luUtterances: Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }>): Map<string, number[]> {
+    public collectIntents(luUtterances: ITextIntentSequenceLabelObjectByPosition[]): Map<string, number[]> {
         const intentInstanceIndexMapArray: Map<string, number[]> = new Map<string, number[]>();
         luUtterances.forEach(
-            (element: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number },
+            (element: ITextIntentSequenceLabelObjectByPosition,
              index: number) => {
                 const intent: string = element.intent as string;
                 if (intent) {
@@ -166,33 +100,20 @@ export abstract class Data {
         return this.content;
     }
 
-    public getLuObject(): any {
-        return null;
+    public getLuObject(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("It's a logic error calling this function without it being overridden by a child class.");
     }
-    public getLuLuisJsonStructure(): any {
-        return null;
+    public getLuLuisJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("It's a logic error calling this function without it being overridden by a child class.");
     }
-    public getLuQnaJsonStructure(): any {
-        return null;
+    public getLuQnaJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("It's a logic error calling this function without it being overridden by a child class.");
     }
-    public getLuQnaAlterationsJsonStructure(): any {
-        return null;
+    public getLuQnaAlterationsJsonStructure(): any { // ---- NOTE: can be overriden by a child class.
+        throw new Error("It's a logic error calling this function without it being overridden by a child class.");
     }
 
-    public getLuUtterances(): Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string,
-        "weight": number }> {
+    public getLuUtterances(): ITextIntentSequenceLabelObjectByPosition[] {
         return this.luUtterances;
     }
     public getIntentInstanceIndexMapArray(): Map<string, number[]> {
@@ -206,20 +127,30 @@ export abstract class Data {
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): string {
-        // ---- NOTE: a child class can override this function.
-        return "";
+        return Utility.dumpFile(
+            filename,
+            JSON.stringify(
+                this.getLuObject(),
+                replacer,
+                space));
     }
     public dumpLuLuisJsonStructure(
         filename: string,
         replacer?: (this: any, key: string, value: any) => any,
         space?: string | number): string {
-        // ---- NOTE: a child class can override this function.
-        return "";
+        return Utility.dumpFile(
+            filename,
+            JSON.stringify(
+                this.getLuLuisJsonStructure(),
+                replacer,
+                space));
     }
     public dumpLuLuisJsonStructureInLuFormat(
         filename: string): string {
-        // ---- NOTE: a child class can override this function.
-        return "";
+        return Utility.dumpFile(
+            filename,
+            constructMdFromLUIS(
+                this.getLuLuisJsonStructure()));
     }
 
     public dumpLuUtterances(
@@ -311,20 +242,7 @@ export abstract class Data {
         } {
         const candidateUtteranceIndexSetSampled: Set<number> = new Set<number>();
         for (const luUtteranceIndex of candidateUtteranceIndexSet) {
-            const luUtterance: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number } =
+            const luUtterance: ITextIntentSequenceLabelObjectByPosition =
                 this.luUtterances[luUtteranceIndex];
             const intent: string =
                 luUtterance.intent as string;
@@ -381,20 +299,7 @@ export abstract class Data {
             for (const luUtteranceIndex of luUtteranceIndexes) {
             // for (let i: number = 0; i < luUtteranceIndexes.length; i++) {
                 // const luUtteranceIndex: number = luUtteranceIndexes[i];
-                const luUtterance: {
-                    "entities": Array<{
-                        "entity": string,
-                        "startPos": number,
-                        "endPos": number,
-                        }>,
-                    "partOfSpeechTags": Array<{
-                        "partOfSpeechTag": string,
-                        "startPos": number,
-                        "endPos": number,
-                        }>,
-                    "intent": string,
-                    "text": string,
-                    "weight": number } = this.luUtterances[luUtteranceIndex];
+                const luUtterance: ITextIntentSequenceLabelObjectByPosition = this.luUtterances[luUtteranceIndex];
                 let hasNewUtteranceFoundForCoveringAllIntentEntityLabels: boolean = false;
                 if (toEnsureEachIntentHasOneUtteranceLabel) {
                     if (intentSet.size < numberIntents) {
@@ -414,16 +319,8 @@ export abstract class Data {
                 }
                 if (toEnsureEachEntityTypeHasOneUtteranceLabel) {
                     if (entityTypeSet.size < numberEntityTypes) {
-                        const entities: Array<{
-                            "entity": string,
-                            "startPos": number,
-                            "endPos": number,
-                            }> = luUtterance.entities;
-                        entities.forEach((entityElement: {
-                            "entity": string,
-                            "startPos": number,
-                            "endPos": number,
-                            }) => {
+                        const entities: IEntityObjectByPosition[] = luUtterance.entities;
+                        entities.forEach((entityElement: IEntityObjectByPosition) => {
                             const entityType: string = entityElement.entity as string;
                             if (entityType) {
                                 if (!(entityTypeSet.has(entityType))) {
@@ -453,16 +350,8 @@ export abstract class Data {
                             luUtteranceIndex);
                     }
                     {
-                        const entities: Array<{
-                            "entity": string,
-                            "startPos": number,
-                            "endPos": number,
-                            }> = luUtterance.entities;
-                        entities.forEach((entityElement: {
-                            "entity": string,
-                            "startPos": number,
-                            "endPos": number,
-                            }) => {
+                        const entities: IEntityObjectByPosition[] = luUtterance.entities;
+                        entities.forEach((entityElement: IEntityObjectByPosition) => {
                             const entityType: string = entityElement.entity as string;
                             if (entityType) {
                                 Utility.addKeyValueToNumberMapSet(

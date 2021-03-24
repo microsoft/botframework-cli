@@ -5,6 +5,11 @@
 
 import assert = require("assert");
 
+// import { IEntityAnnotationObject } from "../../src/data/IEntityAnnotationObject";
+// import { IEntityObjectByPosition } from "../../src/data/IEntityObjectByPosition";
+// import { IPartOfSpeechTagObjectByPosition } from "../../src/data/IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "../../src/data/ITextIntentSequenceLabelObjectByPosition";
+
 import { LuDataWithSubwordFeaturizer } from "../../src/data/LuDataWithSubwordFeaturizer";
 
 import { NgramSubwordFeaturizer } from "../../src/model/language_understanding/featurizer/NgramSubwordFeaturizer";
@@ -749,19 +754,8 @@ export async function exampleFunctionDataWithSubwordFeaturizerWithLuContent(
             luContent,
             new NgramSubwordFeaturizer(),
             true);
-    const luUtterances: Array<{
-        "entities": Array<{
-            "entity": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "partOfSpeechTags": Array<{
-            "partOfSpeechTag": string,
-            "startPos": number,
-            "endPos": number,
-            }>,
-        "intent": string,
-        "text": string }> = luDataWithSubwordFeaturizer.getLuUtterances();
+    const luUtterances: ITextIntentSequenceLabelObjectByPosition[] =
+        luDataWithSubwordFeaturizer.getLuUtterances();
     Utility.debuggingLog(`luUtterances=${Utility.getJsonStringified(luUtterances)}`);
     assert.ok(luUtterances, `luUtterances=${luUtterances}`);
     const intentInstanceIndexMapArray: Map<string, number[]> =

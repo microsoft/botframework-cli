@@ -13,6 +13,13 @@ export { DataWithSubwordFeaturizer } from "./data/DataWithSubwordFeaturizer";
 export { DataWithSubwordFeaturizerUtility } from "./data/DataWithSubwordFeaturizerUtility";
 export { EntityAnnotatedCorpusData } from "./data/EntityAnnotatedCorpusData";
 export { EntityAnnotatedCorpusDataWithSubwordFeaturizer } from "./data/EntityAnnotatedCorpusDataWithSubwordFeaturizer";
+export { IEntityAnnotationObject } from "./data/IEntityAnnotationObject";
+export { IEntityObject } from "./data/IEntityObject";
+export { IEntityObjectByPosition } from "./data/IEntityObjectByPosition";
+export { IPartOfSpeechTagObject } from "./data/IPartOfSpeechTagObject";
+export { IPartOfSpeechTagObjectByPosition } from "./data/IPartOfSpeechTagObjectByPosition";
+export { ITextIntentSequenceLabelObject } from "./data/ITextIntentSequenceLabelObject";
+export { ITextIntentSequenceLabelObjectByPosition } from "./data/ITextIntentSequenceLabelObjectByPosition";
 export { LuData } from "./data/LuData";
 export { LuDataWithSubwordFeaturizer } from "./data/LuDataWithSubwordFeaturizer";
 

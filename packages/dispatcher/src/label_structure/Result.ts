@@ -4,8 +4,6 @@
  */
 
 import {Label} from "./Label";
-import {ScoreIntent} from "./ScoreIntent";
-import {ScoreEntity} from "./ScoreEntity";
 import { LabelType } from "./LabelType";
 
 import { Utility } from "../utility/Utility";
@@ -16,6 +14,11 @@ export class Result {
     public score: number;
 
     public closesttext: string;
+
+    public static utilityRound(score: number, digits: number): number {
+        return score; // ---- NOTE ---- null logic, per request to see the original score, not rounded one.
+        // ---- NOTE-FOR-REFERENCE-PLACE-HOLDER ---- return Utility.round(score, digits);
+    }
 
     constructor(label: Label, score: number, closesttext: string) {
         this.label = label;
@@ -85,7 +88,7 @@ export class Result {
         "closesttext": string; } {
         return {
             label: this.label.toObject(),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
             closesttext: this.closesttext,
         };
     }
@@ -100,7 +103,7 @@ export class Result {
         "closesttext": string; } {
         return {
             label: this.label.toObfuscatedObject(),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
             closesttext: Utility.obfuscateString(this.closesttext),
         };
     }
@@ -145,7 +148,7 @@ export class Result {
         "closest_text": string; } {
         return {
             label: this.label.toAlternateObject(),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
             closest_text: this.closesttext,
         };
     }
@@ -160,7 +163,7 @@ export class Result {
         "closest_text": string; } {
         return {
             label: this.label.toObfuscatedAlternateObject(),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
             closest_text: Utility.obfuscateString(this.closesttext),
         };
     }
@@ -196,7 +199,7 @@ export class Result {
             label: this.label.name,
             offset: this.label.span.offset,
             length: this.label.span.length,
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
     public toObfuscatedScoreLabelObjectFormatted(digits: number = 10000): {
@@ -208,7 +211,7 @@ export class Result {
             label: Utility.obfuscateString(this.label.name),
             offset: Utility.obfuscateNumber(this.label.span.offset),
             length: Utility.obfuscateNumber(this.label.span.length),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
 
@@ -243,7 +246,7 @@ export class Result {
             label: this.label.name,
             startPos: this.label.span.offset,
             endPos: (this.label.span.offset + this.label.span.length - 1),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
     public toObfuscatedScoreLabelObjectByPositionFormatted(digits: number = 10000): {
@@ -255,7 +258,7 @@ export class Result {
             label: Utility.obfuscateString(this.label.name),
             startPos: Utility.obfuscateNumber(this.label.span.offset),
             endPos: Utility.obfuscateNumber(this.label.span.offset + this.label.span.length - 1),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
 
@@ -299,7 +302,7 @@ export class Result {
             entity: this.label.name,
             offset: this.label.span.offset,
             length: this.label.span.length,
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
     public toObfuscatedScoreEntityObjectFormatted(digits: number = 10000): {
@@ -314,7 +317,7 @@ export class Result {
             entity: Utility.obfuscateString(this.label.name),
             offset: Utility.obfuscateNumber(this.label.span.offset),
             length: Utility.obfuscateNumber(this.label.span.length),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
 
@@ -358,7 +361,7 @@ export class Result {
             entity: this.label.name,
             startPos: this.label.span.offset,
             endPos: (this.label.span.offset + this.label.span.length - 1),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
     public toObfuscatedScoreEntityObjectByPositionFormatted(digits: number = 10000): {
@@ -373,7 +376,7 @@ export class Result {
             entity: Utility.obfuscateString(this.label.name),
             startPos: Utility.obfuscateNumber(this.label.span.offset),
             endPos: Utility.obfuscateNumber(this.label.span.offset + this.label.span.length - 1),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
 
@@ -407,7 +410,7 @@ export class Result {
         }
         return {
             intent: this.label.name,
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
     public toObfuscatedScoreIntentObjectFormatted(digits: number = 10000): {
@@ -418,7 +421,7 @@ export class Result {
         }
         return {
             intent: Utility.obfuscateString(this.label.name),
-            score: Utility.round(this.score, digits),
+            score: Result.utilityRound(this.score, digits),
         };
     }
 }

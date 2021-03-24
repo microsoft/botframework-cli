@@ -7,6 +7,11 @@ import * as path from "path";
 import * as fs from "fs";
 import * as md5 from "ts-md5";
 
+import { IEntityAnnotationObject } from "../data/IEntityAnnotationObject";
+import { IEntityObjectByPosition } from "../data/IEntityObjectByPosition";
+import { IPartOfSpeechTagObjectByPosition } from "../data/IPartOfSpeechTagObjectByPosition";
+import { ITextIntentSequenceLabelObjectByPosition} from "../data/ITextIntentSequenceLabelObjectByPosition";
+
 import { Label } from "../label_structure/Label";
 import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 import { CryptoUtility } from "./CryptoUtility";
@@ -1551,60 +1556,22 @@ export class Utility {
     }
 
     public static luUtterancesToEntityAnnotatedCorpusTypes(
-        luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }>,
+        luUtterances: ITextIntentSequenceLabelObjectByPosition[],
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
         defaultPartOfSpeechTag: string = "",
-        useIntentForId: boolean = false): {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } {
+        useIntentForId: boolean = false): IEntityAnnotationObject {
         const ids: string[] = [];
         const wordArrays: string[][] = [];
         const partOfSpeechTagArrays: string[][] = [];
         const entityTagArrays: string[][] = [];
         const numberInstances = luUtterances.length;
         for (let index: number = 0; index < numberInstances; index++) {
-            const luUtterance: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number } = luUtterances[index];
+            const luUtterance: ITextIntentSequenceLabelObjectByPosition = luUtterances[index];
             const text: string = luUtterance.text;
             const intent: string = luUtterance.intent;
-            const entities: Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }> = luUtterance.entities;
-            const partOfSpeechTags: Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }> = luUtterance.partOfSpeechTags;
+            const entities: IEntityObjectByPosition[] = luUtterance.entities;
+            const partOfSpeechTags: IPartOfSpeechTagObjectByPosition[] = luUtterance.partOfSpeechTags;
             if (useIntentForId) {
                 ids.push(intent);
             } else {
@@ -1665,28 +1632,11 @@ export class Utility {
         return {ids, wordArrays, partOfSpeechTagArrays, entityTagArrays};
     }
     public static entityAnnotatedCorpusTypesToEntityAnnotatedCorpusUtterances(
-        entityAnnotatedCorpusTypes: {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] },
+        entityAnnotatedCorpusTypes: IEntityAnnotationObject,
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",
         defaultEntityTag: string = "O",
-        useIdForIntent: boolean = true): Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> {
+        useIdForIntent: boolean = true): ITextIntentSequenceLabelObjectByPosition[] {
         if (Utility.isEmptyString(utteranceReconstructionDelimiter)) {
             utteranceReconstructionDelimiter = " ";
         }
@@ -1724,20 +1674,7 @@ export class Utility {
                 `entityTagArrays.length|${entityTagArrays.length}|!==numberInstances|${numberInstances}|`);
         }
         const weight: number = 1;
-        const luUtterances: Array<{
-            "entities": Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "partOfSpeechTags": Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }>,
-            "intent": string,
-            "text": string,
-            "weight": number }> = [];
+        const luUtterances: ITextIntentSequenceLabelObjectByPosition[] = [];
         for (let index: number = 0; index < numberInstances; index++) {
             let intent = "";
             const id: string = ids[index];
@@ -1760,11 +1697,7 @@ export class Utility {
                     `entityTagArray.length|${entityTagArray.length}|!==numberWords|${numberWords}|`);
             }
             const text: string = wordArray.join(utteranceReconstructionDelimiter);
-            const entities: Array<{
-                "entity": string,
-                "startPos": number,
-                "endPos": number,
-                }> = [];
+            const entities: IEntityObjectByPosition[] = [];
             {
                 let currentUtteranceBeginIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
@@ -1774,11 +1707,7 @@ export class Utility {
                     {
                         const entityTag = entityTagArray[wordIndex];
                         if (entityTag !== defaultEntityTag) {
-                            const entityStructure: {
-                                "entity": string,
-                                "startPos": number,
-                                "endPos": number,
-                                } = {
+                            const entityStructure: IEntityObjectByPosition = {
                                     entity: entityTag,
                                     startPos: currentUtteranceBeginIndex,
                                     endPos: currentUtteranceEndIndex,
@@ -1789,11 +1718,7 @@ export class Utility {
                     currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
                 }
             }
-            const partOfSpeechTags: Array<{
-                "partOfSpeechTag": string,
-                "startPos": number,
-                "endPos": number,
-                }> = [];
+            const partOfSpeechTags: IPartOfSpeechTagObjectByPosition[] = [];
             if (includePartOfSpeechTagTagAsEntities) {
                 let currentUtteranceBeginIndex: number = 0;
                 for (let wordIndex: number = 0; wordIndex < numberWords; wordIndex++) {
@@ -1801,33 +1726,16 @@ export class Utility {
                     const wordLength: number = word.length;
                     const currentUtteranceEndIndex: number = currentUtteranceBeginIndex + wordLength;
                     const partOfSpeechTag: string = partOfSpeechTagArray[wordIndex];
-                    const partOfSpeechStructure: {
-                        "partOfSpeechTag": string,
-                        "startPos": number,
-                        "endPos": number,
-                        } = {
-                            partOfSpeechTag,
-                            startPos: currentUtteranceBeginIndex,
-                            endPos: currentUtteranceEndIndex,
-                            };
+                    const partOfSpeechStructure: IPartOfSpeechTagObjectByPosition = {
+                        partOfSpeechTag,
+                        startPos: currentUtteranceBeginIndex,
+                        endPos: currentUtteranceEndIndex,
+                        };
                     partOfSpeechTags.push(partOfSpeechStructure);
                     currentUtteranceBeginIndex = currentUtteranceEndIndex + utteranceReconstructionDelimiterLength;
                 }
             }
-            const luUtterance: {
-                "entities": Array<{
-                    "entity": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "partOfSpeechTags": Array<{
-                    "partOfSpeechTag": string,
-                    "startPos": number,
-                    "endPos": number,
-                    }>,
-                "intent": string,
-                "text": string,
-                "weight": number } = {
+            const luUtterance: ITextIntentSequenceLabelObjectByPosition = {
                 entities,
                 partOfSpeechTags,
                 intent,
@@ -1845,11 +1753,7 @@ export class Utility {
         columnDelimiter: string = ",",
         rowDelimiter: string = "\n",
         encoding: string = "utf8",
-        lineIndexToEnd: number = -1): {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } {
+        lineIndexToEnd: number = -1): IEntityAnnotationObject {
         if (encoding == null) {
             encoding = "utf8";
         }
@@ -1868,11 +1772,7 @@ export class Utility {
         lineIndexToStart: number = 1,
         columnDelimiter: string = ",",
         rowDelimiter: string = "\n",
-        lineIndexToEnd: number = -1): {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } {
+        lineIndexToEnd: number = -1): IEntityAnnotationObject {
         if (lineIndexToStart < 0) {
             lineIndexToStart = 0;
         }

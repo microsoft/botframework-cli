@@ -5,6 +5,11 @@
 
 import assert = require("assert");
 
+import { IEntityAnnotationObject } from "../../src/data/IEntityAnnotationObject";
+// import { IEntityObjectByPosition } from "../../src/data/IEntityObjectByPosition";
+// import { IPartOfSpeechTagObjectByPosition } from "../../src/data/IPartOfSpeechTagObjectByPosition";
+// import { ITextIntentSequenceLabelObjectByPosition} from "../../src/data/ITextIntentSequenceLabelObjectByPosition";
+
 import { IDictionaryStringIdGenericArray } from "../../src/data_structure/IDictionaryStringIdGenericArray";
 import { IDictionaryStringIdGenericValue } from "../../src/data_structure/IDictionaryStringIdGenericValue";
 
@@ -1559,12 +1564,7 @@ describe("Test Suite - utility/Utility", () => {
         const rowDelimiter: string = "\n";
         const encoding: string = "utf8";
         const lineIndexToEnd: number = -1;
-        const result: {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } =
-        Utility.loadEntityAnnotatedCorpusFile(
+        const result: IEntityAnnotationObject = Utility.loadEntityAnnotatedCorpusFile(
             filename,
             lineIndexToStart,
             columnDelimiter,
@@ -1602,12 +1602,7 @@ describe("Test Suite - utility/Utility", () => {
         const columnDelimiter: string = ",";
         const rowDelimiter: string = "\n";
         const lineIndexToEnd: number = -1;
-        const result: {
-            "ids": string[],
-            "wordArrays": string[][],
-            "partOfSpeechTagArrays": string[][],
-            "entityTagArrays": string[][] } =
-        Utility.loadEntityAnnotatedCorpusContent(
+        const result: IEntityAnnotationObject = Utility.loadEntityAnnotatedCorpusContent(
             fileContent,
             lineIndexToStart,
             columnDelimiter,
