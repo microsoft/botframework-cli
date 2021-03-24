@@ -25,7 +25,7 @@
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/orchestratorlib",
   "scripts": {
     "prepack": "npm run clean && npm run build",
-    "posttest": "tslint -p test -t stylish",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
