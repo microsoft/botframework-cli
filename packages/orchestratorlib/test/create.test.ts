@@ -18,13 +18,11 @@ import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorCreateTests', () => {
-  const basemodelId: string = 'orchestrator_test_3_layer';
   const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
 
   beforeEach(async () => {
     Utility.debuggingLog('OrchestratorCreateTests - downloading a base nerual network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
-      basemodelId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);

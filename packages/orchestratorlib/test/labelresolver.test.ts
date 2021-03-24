@@ -26,12 +26,9 @@ describe('Test Suite - LabelResolver', () => {
     }
     Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
-    // -----------------------------------------------------------------------
-    const basemodelId: string = 'orchestrator_test_3_layer';
     const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
     Utility.debuggingLog('Test.0000 LabelResolver.scoreBatch()-Bert-3-layer: downloading a base nerual network language model for unit test');
     await UnitTestHelper.downloadModelFileForTest(
-      basemodelId,
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);

@@ -15,6 +15,11 @@ import {OrchestratorBaseModel} from '../src/basemodel';
 // import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
 
+// NOTE: "orchestrator_test_3_layer" is an aka.ms alias for the 3 layer model "pretrained.20200924.microsoft.dte.00.03.en.onnx"
+// https://aka.ms/orchestrator_test_3_layer === https://aka.ms/pretrained.20200924.microsoft.dte.00.03.en.onnx
+// We are using an alias so we don't count downloads of this model during unit test runs
+const DefaultTestModelId: string = 'orchestrator_test_3_layer';
+
 export class UnitTestHelper {
   public static getDefaultFunctionalTestTimeout(): number {
     return 3000000;
@@ -37,13 +42,18 @@ export class UnitTestHelper {
   }
 
   public static async downloadModelFileForTest(
-    basemodelId: string,
     baseModelPath: string,
     onProgress: any = OrchestratorBaseModel.defaultHandler,
-    onFinish: any = OrchestratorBaseModel.defaultHandler): Promise<void> {
+    onFinish: any = OrchestratorBaseModel.defaultHandler,
+    basemodelId: string = ''): Promise<void> {
+    if (basemodelId.length === 0) {
+      basemodelId = DefaultTestModelId;
+    }
+
     Utility.debuggingLog('UnitTestHelper.downloadModelFileForTest() entering');
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), basemodelId=${basemodelId}`);
     Utility.debuggingLog(`UnitTestHelper.downloadModelFileForTest(), baseModelPath=${baseModelPath}`);
+
     if (!Utility.exists(baseModelPath)) {
       Utility.debuggingLog('UnitTestHelper.downloadModelFileForTest(), ready to call OrchestratorBaseModel.getAsync()');
       await OrchestratorBaseModel.getAsync(

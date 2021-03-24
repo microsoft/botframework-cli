@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
+/*
 import * as path from 'path';
 import {Utility} from './utility';
-// import {LabelResolver} from './labelresolver';
-// import {OrchestratorHelper} from './orchestratorhelper';
-/*
+import {LabelResolver} from './labelresolver';
+import {OrchestratorHelper} from './orchestratorhelper';
 export class OrchestratorFineTune {
   public static async runAsync(baseModelPath: string, inputPath: string, outputPath: string) {
     try {
