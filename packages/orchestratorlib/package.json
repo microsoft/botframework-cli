@@ -24,16 +24,15 @@
   "license": "MIT",
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/orchestratorlib",
   "scripts": {
-    "prepack": "",
-    "postpack": "",
-    "posttest": "",
+    "prepack": "npm run clean && npm run build",
+    "posttest": "tslint -p test -t stylish",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
     "test": "mocha",
     "coverage": "nyc npm run test",
     "doc": "",
     "doc:readme": "",
-    "version": ""
+    "version": "npm run doc:readme && git add README.md"
   },
   "dependencies": {
     "@microsoft/bf-lu": "1.0.0",
@@ -49,15 +48,12 @@
     "fast-text-encoding": "^1.0.3"
   },
   "devDependencies": {
-    "@oclif/test": "^1.2.5",
     "@types/chai": "^4.2.0",
     "@types/mocha": "^5.2.7",
     "@types/node": "^10.14.15",
     "@types/sinon": "^9.0.4",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
-    "eslint-config-oclif": "^3.1.0",
-    "eslint-config-oclif-typescript": "^0.1.0",
     "mocha": "^6.2.2",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
