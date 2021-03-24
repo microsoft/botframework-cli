@@ -21,7 +21,7 @@ export default class OrchestratorBuild extends Command {
     help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
 
-  async run(): Promise<number> {
+  async run():  Promise<void> {
     const {flags}: flags.Output = this.parse(OrchestratorBuild);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {

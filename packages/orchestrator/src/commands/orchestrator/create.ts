@@ -25,7 +25,7 @@ export default class OrchestratorCreate extends Command {
   // --fullEmbeddings  Optional flag to create full embeddings instead
   //                   of compact embeddings.
 
-  async run(): Promise<number> {
+  async run():  Promise<void> {
     const {flags}: flags.Output = this.parse(OrchestratorCreate);
     const flagsKeys: string[] = Object.keys(flags);
     const cwd: string = process.cwd();

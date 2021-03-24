@@ -32,7 +32,7 @@ export default class OrchestratorInteractive extends Command {
   //     the threshold is lower than 1, the any labels with a prediction score higher will be adoopted as prediction.
   // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
-  async run(): Promise<number> {
+  async run(): Promise<void> {
     const {flags}: flags.Output = this.parse(OrchestratorInteractive);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {

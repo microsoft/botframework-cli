@@ -58,7 +58,7 @@ export default class OrchestratorTest extends Command {
   // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
   // eslint-disable-next-line complexity
-  async run(): Promise<number> {
+  async run(): Promise<void> {
     const {flags}: flags.Output = this.parse(OrchestratorTest);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {
