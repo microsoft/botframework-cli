@@ -119,6 +119,5 @@ export default class OrchestratorInteractive extends Command {
     } catch (error) {
       throw (new CLIError(error));
     }
-    return 0;
   }
 }

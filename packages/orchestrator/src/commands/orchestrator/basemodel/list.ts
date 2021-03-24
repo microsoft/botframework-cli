@@ -15,7 +15,7 @@ export default class OrchestratorBaseModelList extends Command {
     raw: flags.boolean({char: 'r', description: 'Optional. Raw output', default: false}),
   }
 
-  async run(): Promise<number> {
+  async run() {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelList);
     const all: boolean = flags.all;
     Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
@@ -38,7 +38,5 @@ export default class OrchestratorBaseModelList extends Command {
     } catch (error) {
       throw (new CLIError(error));
     }
-
-    return 0;
   }
 }

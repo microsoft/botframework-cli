@@ -14,6 +14,5 @@ export default class OrchestratorIndex extends Command {
 
   async run(): Promise<number> {
     this._help();
-    return 0;
   }
 }

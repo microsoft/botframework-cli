@@ -82,8 +82,6 @@ export default class OrchestratorCreate extends Command {
     } catch (error) {
       throw (new CLIError(error));
     }
-
-    return 0;
   }
 
   private async refreshLuisQnAInputs(dataSources: OrchestratorDataSourceSettings): Promise<void> {

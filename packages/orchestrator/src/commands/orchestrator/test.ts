@@ -186,6 +186,5 @@ export default class OrchestratorTest extends Command {
     } catch (error) {
       throw (new CLIError(error));
     }
-    return 0;
   }
 }

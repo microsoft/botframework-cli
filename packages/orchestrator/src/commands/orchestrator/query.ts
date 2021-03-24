@@ -130,6 +130,5 @@ export default class OrchestratorQuery extends Command {
       console.log(`OrchestratorQuery.run(): error=${error}`);
       throw (new CLIError(error));
     }
-    return 0;
   }
 }

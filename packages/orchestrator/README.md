@@ -4,7 +4,7 @@
 This package is a plugin for @microsoft/botframework-cli.
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/@microsoft/bf-luis-cli.svg)](https://npmjs.org/package/@microsoft/bf-luis-cli)
+[![Version](https://img.shields.io/npm/v/@microsoft/bf-orchestrator-cli.svg)](https://npmjs.org/package/@microsoft/bf-orchestrator-cli)
 
 Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Dispatch). Create and evaluate Orchestrator model used to arbitrate across multiple bot modules such as LUIS models, QnA knowledge bases and others.
 
@@ -49,6 +49,7 @@ bf plugins:uninstall @microsoft/bf-orchestrator-cli
 <!-- commands -->
 
 * [`bf orchestrator`](#bf-orchestrator)
+* [`bf orchestrator:add`](#bf-orchestratoradd)
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:basemodel:get`](#bf-orchestratorbasemodelget)
 * [`bf orchestrator:basemodel:list`](#bf-orchestratorbasemodellist)
@@ -69,6 +70,44 @@ OPTIONS
 ```
 
 _See code: [src\commands\orchestrator\index.ts]https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/index.ts)_
+
+
+## `bf orchestrator:add`
+
+Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file.
+
+```
+USAGE
+  $ bf orchestrator:add
+
+OPTIONS
+  -d, --debug
+  -h, --help                        Orchestrator add command help.
+  -i, --in=in                       Path to example file (.lu/.qna/.json/.blu).
+  -m, --model=model                 Path to Orchestrator base model directory.
+  -e, --entityModel=entity-model    Path to Orchestrator entity base model directory.
+  -o, --out=out                     Path where generated orchestrator example file will be placed.
+                                    Default to current working directory.
+  -t, --type                        Type of input (luis/qna/file).
+
+  --id                              LUIS app id or QnAMaker kb id if type = luis/qna.                        
+  --key                             LUIS authoring key or QnAMaker service key if type = luis/qna.
+  --endpoint                        LUIS/QnAMaker endpoint.
+  --routingName                     Routing name, default to file name.
+  --dialog                          Generate multi language or cross train Orchestrator recognizers.
+
+EXAMPLE
+
+    $ bf orchestrator:add 	
+    $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/	
+    $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/	
+    $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
+    $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingname l_Weather --endpoint 
+    $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingname q_kb
+```
+
+_See code: [src\commands\orchestrator\add.ts](https://github.com/microsoft/botframework-cli/blob/beta/packages/orchestrator/src/commands/orchestrator/add.ts)_
+
 
 ## `bf orchestrator:create`
 

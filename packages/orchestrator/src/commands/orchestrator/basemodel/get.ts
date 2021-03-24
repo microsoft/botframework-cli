@@ -19,7 +19,7 @@ export default class OrchestratorBaseModelGet extends Command {
     verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
   }
 
-  async run(): Promise<number> {
+  async run() {
     const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
     const output: string = flags.out || path.join(cwd, 'model');
@@ -38,7 +38,7 @@ export default class OrchestratorBaseModelGet extends Command {
         versions = await OrchestratorBaseModel.getVersionsAsync();
         Utility.debuggingLog(`OrchestratorBaseModelGet.run(): versions=${versions}`);
         if (!versions) {
-          throw new Error('ERROR: failed getting basemodel configuration from https://aka.ms/nlrversions_0.2');
+          throw new CLIError('ERROR: failed getting basemodel configuration from https://aka.ms/nlrversions_0.2');
         }
       }
 
@@ -82,7 +82,5 @@ export default class OrchestratorBaseModelGet extends Command {
     } catch (error) {
       throw (new CLIError(error));
     }
-
-    return 0;
   }
 }
