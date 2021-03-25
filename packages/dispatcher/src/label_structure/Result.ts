@@ -9,16 +9,16 @@ import { LabelType } from "./LabelType";
 import { Utility } from "../utility/Utility";
 
 export class Result {
+    public static utilityRound(score: number, digits: number): number {
+        return score; // ---- NOTE ---- null logic, per request to see the original score, not rounded one.
+        // ---- NOTE-FOR-REFERENCE-PLACE-HOLDER ---- return Utility.round(score, digits);
+    }
+
     public label: Label;
 
     public score: number;
 
     public closesttext: string;
-
-    public static utilityRound(score: number, digits: number): number {
-        return score; // ---- NOTE ---- null logic, per request to see the original score, not rounded one.
-        // ---- NOTE-FOR-REFERENCE-PLACE-HOLDER ---- return Utility.round(score, digits);
-    }
 
     constructor(label: Label, score: number, closesttext: string) {
         this.label = label;

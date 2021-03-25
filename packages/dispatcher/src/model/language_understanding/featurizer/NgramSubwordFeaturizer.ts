@@ -537,7 +537,7 @@ export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
         let result: string[] = this.split(input);
         if (this.toRemovePunctuations) {
             result = result.filter((element: string) => {
-                return (!Utility.LanguageTokenPunctuationDelimitersSet.has(element as string));
+                return (!Utility.LanguageTokenPunctuationDelimitersSet.has(element));
             });
         }
         const subwordFeatures: string[] = this.generateSubwords(result.join(this.splitDelimiter));
@@ -617,8 +617,8 @@ export class NgramSubwordFeaturizer implements ISparseTextFeaturizer {
                 this.hashingFeatureArrays[i] = new Set<string>();
             }
             for (const feature of this.features) {
-                const featureHashingIndex: number = this.getHashingFeatureIndex(feature as string);
-                this.hashingFeatureArrays[featureHashingIndex].add(feature as string);
+                const featureHashingIndex: number = this.getHashingFeatureIndex(feature);
+                this.hashingFeatureArrays[featureHashingIndex].add(feature);
             }
         }
         // -------------------------------------------------------------------

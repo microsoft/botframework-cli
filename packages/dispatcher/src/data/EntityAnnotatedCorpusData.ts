@@ -40,11 +40,11 @@ export class EntityAnnotatedCorpusData extends Data {
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }
@@ -72,11 +72,11 @@ export class EntityAnnotatedCorpusData extends Data {
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }
@@ -99,11 +99,11 @@ export class EntityAnnotatedCorpusData extends Data {
         entityAnnotatedCorpusData.entityTypeInstanceIndexMapArray =
             entityAnnotatedCorpusData.collectEntityTypes(entityAnnotatedCorpusData.luUtterances);
         entityAnnotatedCorpusData.intentsUtterancesWeights.intents = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusData.intentsUtterancesWeights.utterances = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusData.intentsUtterancesWeights.weights = entityAnnotatedCorpusData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return entityAnnotatedCorpusData;
     }

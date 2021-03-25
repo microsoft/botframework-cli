@@ -215,6 +215,7 @@ describe("Test Suite - model/supervised/classifier/auto_active_learning/auto_act
         // const learner: SoftmaxRegressionSparse =
         //     learned.learner;
         // const newColumnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        // tslint:disable-next-line: max-line-length
         //     ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizerFromFilteringExistingColumnarDataUtterances(
         //     columnarDataWithSubwordFeaturizer,
         //     labelColumnIndex,

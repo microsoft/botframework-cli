@@ -42,34 +42,26 @@ export class DataWithSubwordFeaturizerUtility extends DataUtility {
             featurizerNullable = new NgramSubwordFeaturizer();
             toResetFeaturizerLabelFeatureMaps = true;
         }
-        if (filetype === DataUtility.DATA_FORMAT_TYPE_LU) {
-            const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
-                await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
+        switch (filetype) {
+            case DataUtility.DATA_FORMAT_TYPE_LU:
+                return await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
                     content,
                     featurizerNullable,
                     toResetFeaturizerLabelFeatureMaps);
-            return luDataWithSubwordFeaturizer;
-        }
-        if (filetype === DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER) {
-            const luDataWithSubwordFeaturizer: LuDataWithSubwordFeaturizer =
-                await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
+            case DataUtility.DATA_FORMAT_TYPE_QUESTION_AND_ANSWER:
+                return await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizer(
                     content,
                     featurizerNullable,
                     toResetFeaturizerLabelFeatureMaps);
-            return luDataWithSubwordFeaturizer;
-        }
-        if (filetype === DataUtility.DATA_FORMAT_TYPE_ENTITY_ANNOTATED_CORPUS) {
-            const entityAnnotatedCorpusDataWithSubwordFeaturizer: EntityAnnotatedCorpusDataWithSubwordFeaturizer =
-                EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizer(
+            case DataUtility.DATA_FORMAT_TYPE_ENTITY_ANNOTATED_CORPUS:
+                // tslint:disable-next-line: max-line-length
+                return EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizer(
                     content,
                     featurizerNullable,
                     linesToSkip,
                     toResetFeaturizerLabelFeatureMaps);
-            return entityAnnotatedCorpusDataWithSubwordFeaturizer;
-        }
-        {
-            const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
-                ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+            default:
+                return ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
                     content,
                     featurizerNullable,
                     labelColumnIndex,
@@ -77,7 +69,6 @@ export class DataWithSubwordFeaturizerUtility extends DataUtility {
                     weightColumnIndex,
                     linesToSkip,
                     toResetFeaturizerLabelFeatureMaps);
-            return columnarDataWithSubwordFeaturizer;
         }
     }
 }

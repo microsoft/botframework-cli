@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-// ---- NOTE-FOR-REFERENCE ---- @deprecated — since v4.0.0 - use value === null instead.
+// ---- NOTE-FOR-REFERENCE ---- @deprecated - since v4.0.0 - use value === null instead.
 // ---- NOTE-FOR-REFERENCE ---- 'isNull' is deprecatedts(6385)
 // ---- NOTE-FOR-REFERENCE ---- import { isNull } from "util";
 // ---- NOTE-FOR-REFERENCE ---- import { isUndefined } from "util";
@@ -69,7 +69,7 @@ export abstract class Data {
              index: number) => {
                 const entities: IEntityObjectByPosition[] = element.entities;
                 entities.forEach((entityElement: IEntityObjectByPosition) => {
-                    const entityType: string = entityElement.entity as string;
+                    const entityType: string = entityElement.entity;
                     if (entityType) {
                         Utility.addKeyValueToNumberMapArray(
                             entityTypeInstanceIndexMapArray,
@@ -85,7 +85,7 @@ export abstract class Data {
         luUtterances.forEach(
             (element: ITextIntentSequenceLabelObjectByPosition,
              index: number) => {
-                const intent: string = element.intent as string;
+                const intent: string = element.intent;
                 if (intent) {
                     Utility.addKeyValueToNumberMapArray(
                         intentInstanceIndexMapArray,
@@ -245,7 +245,7 @@ export abstract class Data {
             const luUtterance: ITextIntentSequenceLabelObjectByPosition =
                 this.luUtterances[luUtteranceIndex];
             const intent: string =
-                luUtterance.intent as string;
+                luUtterance.intent;
             const utteranceIndexIntentSet: Set<number> =
                 seedingUtteranceIndexIntentMapCoveringAllIntentEntityLabels.get(intent) as Set<number>;
             const existingNumberUtterances: number =
@@ -303,7 +303,7 @@ export abstract class Data {
                 let hasNewUtteranceFoundForCoveringAllIntentEntityLabels: boolean = false;
                 if (toEnsureEachIntentHasOneUtteranceLabel) {
                     if (intentSet.size < numberIntents) {
-                        const intent: string = luUtterance.intent as string;
+                        const intent: string = luUtterance.intent;
                         if (!(intentSet.has(intent))) {
                             intentSet.add(intent);
                             hasNewUtteranceFoundForCoveringAllIntentEntityLabels = true;
@@ -321,7 +321,7 @@ export abstract class Data {
                     if (entityTypeSet.size < numberEntityTypes) {
                         const entities: IEntityObjectByPosition[] = luUtterance.entities;
                         entities.forEach((entityElement: IEntityObjectByPosition) => {
-                            const entityType: string = entityElement.entity as string;
+                            const entityType: string = entityElement.entity;
                             if (entityType) {
                                 if (!(entityTypeSet.has(entityType))) {
                                     entityTypeSet.add(entityType);
@@ -343,7 +343,7 @@ export abstract class Data {
                         smallUtteranceIndexSetCoveringAllIntentEntityLabels.add(luUtteranceIndex);
                     }
                     {
-                        const intent: string = luUtterance.intent as string;
+                        const intent: string = luUtterance.intent;
                         Utility.addKeyValueToNumberMapSet(
                             smallUtteranceIndexIntentMapCoveringAllIntentEntityLabels,
                             intent,
@@ -352,7 +352,7 @@ export abstract class Data {
                     {
                         const entities: IEntityObjectByPosition[] = luUtterance.entities;
                         entities.forEach((entityElement: IEntityObjectByPosition) => {
-                            const entityType: string = entityElement.entity as string;
+                            const entityType: string = entityElement.entity;
                             if (entityType) {
                                 Utility.addKeyValueToNumberMapSet(
                                     smallUtteranceIndexEntityTypeMapCoveringAllIntentEntityLabels,

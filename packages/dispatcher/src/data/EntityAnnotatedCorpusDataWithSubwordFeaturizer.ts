@@ -51,13 +51,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -99,13 +99,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -141,13 +141,13 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
                 entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         entityAnnotatedCorpusDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             entityAnnotatedCorpusDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             entityAnnotatedCorpusDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();

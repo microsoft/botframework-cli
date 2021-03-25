@@ -45,11 +45,11 @@ export class ColumnarData extends Data {
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
         columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return columnarData;
     }
@@ -84,11 +84,11 @@ export class ColumnarData extends Data {
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
         columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return columnarData;
     }
@@ -117,11 +117,11 @@ export class ColumnarData extends Data {
         columnarData.entityTypeInstanceIndexMapArray =
             columnarData.collectEntityTypes(columnarData.luUtterances);
         columnarData.intentsUtterancesWeights.intents = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarData.intentsUtterancesWeights.utterances = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarData.intentsUtterancesWeights.weights = columnarData.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         return columnarData;
     }

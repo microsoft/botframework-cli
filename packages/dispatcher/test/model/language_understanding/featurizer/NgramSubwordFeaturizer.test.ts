@@ -33,14 +33,15 @@ function getNgramSubwordFeaturizerForUnitTests(
         toRemoveEmptyElements,
         splitDelimiter,
         numberHashingFeaturesSetting);
-    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-        ColumnarContentEmail,
-        featurizer,
-        0,
-        2,
-        1,
-        1,
-        true);
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+            ColumnarContentEmail,
+            featurizer,
+            0,
+            2,
+            1,
+            1,
+            true);
     return featurizer;
 }
 
@@ -60,14 +61,15 @@ function getHashingNgramSubwordFeaturizerForUnitTests(
         toRemoveEmptyElements,
         splitDelimiter,
         numberHashingFeaturesSetting);
-    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-        ColumnarContentEmail,
-        featurizer,
-        0,
-        2,
-        1,
-        1,
-        true);
+    const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+        ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+            ColumnarContentEmail,
+            featurizer,
+            0,
+            2,
+            1,
+            1,
+            true);
     return featurizer;
 }
 
@@ -950,14 +952,15 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-            ColumnarContentEmail,
-            featurizer,
-            0,
-            2,
-            1,
-            1,
-            true);
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+                ColumnarContentEmail,
+                featurizer,
+                0,
+                2,
+                1,
+                1,
+                true);
     });
 
     it("Test.2700 serializeToJsonString()", function() {
@@ -978,14 +981,15 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-            ColumnarContentEmail,
-            featurizer,
-            0,
-            2,
-            1,
-            1,
-            true);
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+                ColumnarContentEmail,
+                featurizer,
+                0,
+                2,
+                1,
+                1,
+                true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);
         Utility.debuggingLog(
             `serializedJsonString=${serializedJsonString}`);
@@ -1009,14 +1013,15 @@ describe("Test Suite - model/language_understanding/featurizer/ngram_subword_fea
             toRemoveEmptyElements,
             splitDelimiter,
             numberHashingFeaturesSetting);
-        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer = ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
-            ColumnarContentEmail,
-            featurizer,
-            0,
-            2,
-            1,
-            1,
-            true);
+        const columnarDataWithSubwordFeaturizer: ColumnarDataWithSubwordFeaturizer =
+            ColumnarDataWithSubwordFeaturizer.createColumnarDataWithSubwordFeaturizer(
+                ColumnarContentEmail,
+                featurizer,
+                0,
+                2,
+                1,
+                1,
+                true);
         const serializedJsonString: string = featurizer.serializeToJsonString(undefined, 4);
         Utility.debuggingLog(
             `serializedJsonString=${serializedJsonString}`);

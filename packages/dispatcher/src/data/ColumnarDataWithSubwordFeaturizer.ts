@@ -52,13 +52,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -103,13 +103,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
@@ -148,13 +148,13 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
             columnarDataWithSubwordFeaturizer.collectEntityTypes(columnarDataWithSubwordFeaturizer.luUtterances);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.intents =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.intent);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.utterances =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text as string);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.text);
         columnarDataWithSubwordFeaturizer.intentsUtterancesWeights.weights =
             columnarDataWithSubwordFeaturizer.luUtterances.map(
-            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight as number);
+            (entry: ITextIntentSequenceLabelObjectByPosition) => entry.weight);
         // -------------------------------------------------------------------
         if (toResetFeaturizerLabelFeatureMaps) {
             columnarDataWithSubwordFeaturizer.resetFeaturizerLabelFeatureMaps();
