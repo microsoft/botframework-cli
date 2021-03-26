@@ -8,7 +8,7 @@ import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
 import {LabelResolver, Orchestrator, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorBuild extends Command {
-  static description: string = 'Creates Orchestrator snapshot file and Orchestrator dialog definition file (optional) for each lu file in input folder'
+  static description: string = 'Creates Orchestrator snapshot file and Orchestrator dialog definition file (optional) for each lu file in input folder.'
 
   static flags: flags.Input<any> = {
     in: flags.string({char: 'i', description: 'Path to lu file or folder with lu files.'}),
