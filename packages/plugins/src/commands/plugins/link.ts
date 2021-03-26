@@ -30,7 +30,6 @@ e.g. If you have a user-installed or core plugin that has a 'hello' command, ins
     this.plugins.verbose = flags.verbose
 
     if (!fs.existsSync(args.path)) {
-      // Do something
       throw new CLIError('Path to plugin does not exist')
     }
 
