@@ -85,9 +85,6 @@ export { ScoreIntentUtterancePrediction } from "./label_structure/ScoreIntentUtt
 export { ScoreLabel } from "./label_structure/ScoreLabel";
 export { ScoreLabelUtterancePrediction } from "./label_structure/ScoreLabelUtterancePrediction";
 export { Span } from "./label_structure/Span";
-
-export { mainConfusionMatrix } from "./mathematics/confusion_matrix/AppConfusionMatrix";
-export { mainConfusionMatrixFunction } from "./mathematics/confusion_matrix/AppConfusionMatrix";
 export { BinaryConfusionMatrix } from "./mathematics/confusion_matrix/BinaryConfusionMatrix";
 export { ConfusionMatrix } from "./mathematics/confusion_matrix/ConfusionMatrix";
 export { ConfusionMatrixBase } from "./mathematics/confusion_matrix/ConfusionMatrixBase";
