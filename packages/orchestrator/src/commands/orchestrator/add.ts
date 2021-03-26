@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
+import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file.';
@@ -50,14 +50,6 @@ export default class OrchestratorAdd extends Command {
     const version: string = (flags.version || '');
     const key: string = (flags.key || '');
     const routingName: string = (flags.routingName || '');
-
-    Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
-    Utility.debuggingLog(`type=${type}`);
-    Utility.debuggingLog(`id=${id}`);
-    Utility.debuggingLog(`key=${key}`);
-    Utility.debuggingLog(`baseModelPath=${baseModelPath}`);
-    Utility.debuggingLog(`entityBaseModelPath=${entityBaseModelPath}`);
-    Utility.debuggingLog(`routingName=${routingName}`);
 
     try {
       let fullEmbeddings: boolean = false;
