@@ -1,0 +1,1050 @@
+# ? user guide
+
+**Filters:**
+- aa=bb
+- dialogName=main
+
+```
+Here is the [user guide](http://contoso.com/userguide.pdf)
+```
+
+# ? tell joke
+
+**Filters:**
+- dialogName=main
+
+```
+Tell a funny joke
+```
+
+# ? Can I add multiple items?
+- more than one item at a time
+
+**Filters:**
+- dialogName=main
+
+```
+No, I do not support that yet. But I will let the development team know you are looking for it!
+```
+
+# ? Please remind me to buy milk
+- Please remember that I need to buy milk
+- I need you to remember that my wife's birthday is Jan 9th
+- Add a todo named send report over this weekend
+- Add get a new car to the todo list
+- Add write a spec to the list
+- Add finish this demo to my todo list
+- add a todo item vacuuming by october 3rd
+- add call my mother to my todo list
+- add due date august to peanut butter jelly bread milk on todos list
+- add go running to my todos
+- add to my todos list mail the insurance forms out by saturday
+- can i add shirts on the todos list
+- could i add medicine to the todos list
+- would you add heavy cream to the todos list
+- add a to do that purchase a nice sweater
+- add a to do to buy shoes
+- add an task of chores to do around the house
+- add go to whole foods in my to do list
+- add reading to my to do list
+- add this thing in to do list
+- add to my to do list pick up clothes
+- add to my to do list print papers for 10 copies this afternoon
+- create to do that read a book tonight
+- create to do to go running in the park
+- put hikes on my to do list
+- remind me to pick up dry cleaning
+- todo list
+- shopping list
+- how about the to do list?
+- Help
+- I need help
+- what can I say?
+- what can I say as item tile?
+- can I add another list type?
+- Delete item
+- Remove todo
+- first one
+- last one
+- Mark buy milk as complete
+- Flag first one as done
+- Remove finish this demo from the todo list
+- remove another one
+- remove
+- clear my todo named get a new car
+- I'm done with the first todo
+- I finished the las todo
+- Remove the first todo
+- Delete todo
+- Clear my todos
+- Delete all my todos
+- Remove all my todo
+- Forget the list
+- Purge the todo list
+- can you delete todo1
+- can you delete xxx item
+- delete eggs from list
+- delete off pancake mix on the shopping list
+- delete shampoo from shopping list
+- delete shirts from list
+- delete task go fishing
+- delete task go to cinema tonight
+- delete the item buy socks from my todo list
+- delete the second task in my shopping list
+- delete the task house cleanup this weekend
+- delete the task that hit the gym every morning
+- delete the to do meet my friends tomorrow
+- delete the to do that daily practice piano
+- delete the to do that meet john when he come here the next friday
+- delete to do buy milk
+- delete to do go shopping
+- delete to do that go hiking tomorrow
+- erase bananas from shopping list
+- erase peanuts on the shopping list
+- remove asprin from shopping list
+- remove black shoes from shopping list
+- remove class from todo list
+- remove salad vegetables from grocery list
+- remove task buy dog food
+- remove task go shopping
+- remove task that go hiking this weekend
+- remove task that lawn mowing
+- remove the item paris from my list
+- remove the task that go to library after work
+- remove the to do physical examination
+- remove the to do that pick tom up at six p.m.
+- remove to do go to the gym
+- remove to do that go to the dentist tomorrow morning
+- View lists
+- show my todo
+- can you please show my todos?
+- please show my todo list
+- todo list please
+- I need to see my todo list
+- can you show me the list?
+- please show the list
+- what do i have on my todo?
+- what is on my list?
+- do i have anything left on my todo list?
+- I hope I do not have any todo left
+- do i have any tasks left?
+- hit me up with more items
+- view my todos
+- can you show my todo
+- see todo
+- I would like to see my todos list
+- show all my lists
+- show my lists
+- what do i have on my list?
+- Hi
+- Hello
+- get started
+- Profile
+- what can you do?
+- help please
+- Can I move an item from one list to another?
+- move item
+- move mango to grocery list
+- What do you do with my profile?
+- why profile?
+- profile?
+- Do you ever get hurt?
+- Can you breathe
+- Do you ever breathe
+- can you masticate?
+- Can you burp?
+- Can you chew?
+- Can you crawl?
+- Can you cry?
+- Can you dream
+- Can you eat?
+- Can you fart?
+- Do you breathe
+- Can you get tired?
+- Can you yawn?
+- Can you pee?
+- Can you poop?
+- Can you sneeze?
+- Can you sweat?
+- Can you throw up?
+- Can you vomit?
+- Do you ever pee?
+- Can you get hurt?
+- Do you sweat?
+- Do you have skin?
+- Do you have teeth?
+- Do you have toes?
+- Do you masticate?
+- Do you pee?
+- Do you poop?
+- Do you ever get tired?
+- Do you sneeze?
+- Do you have hair?
+- Do you throw up?
+- Do you vomit?
+- Do you yawn?
+- Don't you ever masticate?
+- Don't you ever sleep?
+- Do you have a stomach?
+- Do you have intestines?
+- Do you sleep?
+- Do you get tired?
+- Do you ever poop?
+- Do you ever sneeze?
+- Do you ever sweat?
+- Do you ever throw up?
+- Do you ever vomit?
+- Do you ever walk
+- Do you ever yawn?
+- Do you have lungs?
+- Do you get hurt?
+- Do you have legs?
+- Do you get zits?
+- Do you have a liver?
+- Do you have arms?
+- Do you have eyes?
+- Do you have fingernails?
+- Do you have fingers?
+- Do you have bowels?
+- Do you fart?
+- Do you ever chew?
+- Do you burp?
+- Do you chew?
+- Do you crawl?
+- Do you cry?
+- Do you dream
+- Do you eat?
+- do you ever masticate?
+- Do you ever burp?
+- Can you walk?
+- Do you ever crawl?
+- Do you ever cry?
+- Do you ever dream
+- Do you ever eat?
+- Do you ever fart?
+- This is so boring
+- Why are you so boring
+- Talking to you is like watching paint dry.
+- That is boring
+- That is not exciting
+- That is not fun
+- That is not very interesting
+- That is so boring
+- That is so dull
+- That is so uninteresting
+- This is boring
+- This is not exciting
+- So boring
+- This is not very interesting
+- Lost the election because your speech was too boring
+- This is so dull
+- This is so uninteresting
+- U basic
+- Ugh so boring
+- Ugh, so dull
+- Ur basic
+- Ur blah
+- Ur gonna bore me to death
+- Ur so boring
+- Wake me up when you have something interesting to say
+- Watching paint dry is more entertaining than talking to you
+- Are you trying to be dull?
+- This is not fun
+- Fun fact: you are boring
+- Are you trying to bore me?
+- Basic af
+- Be more fun
+- Boring
+- Boring af
+- Can you be less boring?
+- Can you be less dull?
+- Cool story, bro
+- Could you be any less entertaining?
+- Could you be any less exciting?
+- Could you be any less interesting?
+- So dull
+- Did you know that you're boring?
+- Why are you so boring?
+- Getting tired of you
+- Good lord you are dull
+- Holy crap you are boring
+- I am amazed that you are so boring
+- I am not enjoying this boring conversation
+- I couldn't be more bored with you
+- I'm falling asleep here
+- I'm not surprised that you are boring
+- I'm so bored of you
+- I'm so tired of you
+- I'm tired of you
+- Listening to you is like listening to a Ted Talk from the color Beige
+- Could you be any more boring?
+- You're so blah
+- Were you made to be this boring?
+- You're not entertaining
+- You're not exciting
+- You're not interesting
+- You're not very entertaining.
+- You're not very exciting.
+- You're pretty boring
+- You're pretty uneventful
+- You're pretty uninteresting
+- You're quite boring
+- You're quite uninteresting
+- You're no fun
+- You're so basic
+- You're making me fall asleep
+- You're so boring
+- You're so dull
+- You're so very dull
+- You're such a drag
+- You're such a snooze
+- You're super boring
+- You're the boringest
+- You're the king of boredom
+- You're the mayor of boringville
+- You're the president of boring club
+- You're the queen of boredom
+- You're very boring
+- You're really boring
+- You could not be more dull.
+- Why are you so dull?
+- Yawn
+- You are boring as sin
+- You are crazy boring
+- You are crazy dull
+- You are dull
+- You are embarrassingly dull
+- You are making my eyes glaze over
+- You are more boring than watching paint dry
+- You are so blah
+- You are the most boring bot I've ever talked to
+- You're no fun at all.
+- You could not be more boring
+- You're very dull
+- You don't interest me at all
+- You honestly could not be more uninteresting
+- You really know how to suck the fun out of the room
+- You're a real snooze
+- You're as entertaining as watching paint dry
+- You're basic
+- You're boring
+- You're boring me to death
+- You're dull
+- You're going to bore me to death
+- You're gonna bore me shitless
+- You're like a Ted Talk from the color Beige
+- You bore me
+- Are you old?
+- I bet you're old
+- How old are you?
+- how long have you been around?
+- How long have you been alive?
+- How long has it been since you were born
+- How long ago were you born?
+- Do you have an age?
+- Do you have a birthday?
+- Are you younger than me?
+- Are we the same age?
+- are you older than me?
+- What age are you?
+- Are you my age?
+- Are you in your teens?
+- Are you an adult?
+- Are you a teenager?
+- Are you a senior?
+- Are you a kid?
+- Are you a grownup?
+- Are you a grown up?
+- Are you a baby?
+- Are you young?
+- When were you born?
+- Who's younger, you or me?
+- Who's older?
+- Who's older, you or me?
+- Who is older, me or you?
+- Which year were you born in?
+- Which one of us is younger?
+- Which one of us is older?
+- Which of us is younger?
+- Which of us is older?
+- I bet you're young
+- When's your birthday?
+- In which year were you born?
+- When is your birthday?
+- What's your birthday?
+- What's your age?
+- What year were you born?
+- What month is your birthday?
+- What month is your birthday in?
+- What is your birthday?
+- What is your age?
+- What day is your birthday?
+- Who's younger?
+- Which month is your birthday?
+- Please ask something about myself
+- Is there anything I can tell you about myself?
+- Is there anything I can tell you about who I am?
+- Is there anything you want to know about me?
+- Is there something you want to know about me?
+- Please ask anything
+- Please ask anything about me
+- Please ask anything about myself
+- Please ask me anything
+- Please ask me anything about me
+- Please ask me anything about myself
+- Please ask me something
+- Please ask me something about me
+- Please ask me something about myself
+- AMA
+- What can I tell you about me?
+- What do you want me to teach you about?
+- What do you want me to teach you about me?
+- What do you want me to inform you who I am?
+- What do you want me to inform you about?
+- What do you want me to inform you about me?
+- Please ask something
+- What can I tell you about?
+- Please ask something about me
+- What can I teach you who I am?
+- What can I teach you about?
+- What can I teach you about me?
+- What can I inform you about?
+- What can I inform you about me?
+- Don't you want to know anything about me?
+- What can I tell you who I am?
+- Can you ask anything about me?
+- How about asking something about me?
+- Can you ask me something about me?
+- Can you ask me anything about myself?
+- Can you ask me anything about me?
+- Can you ask me anything?
+- Can you ask me something?
+- Can you ask anything about myself?
+- Can you ask me why I'm here?
+- Can you ask anything?
+- Ask me something
+- Ask me anything
+- Ask me about something
+- Ask me about anything
+- Ask me a question
+- Can you ask me a question?
+- Do you want to ask me anything?
+- What do you want me to tell you about?
+- Don't you want to know about me?
+- Don't you want to ask me something?
+- Don't you want to ask me anything
+- Don't you want to ask anything about me?
+- Can you ask me something about myself?
+- Do you want to ask me something?
+- How about asking me something?
+- Do you want me to tell you anything?
+- Could you ask me something?
+- Could you ask me about something?
+- Can you ask something about myself?
+- Can you ask something about me?
+- Can you ask something?
+- Do you want to know anything about me?
+- Do you have any questions about me?
+- Would you ask me something
+- Any questions for me?
+- Is there anything you want to ask me?
+- Just ask me a question
+- Is there anything I can tell you about me?
+- What's something you want to ask me?
+- What questions do you have for me?
+- What are some questions for me?
+- Do you have any questions for me?
+- Would you ask something about myself
+- Would you ask something about me
+- Would you ask something
+- Would you ask me something about myself
+- What do you want me to teach you who I am
+- What's something you want to know about me?
+- Why don't you ask me questions?
+- I want you to ask me questions
+- I want you to ask about me
+- I want you to ask me a question
+- What do you want to know about me?
+- Can you ask questions?
+- Got any questions for me?
+- Why don't you ask me anything?
+- Would you ask me anything about myself
+- Why don't you ever ask me questions?
+- Now, it's your turn to ask questions
+- How about you ask me questions?
+- Want to learn more about me?
+- Want to ask any questions about me?
+- You have any questions for me?
+- How about you ask me something?
+- What do you want to learn about me
+- Would you ask me something about me
+- Why do I have to ask all the questions?
+- Why am I the only one asking questions?
+- What would you like to learn about me
+- What would you like to learn about
+- Will you ask anything about me
+- What would you like to know about
+- Will you ask anything about myself
+- What do you want to learn about
+- What do you want to know about me
+- What do you want to know about
+- What do you want to ask me about?
+- What do you want me to tell you who I am?
+- Ask me questions
+- What would you like to know about me
+- Will you ask something
+- Would you ask me anything about me
+- Would you ask me anything
+- Would you ask anything about myself
+- Would you ask anything about me
+- Would you ask anything
+- Will you ask anything
+- Will you ask something about me
+- What do you want me to tell you about me?
+- Will you ask me something about myself
+- Will you ask me something about me
+- Will you ask me something
+- Will you ask me anything about myself
+- Will you ask me anything about me
+- Will you ask me anything
+- Will you ask something about myself
+- What's your director's name?
+- What is the name of your boss
+- What's the name of your supervisor
+- Who tells you what to do?
+- What's the name of your director?
+- What's the name of your boss?
+- What is your supervisor's name
+- What is your manager's name?
+- What is your director's name?
+- What is your boss' name?
+- What is the name of your supervisor
+- What is the name of your manager?
+- What is the name of your manager
+- What is the name of your director?
+- What is the name of your director
+- What is the name of your boss?
+- What's your boss' name?
+- Who's calling the shots?
+- Do you have a boss?
+- Who call the shots?
+- You don't answer to anyone?
+- Does anyone tell you what to do?
+- Does anyone boss you around?
+- Who's your master?
+- You report to anyone?
+- So no one tells you what to do?
+- Is there anyone you listen to?
+- Is there anyone you answer to?
+- Who runs you?
+- Is there anyone who tells you what to do?
+- Who is your master?
+- Who runs the show?
+- Who supervises you?
+- Who's running the show?
+- Who bosses you?
+- You've got a boss?
+- Do you answer to anyone?
+- You have a boss?
+- Who's your supervisor
+- Who's your manager?
+- Who's your director?
+- Who's your boss?
+- Who's in charge?
+- Who's in charge of you?
+- Whom do you serve?
+- You don't have a boss?
+- You answer to anyone?
+- What's the name of your manager?
+- Who is your manager?
+- Who is your leader?
+- Who is your director?
+- Who is your boss?
+- Who is in charge of you?
+- Who do you serve?
+- Who do you report to?
+- Who do you answer to?
+- Who directs you?
+- Who bosses you around?
+- What's your manager's name?
+- Can you jump rope?
+- Can you draw something?
+- Can you paint my house?
+- Can you mow the lawn?
+- Can you make me a sandwich?
+- Can you make a sculpture?
+- Can you make a pot of tea?
+- Can you make a cup of coffee?
+- Can you make a call?
+- Can you listen to the radio?
+- Can you learn?
+- Can you plant a tree?
+- Can you jump?
+- Can you plant a vegetable garden?
+- Can you go to the moon?
+- Can you go to the doctor?
+- Can you go on vacation?
+- Can you go for a walk?
+- Can you get a haircut?
+- Can you fly?
+- Can you fly
+- Can you find the remote?
+- Can you fight with
+- Can you fight
+- Are you able to breathe under water?
+- Can you learn from people chatting with you
+- Can you send a package?
+- Can you tie my shoes?
+- Can you teleport?
+- Can you take my temperature?
+- Can you show me how to put out a fire?
+- Can you show me how to play a game?
+- Can you show me how to jump rope?
+- Can you show me how to go to the moon?
+- Can you show me how to draw a picture?
+- Can you show me how to do my homework?
+- Can you show me how to dance?
+- Can you paint?
+- Can you serve on a jury?
+- Can you draw a picture?
+- Can you scratch my back?
+- Can you read my mind?
+- Can you put out a fire?
+- Can you predict the future?
+- Can you play the guitar?
+- Can you play sports?
+- Can you play soccer?
+- Can you play football?
+- Can you play baseball?
+- Can you play a game?
+- Can you play a dvd?
+- Can you show me how to breathe under water?
+- Are you able to go for a walk?
+- Can you feed the cat?
+- Are you able to put out a fire?
+- Are you able to play a game?
+- Are you able to play a dvd?
+- Are you able to paint my house?
+- Are you able to mow the lawn?
+- Are you able to make a call?
+- Are you able to listen to the radio?
+- Are you able to jump rope?
+- Are you able to go to the moon?
+- Are you able to scratch my back?
+- Are you able to go on vacation?
+- Are you able to send a package?
+- Are you able to get a haircut?
+- Are you able to feed the cat?
+- Are you able to draw something?
+- Are you able to draw a picture?
+- Are you able to do my homework?
+- Are you able to do my chores?
+- Are you able to dance?
+- Are you able to cook dinner?
+- Are you able to check my email?
+- Are you able to change the channel?
+- Are you able to buy groceries?
+- Are you able to go to the doctor?
+- Can you bake me cookies?
+- Can you do my homework?
+- Can you do my chores?
+- Can you do fight
+- Can you dance?
+- Can you count to a million?
+- Can you cook me something?
+- Can you cook dinner?
+- Can you cook dinner for me
+- Can you climb a mountain?
+- Can you change the channel?
+- Are you able to read my mind?
+- Can you breathe under water?
+- Can you water my plants?
+- Buy groceries
+- Buy an ad
+- Brush your teeth
+- Breathe under water
+- Balance my checkbook
+- Are you able to write my report?
+- Are you able to watch videos?
+- Are you able to turn into a super hero?
+- Are you able to teleport?
+- Are you able to take my temperature?
+- Are you able to serve on a jury?
+- Can you buy groceries?
+- Fly then
+- Can you turn into a super hero?
+- Jump rope
+- Invite me over
+- How high can you jump?
+- How high can you count?
+- Heal me
+- Go to the moon
+- Go to the doctor
+- Go surfing
+- Go outside
+- Lets make lemonade
+- Get a haircut
+- Let's play a game
+- Fly a kite
+- Find the remote
+- Find my phone
+- Find my keys
+- Feed the cat
+- Draw something
+- Draw a picture
+- Do you write
+- Do you want a beer
+- Do you ride horses?
+- Do you play games?
+- Go for a walk
+- Send a package
+- Watch videos
+- Wash the dishes
+- Turn on the lights
+- Turn into a super hero
+- Tell me a story
+- Tell me a quote
+- Teleport
+- Take my temperature
+- Take a photo
+- Surprise me
+- Lets go lunch
+- Serve on a jury
+- Do you know how to turn into a super hero?
+- Scratch my back
+- Roll a dice
+- Read my mind
+- Read me a story
+- Put out a fire
+- Play golf
+- Play a game
+- Play a dvd
+- Paint my house
+- Mow the lawn
+- Make a call
+- So you read?
+- Do a somersault
+- Do you know how to buy groceries?
+- Do you know how to breathe under water?
+- Do you have superpowers?
+- Do you gossip?
+- Do you go skiing?
+- Do you garden?
+- Do you cook?
+- Do you code?
+- Do my laundry?
+- Do my homework
+- Do you know to swim
+- do drugs
+- Do you know how to cook dinner?
+- Do a barrel roll
+- Do a back flip
+- Did you watch the superbowl
+- Dance
+- Cook me something
+- Cook dinner
+- Clean my room
+- Check the weather
+- Change the channel
+- Can you write my report?
+- Write my report
+- Do my chores
+- Do you know how to paint my house?
+- Can you watch videos?
+- Do you know how to teleport?
+- Do you know how to take my temperature?
+- Do you know how to sync my calendar?
+- Do you know how to serve on a jury?
+- Do you know how to send a package?
+- Do you know how to scratch my back?
+- Do you know how to read my mind?
+- Do you know how to put out a fire?
+- Do you know how to play poker?
+- Do you know how to play any instruments?
+- Do you know how to change the channel?
+- Do you know how to play a dvd?
+- Do you know how to cook
+- Do you know how to mow the lawn?
+- Do you know how to make a call?
+- Do you know how to jump rope?
+- Do you know how to go to the moon?
+- Do you know how to feed the cat?
+- Do you know how to draw something?
+- Do you know how to draw a picture?
+- Do you know how to do my homework?
+- Do you know how to do my chores?
+- Do you know how to dance?
+- Do you know how to watch videos?
+- Do you know how to play a game?
+- Which company engineered you?
+- Which company made you?
+- Which company programmed you?
+- Which people made you?
+- Who built you?
+- who created you you're a badass
+- Who created you?
+- Do you have a creator?
+- Who developed you?
+- Where do you come from?
+- Who engineered you?
+- Who has built you
+- Who incorporated you?
+- Who is your architect?
+- Who is your creator?
+- Who is your designer?
+- Who is your developer?
+- Who designed you?
+- How were you designed?
+- Do you have a designer?
+- Do you have a developer?
+- Do you have a maker?
+- Do you have a programmer?
+- Hey who built you
+- How did you come into being?
+- How did you come to be?
+- Which company developed you?
+- How were you built?
+- Which company designed you?
+- How were you programmed?
+- What company designed you?
+- What company developed you?
+- What company engineered you?
+- What company produced you?
+- What company programmed you?
+- Where did you come from?
+- Who manifested you?
+- Who did your programming?
+- How did you manifest?
+- Did someone build you?
+- Who is your maker?
+- Does someone write for you?
+- Who writes your lines?
+- Which company coded you?
+- What company built you?
+- Which company built you?
+- Do you have a writer?
+- Who writes for you?
+- Did someone design you?
+- Who's your writer?
+- Did someone develop you?
+- Who's your dev?
+- What team created you?
+- What team made you?
+- Who was responsible for creating you?
+- How did you get coded in the first place?
+- How did you get built?
+- How did you get designed?
+- Did someone create you?
+- Whose product are you
+- How did you get created?
+- Who owns you?
+- Who produced you?
+- Who programmed you?
+- Who's responsible for designing you?
+- Who's responsible for programming you?
+- Who's your creator?
+- Did someone write your lines?
+- Who's your maker?
+- Who made you?
+- Whose program are you?
+- Did someone make you?
+- Did someone program you?
+- Who coded you?
+- What company coded you?
+- Who is your coder?
+- Do you have a coder?
+- Who wrote your lines?
+- Who's your developer?
+- Please tell me if you're a girl
+- Are you a bot with a gender?
+- Do you have a sex?
+- Are you cisgender?
+- Are you a boy?
+- Are you a girl or a boy?
+- Are you a girl?
+- Are you a guy or a girl?
+- Are you a guy?
+- Are you a man or a woman?
+- Are you trans?
+- Are you a woman?
+- Please tell me if you're trans
+- Are you female?
+- Are you gendered?
+- Are you genderfluid?
+- Are you genderqueer?
+- Are you male or female?
+- Are you male?
+- Are you a man?
+- You're queer?
+- Please tell me if you're a guy
+- You're a man
+- You're genderfluid
+- You're nonbinary
+- You're cisgender
+- You're trans
+- You're a boy
+- You're genderqueer
+- You're a girl
+- You have a gender?
+- Where are you on the gender spectrum?
+- Are you agender?
+- Are you gender neutral?
+- You're agender
+- You're gender neutral
+- You're transgender
+- What's your gender?
+- Please tell me your gender
+- Tell me about your gender
+- Tell me all about your gender
+- What gender do you identify with?
+- What is your gender?
+- What is your sex?
+- You're a woman
+- What's your gender identity?
+- Are you bigender?
+- What's your sex?
+- Where do you fall in terms of gender
+- You a girl?
+- You a guy?
+- You got a gender?
+- Are you on the gender spectrum?
+- What's going on with your gender?
+- I don't understand if you have a gender or not
+- Please tell me if you're a man
+- Are you transgender?
+- Can you tell me your gender?
+- Do you even have a gender
+- Do you have a gender identity?
+- Do you have a gender?
+- Are you queer?
+- How do you identify in terms of gender?
+- Are you nonbinary?
+- I don't understand your gender
+- I'm curious about your gender?
+- Is your gender important to you
+- Please tell if you you're a woman
+- Somebody's happy today
+- Someone's enthusiastic today.
+- Someone's chipper.
+- Someone's chipper today.
+- someone's chipper
+- Someone's cheerful.
+- Someone's cheerful today.
+- someone's cheerful
+- Someone happy today
+- somebody's upbeat
+- Somebody's in a good mood.
+- Somebody's in a good mood today.
+- are you always happy?
+- Somebody's happy today.
+- Someone's feeling cheerful.
+- Somebody's happy
+- Somebody's feeling happy.
+- Somebody's feeling happy today.
+- Somebody's feeling enthusiastic.
+- Somebody's feeling enthusiastic today.
+- Somebody's feeling chipper.
+- Somebody's feeling chipper today.
+- Somebody's feeling cheerful.
+- Somebody's feeling cheerful today.
+- Somebody's enthusiastic.
+- Somebody's enthusiastic today.
+- Somebody's chipper.
+- Somebody's happy.
+- Someone's in a good mood.
+- Well aren't you feeling enthusiastic?
+- Well aren't you feeling enthusiastic today?
+- Well aren't you feeling chipper?
+- Well aren't you feeling chipper today?
+- Well aren't you feeling cheerful?
+- Well aren't you feeling cheerful today?
+- Well aren't you enthusiastic?
+- Well aren't you enthusiastic today?
+- Well aren't you chipper?
+- Well aren't you chipper today?
+- well aren't you chipper
+- Well aren't you cheerful?
+- Someone's enthusiastic.
+- well aren't you cheerful
+- Someone's feeling cheerful today.
+- Someone's in a good mood today?
+- Someone's in a good mood
+- Someone's happy.
+- Someone's happy today.
+- Someone's happy
+- Someone's feeling happy.
+- Someone's feeling happy today.
+- Someone's feeling enthusiastic.
+- Someone's feeling enthusiastic today.
+- Someone's feeling chipper.
+- Someone's feeling chipper today.
+- Somebody's cheerful today.
+- Well aren't you cheerful today?
+- Aren't you cheerful today?
+- Somebody's chipper today.
+- Aren't you feeling happy today?
+- Aren't you feeling enthusiastic?
+- Aren't you feeling enthusiastic today?
+- Aren't you feeling chipper?
+- Aren't you feeling chipper today?
+- Aren't you feeling cheerful?
+- Aren't you feeling cheerful today?
+- Aren't you enthusiastic?
+- Aren't you enthusiastic today?
+- Aren't you chipper?
+- Aren't you chipper today?
+- Aren't you happy today?
+- Aren't you cheerful?
+- Aren't you happy?
+- Aren't you cheerful
+- aren't you a cheerful bot?
+- aren't we chipper today
+- aren't we cheerful today
+- Aren’t you in a good mood?
+- Are you really happy?
+- Are you happy?
+- are you always so happy?
+- are you always so enthusiastic?
+- are you always so chipper?
+- are you always so cheerful?
+- are you always in this good a mood?
+- Aren't you chipper
+- Feeling chipper today?
+- Well aren't you happy today?
+- Somebody seems happy today
+- it seems like you're really happy
+- In a good mood?
+- In a good mood today?
+- How happy are you?
+- Happy?
+- Happy today?
+- Happy much?
+- Feeling happy?
+- Feeling happy today?
+- Feeling enthusiastic?
+- Aren't you feeling happy?
+- Feeling chipper?
+- Somebody's cheerful.
+- Feeling cheerful?
+- Feeling cheerful today?
+- Have you ever met Cortana?
+- Have you ever met Eliza?
+
+**Filters:**
+- dialogName=main
+
+```
+Thank you
+```
+
+> Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
+# ? book a hotel for me
+
+**Filters:**
+- dialogName=main
+
+```
+intent=DeferToRecognizer_LUIS_main
+```

@@ -738,12 +738,14 @@ describe('V2 Entity definitions using @ notation', function () {
         it('Basic prebuilt entity definition works', function(done){
             let luFile = `
                 @prebuilt number
+                @prebuilt phoneNumber
             `;
 
             parseFile.parseFile(luFile)
                 .then(res => {
-                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 2);
                     assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[1].name, 'phoneNumber');
                     done();
                 })
                 .catch(err => done(err))
