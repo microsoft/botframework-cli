@@ -19,8 +19,6 @@ type TemplateName = string
 type Source = string
 type SourceToReferences = Map<Source, TemplateName[]>
 type TemplateToReferences = Map<FullTemplateName, SourceToReferences>
-const SourceToReferences = <{ new(): SourceToReferences }>Map
-const TemplateToReferences = <{ new(): TemplateToReferences }>Map
 
 export default class AnalyzeCommand extends Command {
   static description = 'Analyze templates in .lg files to show all the places where a template is used'
@@ -52,7 +50,7 @@ export default class AnalyzeCommand extends Command {
   }
 
   private templateUsage(templates: Templates[]): TemplateToReferences {
-    const usage = new TemplateToReferences()
+    const usage = new Map<FullTemplateName, SourceToReferences>()
     const analyzed = new Set<Source>()
     for (const source of templates) {
       // Map from simple to full name and initialize template usage
@@ -61,7 +59,7 @@ export default class AnalyzeCommand extends Command {
         const fullName = `${template.sourceRange.source}:${template.name}`
         nameToFullname.set(template.name, fullName)
         if (!usage.get(fullName)) {
-          usage.set(fullName, new SourceToReferences())
+          usage.set(fullName, new Map<Source, TemplateName[]>())
         }
       }
 
