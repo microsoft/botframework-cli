@@ -13,7 +13,11 @@ import { IPartOfSpeechTagObjectByPosition } from "../data/IPartOfSpeechTagObject
 import { ITextIntentSequenceLabelObjectByPosition} from "../data/ITextIntentSequenceLabelObjectByPosition";
 
 import { Label } from "../label_structure/Label";
+
 import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
+
+import { StructValueCount } from "../label_structure/StructValueCount";
+
 import { CryptoUtility } from "./CryptoUtility";
 
 export class Utility {
@@ -2180,7 +2184,7 @@ export class Utility {
         return hash;
     }
 
-    public static isEmptyValueCountPairArray(inputArray: Array<[number, number]>): boolean {
+    public static isEmptyValueCountPairArray(inputArray: StructValueCount[]): boolean {
         return !(inputArray && inputArray.length > 0);
     }
     public static isEmptyNumberF32I32U8Arrays(inputArray: Float32Array[] | Int32Array[] | Uint8Array[]): boolean {
@@ -2948,14 +2952,14 @@ export class Utility {
             return 0;
           });
     }
-    public static sortValueCountPairArray(inputValueCountPairArray: Array<[number, number]>): Array<[number, number]> {
+    public static sortValueCountPairArray(inputValueCountPairArray: StructValueCount[]): StructValueCount[] {
         if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return []; }
         return inputValueCountPairArray.sort(
-            (valueCountPair1: [number, number], valueCountPair2: [number, number]) => {
-                if (valueCountPair1[0] > valueCountPair2[0]) {
+            (valueCountPair1: StructValueCount, valueCountPair2: StructValueCount) => {
+                if (valueCountPair1.value > valueCountPair2.value) {
                     return 1;
                 }
-                if (valueCountPair1[0] < valueCountPair2[0]) {
+                if (valueCountPair1.value < valueCountPair2.value) {
                     return -1;
                 }
                 return 0;
@@ -2981,13 +2985,13 @@ export class Utility {
         return median;
     }
     public static findValueCountPairMedian(
-        inputValueCountPairArray: Array<[number, number]>): number|undefined {
+        inputValueCountPairArray: StructValueCount[]): number|undefined {
         if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return undefined; }
-        const sortedValueCountPairArray: Array<[number, number]> =
+        const sortedValueCountPairArray: StructValueCount[] =
             Utility.sortValueCountPairArray(inputValueCountPairArray);
         if (Utility.isEmptyValueCountPairArray(sortedValueCountPairArray)) { return undefined; }
         const totalCount: number = sortedValueCountPairArray.reduce(
-            (accumulative: number, entry: [number, number]) => accumulative + entry[1], 0);
+            (accumulative: number, entry: StructValueCount) => accumulative + entry.count, 0);
         if (totalCount > 0) {
             const middleCount: number = Math.floor(totalCount / 2);
             const isEven: boolean = (totalCount % 2) === 0;
@@ -2995,17 +2999,17 @@ export class Utility {
             let accumulativeCount: number = 0;
             // tslint:disable-next-line: prefer-for-of
             for (let index: number = 0; index < sortedValueCountPairArray.length; index++) {
-                const count: number = sortedValueCountPairArray[index][1];
+                const count: number = sortedValueCountPairArray[index].count;
                 accumulativeCount += count;
                 if (accumulativeCount > middleCount) {
-                    const value: number = sortedValueCountPairArray[index][0];
+                    const value: number = sortedValueCountPairArray[index].value;
                     if (!isEven) {
                         return value;
                     }
                     if ((middleCount - accumulativeCountPrevious) > 0) {
                         return value;
                     }
-                    const valuePrevious: number = sortedValueCountPairArray[index - 1][0];
+                    const valuePrevious: number = sortedValueCountPairArray[index - 1].value;
                     return (value + valuePrevious) / 2;
                 }
                 accumulativeCountPrevious = accumulativeCount;
@@ -3036,20 +3040,20 @@ export class Utility {
         return quantiles;
     }
     public static findValueCountPairQuantiles(
-        inputValueCountPairArray: Array<[number, number]>,
+        inputValueCountPairArray: StructValueCount[],
         quantileConfiguration: number): number[]|undefined {
         if (!quantileConfiguration || (quantileConfiguration < 2)) {
             return undefined;
         }
         if (Utility.isEmptyValueCountPairArray(inputValueCountPairArray)) { return undefined; }
-        const sortedValueCountPairArray: Array<[number, number]> =
+        const sortedValueCountPairArray: StructValueCount[] =
             Utility.sortValueCountPairArray(inputValueCountPairArray);
         if (Utility.isEmptyValueCountPairArray(sortedValueCountPairArray)) { return undefined; }
         const totalCount: number = sortedValueCountPairArray.reduce(
-            (accumulative: number, entry: [number, number]) => accumulative + entry[1], 0);
+            (accumulative: number, entry: StructValueCount) => accumulative + entry.count, 0);
         const step: number = totalCount / quantileConfiguration;
         if (step < 1)  { return undefined; }
-        const quantiles: number[] = [sortedValueCountPairArray[0][0]];
+        const quantiles: number[] = [sortedValueCountPairArray[0].value];
         let currentQuantileIndex: number = 0;
         // ---- NOTE ---- the following nested-loop can be optimized.
         for (let quantileIndex: number = 0; quantileIndex < quantileConfiguration - 1; quantileIndex ++) {
@@ -3058,17 +3062,17 @@ export class Utility {
             let accumulativeCount: number = 0;
             // tslint:disable-next-line: prefer-for-of
             for (let index: number = 0; index < sortedValueCountPairArray.length; index++) {
-                const count: number = sortedValueCountPairArray[index][1];
+                const count: number = sortedValueCountPairArray[index].count;
                 accumulativeCount += count;
                 if (accumulativeCount > currentQuantileIndex) {
-                    const value: number = sortedValueCountPairArray[index][0];
+                    const value: number = sortedValueCountPairArray[index].value;
                     quantiles.push(value);
                     break;
                 }
                 accumulativeCountPrevious = accumulativeCount;
             }
         }
-        quantiles.push(sortedValueCountPairArray[sortedValueCountPairArray.length -  1][0]);
+        quantiles.push(sortedValueCountPairArray[sortedValueCountPairArray.length -  1].value);
         return quantiles;
     }
 

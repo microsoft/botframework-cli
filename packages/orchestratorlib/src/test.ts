@@ -15,6 +15,10 @@ import {LabelType} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelString} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
 
+import {StructTextNumber} from '@microsoft/bf-dispatcher';
+import {StructTextStringSet} from '@microsoft/bf-dispatcher';
+import {StructTextText} from '@microsoft/bf-dispatcher';
+
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
@@ -222,15 +226,15 @@ export class OrchestratorTest {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -330,15 +334,15 @@ export class OrchestratorTest {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {

@@ -345,7 +345,7 @@ describe('OrchestratorBuildTests', function () {
     // eslint-disable-next-line no-console
     console.log(`>>>>>>>examples after sync: ${examples_after_sync.length} (expected3)`);
     assert.ok(examples_after_sync.length === 3);
-    examples_after_sync.sort(Example.sort_fn);
+    examples_after_sync.sort(Example.sortFunction);
     UtilityDispatcher.debuggingNamedLog1('OrchestratorBuildTests Test.0005', examples_after_sync, 'examples_after_sync');
     assert.ok(examples_after_sync[2].labels.length === 1); // LU file has precedence over Label Resolver
 

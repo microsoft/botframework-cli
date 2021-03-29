@@ -3,10 +3,21 @@
  * Licensed under the MIT License.
  */
 
+import { IConfusionMatrixagglomeratedMetricStructure } from "./IConfusionMatrixagglomeratedMetricStructure";
+import { IConfusionMatrixBaseMetrics } from "./IConfusionMatrixBaseMetrics";
+import { IConfusionMatrixBaseMicroAverageMetrics } from "./IConfusionMatrixBaseMicroAverageMetrics";
+import { IConfusionMatrixMeanDerivedMetrics } from "./IConfusionMatrixMeanDerivedMetrics";
+import { IConfusionMatrixMeanDerivedWeightedMetrics } from "./IConfusionMatrixMeanDerivedWeightedMetrics";
+import { IConfusionMatrixMeanMetrics } from "./IConfusionMatrixMeanMetrics";
+import { IConfusionMatrixQuantileMetrics } from "./IConfusionMatrixQuantileMetrics";
+import { IConfusionMatrixSummationMetrics } from "./IConfusionMatrixSummationMetrics";
+
 import { IConfusionMatrix } from "./IConfusionMatrix";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
+
+import { StructValueCount } from "../../label_structure/StructValueCount";
 
 import { Utility } from "../../utility/Utility";
 
@@ -24,111 +35,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
     public abstract reset(): void;
 
     public generateConfusionMatrixMetricStructure(
-        quantileConfiguration: number = 4): {
-        "confusionMatrix": IConfusionMatrix,
-        "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
-        "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
-        "microQuantileMetrics": {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number },
-        "macroQuantileMetrics": {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number },
-        "microAverageMetrics": {
-            "accuracy": number,
-            "truePositives": number,
-            "falsePositives": number,
-            "falseNegatives": number,
-            "total": number },
-        "summationMicroAverageMetrics": {
-            "summationPrecision": number,
-            "summationRecall": number,
-            "summationF1Score": number,
-            "summationAccuracy": number,
-            "summationTruePositives": number,
-            "summationFalsePositives": number,
-            "summationTrueNegatives": number,
-            "summationFalseNegatives": number,
-            "summationSupport": number,
-            "total": number },
-        "macroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "summationMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "positiveSupportLabelMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "positiveSupportLabelSummationMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "weightedMacroAverageMetrics": {
-            "weightedAveragePrecision": number,
-            "weightedAverageRecall": number,
-            "weightedAverageF1Score": number,
-            "weightedAverageAccuracy": number,
-            "weightedAverageSupport": number,
-            "total": number },
-        "summationWeightedMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } } {
+        quantileConfiguration: number = 4): IConfusionMatrixagglomeratedMetricStructure {
         const confusionMatrix: IConfusionMatrix = this;
         const crossValidationBinaryConfusionMatrix: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
@@ -150,36 +57,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         });
         const binaryConfusionMatrices: BinaryConfusionMatrix[] =
             confusionMatrix.getBinaryConfusionMatrices();
-        const microQuantileMetrics: {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number } =
+        const microQuantileMetrics: IConfusionMatrixQuantileMetrics =
             confusionMatrix.getMicroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
-        const macroQuantileMetrics: {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number } =
+        const macroQuantileMetrics: IConfusionMatrixQuantileMetrics =
             confusionMatrix.getMacroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
-        const microAverageMetricArray: {
-            "averagePrecisionRecallF1Accuracy": number,
-            "truePositives": number,
-            "falsePositives": number,
-            "falseNegatives": number,
-            "total": number } =
+        const microAverageMetricArray: IConfusionMatrixBaseMicroAverageMetrics =
             confusionMatrix.getMicroAverageMetrics(binaryConfusionMatrices);
         const accuracy: number =
             microAverageMetricArray.averagePrecisionRecallF1Accuracy;
@@ -191,12 +73,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             microAverageMetricArray.falseNegatives;
         const supportMicroAverage: number =
             microAverageMetricArray.total;
-        const microAverageMetrics: {
-            "accuracy": number,
-            "truePositives": number,
-            "falsePositives": number,
-            "falseNegatives": number,
-            "total": number } = {
+        const microAverageMetrics: IConfusionMatrixBaseMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "accuracy": accuracy,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -207,17 +84,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "falseNegatives": falseNegatives,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": supportMicroAverage };
-        const summationMicroAverageMetricArray: {
-            "summationPrecision": number,
-            "summationRecall": number,
-            "summationF1Score": number,
-            "summationAccuracy": number,
-            "summationTruePositives": number,
-            "summationFalsePositives": number,
-            "summationTrueNegatives": number,
-            "summationFalseNegatives": number,
-            "summationSupport": number,
-            "total": number } =
+        const summationMicroAverageMetricArray: IConfusionMatrixSummationMetrics =
             confusionMatrix.getSummationMicroAverageMetrics(binaryConfusionMatrices);
         const summationPrecision: number =
             summationMicroAverageMetricArray.summationPrecision;
@@ -239,17 +106,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationMicroAverageMetricArray.summationSupport;
         const total: number =
             summationMicroAverageMetricArray.total;
-        const summationMicroAverageMetrics: {
-            "summationPrecision": number,
-            "summationRecall": number,
-            "summationF1Score": number,
-            "summationAccuracy": number,
-            "summationTruePositives": number,
-            "summationFalsePositives": number,
-            "summationTrueNegatives": number,
-            "summationFalseNegatives": number,
-            "summationSupport": number,
-            "total": number } = {
+        const summationMicroAverageMetrics: IConfusionMatrixSummationMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "summationPrecision": summationPrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -270,17 +127,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "summationSupport": summationSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": total };
-        const macroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } =
+        const macroAverageMetricArray: IConfusionMatrixMeanMetrics =
             confusionMatrix.getMacroAverageMetrics(binaryConfusionMatrices);
         const averagePrecision: number =
             macroAverageMetricArray.averagePrecision;
@@ -302,17 +149,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             macroAverageMetricArray.averageSupport;
         const supportMacroAverage: number =
             macroAverageMetricArray.total;
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "averagePrecision": averagePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -333,17 +170,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "averageSupport": averageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": supportMacroAverage };
-        const summationMacroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } =
+        const summationMacroAverageMetricArray: IConfusionMatrixMeanMetrics =
             confusionMatrix.getSummationMacroAverageMetrics(binaryConfusionMatrices);
         const summationAveragePrecision: number =
             summationMacroAverageMetricArray.averagePrecision;
@@ -365,17 +192,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationMacroAverageMetricArray.averageSupport;
         const summationSupportMacroAverage: number =
             summationMacroAverageMetricArray.total;
-        const summationMacroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } = {
+        const summationMacroAverageMetrics: IConfusionMatrixMeanMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "averagePrecision": summationAveragePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -396,17 +213,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "averageSupport": summationAverageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": summationSupportMacroAverage };
-        const positiveSupportLabelMacroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } =
+        const positiveSupportLabelMacroAverageMetricArray: IConfusionMatrixMeanMetrics =
             confusionMatrix.getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices);
         const positiveSupportLabelAveragePrecision: number =
             positiveSupportLabelMacroAverageMetricArray.averagePrecision;
@@ -428,17 +235,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             positiveSupportLabelMacroAverageMetricArray.averageSupport;
         const positiveSupportLabelSupportMacroAverage: number =
             positiveSupportLabelMacroAverageMetricArray.total;
-        const positiveSupportLabelMacroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } = {
+        const positiveSupportLabelMacroAverageMetrics: IConfusionMatrixMeanMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "averagePrecision": positiveSupportLabelAveragePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -459,17 +256,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "averageSupport": positiveSupportLabelAverageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": positiveSupportLabelSupportMacroAverage };
-        const positiveSupportLabelSummationMacroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } =
+        const positiveSupportLabelSummationMacroAverageMetricArray: IConfusionMatrixMeanMetrics =
             confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices);
         const positiveSupportLabelSummationAveragePrecision: number =
             positiveSupportLabelSummationMacroAverageMetricArray.averagePrecision;
@@ -491,17 +278,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             positiveSupportLabelSummationMacroAverageMetricArray.averageSupport;
         const positiveSupportLabelSummationSupportMacroAverage: number =
             positiveSupportLabelSummationMacroAverageMetricArray.total;
-        const positiveSupportLabelSummationMacroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } = {
+        const positiveSupportLabelSummationMacroAverageMetrics: IConfusionMatrixMeanMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "averagePrecision": positiveSupportLabelSummationAveragePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -522,13 +299,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "averageSupport": positiveSupportLabelSummationAverageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": positiveSupportLabelSummationSupportMacroAverage };
-        const weightedMacroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } =
+        const weightedMacroAverageMetricArray: IConfusionMatrixMeanDerivedMetrics =
             confusionMatrix.getWeightedMacroAverageMetrics(binaryConfusionMatrices);
         const weightedAveragePrecision: number =
             weightedMacroAverageMetricArray.averagePrecision;
@@ -542,13 +313,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             weightedMacroAverageMetricArray.averageSupport;
         const supportWeightedMacroAverage: number =
             weightedMacroAverageMetricArray.total;
-        const weightedMacroAverageMetrics: {
-            "weightedAveragePrecision": number,
-            "weightedAverageRecall": number,
-            "weightedAverageF1Score": number,
-            "weightedAverageAccuracy": number,
-            "weightedAverageSupport": number,
-            "total": number } = {
+        const weightedMacroAverageMetrics: IConfusionMatrixMeanDerivedWeightedMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "weightedAveragePrecision": weightedAveragePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -561,17 +326,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "weightedAverageSupport": weightedAverageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": supportWeightedMacroAverage };
-        const summationWeightedMacroAverageMetricArray: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } =
+        const summationWeightedMacroAverageMetricArray: IConfusionMatrixMeanMetrics =
             confusionMatrix.getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices);
         const summationWeightedAveragePrecision: number =
             summationWeightedMacroAverageMetricArray.averagePrecision;
@@ -593,17 +348,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationWeightedMacroAverageMetricArray.averageSupport;
         const summationWeightedSupportMacroAverage: number =
             summationWeightedMacroAverageMetricArray.total;
-        const summationWeightedMacroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } = {
+        const summationWeightedMacroAverageMetrics: IConfusionMatrixMeanMetrics = {
             // tslint:disable-next-line: object-literal-key-quotes
             "averagePrecision": summationWeightedAveragePrecision,
             // tslint:disable-next-line: object-literal-key-quotes
@@ -624,111 +369,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             "averageSupport": summationWeightedAverageSupport,
             // tslint:disable-next-line: object-literal-key-quotes
             "total": summationWeightedSupportMacroAverage };
-        const confusionMatrixMetricStructure: {
-            "confusionMatrix": IConfusionMatrix,
-            "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
-            "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
-            "microQuantileMetrics": {
-                "quantilesPrecisions": number[],
-                "quantilesRecalls": number[],
-                "quantilesF1Scores": number[],
-                "quantilesTruePositives": number[],
-                "quantilesFalsePositives": number[],
-                "quantilesTrueNegatives": number[],
-                "quantilesFalseNegatives": number[],
-                "quantilesAccuracies": number[],
-                "quantilesSupports": number[],
-                "total": number },
-            "macroQuantileMetrics": {
-                "quantilesPrecisions": number[],
-                "quantilesRecalls": number[],
-                "quantilesF1Scores": number[],
-                "quantilesTruePositives": number[],
-                "quantilesFalsePositives": number[],
-                "quantilesTrueNegatives": number[],
-                "quantilesFalseNegatives": number[],
-                "quantilesAccuracies": number[],
-                "quantilesSupports": number[],
-                "total": number },
-            "microAverageMetrics": {
-                "accuracy": number,
-                "truePositives": number,
-                "falsePositives": number,
-                "falseNegatives": number,
-                "total": number },
-            "summationMicroAverageMetrics": {
-                "summationPrecision": number,
-                "summationRecall": number,
-                "summationF1Score": number,
-                "summationAccuracy": number,
-                "summationTruePositives": number,
-                "summationFalsePositives": number,
-                "summationTrueNegatives": number,
-                "summationFalseNegatives": number,
-                "summationSupport": number,
-                "total": number },
-            "macroAverageMetrics": {
-                "averagePrecision": number,
-                "averageRecall": number,
-                "averageF1Score": number,
-                "averageAccuracy": number,
-                "averageTruePositives": number,
-                "averageFalsePositives": number,
-                "averageTrueNegatives": number,
-                "averageFalseNegatives": number,
-                "averageSupport": number,
-                "total": number },
-            "summationMacroAverageMetrics": {
-                "averagePrecision": number,
-                "averageRecall": number,
-                "averageF1Score": number,
-                "averageAccuracy": number,
-                "averageTruePositives": number,
-                "averageFalsePositives": number,
-                "averageTrueNegatives": number,
-                "averageFalseNegatives": number,
-                "averageSupport": number,
-                "total": number },
-            "positiveSupportLabelMacroAverageMetrics": {
-                "averagePrecision": number,
-                "averageRecall": number,
-                "averageF1Score": number,
-                "averageAccuracy": number,
-                "averageTruePositives": number,
-                "averageFalsePositives": number,
-                "averageTrueNegatives": number,
-                "averageFalseNegatives": number,
-                "averageSupport": number,
-                "total": number },
-            "positiveSupportLabelSummationMacroAverageMetrics": {
-                "averagePrecision": number,
-                "averageRecall": number,
-                "averageF1Score": number,
-                "averageAccuracy": number,
-                "averageTruePositives": number,
-                "averageFalsePositives": number,
-                "averageTrueNegatives": number,
-                "averageFalseNegatives": number,
-                "averageSupport": number,
-                "total": number },
-            "weightedMacroAverageMetrics": {
-                "weightedAveragePrecision": number,
-                "weightedAverageRecall": number,
-                "weightedAverageF1Score": number,
-                "weightedAverageAccuracy": number,
-                "weightedAverageSupport": number,
-                "total": number },
-            "summationWeightedMacroAverageMetrics": {
-                "averagePrecision": number,
-                "averageRecall": number,
-                "averageF1Score": number,
-                "averageAccuracy": number,
-                "averageTruePositives": number,
-                "averageFalsePositives": number,
-                "averageTrueNegatives": number,
-                "averageFalseNegatives": number,
-                "averageSupport": number,
-                "total": number } } = {
+        const confusionMatrixMetricStructure: IConfusionMatrixagglomeratedMetricStructure = {
             microQuantileMetrics,
             macroQuantileMetrics,
             confusionMatrix,
@@ -770,17 +411,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
 
     public getMicroQuantileMetrics(
         binaryConfusionMatrices: BinaryConfusionMatrix[] = [],
-        quantileConfiguration: number = 4): {
-        "quantilesPrecisions": number[],
-        "quantilesRecalls": number[],
-        "quantilesF1Scores": number[],
-        "quantilesTruePositives": number[],
-        "quantilesFalsePositives": number[],
-        "quantilesTrueNegatives": number[],
-        "quantilesFalseNegatives": number[],
-        "quantilesAccuracies": number[],
-        "quantilesSupports": number[],
-        "total": number } {
+        quantileConfiguration: number = 4): IConfusionMatrixQuantileMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -790,53 +421,43 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
         const total: number =
             this.getTotal(binaryConfusionMatrices);
-        const precisions: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getPrecision(), x.getSupport()]);
+        const precisions: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getPrecision(), x.getSupport()));
         const quantilesPrecisions: number[] =
             Utility.findValueCountPairQuantiles(precisions, quantileConfiguration) as number[];
-        const recalls: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getRecall(), x.getSupport()]);
+        const recalls: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getRecall(), x.getSupport()));
         const quantilesRecalls: number[] =
             Utility.findValueCountPairQuantiles(recalls, quantileConfiguration) as number[];
-        const f1Scores: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getF1Score(), x.getSupport()]);
+        const f1Scores: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getF1Score(), x.getSupport()));
         const quantilesF1Scores: number[] =
             Utility.findValueCountPairQuantiles(f1Scores, quantileConfiguration) as number[];
-        const truePositives: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getTruePositives(), x.getSupport()]);
+        const truePositives: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getTruePositives(), x.getSupport()));
         const quantilesTruePositives: number[] =
             Utility.findValueCountPairQuantiles(truePositives, quantileConfiguration) as number[];
-        const falsePositives: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getFalsePositives(), x.getSupport()]);
+        const falsePositives: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getFalsePositives(), x.getSupport()));
         const quantilesFalsePositives: number[] =
             Utility.findValueCountPairQuantiles(falsePositives, quantileConfiguration) as number[];
-        const trueNegatives: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getTrueNegatives(), x.getSupport()]);
+        const trueNegatives: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getTrueNegatives(), x.getSupport()));
         const quantilesTrueNegatives: number[] =
             Utility.findValueCountPairQuantiles(trueNegatives, quantileConfiguration) as number[];
-        const falseNegatives: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getFalseNegatives(), x.getSupport()]);
+        const falseNegatives: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getFalseNegatives(), x.getSupport()));
         const quantilesFalseNegatives: number[] =
             Utility.findValueCountPairQuantiles(falseNegatives, quantileConfiguration) as number[];
-        const accuracies: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getAccuracy(), x.getSupport()]);
+        const accuracies: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getAccuracy(), x.getSupport()));
         const quantilesAccuracies: number[] =
             Utility.findValueCountPairQuantiles(accuracies, quantileConfiguration) as number[];
-        const supports: Array<[number, number]> = binaryConfusionMatrices.map(
-            (x: BinaryConfusionMatrix) => [x.getSupport(), x.getSupport()]);
+        const supports: StructValueCount[] = binaryConfusionMatrices.map(
+            (x: BinaryConfusionMatrix) => new StructValueCount(x.getSupport(), x.getSupport()));
         const quantilesSupports: number[] =
             Utility.findValueCountPairQuantiles(supports, quantileConfiguration) as number[];
-        const microQuantileMetrics: {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number } = {
+        const microQuantileMetrics: IConfusionMatrixQuantileMetrics = {
                 quantilesPrecisions,
                 quantilesRecalls,
                 quantilesF1Scores,
@@ -852,17 +473,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
 
     public getMacroQuantileMetrics(
         binaryConfusionMatrices: BinaryConfusionMatrix[] = [],
-        quantileConfiguration: number = 4): {
-        "quantilesPrecisions": number[],
-        "quantilesRecalls": number[],
-        "quantilesF1Scores": number[],
-        "quantilesTruePositives": number[],
-        "quantilesFalsePositives": number[],
-        "quantilesTrueNegatives": number[],
-        "quantilesFalseNegatives": number[],
-        "quantilesAccuracies": number[],
-        "quantilesSupports": number[],
-        "total": number } {
+        quantileConfiguration: number = 4): IConfusionMatrixQuantileMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -908,17 +519,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             (x: BinaryConfusionMatrix) => x.getSupport());
         const quantilesSupports: number[] =
             Utility.findQuantiles(supports, quantileConfiguration) as number[];
-        const macroQuantileMetrics: {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number } = {
+        const macroQuantileMetrics: IConfusionMatrixQuantileMetrics = {
                 quantilesPrecisions,
                 quantilesRecalls,
                 quantilesF1Scores,
@@ -932,12 +533,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroQuantileMetrics;
     }
 
-    public getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecisionRecallF1Accuracy": number,
-        "truePositives": number,
-        "falsePositives": number,
-        "falseNegatives": number,
-        "total": number } {
+    public getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixBaseMicroAverageMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -958,12 +555,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
                 (accumulation, entry) => accumulation + entry.getFalseNegatives(), 0);
         const averagePrecisionRecallF1Accuracy: number =
             truePositives / total;
-        const microAverageMetrics: {
-            "averagePrecisionRecallF1Accuracy": number,
-            "truePositives": number,
-            "falsePositives": number,
-            "falseNegatives": number,
-            "total": number } = {
+        const microAverageMetrics: IConfusionMatrixBaseMicroAverageMetrics = {
             averagePrecisionRecallF1Accuracy,
             truePositives,
             falsePositives,
@@ -972,17 +564,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return microAverageMetrics;
     }
 
-    public getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "summationPrecision": number,
-        "summationRecall": number,
-        "summationF1Score": number,
-        "summationTruePositives": number,
-        "summationFalsePositives": number,
-        "summationTrueNegatives": number,
-        "summationFalseNegatives": number,
-        "summationAccuracy": number,
-        "summationSupport": number,
-        "total": number } {
+    public getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixSummationMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1023,17 +606,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationArithmeticAverageBinaryConfusionMatrix.getSupport();
         const total: number =
             summationArithmeticAverageTotal;
-        const macroAverageMetrics: {
-            "summationPrecision": number,
-            "summationRecall": number,
-            "summationF1Score": number,
-            "summationTruePositives": number,
-            "summationFalsePositives": number,
-            "summationTrueNegatives": number,
-            "summationFalseNegatives": number,
-            "summationAccuracy": number,
-            "summationSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixSummationMetrics = {
                 summationPrecision,
                 summationRecall,
                 summationF1Score,
@@ -1047,17 +620,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): IConfusionMatrixMeanMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1096,17 +659,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
         const total: number =
             this.getTotal(binaryConfusionMatrices);
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,
@@ -1120,17 +673,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixMeanMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1176,17 +720,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationArithmeticAverageBinaryConfusionMatrix.getAccuracy();
         const averageSupport: number =
             summationArithmeticAverageBinaryConfusionMatrix.getSupport();
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,
@@ -1200,17 +734,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixMeanMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1259,17 +784,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
         const total: number =
             this.getTotal(binaryConfusionMatrices);
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,
@@ -1283,17 +798,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixMeanMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1344,17 +850,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationArithmeticAverageBinaryConfusionMatrix.getAccuracy();
         const averageSupport: number =
             summationArithmeticAverageBinaryConfusionMatrix.getSupport();
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,
@@ -1368,13 +864,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixMeanDerivedMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1399,13 +890,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         const averageSupport: number =
             binaryConfusionMatrices.reduce(
                 (accumulation, entry) => accumulation + entry.getSupport() * entry.getPositives(), 0) / total;
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanDerivedMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,
@@ -1415,17 +900,8 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         return macroAverageMetrics;
     }
 
-    public getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number } {
+    public getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[] = []):
+        IConfusionMatrixMeanMetrics {
         if (Utility.isEmptyArray(binaryConfusionMatrices)) {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
@@ -1469,17 +945,7 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             summationWeightedAverageBinaryConfusionMatrix.getAccuracy();
         const averageSupport: number =
             summationWeightedAverageBinaryConfusionMatrix.getSupport();
-        const macroAverageMetrics: {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageAccuracy": number,
-            "averageSupport": number,
-            "total": number } = {
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
                 averagePrecision,
                 averageRecall,
                 averageF1Score,

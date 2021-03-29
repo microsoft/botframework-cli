@@ -505,8 +505,7 @@ export class OrchestratorHelper {
                 labelTrimmed,
                 '',
                 utteranceLabelsMap,
-                utteranceLabelDuplicateMap
-              );
+                utteranceLabelDuplicateMap);
             }
           }
           numberLinesProcessed++;
@@ -560,8 +559,7 @@ export class OrchestratorHelper {
         hasLabel ? hierarchicalLabel : Utility.cleanStringOnSpaceCommas(items[1].trim()),
         '',
         utteranceLabelsMap,
-        utteranceLabelDuplicateMap
-      );
+        utteranceLabelDuplicateMap);
     });
 
     return true;
@@ -664,8 +662,7 @@ export class OrchestratorHelper {
             label,
             hierarchicalLabel,
             utteranceLabelsMap,
-            utteranceLabelDuplicateMap
-          );
+            utteranceLabelDuplicateMap);
           const entities: any[] = e.entities;
           entities.forEach((entityEntry: any) => {
             OrchestratorHelper.addNewEntityLabelUtterance(
@@ -705,8 +702,7 @@ export class OrchestratorHelper {
           answer,
           '',
           utteranceLabelsMap,
-          utteranceLabelDuplicateMap
-        );
+          utteranceLabelDuplicateMap);
       });
     });
   }

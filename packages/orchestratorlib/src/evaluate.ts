@@ -9,12 +9,16 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
+import {Example} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
-import {Example} from '@microsoft/bf-dispatcher';
-
 import {PredictionStructureWithScoreLabelString} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
+
+import {StructNumberNumber} from '@microsoft/bf-dispatcher';
+import {StructTextNumber} from '@microsoft/bf-dispatcher';
+import {StructTextStringSet} from '@microsoft/bf-dispatcher';
+import {StructTextText} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
@@ -189,12 +193,12 @@ export class OrchestratorEvaluate {
     // ---- NOTE ---- retrieve examples, process the snapshot set, retrieve labels, and create a label-index map for intent.
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    const numberAddedIntentLabels: [number, number] = Utility.examplesToUtteranceLabelMaps(
+    const numberAddedIntentLabels: StructNumberNumber = Utility.examplesToUtteranceLabelMaps(
       exampleStructureArray,
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
-    const numberIntentUtteancesAdded: number = numberAddedIntentLabels[0];
-    const numberIntentLabelsAdded: number = numberAddedIntentLabels[1];
+    const numberIntentUtteancesAdded: number = numberAddedIntentLabels.valueFirst;
+    const numberIntentLabelsAdded: number = numberAddedIntentLabels.valueSecond;
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberAddedIntentLabels=${numberAddedIntentLabels}`);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberIntentUtteancesAdded=${numberIntentUtteancesAdded}`);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberIntentLabelsAdded=${numberIntentLabelsAdded}`);
@@ -202,12 +206,12 @@ export class OrchestratorEvaluate {
     // ---- NOTE ---- retrieve examples, process the snapshot set, retrieve labels, and create a label-index map for entity.
     const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    const numberAddedEntityLabels: [number, number] = Utility.examplesToUtteranceEntityLabelMaps(
+    const numberAddedEntityLabels: StructNumberNumber = Utility.examplesToUtteranceEntityLabelMaps(
       exampleStructureArray,
       utteranceEntityLabelsMap,
       utteranceEntityLabelDuplicateMap);
-    const numberEntityUtteancesAdded: number = numberAddedEntityLabels[0];
-    const numberEntityLabelsAdded: number = numberAddedEntityLabels[1];
+    const numberEntityUtteancesAdded: number = numberAddedEntityLabels.valueFirst;
+    const numberEntityLabelsAdded: number = numberAddedEntityLabels.valueSecond;
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberAddedEntityLabels=${numberAddedEntityLabels}`);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberEntityUtteancesAdded=${numberEntityUtteancesAdded}`);
     Utility.debuggingLog(`OrchestratorEvaluate.runAsync(), numberEntityLabelsAdded=${numberEntityLabelsAdded}`);
@@ -231,15 +235,15 @@ export class OrchestratorEvaluate {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -333,15 +337,15 @@ export class OrchestratorEvaluate {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {

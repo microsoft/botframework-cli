@@ -15,6 +15,8 @@ import { IDictionaryStringIdGenericValue } from "../../src/data_structure/IDicti
 
 import { DictionaryMapUtility } from "../../src/data_structure/DictionaryMapUtility";
 
+import { StructValueCount } from "../../src/label_structure/StructValueCount";
+
 import { TMapStringKeyGenericArray } from "../../src/data_structure/TMapStringKeyGenericArray";
 import { TMapStringKeyGenericValue } from "../../src/data_structure/TMapStringKeyGenericValue";
 
@@ -2309,13 +2311,19 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.2503 sortValueCountPairArray()", function() {
         Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
-        const sortedArray: Array<[number, number]> = Utility.sortValueCountPairArray(inputArray);
+        const inputArray: StructValueCount[] = [
+            new StructValueCount(4, 5),
+            new StructValueCount(1, 3),
+            new StructValueCount(3, 2),
+            new StructValueCount(9, 1),
+            new StructValueCount(2, 5)
+        ];
+        const sortedArray: StructValueCount[] = Utility.sortValueCountPairArray(inputArray);
         Utility.debuggingLog(
             `sortedArray[0]=${sortedArray[0]}`);
         assert.ok(sortedArray.length === 5);
-        assert.ok(sortedArray[0][0] === 1);
-        assert.ok(sortedArray[sortedArray.length - 1][0] === 9);
+        assert.ok(sortedArray[0].value === 1);
+        assert.ok(sortedArray[sortedArray.length - 1].value === 9);
     });
 
     it("Test.2600 findMedian()", function() {
@@ -2330,7 +2338,13 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.2601 findValueCountPairMedian()", function() {
         Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
+        const inputArray: StructValueCount[] = [
+            new StructValueCount(4, 5),
+            new StructValueCount(1, 3),
+            new StructValueCount(3, 2),
+            new StructValueCount(9, 1),
+            new StructValueCount(2, 5)
+        ];
         const median: number = Utility.findValueCountPairMedian(inputArray) as number;
         Utility.debuggingLog(
             `median=${median}`);
@@ -2349,7 +2363,13 @@ describe("Test Suite - utility/Utility", () => {
     it("Test.2701 findValueCountPairQuantiles()", function() {
         Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
         this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
-        const inputArray: Array<[number, number]> = [[4, 5], [1, 3], [3, 2], [9, 1], [2, 5]];
+        const inputArray: StructValueCount[] = [
+            new StructValueCount(4, 5),
+            new StructValueCount(1, 3),
+            new StructValueCount(3, 2),
+            new StructValueCount(9, 1),
+            new StructValueCount(2, 5)
+        ];
         const quantiles: number[] = Utility.findValueCountPairQuantiles(inputArray, 4) as number[];
         Utility.debuggingLog(
             `quantiles=${quantiles}`);

@@ -7,12 +7,14 @@ import { BinaryConfusionMatrix } from "../mathematics/confusion_matrix/BinaryCon
 
 import { Label } from "./Label";
 import { LabelType } from "./LabelType";
-import { Result } from "./Result";
+// import { Result } from "./Result";
 import { ScoreEntity } from "./ScoreEntity";
 import { ScoreIntent } from "./ScoreIntent";
 import { ScoreEntityUtterancePrediction } from "./ScoreEntityUtterancePrediction";
 import { ScoreIntentUtterancePrediction } from "./ScoreIntentUtterancePrediction";
-import { Span } from "./Span";
+// import { Span } from "./Span";
+
+import { StructTextNumber } from "./StructTextNumber";
 
 import { Utility } from "../utility/Utility";
 import { PredictionType } from "./PredictionType";
@@ -755,7 +757,7 @@ export class LabelStructureUtility {
         labelArrayAndMap: {
             "stringArray": string[],
             "stringMap": Map<string, number> },
-        utteranceIntentLabelsMapGroundTruth: Map<string, Array<[string, number]>>,
+        utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>,
         length: number):
         Map<string, Array<{
@@ -938,7 +940,7 @@ export class LabelStructureUtility {
         labelArrayAndMap: {
             "stringArray": string[],
             "stringMap": Map<string, number> },
-        utteranceIntentLabelsMapGroundTruth: Map<string, Array<[string, number]>>,
+        utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>):
         Map<string, Array<[ScoreIntentUtterancePrediction, number]>> {
         const labelScoreIntentUtterancePredictionsMap: Map<string, Array<[ScoreIntentUtterancePrediction, number]>> =
@@ -949,8 +951,8 @@ export class LabelStructureUtility {
         const utterances: string[] =
             [...utteranceIntentLabelsMapGroundTruth.keys()];
         utterances.forEach((utterance: string) => {
-            const utteranceGroundTruthLabels: Array<[string, number]> =
-                utteranceIntentLabelsMapGroundTruth.get(utterance) as Array<[string, number]>;
+            const utteranceGroundTruthLabels: StructTextNumber[] =
+                utteranceIntentLabelsMapGroundTruth.get(utterance) as StructTextNumber[];
             // ---- TODO ---- check array size
             if (utteranceIntentLabelScoresMapPrediction.has(utterance)) {
                 const utteranceIntentPredictionScores: ScoreIntent[][] =
@@ -969,9 +971,9 @@ export class LabelStructureUtility {
                             1;
                         for (const utteranceGroundTruthLabel of utteranceGroundTruthLabels) {
                             // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                            if (utteranceIntentPredictionScoreLabel === utteranceGroundTruthLabel[0]) {
+                            if (utteranceIntentPredictionScoreLabel === utteranceGroundTruthLabel.text) {
                                 isInGroundTruthPositive = true;
-                                utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel[1];
+                                utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel.value;
                                 break;
                             }
                         }
@@ -988,18 +990,18 @@ export class LabelStructureUtility {
                             [scoreIntentUtterancePrediction, utteranceGroundTruthLabelWeight]);
                     }
                 });
-                utteranceGroundTruthLabels.forEach((utteranceGroundTruthLabel: [string, number]) => {
+                utteranceGroundTruthLabels.forEach((utteranceGroundTruthLabel: StructTextNumber) => {
                     // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                    if (labelScoreIntentUtterancePredictionsMap.has(utteranceGroundTruthLabel[0])) {
+                    if (labelScoreIntentUtterancePredictionsMap.has(utteranceGroundTruthLabel.text)) {
                         let isInGroundTruthPositive: boolean =
                             false;
                         let utteranceGroundTruthLabelWeight: number =
                             1;
                         for (const utteranceIntentPredictionScore of utteranceIntentPredictionScores) {
                             // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                            if (utteranceGroundTruthLabel[0] === utteranceIntentPredictionScore[0].intent) {
+                            if (utteranceGroundTruthLabel.text === utteranceIntentPredictionScore[0].intent) {
                                 isInGroundTruthPositive = true;
-                                utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel[1];
+                                utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel.value;
                                 break;
                             }
                         }
@@ -1009,12 +1011,12 @@ export class LabelStructureUtility {
                                     utterance,
                                     PredictionType.Negative,
                                     // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                                    utteranceGroundTruthLabel[0],
+                                    utteranceGroundTruthLabel.text,
                                     0);
                             // tslint:disable-next-line: max-line-length
                             const perLabeScoreIntentUtterancePredictions: Array<[ScoreIntentUtterancePrediction, number]> =
                                 // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                                labelScoreIntentUtterancePredictionsMap.get(utteranceGroundTruthLabel[0]) as
+                                labelScoreIntentUtterancePredictionsMap.get(utteranceGroundTruthLabel.text) as
                                 Array<[ScoreIntentUtterancePrediction, number]>;
                             perLabeScoreIntentUtterancePredictions.push(
                                 [scoreIntentUtterancePrediction, utteranceGroundTruthLabelWeight]);
@@ -1022,24 +1024,24 @@ export class LabelStructureUtility {
                     }
                 });
             } else {
-                utteranceGroundTruthLabels.forEach((utteranceGroundTruthLabel: [string, number]) => {
+                utteranceGroundTruthLabels.forEach((utteranceGroundTruthLabel: StructTextNumber) => {
                     // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                    if (labelScoreIntentUtterancePredictionsMap.has(utteranceGroundTruthLabel[0])) {
+                    if (labelScoreIntentUtterancePredictionsMap.has(utteranceGroundTruthLabel.text)) {
                         {
                             const scoreIntentUtterancePrediction: ScoreIntentUtterancePrediction =
                                 ScoreIntentUtterancePrediction.newScoreIntentUtterancePrediction(
                                     utterance,
                                     PredictionType.Negative,
                                     // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                                    utteranceGroundTruthLabel[0],
+                                    utteranceGroundTruthLabel.text,
                                     0);
                             // tslint:disable-next-line: max-line-length
                             const perLabelScoreIntentUtterancePredictions: Array<[ScoreIntentUtterancePrediction, number]> =
                                 // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                                labelScoreIntentUtterancePredictionsMap.get(utteranceGroundTruthLabel[0]) as
+                                labelScoreIntentUtterancePredictionsMap.get(utteranceGroundTruthLabel.text) as
                                 Array<[ScoreIntentUtterancePrediction, number]>;
                             perLabelScoreIntentUtterancePredictions.push(
-                                [scoreIntentUtterancePrediction, utteranceGroundTruthLabel[1]]);
+                                [scoreIntentUtterancePrediction, utteranceGroundTruthLabel.value]);
                         }
                     }
                 });
@@ -1051,7 +1053,7 @@ export class LabelStructureUtility {
         labelArrayAndMap: {
             "stringArray": string[],
             "stringMap": Map<string, number> },
-        utteranceIntentLabelsMapGroundTruth: Map<string, Array<[string, number]>>,
+        utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>):
         Map<string, Array<[ScoreIntentUtterancePrediction, number]>> {
         const labeScoreIntentUtterancePredictionsMap: Map<string, Array<[ScoreIntentUtterancePrediction, number]>> =
@@ -1062,17 +1064,17 @@ export class LabelStructureUtility {
             labeScoreIntentUtterancePredictionsMap.set(label, perLabeScoreIntentUtterancePredictions);
             const utterances: string[] = [...utteranceIntentLabelsMapGroundTruth.keys()];
             utterances.map((utterance: string) => {
-                const utteranceGroundTruthLabels: Array<[string, number]> =
-                    utteranceIntentLabelsMapGroundTruth.get(utterance) as Array<[string, number]>;
+                const utteranceGroundTruthLabels: StructTextNumber[] =
+                    utteranceIntentLabelsMapGroundTruth.get(utterance) as StructTextNumber[];
                 let isInGroundTruthPositive: boolean =
                     false;
                 let utteranceGroundTruthLabelWeight: number =
                     1;
                 for (const utteranceGroundTruthLabel of utteranceGroundTruthLabels) {
                     // ---- NOTE-PLACEHOLDER-tuple-first-entry-is-label ----
-                    if (utteranceGroundTruthLabel[0] === label) {
+                    if (utteranceGroundTruthLabel.text === label) {
                         isInGroundTruthPositive = true;
-                        utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel[1];
+                        utteranceGroundTruthLabelWeight = utteranceGroundTruthLabel.value;
                         break;
                     }
                 }
@@ -1235,8 +1237,8 @@ export class LabelStructureUtility {
     public static getJsonIntentsEntitiesUtterancesWithWeight(
         jsonObjectArray: any,
         hierarchicalLabel: string,
-        utteranceIntentLabelsMap: Map<string, Array<[string, number]>>,
-        utteranceIntentLabelDuplicateMap: Map<string, Array<[string, number]>>,
+        utteranceIntentLabelsMap: Map<string, StructTextNumber[]>,
+        utteranceIntentLabelDuplicateMap: Map<string, StructTextNumber[]>,
         utteranceEntityLabelsMap: Map<string, Array<[Label, number]>>,
         utteranceEntityLabelDuplicateMap: Map<string, Array<[Label, number]>>): boolean {
         try {
@@ -1342,12 +1344,12 @@ export class LabelStructureUtility {
         utterance: string,
         label: string,
         hierarchicalLabel: string,
-        utteranceLabelsMap: Map<string, Array<[string, number]>>,
-        utteranceLabelDuplicateMap: Map<string, Array<[string, number]>>,
+        utteranceLabelsMap: Map<string, StructTextNumber[]>,
+        utteranceLabelDuplicateMap: Map<string, StructTextNumber[]>,
         weight: number = 1): void {
         if (utteranceLabelsMap.has(utterance)) {
-            const existingLabels: Array<[string, number]> =
-                utteranceLabelsMap.get(utterance) as Array<[string, number]>;
+            const existingLabels: StructTextNumber[] =
+                utteranceLabelsMap.get(utterance) as StructTextNumber[];
             if (!Utility.isEmptyString(hierarchicalLabel)) {
                 if (!LabelStructureUtility.addUniqueLabelWithWeightToArray(
                     hierarchicalLabel,
@@ -1370,12 +1372,12 @@ export class LabelStructureUtility {
                     weight);
             }
         } else if (!Utility.isEmptyString(hierarchicalLabel)) {
-            const labelWeightCollection: Array<[string, number]> = new Array<[string, number]>();
-            labelWeightCollection.push([hierarchicalLabel, weight]);
+            const labelWeightCollection: StructTextNumber[] = [];
+            labelWeightCollection.push(new StructTextNumber(hierarchicalLabel, weight));
             utteranceLabelsMap.set(utterance, labelWeightCollection);
         } else {
-            const labelWeightCollection: Array<[string, number]> = new Array<[string, number]>();
-            labelWeightCollection.push([label, weight]);
+            const labelWeightCollection: StructTextNumber[] = [];
+            labelWeightCollection.push(new StructTextNumber(label, weight));
             utteranceLabelsMap.set(utterance, labelWeightCollection);
         }
     }
@@ -1420,13 +1422,13 @@ export class LabelStructureUtility {
     public static insertStringPairWithWeightToStringIdStringWeightCollectionNativeMap(
         key: string,
         value: string,
-        stringKeyStringWeightCollectionMap: Map<string, Array<[string, number]>>,
-        weight: number = 1): Map<string, Array<[string, number]>> {
+        stringKeyStringWeightCollectionMap: Map<string, StructTextNumber[]>,
+        weight: number = 1): Map<string, StructTextNumber[]> {
         if (!stringKeyStringWeightCollectionMap) {
-            stringKeyStringWeightCollectionMap = new Map<string, Array<[string, number]>>();
+            stringKeyStringWeightCollectionMap = new Map<string, StructTextNumber[]>();
         }
         if (stringKeyStringWeightCollectionMap.has(key)) {
-            let stringWeightCollection: Array<[string, number]> | undefined =
+            let stringWeightCollection: StructTextNumber[] | undefined =
                 stringKeyStringWeightCollectionMap.get(key);
             if (!stringWeightCollection) {
                 stringWeightCollection = [];
@@ -1434,9 +1436,9 @@ export class LabelStructureUtility {
             }
             LabelStructureUtility.addUniqueLabelWithWeightToArray(value, stringWeightCollection, weight);
         } else {
-            const stringWeightCollection: Array<[string, number]> = new Array<[string, number]>();
+            const stringWeightCollection: StructTextNumber[] = [];
             stringKeyStringWeightCollectionMap.set(key, stringWeightCollection);
-            stringWeightCollection.push([value, weight]);
+            stringWeightCollection.push(new StructTextNumber(value, weight));
         }
         return stringKeyStringWeightCollectionMap;
     }
@@ -1469,17 +1471,17 @@ export class LabelStructureUtility {
 
     public static addUniqueLabelWithWeightToArray(
         newLabel: string,
-        labels: Array<[string, number]>,
+        labels: StructTextNumber[],
         weight: number = 1): boolean {
         try {
             for (const labelEntry of labels) {
-                const label: string = labelEntry[0];
+                const label: string = labelEntry.text;
                 if (label === newLabel) {
-                    labelEntry[1] += weight;
+                    labelEntry.value += weight;
                     return false;
                 }
             }
-            labels.push([newLabel, weight]);
+            labels.push(new StructTextNumber(newLabel, weight));
             return true;
         } catch (error) {
             Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);

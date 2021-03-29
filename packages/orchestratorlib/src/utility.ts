@@ -32,6 +32,13 @@ import {PredictionTypeArrayOutputIndex} from '@microsoft/bf-dispatcher';
 import {Result} from '@microsoft/bf-dispatcher';
 // import {Span} from '@microsoft/bf-dispatcher';
 
+import {StructTextLabelObjects} from '@microsoft/bf-dispatcher';
+import {StructTextLabelStrings} from '@microsoft/bf-dispatcher';
+import {StructNumberNumber} from '@microsoft/bf-dispatcher';
+import {StructTextNumber} from '@microsoft/bf-dispatcher';
+import {StructTextStringSet} from '@microsoft/bf-dispatcher';
+import {StructTextText} from '@microsoft/bf-dispatcher';
+
 import {OrchestratorHelper} from './orchestratorhelper';
 
 import {AssessmentLabelSummaryTemplateHtml} from './resources/assessment-label-summary-template-html';
@@ -363,15 +370,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
@@ -386,20 +393,20 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportSpuriousPredictions': {
         'evaluationSummary': string;
-        'spuriousPredictions': [string, Label[]][]; };
+        'spuriousPredictions': StructTextLabelObjects[]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {
@@ -432,15 +439,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(
@@ -470,15 +477,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(
@@ -502,7 +509,7 @@ export class Utility {
     // ---- NOTE ---- find spurious predictions
     const evaluationReportSpuriousPredictions: {
       'evaluationSummary': string;
-      'spuriousPredictions': [string, Label[]][];
+      'spuriousPredictions': StructTextLabelObjects[];
     } = Utility.generateAssessmentLabelObjectEvaluationReportSpuriousPredictions(
       evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary,
       groundTruthSetUtteranceEntityLabelsMap,
@@ -552,22 +559,22 @@ export class Utility {
     groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]>,
     predictionSetUtteranceEntityLabelsMap: Map<string, Label[]>): {
       'evaluationSummary': string;
-      'spuriousPredictions': [string, Label[]][];
+      'spuriousPredictions': StructTextLabelObjects[];
     } {
-    const spuriousPredictions: [string, Label[]][] = Utility.assessLabelObjectSpuriousPredictions(
+    const spuriousPredictions: StructTextLabelObjects[] = Utility.assessLabelObjectSpuriousPredictions(
       groundTruthSetUtteranceEntityLabelsMap,
       predictionSetUtteranceEntityLabelsMap);
-    const spuriousPredictionArrays: [string, string][] = spuriousPredictions.map(
-      (spuriousPrediction: [string, Label[]]) => [
-        Utility.outputStringUtility(spuriousPrediction[0]),
+    const spuriousPredictionArrays: StructTextText[] = spuriousPredictions.map(
+      (spuriousPrediction: StructTextLabelObjects) => new StructTextText(
+        Utility.outputStringUtility(spuriousPrediction.text),
         Utility.concatenateDataArrayToHtmlTable(
           'Label',
-          spuriousPrediction[1].map((x: Label) => Utility.outputLabelStringUtility(x))),
-      ]);
+          spuriousPrediction.labels.map((x: Label) => Utility.outputLabelStringUtility(x))),
+      ));
     // ---- NOTE ---- generate spurious report.
     const spuriousPredictionHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Spurious utterance and label pairs',
-      spuriousPredictionArrays,
+      spuriousPredictionArrays.map((x: StructTextText) => [x.textFirst, x.textSecond]),
       ['Utterance', 'Label']);
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCES summary from template.
     evaluationSummary = evaluationSummary.replace(
@@ -599,15 +606,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } {
@@ -642,7 +649,7 @@ export class Utility {
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelStringUtteranceStatisticsAndHtmlTable(
         Utility.convertUtteranceEntityLabelsMap(utteranceEntityLabelsMap));
@@ -656,7 +663,7 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagEntityLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate spurious label statistics.
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- const spuriousLabelStatisticsAndHtmlTable: {
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Label[]]>;
+    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
@@ -671,16 +678,17 @@ export class Utility {
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   spuriousLabelsUtterancesStatisticsHtml);
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagSpuriousLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
-    const utterancesMultiLabelArrays: [string, string][] = [...utteranceEntityLabelsMap.entries()].filter(
-      (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [
-      Utility.outputStringUtility(x[0]),
+    const utterancesMultiLabelArrays: StructTextText[] = [...utteranceEntityLabelsMap.keys()].map(
+      (x: string) => new StructTextLabelObjects(x, utteranceEntityLabelsMap.get(x) as Label[])).filter(
+      (x: StructTextLabelObjects) => x.labels.length > 1).map((x: StructTextLabelObjects) => new StructTextText(
+      Utility.outputStringUtility(x.text),
       Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        x[1].map((x: Label) => Utility.outputLabelStringUtility(x))),
-    ]);
+        x.labels.map((x: Label) => Utility.outputLabelStringUtility(x))),
+    ));
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
-      utterancesMultiLabelArrays,
+      utterancesMultiLabelArrays.map((x: StructTextText) => [x.textFirst, x.textSecond]),
       ['Utterance', 'Labels']);
     // ---- NOTE ---- generate duplicate report.
     const utteranceLabelDuplicateHtml: string = Utility.convertMapArrayToObfuscatableIndexedHtmlTable(
@@ -849,13 +857,13 @@ export class Utility {
 
   public static assessLabelObjectSpuriousPredictions(
     groundTruthSetUtteranceLabelsMap: Map<string, Label[]>,
-    predictionSetUtteranceLabelsMap: Map<string, Label[]>): [string, Label[]][] {
-    const spuriousPredictions: [string, Label[]][] = [];
+    predictionSetUtteranceLabelsMap: Map<string, Label[]>): StructTextLabelObjects[] {
+    const spuriousPredictions: StructTextLabelObjects[] = [];
     for (const predictionSetUtteranceLabels of predictionSetUtteranceLabelsMap.entries()) {
       const utterance: string = predictionSetUtteranceLabels[0];
       // eslint-disable-next-line no-prototype-builtins
       if (!groundTruthSetUtteranceLabelsMap.has(utterance)) {
-        spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
+        spuriousPredictions.push(new StructTextLabelObjects(utterance, predictionSetUtteranceLabels[1]));
       }
     }
     return spuriousPredictions;
@@ -1068,15 +1076,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
@@ -1091,20 +1099,20 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportSpuriousPredictions': {
         'evaluationSummary': string;
-        'spuriousPredictions': [string, string[]][]; };
+        'spuriousPredictions': StructTextLabelStrings[]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {
@@ -1137,15 +1145,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
       // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(
@@ -1176,15 +1184,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(
@@ -1209,7 +1217,7 @@ export class Utility {
     // ---- NOTE ---- find spurious predictions
     const evaluationReportSpuriousPredictions: {
       'evaluationSummary': string;
-      'spuriousPredictions': [string, string[]][];
+      'spuriousPredictions': StructTextLabelStrings[];
     } = Utility.generateAssessmentMultiLabelIntentEvaluationReportSpuriousPredictions(
       evaluationReportPredictionSetLabelUtteranceStatistics.evaluationSummary,
       groundTruthSetUtteranceLabelsMap,
@@ -1259,17 +1267,20 @@ export class Utility {
     groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
     predictionSetUtteranceLabelsMap: Map<string, Set<string>>): {
       'evaluationSummary': string;
-      'spuriousPredictions': [string, string[]][];
+      'spuriousPredictions': StructTextLabelStrings[];
     } {
-    const spuriousPredictions: [string, string[]][] = Utility.assessMultiLabelIntentSpuriousPredictions(
+    const spuriousPredictions: StructTextLabelStrings[] = Utility.assessMultiLabelIntentSpuriousPredictions(
       groundTruthSetUtteranceLabelsMap,
-      predictionSetUtteranceLabelsMap).map((x: [string, Set<string>]) => [x[0], [...x[1]]]);
-    const spuriousPredictionArrays: [string, string][] = spuriousPredictions.map(
-      (spuriousPrediction: [string, string[]]) => [spuriousPrediction[0], Utility.concatenateDataArrayToHtmlTable('Label', [...spuriousPrediction[1]])]);
+      predictionSetUtteranceLabelsMap).map(
+      (x: StructTextStringSet) => new StructTextLabelStrings(x.text, [...x.stringSet]));
+    const spuriousPredictionArrays: StructTextText[] = spuriousPredictions.map(
+      (spuriousPrediction: StructTextLabelStrings) => new StructTextText(
+        spuriousPrediction.text,
+        Utility.concatenateDataArrayToHtmlTable('Label', [...spuriousPrediction.labels])));
     // ---- NOTE ---- generate spurious report.
     const spuriousPredictionHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Spurious utterance and label pairs',
-      spuriousPredictionArrays,
+      spuriousPredictionArrays.map((x: StructTextText) => [x.textFirst, x.textSecond]),
       ['Utterance', 'Label']);
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCES summary from template.
     evaluationSummary = evaluationSummary.replace(
@@ -2010,13 +2021,13 @@ export class Utility {
 
   public static assessMultiLabelIntentSpuriousPredictions(
     groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
-    predictionSetUtteranceLabelsMap: Map<string, Set<string>>): [string, Set<string>][] {
-    const spuriousPredictions: [string, Set<string>][] = [];
+    predictionSetUtteranceLabelsMap: Map<string, Set<string>>): StructTextStringSet[] {
+    const spuriousPredictions: StructTextStringSet[] = [];
     for (const predictionSetUtteranceLabels of predictionSetUtteranceLabelsMap.entries()) {
       const utterance: string = predictionSetUtteranceLabels[0];
       // eslint-disable-next-line no-prototype-builtins
       if (!groundTruthSetUtteranceLabelsMap.has(utterance)) {
-        spuriousPredictions.push([utterance, predictionSetUtteranceLabels[1]]);
+        spuriousPredictions.push(new StructTextStringSet(utterance, predictionSetUtteranceLabels[1]));
       }
     }
     return spuriousPredictions;
@@ -2093,15 +2104,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string; };
     'evaluationReportAnalyses': {
@@ -2144,15 +2155,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -2198,7 +2209,7 @@ export class Utility {
           utteranceCount: 0,
           utteranceStatisticsHtml: ''},
         spuriousLabelStatisticsAndHtmlTable: {
-          spuriousLabelUtterancesMap: new Array<[string, Set<string>]>(),
+          spuriousLabelUtterancesMap: [],
           spuriousLabelUtterancesTotal: 0,
           spuriousLabelStatistics: [],
           spuriousLabelStatisticsHtml: ''},
@@ -2248,15 +2259,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string; };
     'evaluationReportAnalyses': {
@@ -2299,15 +2310,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -2353,7 +2364,7 @@ export class Utility {
           utteranceCount: 0,
           utteranceStatisticsHtml: ''},
         spuriousLabelStatisticsAndHtmlTable: {
-          spuriousLabelUtterancesMap: new Array<[string,  Set<string>]>(),
+          spuriousLabelUtterancesMap: [],
           spuriousLabelUtterancesTotal: 0,
           spuriousLabelStatistics: [],
           spuriousLabelStatisticsHtml: ''},
@@ -2445,7 +2456,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateLabelStringEvaluationReport(
     scoringFunctionToPredictionStructureWithScoreLabelString: (
-      utteranceLabelsPairArray: [string, string[]][],
+      utteranceLabelsPairArray: StructTextLabelStrings[],
       labelArrayAndMap: {
         'stringArray': string[];
         'stringMap': Map<string, number>;},
@@ -2477,15 +2488,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -2531,15 +2542,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(
@@ -2555,7 +2566,9 @@ export class Utility {
     Utility.debuggingLog('Utility.generateLabelStringEvaluationReport(), finished calling Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- collect utterance prediction and scores.
     Utility.debuggingLog('Utility.generateLabelStringEvaluationReport(), ready to call scoringFunctionToPredictionStructureWithScoreLabelString()');
-    const utteranceLabelsPairArray: [string, string[]][] = [...utteranceLabelsMap.entries()].map((x: [string, Set<string>]) => [x[0], [...x[1]]]);
+    const utteranceLabelsPairArray: StructTextLabelStrings[] = [...utteranceLabelsMap.keys()].map(
+      (key: string) => new StructTextStringSet(key, utteranceLabelsMap.get(key) as Set<string>)).map(
+      (x: StructTextStringSet) => new StructTextLabelStrings(x.text, [...x.stringSet]));
     const predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[] =
       scoringFunctionToPredictionStructureWithScoreLabelString(
         utteranceLabelsPairArray,
@@ -2690,15 +2703,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } {
@@ -2735,7 +2748,7 @@ export class Utility {
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelStringUtteranceStatisticsAndHtmlTable(
         utteranceLabelsMap);
@@ -2749,7 +2762,7 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagIntentUtteranceStatistics} content`);
     // ---- NOTE ---- generate spurious label statistics.
     const spuriousLabelStatisticsAndHtmlTable: {
-      'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+      'spuriousLabelUtterancesMap': StructTextStringSet[];
       'spuriousLabelUtterancesTotal': number;
       'spuriousLabelStatistics': string[][];
       'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelStringSpuriousLabelStatisticsAndHtmlTable(
@@ -2763,16 +2776,17 @@ export class Utility {
       spuriousLabelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagSpuriousLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
-    const utterancesMultiLabelArrays: [string, string][] = [...utteranceLabelsMap.entries()].filter(
-      (x: [string, Set<string>]) => x[1].size > 1).map((x: [string, Set<string>]) => [
-      Utility.outputStringUtility(x[0]),
+    const utterancesMultiLabelArrays: StructTextText[] = [...utteranceLabelsMap.keys()].map(
+      (key: string) => new StructTextStringSet(key, utteranceLabelsMap.get(key) as Set<string>)).filter(
+      (x: StructTextStringSet) => x.stringSet.size > 1).map((x: StructTextStringSet) => new StructTextText(
+      Utility.outputStringUtility(x.text),
       Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        [...x[1]].map((label: string) => Utility.outputStringUtility(label))),
-    ]);
+        [...x.stringSet].map((label: string) => Utility.outputStringUtility(label))),
+    ));
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
-      utterancesMultiLabelArrays,
+      utterancesMultiLabelArrays.map((x: StructTextText) => [x.textFirst, x.textSecond]),
       ['Utterance', 'Labels']);
     // ---- NOTE ---- generate duplicate report.
     const utteranceLabelDuplicateHtml: string = Utility.convertMapSetToObfuscatableIndexedHtmlTable(
@@ -3272,7 +3286,7 @@ export class Utility {
   public static generateLabelStringUtteranceStatisticsAndHtmlTable(
     utteranceLabelsMap: Map<string, Set<string>>): {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } {
     const utteranceStatisticsMap: Map<number, number> = new Map<number, number>();
@@ -3314,20 +3328,23 @@ export class Utility {
       'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
       'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
       'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean;}): {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string;
       } {
-    const spuriousLabelUtterancesMap: Array<[string, Set<string>]> =
-      [...Utility.reverseUniqueKeyedArray(unknownSpuriousLabelsProcessed.utteranceSpuriousLabelsMap)];
+    const reversedUniqueKeyedArray: Map<string, Set<string>> =
+      Utility.reverseUniqueKeyedArray(unknownSpuriousLabelsProcessed.utteranceSpuriousLabelsMap);
+    const spuriousLabelUtterancesMap: StructTextStringSet[] =
+      [...reversedUniqueKeyedArray.keys()].map(
+        (key: string) => new StructTextStringSet(key, reversedUniqueKeyedArray.get(key) as Set<string>));
     // ---- NOTE ---- generate spurious label statistics.
     return Utility.generateSpuriousLabelStatisticsAndHtmlTable(
       spuriousLabelUtterancesMap);
     // ---- NOTE-REFACTORED ---- const spuriousLabelUtterancesTotal: number = spuriousLabelUtterancesMap.reduce(
-    // ---- NOTE-REFACTORED ----   (accumulant: number, x: [string, Set<string>]) => accumulant + x[1].size, 0);
+    // ---- NOTE-REFACTORED ----   (accumulant: number, x: StructTextStringSet) => accumulant + x[1].size, 0);
     // ---- NOTE-REFACTORED ---- const spuriousLabelStatistics: string[][] = spuriousLabelUtterancesMap.sort(
-    // ---- NOTE-REFACTORED ----   (n1: [string, Set<string>], n2: [string, Set<string>]) => {
+    // ---- NOTE-REFACTORED ----   (n1: StructTextStringSet, n2: StructTextStringSet) => {
     // ---- NOTE-REFACTORED ----     if (n1[0] > n2[0]) {
     // ---- NOTE-REFACTORED ----       return 1;
     // ---- NOTE-REFACTORED ----     }
@@ -3336,7 +3353,7 @@ export class Utility {
     // ---- NOTE-REFACTORED ----     }
     // ---- NOTE-REFACTORED ----     return 0;
     // ---- NOTE-REFACTORED ----   }).map(
-    // ---- NOTE-REFACTORED ----   (x: [string, Set<string>], index: number) => [
+    // ---- NOTE-REFACTORED ----   (x: StructTextStringSet, index: number) => [
     // ---- NOTE-REFACTORED ----     index.toString(),
     // ---- NOTE-REFACTORED ----     Utility.outputStringUtility(x[0]),
     // ---- NOTE-REFACTORED ----     x[1].size.toString(),
@@ -3361,7 +3378,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateLabelObjectEvaluationReport(
     scoringFunctionToPredictionStructureWithScoreLabelObject: (
-      utteranceLabelsPairArray: [string, Label[]][],
+      utteranceLabelsPairArray: StructTextLabelObjects[],
       labelArrayAndMap: {
         'stringArray': string[];
         'stringMap': Map<string, number>;},
@@ -3393,15 +3410,15 @@ export class Utility {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         'spuriousLabelStatisticsAndHtmlTable': {
-          'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+          'spuriousLabelUtterancesMap': StructTextStringSet[];
           'spuriousLabelUtterancesTotal': number;
           'spuriousLabelStatistics': string[][];
           'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportAnalyses': {
@@ -3447,15 +3464,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } = Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(
@@ -3471,7 +3488,8 @@ export class Utility {
     Utility.debuggingLog('Utility.generateLabelObjectEvaluationReport(), finished calling Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics()');
     // ---- NOTE ---- collect utterance prediction and scores.
     Utility.debuggingLog('Utility.generateLabelObjectEvaluationReport(), ready to call scoringFunctionToPredictionStructureWithScoreLabelObject()');
-    const utteranceLabelsPairArray: [string, Label[]][] = [...utteranceLabelsMap.entries()].map((x: [string, Label[]]) => [x[0], x[1]]);
+    const utteranceLabelsPairArray: StructTextLabelObjects[] = [...utteranceLabelsMap.keys()].map(
+      (x: string) => new StructTextLabelObjects(x, utteranceLabelsMap.get(x) as Label[]));
     const predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[] =
       scoringFunctionToPredictionStructureWithScoreLabelObject(
         utteranceLabelsPairArray,
@@ -3606,15 +3624,15 @@ export class Utility {
         'labelStatisticsHtml': string;};
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
-        'utteranceStatistics': [string, number][];
+        'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
       'spuriousLabelStatisticsAndHtmlTable': {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string; };
-      'utterancesMultiLabelArrays': [string, string][];
+      'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
     } {
@@ -3651,7 +3669,7 @@ export class Utility {
     // ---- NOTE ---- generate utterance statistics
     const utteranceStatisticsAndHtmlTable: {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } = Utility.generateLabelObjectUtteranceStatisticsAndHtmlTable(
         utteranceLabelsMap);
@@ -3665,7 +3683,7 @@ export class Utility {
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagIntentUtteranceStatistics} content`);
     // ---- NOTE ---- generate spurious label statistics.
     const spuriousLabelStatisticsAndHtmlTable: {
-      'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+      'spuriousLabelUtterancesMap': StructTextStringSet[];
       'spuriousLabelUtterancesTotal': number;
       'spuriousLabelStatistics': string[][];
       'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
@@ -3679,16 +3697,17 @@ export class Utility {
       spuriousLabelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagSpuriousLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate duplicate report.
-    const utterancesMultiLabelArrays: [string, string][] = [...utteranceLabelsMap.entries()].filter(
-      (x: [string, Label[]]) => x[1].length > 1).map((x: [string, Label[]]) => [
-      Utility.outputStringUtility(x[0]),
+    const utterancesMultiLabelArrays: StructTextText[] = [...utteranceLabelsMap.keys()].map(
+      (x: string) => new StructTextLabelObjects(x, utteranceLabelsMap.get(x) as Label[])).filter(
+      (x: StructTextLabelObjects) => x.labels.length > 1).map((x: StructTextLabelObjects) => new StructTextText(
+      Utility.outputStringUtility(x.text),
       Utility.concatenateDataArrayToHtmlTable(
         'Label',
-        [...x[1]].map((label: Label) => Utility.outputLabelStringUtility(label))),
-    ]);
+        x.labels.map((label: Label) => Utility.outputLabelStringUtility(label))),
+    ));
     const utterancesMultiLabelArraysHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Multi-label utterances and their labels',
-      utterancesMultiLabelArrays,
+      utterancesMultiLabelArrays.map((x: StructTextText) => [x.textFirst, x.textSecond]),
       ['Utterance', 'Labels']);
     // ---- NOTE ---- generate duplicate report.
     const utteranceLabelDuplicateHtml: string = Utility.convertMapArrayToObfuscatableIndexedHtmlTable(
@@ -4196,7 +4215,7 @@ export class Utility {
   public static generateLabelObjectUtteranceStatisticsAndHtmlTable(
     utteranceLabelsMap: Map<string, Label[]>): {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } {
     const utteranceStatisticsMap: Map<number, number> = new Map<number, number>();
@@ -4238,20 +4257,23 @@ export class Utility {
       'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
       'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
       'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean;}): {
-        'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
         'spuriousLabelStatisticsHtml': string;
       } {
-    const spuriousLabelUtterancesMap: Array<[string, Set<string>]> =
-      [...Utility.reverseUniqueKeyedArrayLabelObject(unknownSpuriousEntityLabelsProcessed.utteranceSpuriousEntityLabelsMap)];
+    const reversedUniqueKeyedArrayLabelObject: Map<string, Set<string>> =
+      Utility.reverseUniqueKeyedArrayLabelObject(unknownSpuriousEntityLabelsProcessed.utteranceSpuriousEntityLabelsMap);
+    const spuriousLabelUtterancesMap: StructTextStringSet[] =
+      [...reversedUniqueKeyedArrayLabelObject.keys()].map(
+        (key: string) => new StructTextStringSet(key, reversedUniqueKeyedArrayLabelObject.get(key) as Set<string>));
     // ---- NOTE ---- generate spurious label statistics.
     return Utility.generateSpuriousLabelStatisticsAndHtmlTable(
       spuriousLabelUtterancesMap);
     // ---- NOTE-REFACTORED ---- const spuriousLabelUtterancesTotal: number = spuriousLabelUtterancesMap.reduce(
-    // ---- NOTE-REFACTORED ----   (accumulant: number, x: [string, Set<string>]) => accumulant + x[1].size, 0);
+    // ---- NOTE-REFACTORED ----   (accumulant: number, x: StructTextStringSet) => accumulant + x[1].size, 0);
     // ---- NOTE-REFACTORED ---- const spuriousLabelStatistics: string[][] = spuriousLabelUtterancesMap.sort(
-    // ---- NOTE-REFACTORED ----   (n1: [string, Set<string>], n2: [string, Set<string>]) => {
+    // ---- NOTE-REFACTORED ----   (n1: StructTextStringSet, n2: StructTextStringSet) => {
     // ---- NOTE-REFACTORED ----     if (n1[0] > n2[0]) {
     // ---- NOTE-REFACTORED ----       return 1;
     // ---- NOTE-REFACTORED ----     }
@@ -4260,7 +4282,7 @@ export class Utility {
     // ---- NOTE-REFACTORED ----     }
     // ---- NOTE-REFACTORED ----     return 0;
     // ---- NOTE-REFACTORED ----   }).map(
-    // ---- NOTE-REFACTORED ----   (x: [string, Set<string>], index: number) => [
+    // ---- NOTE-REFACTORED ----   (x: StructTextStringSet, index: number) => [
     // ---- NOTE-REFACTORED ----     index.toString(),
     // ---- NOTE-REFACTORED ----     Utility.outputStringUtility(x[0]),
     // ---- NOTE-REFACTORED ----     x[1].size.toString(),
@@ -4539,27 +4561,27 @@ export class Utility {
   public static generateUtteranceStatisticsAndHtmlTable(
     utteranceStatisticsMap: Map<number, number>): {
       'utteranceStatisticsMap': Map<number, number>;
-      'utteranceStatistics': [string, number][];
+      'utteranceStatistics': StructTextNumber[];
       'utteranceCount': number;
       'utteranceStatisticsHtml': string; } {
-    const utteranceStatistics: [string, number][] = [...utteranceStatisticsMap.entries()].map(
-      (entry: [number, number]) => [`${entry[0]}`, entry[1]]);
+    const utteranceStatistics: StructTextNumber[] = [...utteranceStatisticsMap.keys()].map(
+      (key: number) => new StructTextNumber(`${key}`, utteranceStatisticsMap.get(key) as number));
     utteranceStatistics.sort(
-      (n1: [string, number], n2: [string, number]) => {
-        if (n1[1] > n2[1]) {
+      (n1: StructTextNumber, n2: StructTextNumber) => {
+        if (n1.value > n2.value) {
           return -1;
         }
-        if (n1[1] < n2[1]) {
+        if (n1.value < n2.value) {
           return 1;
         }
         return 0;
       });
     const utteranceCount: number = utteranceStatistics.reduce(
-      (accumulant: number, entry: [string, number]) => accumulant + entry[1], 0);
-    utteranceStatistics.push(['Total', utteranceCount]);
+      (accumulant: number, entry: StructTextNumber) => accumulant + entry.value, 0);
+    utteranceStatistics.push(new StructTextNumber('Total', utteranceCount));
     const utteranceStatisticsHtml: string = Utility.convertDataArraysToIndexedHtmlTable(
       'Utterance statistics',
-      utteranceStatistics,
+      utteranceStatistics.map((x: StructTextNumber) => [x.text, x.value]),
       ['# Multi-Labels', 'Utterance Count']);
     return {utteranceStatisticsMap, utteranceStatistics, utteranceCount, utteranceStatisticsHtml};
   }
@@ -4575,24 +4597,26 @@ export class Utility {
         'labelStatisticsHtml': string;
       } {
     // ---- NOTE ---- generate label statistics.
-    const labelUtterancesTotal: number = [...labelUtterancesMap.entries()].reduce(
-      (accumulant: number, x: [string, Set<string>]) => accumulant + x[1].size, 0);
-    const labelStatistics: string[][] = [...labelUtterancesMap.entries()].sort(
-      (n1: [string, Set<string>], n2: [string, Set<string>]) => {
-        if (n1[0] > n2[0]) {
+    const labelUtterancesTotal: number = [...labelUtterancesMap.keys()].map(
+      (key: string) => labelUtterancesMap.get(key) as Set<string>).reduce(
+      (accumulant: number, x: Set<string>) => accumulant + x.size, 0);
+    const labelStatistics: string[][] = [...labelUtterancesMap.keys()].map(
+      (key: string) => new StructTextStringSet(key, labelUtterancesMap.get(key) as Set<string>)).sort(
+      (n1: StructTextStringSet, n2: StructTextStringSet) => {
+        if (n1.text > n2.text) {
           return 1;
         }
-        if (n1[0] < n2[0]) {
+        if (n1.text < n2.text) {
           return -1;
         }
         return 0;
       }).map(
-      (x: [string, Set<string>], index: number) => [
+      (x: StructTextStringSet, index: number) => [
         index.toString(),
-        Utility.outputStringUtility(x[0]),
-        Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x[0]).toString(),
-        x[1].size.toString(),
-        Utility.round(x[1].size / labelUtterancesTotal).toString(),
+        Utility.outputStringUtility(x.text),
+        Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, x.text).toString(),
+        x.stringSet.size.toString(),
+        Utility.round(x.stringSet.size / labelUtterancesTotal).toString(),
       ]);
     labelStatistics.push(['Total', 'N/A', 'N/A', labelUtterancesTotal.toString(), 'N/A']);
     const labelStatisticsHtml: string = Utility.convertDataArraysToHtmlTable(
@@ -4603,30 +4627,30 @@ export class Utility {
   }
 
   public static generateSpuriousLabelStatisticsAndHtmlTable(
-    spuriousLabelUtterancesMap: Array<[string, Set<string>]>): {
-      'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+    spuriousLabelUtterancesMap: StructTextStringSet[]): {
+      'spuriousLabelUtterancesMap': StructTextStringSet[];
       'spuriousLabelUtterancesTotal': number;
       'spuriousLabelStatistics': string[][];
       'spuriousLabelStatisticsHtml': string;
     } {
     // ---- NOTE ---- generate spurious label statistics.
     const spuriousLabelUtterancesTotal: number = spuriousLabelUtterancesMap.reduce(
-      (accumulant: number, x: [string, Set<string>]) => accumulant + x[1].size, 0);
+      (accumulant: number, x: StructTextStringSet) => accumulant + x.stringSet.size, 0);
     const spuriousLabelStatistics: string[][] = spuriousLabelUtterancesMap.sort(
-      (n1: [string, Set<string>], n2: [string, Set<string>]) => {
-        if (n1[0] > n2[0]) {
+      (n1: StructTextStringSet, n2: StructTextStringSet) => {
+        if (n1.text > n2.text) {
           return 1;
         }
-        if (n1[0] < n2[0]) {
+        if (n1.text < n2.text) {
           return -1;
         }
         return 0;
       }).map(
-      (x: [string, Set<string>], index: number) => [
+      (x: StructTextStringSet, index: number) => [
         index.toString(),
-        Utility.outputStringUtility(x[0]),
-        x[1].size.toString(),
-        Utility.round(x[1].size / spuriousLabelUtterancesTotal).toString(),
+        Utility.outputStringUtility(x.text),
+        x.stringSet.size.toString(),
+        Utility.round(x.stringSet.size / spuriousLabelUtterancesTotal).toString(),
       ]);
     spuriousLabelStatistics.push(['Total', 'N/A', spuriousLabelUtterancesTotal.toString(), 'N/A']);
     const spuriousLabelStatisticsHtml: string = Utility.convertDataArraysToHtmlTable(
@@ -6243,7 +6267,7 @@ export class Utility {
   public static examplesToUtteranceLabelMaps(
     exampleStructureArray: Example[],
     utteranceLabelsMap: Map<string, Set<string>>,
-    utteranceLabelDuplicateMap: Map<string, Set<string>>): [number, number] {
+    utteranceLabelDuplicateMap: Map<string, Set<string>>): StructNumberNumber {
     let numberLabelsAdded: number = 0;
     let numberUtteancesAdded: number = 0;
     for (const example of exampleStructureArray) {
@@ -6274,13 +6298,13 @@ export class Utility {
         numberUtteancesAdded++;
       }
     }
-    return [numberUtteancesAdded, numberLabelsAdded];
+    return new StructNumberNumber(numberUtteancesAdded, numberLabelsAdded);
   }
 
   public static examplesToUtteranceEntityLabelMaps(
     exampleStructureArray: Example[],
     utteranceEntityLabelsMap: Map<string, Label[]>,
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): [number, number] {
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): StructNumberNumber {
     let numberLabelsAdded: number = 0;
     let numberUtteancesAdded: number = 0;
     for (const example of exampleStructureArray) {
@@ -6309,7 +6333,7 @@ export class Utility {
         numberUtteancesAdded++;
       }
     }
-    return [numberUtteancesAdded, numberLabelsAdded];
+    return new StructNumberNumber(numberUtteancesAdded, numberLabelsAdded);
   }
 
   public static examplesToArray(examples: any): Example[] {
@@ -6734,8 +6758,9 @@ export class Utility {
   // -------------------------------------------------------------------------
 
   public static countMapValues(inputStringToStringArrayMap: Map<string, Set<string>>): number {
-    return [...inputStringToStringArrayMap.entries()].reduce(
-      (accumulant: number,  value: [string, Set<string>]) => accumulant + value[1].size, 0);
+    return [...inputStringToStringArrayMap.keys()].map(
+      (x: string) => new StructTextStringSet(x, inputStringToStringArrayMap.get(x) as Set<string>)).reduce(
+      (accumulant: number,  value: StructTextStringSet) => accumulant + value.stringSet.size, 0);
   }
 
   public static carefullyAccessStringMap(stringMap: Map<string, number>, key: string): number {

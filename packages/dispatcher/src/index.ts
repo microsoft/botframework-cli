@@ -85,6 +85,25 @@ export { ScoreIntentUtterancePrediction } from "./label_structure/ScoreIntentUtt
 export { ScoreLabel } from "./label_structure/ScoreLabel";
 export { ScoreLabelUtterancePrediction } from "./label_structure/ScoreLabelUtterancePrediction";
 export { Span } from "./label_structure/Span";
+
+export { StructNumberNumber } from "./label_structure/StructNumberNumber";
+export { StructTextLabelObjects } from "./label_structure/StructTextLabelObjects";
+export { StructTextLabelStrings } from "./label_structure/StructTextLabelStrings";
+export { StructTextNumber } from "./label_structure/StructTextNumber";
+export { StructTextStringArray } from "./label_structure/StructTextStringArray";
+export { StructTextStringSet } from "./label_structure/StructTextStringSet";
+export { StructTextText } from "./label_structure/StructTextText";
+export { StructValueCount } from "./label_structure/StructValueCount";
+
+export { IConfusionMatrixagglomeratedMetricStructure } from "./mathematics/confusion_matrix/IConfusionMatrixagglomeratedMetricStructure";
+export { IConfusionMatrixBaseMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixBaseMetrics";
+export { IConfusionMatrixBaseMicroAverageMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixBaseMicroAverageMetrics";
+export { IConfusionMatrixMeanDerivedMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixMeanDerivedMetrics";
+export { IConfusionMatrixMeanDerivedWeightedMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixMeanDerivedWeightedMetrics";
+export { IConfusionMatrixMeanMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixMeanMetrics";
+export { IConfusionMatrixQuantileMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixQuantileMetrics";
+export { IConfusionMatrixSummationMetrics } from "./mathematics/confusion_matrix/IConfusionMatrixSummationMetrics";
+
 export { BinaryConfusionMatrix } from "./mathematics/confusion_matrix/BinaryConfusionMatrix";
 export { ConfusionMatrix } from "./mathematics/confusion_matrix/ConfusionMatrix";
 export { ConfusionMatrixBase } from "./mathematics/confusion_matrix/ConfusionMatrixBase";

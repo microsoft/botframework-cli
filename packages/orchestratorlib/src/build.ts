@@ -116,7 +116,7 @@ export class OrchestratorBuild {
     // ---- NOTE-FOR-REFERENCE ----       new Span(
     // ---- NOTE-FOR-REFERENCE ----         y.span.offset,
     // ---- NOTE-FOR-REFERENCE ----         y.span.length)))));
-    // ---- NOTE-FOR-REFERENCE ---- labelResolverExamples.sort(Example.sort_fn);
+    // ---- NOTE-FOR-REFERENCE ---- labelResolverExamples.sort(Example.sortFunction);
     // ---- NOTE-FOR-REFERENCE ---- return labelResolverExamples;
     const exampleIntentsEntitiesUtterances: {
       'utteranceLabelsMap': Map<string, Set<string>>;

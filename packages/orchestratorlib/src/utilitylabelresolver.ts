@@ -3,12 +3,15 @@
  * Licensed under the MIT License.
  */
 
-import {PredictionStructureWithScoreLabelString, PredictionType} from '@microsoft/bf-dispatcher';
-import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
-
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Result} from '@microsoft/bf-dispatcher';
+
+import {PredictionStructureWithScoreLabelString, PredictionType} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
+
+import {StructTextLabelObjects} from '@microsoft/bf-dispatcher';
+import {StructTextLabelStrings} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
 
@@ -78,7 +81,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line max-params
   // eslint-disable-next-line complexity
   public static scoreBatchStringLabels(
-    utteranceLabelsPairArray: [string, string[]][],
+    utteranceLabelsPairArray: StructTextLabelStrings[],
     labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
@@ -96,7 +99,7 @@ export class UtilityLabelResolver {
     // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.resetToPrintDetailedDebuggingLogToConsole(true);
     // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     // -----------------------------------------------------------------------
-    const utterances: string[] = utteranceLabelsPairArray.map((x: [string, string[]]) => x[0]);
+    const utterances: string[] = utteranceLabelsPairArray.map((x: StructTextLabelStrings) => x.text);
     const predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[] = [];
     if (UtilityDispatcher.isEmptyStringArray(utterances)) {
       return predictionStructureWithScoreLabelStringArray;
@@ -121,7 +124,7 @@ export class UtilityLabelResolver {
     // -----------------------------------------------------------------------
     for (let index: number = 0; index < scoreResultsBatch.length; index++) {
       // ---------------------------------------------------------------------
-      const utteranceLabels: [string, string[]] = utteranceLabelsPairArray[index];
+      const utteranceLabels: StructTextLabelStrings = utteranceLabelsPairArray[index];
       const scoreResults: any = scoreResultsBatch[index];
       if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
         UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchStringLabels()', index, 'index');
@@ -132,7 +135,7 @@ export class UtilityLabelResolver {
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
         // -------------------------------------------------------------------
-        const utterance: string = utteranceLabels[0];
+        const utterance: string = utteranceLabels.text;
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreBatchStringLabels() failed to produce a prediction for an empty utterance');
         }
@@ -141,7 +144,7 @@ export class UtilityLabelResolver {
         }
         // -------------------------------------------------------------------
         const labels: string[] =
-          utteranceLabels[1];
+          utteranceLabels.labels;
         const labelsIndexes: number[] =
           labels.map((x: string) => Utility.carefullyAccessStringMap(
             labelArrayAndMap.stringMap,
@@ -306,7 +309,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line max-params
   // eslint-disable-next-line complexity
   public static scoreBatchObjectLabels(
-    utteranceLabelsPairArray: [string, Label[]][],
+    utteranceLabelsPairArray: StructTextLabelObjects[],
     labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
@@ -324,7 +327,7 @@ export class UtilityLabelResolver {
     // ---- NOTE-FOR-DEBUGGING-ONLY ---- Utility.resetToPrintDetailedDebuggingLogToConsole(true);
     // ---- NOTE-FOR-FUTURE ---- const hasUnknownLabelInMapAlready: boolean = Utility.UnknownLabel in labelArrayAndMap.stringMap;
     // -----------------------------------------------------------------------
-    const utterances: string[] = utteranceLabelsPairArray.map((x: [string, Label[]]) => x[0]);
+    const utterances: string[] = utteranceLabelsPairArray.map((x: StructTextLabelObjects) => x.text);
     const predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[] = [];
     if (UtilityDispatcher.isEmptyStringArray(utterances)) {
       return predictionStructureWithScoreLabelObjectArray;
@@ -349,7 +352,7 @@ export class UtilityLabelResolver {
     // -----------------------------------------------------------------------
     for (let index: number = 0; index < scoreResultsBatch.length; index++) {
       // ---------------------------------------------------------------------
-      const utteranceLabels: [string, Label[]] = utteranceLabelsPairArray[index];
+      const utteranceLabels: StructTextLabelObjects = utteranceLabelsPairArray[index];
       const scoreResults: any = scoreResultsBatch[index];
       if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
         UtilityDispatcher.debuggingNamedLog1('UtilityLabelResolver.scoreBatchObjectLabels()', index, 'index');
@@ -360,7 +363,7 @@ export class UtilityLabelResolver {
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
         // -------------------------------------------------------------------
-        const utterance: string = utteranceLabels[0];
+        const utterance: string = utteranceLabels.text;
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreBatchObjectLabels() failed to produce a prediction for an empty utterance');
         }
@@ -369,7 +372,7 @@ export class UtilityLabelResolver {
         }
         // -------------------------------------------------------------------
         const labels: Label[] =
-          utteranceLabels[1];
+          utteranceLabels.labels;
         const labelsIndexes: number[] =
           labels.map((x: Label) => Utility.carefullyAccessStringMap(
             labelArrayAndMap.stringMap,
@@ -576,7 +579,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line max-params
   // eslint-disable-next-line complexity
   public static scoreStringLabels(
-    utteranceLabelsPairArray: [string, string[]][],
+    utteranceLabelsPairArray: StructTextLabelStrings[],
     labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
@@ -592,14 +595,14 @@ export class UtilityLabelResolver {
     for (const utteranceLabels of utteranceLabelsPairArray) {
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
-        const utterance: string = utteranceLabels[0];
+        const utterance: string = utteranceLabels.text;
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreStringLabels() failed to produce a prediction for an empty utterance');
         }
         // Utility.debuggingLog(`UtilityLabelResolver.scoreStringLabels(), utterance=${utterance}`);
         // -------------------------------------------------------------------
         const labels: string[] =
-          utteranceLabels[1];
+          utteranceLabels.labels;
         const labelsIndexes: number[] =
           labels.map((x: string) => Utility.carefullyAccessStringMap(
             labelArrayAndMap.stringMap,
@@ -762,7 +765,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line max-params
   // eslint-disable-next-line complexity
   public static scoreObjectLabels(
-    utteranceLabelsPairArray: [string, Label[]][],
+    utteranceLabelsPairArray: StructTextLabelObjects[],
     labelArrayAndMap: {
       'stringArray': string[];
       'stringMap': Map<string, number>;},
@@ -780,7 +783,7 @@ export class UtilityLabelResolver {
     for (const utteranceLabels of utteranceLabelsPairArray) {
       // ---------------------------------------------------------------------
       if (utteranceLabels) {
-        const utterance: string = utteranceLabels[0];
+        const utterance: string = utteranceLabels.text;
         if (Utility.isEmptyString(utterance)) {
           Utility.debuggingThrow('UtilityLabelResolver.scoreObjectLabels() failed to produce a prediction for an empty utterance');
         }
@@ -789,7 +792,7 @@ export class UtilityLabelResolver {
         }
         // -------------------------------------------------------------------
         const labels: Label[] =
-          utteranceLabels[1];
+          utteranceLabels.labels;
         const labelsIndexes: number[] =
           labels.map((x: Label) => Utility.carefullyAccessStringMap(
             labelArrayAndMap.stringMap,

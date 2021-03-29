@@ -15,6 +15,11 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import {PredictionStructureWithPluralEvaluationLabelObject} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithPluralEvaluationLabelString} from '@microsoft/bf-dispatcher';
 
+import {StructTextLabelObjects} from '@microsoft/bf-dispatcher';
+import {StructTextNumber} from '@microsoft/bf-dispatcher';
+import {StructTextLabelStrings} from '@microsoft/bf-dispatcher';
+import {StructTextText} from '@microsoft/bf-dispatcher';
+
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
 
@@ -223,15 +228,15 @@ export class OrchestratorAssess {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
@@ -246,20 +251,20 @@ export class OrchestratorAssess {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportSpuriousPredictions': {
         'evaluationSummary': string;
-        'spuriousPredictions': [string, string[]][]; };
+        'spuriousPredictions': StructTextLabelStrings[]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {
@@ -326,15 +331,15 @@ export class OrchestratorAssess {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
@@ -349,20 +354,20 @@ export class OrchestratorAssess {
           'labelStatisticsHtml': string;};
         'utteranceStatisticsAndHtmlTable': {
           'utteranceStatisticsMap': Map<number, number>;
-          'utteranceStatistics': [string, number][];
+          'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<[string, Set<string>]>;
+        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
         // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
-        'utterancesMultiLabelArrays': [string, string][];
+        'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportSpuriousPredictions': {
         'evaluationSummary': string;
-        'spuriousPredictions': [string, Label[]][]; };
+        'spuriousPredictions': StructTextLabelObjects[]; };
       'evaluationReportAnalyses': {
         'evaluationSummary': string;
         'misclassifiedAnalysis': {

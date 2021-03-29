@@ -7,6 +7,13 @@
 import { PredictionStructureWithPluralEvaluationLabelObject } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelObject";
 import { PredictionStructureWithPluralEvaluationLabelString } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelString";
 
+import { IConfusionMatrixBaseMetrics } from "./IConfusionMatrixBaseMetrics";
+import { IConfusionMatrixBaseMicroAverageMetrics } from "./IConfusionMatrixBaseMicroAverageMetrics";
+import { IConfusionMatrixMeanDerivedMetrics } from "./IConfusionMatrixMeanDerivedMetrics";
+import { IConfusionMatrixMeanMetrics } from "./IConfusionMatrixMeanMetrics";
+import { IConfusionMatrixQuantileMetrics } from "./IConfusionMatrixQuantileMetrics";
+import { IConfusionMatrixSummationMetrics } from "./IConfusionMatrixSummationMetrics";
+
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 import { ConfusionMatrix } from "./ConfusionMatrix";
 import { PerInstanceMultiLabelConfusionMatrix } from "./PerInstanceMultiLabelConfusionMatrix";
@@ -596,13 +603,8 @@ export class UtilityConfusionMatrix {
             confusionMatrixOutputLines,
             ["Label", "Precision", "Recall", "F1", "Accuracy", "#TruePositives", "#FalsePositives", "#TrueNegatives", "#FalseNegatives", "Support", "Total"]);
         // -----------------------------------------------------------------------
-        const microAverageMetrics: {
-            "averagePrecisionRecallF1Accuracy": number;
-            "truePositives": number;
-            "falsePositives": number;
-            "falseNegatives": number;
-            "total": number;
-        } = confusionMatrix.getMicroAverageMetrics(binaryConfusionMatrices);
+        const microAverageMetrics: IConfusionMatrixBaseMicroAverageMetrics =
+            confusionMatrix.getMicroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineMicroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameMicroAverage,
             "N/A", // ---- Utility.round(microAverageMetrics.averagePrecisionRecallF1Accuracy), // ---- NOTE ---- in multi-class, there is no negative, so calculation of precision is equal to that of recall.
@@ -624,18 +626,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionMicroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const microQuantileMetrics: {
-            "quantilesPrecisions": number[];
-            "quantilesRecalls": number[];
-            "quantilesF1Scores": number[];
-            "quantilesTruePositives": number[];
-            "quantilesFalsePositives": number[];
-            "quantilesTrueNegatives": number[];
-            "quantilesFalseNegatives": number[];
-            "quantilesAccuracies": number[];
-            "quantilesSupports": number[];
-            "total": number;
-        } = confusionMatrix.getMicroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
+        const microQuantileMetrics: IConfusionMatrixQuantileMetrics =
+            confusionMatrix.getMicroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
         const confusionMatrixOutputLineMicroQuantile1: any[] = [
             UtilityConfusionMatrix.ColumnNameMicroFirstQuartile,
             Utility.canAccessNumberArray(microQuantileMetrics.quantilesPrecisions, 1) ?
@@ -718,18 +710,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionMicroThirdQuartile,
         ]);
         // -----------------------------------------------------------------------
-        const macroQuantileMetrics: {
-            "quantilesPrecisions": number[];
-            "quantilesRecalls": number[];
-            "quantilesF1Scores": number[];
-            "quantilesTruePositives": number[];
-            "quantilesFalsePositives": number[];
-            "quantilesTrueNegatives": number[];
-            "quantilesFalseNegatives": number[];
-            "quantilesAccuracies": number[];
-            "quantilesSupports": number[];
-            "total": number;
-        } = confusionMatrix.getMacroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
+        const macroQuantileMetrics: IConfusionMatrixQuantileMetrics =
+            confusionMatrix.getMacroQuantileMetrics(binaryConfusionMatrices, quantileConfiguration);
         const confusionMatrixOutputLineMacroQuantile1: any[] = [
             UtilityConfusionMatrix.ColumnNameMacroFirstQuartile,
             Utility.canAccessNumberArray(macroQuantileMetrics.quantilesPrecisions, 1) ?
@@ -812,18 +794,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionMacroThirdQuartile,
         ]);
         // -----------------------------------------------------------------------
-        const summationMicroAverageMetrics: {
-            "summationPrecision": number;
-            "summationRecall": number;
-            "summationF1Score": number;
-            "summationAccuracy": number;
-            "summationTruePositives": number;
-            "summationFalsePositives": number;
-            "summationTrueNegatives": number;
-            "summationFalseNegatives": number;
-            "summationSupport": number;
-            "total": number;
-        } = confusionMatrix.getSummationMicroAverageMetrics(binaryConfusionMatrices);
+        const summationMicroAverageMetrics: IConfusionMatrixSummationMetrics =
+            confusionMatrix.getSummationMicroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineSummationMicroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameSummationMicroAverage,
             Utility.round(summationMicroAverageMetrics.summationPrecision),
@@ -843,18 +815,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionSummationMicroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const macroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getMacroAverageMetrics(binaryConfusionMatrices);
+        const macroAverageMetrics: IConfusionMatrixMeanMetrics =
+            confusionMatrix.getMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameMacroAverage,
             Utility.round(macroAverageMetrics.averagePrecision),
@@ -874,18 +836,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const summationMacroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getSummationMacroAverageMetrics(binaryConfusionMatrices);
+        const summationMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+            confusionMatrix.getSummationMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineSummationMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameSummationMacroAverage,
             Utility.round(summationMacroAverageMetrics.averagePrecision),
@@ -905,18 +857,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const positiveSupportLabelMacroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices);
+        const positiveSupportLabelMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+            confusionMatrix.getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLinePositiveSupportLabelMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNamePositiveSupportMacroAverage,
             Utility.round(positiveSupportLabelMacroAverageMetrics.averagePrecision),
@@ -937,18 +879,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionPositiveSupportMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const positiveSupportLabelSummationMacroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices);
+        const positiveSupportLabelSummationMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+            confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNamePositiveSupportSummationMacroAverage,
             Utility.round(positiveSupportLabelSummationMacroAverageMetrics.averagePrecision),
@@ -969,14 +901,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionPositiveSupportSummationMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const weightedMacroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getWeightedMacroAverageMetrics(binaryConfusionMatrices);
+        const weightedMacroAverageMetrics: IConfusionMatrixMeanDerivedMetrics =
+            confusionMatrix.getWeightedMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineWeightedMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameWeightedMacroAverage,
             Utility.round(weightedMacroAverageMetrics.averagePrecision),
@@ -997,18 +923,8 @@ export class UtilityConfusionMatrix {
             UtilityConfusionMatrix.DescriptionWeightedMacroAverage,
         ]);
         // -----------------------------------------------------------------------
-        const summationWeightedMacroAverageMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = confusionMatrix.getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices);
+        const summationWeightedMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+            confusionMatrix.getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices);
         const confusionMatrixOutputLineSummationWeightedMacroAverage: any[] = [
             UtilityConfusionMatrix.ColumnNameWeightedSummationMacroAverage,
             Utility.round(summationWeightedMacroAverageMetrics.averagePrecision),
@@ -1089,18 +1005,8 @@ export class UtilityConfusionMatrix {
             confusionMatrixAverageDescriptionOutputLines = [];
         }
         // -----------------------------------------------------------------------
-        const exactMacroAggregateMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]);
+        const exactMacroAggregateMetrics: IConfusionMatrixMeanMetrics =
+            multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]);
         if (exactMacroAggregateMetrics.total > 0) {
             const confusionMatrixOutputLineExactMacroAggregate: any[] = [
                 UtilityConfusionMatrix.ColumnNameMultiLabelExactAggregate,
@@ -1186,18 +1092,8 @@ export class UtilityConfusionMatrix {
             confusionMatrixAverageDescriptionOutputLines = [];
         }
         // -----------------------------------------------------------------------
-        const subsetMacroAggregateMetrics: {
-            "averagePrecision": number;
-            "averageRecall": number;
-            "averageF1Score": number;
-            "averageAccuracy": number;
-            "averageTruePositives": number;
-            "averageFalsePositives": number;
-            "averageTrueNegatives": number;
-            "averageFalseNegatives": number;
-            "averageSupport": number;
-            "total": number;
-        } = multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]);
+        const subsetMacroAggregateMetrics: IConfusionMatrixMeanMetrics =
+            multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]);
         if (subsetMacroAggregateMetrics.total > 0) {
             const confusionMatrixOutputLineSubsetMacroAggregate: any[] = [
                 UtilityConfusionMatrix.ColumnNameMultiLabelSubsetAggregate,

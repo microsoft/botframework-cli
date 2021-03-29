@@ -43,7 +43,7 @@ export class Label {
         return new Label(labelType, label, new Span(spanStartPosition, spanEndPosition - spanStartPosition + 1));
     }
 
-    public static sort_fn(a: Label, b: Label) {
+    public static sortFunction(a: Label, b: Label) {
         if (a.labeltype < b.labeltype) {
             return -1;
         }

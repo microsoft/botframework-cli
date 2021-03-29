@@ -3,117 +3,22 @@
  * Licensed under the MIT License.
  */
 
+import { IConfusionMatrixagglomeratedMetricStructure } from "./IConfusionMatrixagglomeratedMetricStructure";
+import { IConfusionMatrixBaseMetrics } from "./IConfusionMatrixBaseMetrics";
+import { IConfusionMatrixBaseMicroAverageMetrics } from "./IConfusionMatrixBaseMicroAverageMetrics";
+import { IConfusionMatrixMeanDerivedMetrics } from "./IConfusionMatrixMeanDerivedMetrics";
+import { IConfusionMatrixMeanDerivedWeightedMetrics } from "./IConfusionMatrixMeanDerivedWeightedMetrics";
+import { IConfusionMatrixMeanMetrics } from "./IConfusionMatrixMeanMetrics";
+import { IConfusionMatrixQuantileMetrics } from "./IConfusionMatrixQuantileMetrics";
+import { IConfusionMatrixSummationMetrics } from "./IConfusionMatrixSummationMetrics";
+
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 export interface IConfusionMatrix {
 
     reset(): void;
 
-    generateConfusionMatrixMetricStructure(quantileConfiguration: number): {
-        "confusionMatrix": IConfusionMatrix,
-        "labelBinaryConfusionMatrixBasicMetricMap": Map<string, Map<string, number>>,
-        "labelBinaryConfusionMatrixMap": Map<string, BinaryConfusionMatrix>,
-        "microQuantileMetrics": {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number },
-        "macroQuantileMetrics": {
-            "quantilesPrecisions": number[],
-            "quantilesRecalls": number[],
-            "quantilesF1Scores": number[],
-            "quantilesTruePositives": number[],
-            "quantilesFalsePositives": number[],
-            "quantilesTrueNegatives": number[],
-            "quantilesFalseNegatives": number[],
-            "quantilesAccuracies": number[],
-            "quantilesSupports": number[],
-            "total": number },
-        "microAverageMetrics": {
-            "accuracy": number,
-            "truePositives": number,
-            "falsePositives": number,
-            "falseNegatives": number,
-            "total": number },
-        "summationMicroAverageMetrics": {
-            "summationPrecision": number,
-            "summationRecall": number,
-            "summationF1Score": number,
-            "summationAccuracy": number,
-            "summationTruePositives": number,
-            "summationFalsePositives": number,
-            "summationTrueNegatives": number,
-            "summationFalseNegatives": number,
-            "summationSupport": number,
-            "total": number },
-        "macroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "summationMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "positiveSupportLabelMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "positiveSupportLabelSummationMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number },
-        "weightedMacroAverageMetrics": {
-            "weightedAveragePrecision": number,
-            "weightedAverageRecall": number,
-            "weightedAverageF1Score": number,
-            "weightedAverageAccuracy": number,
-            "weightedAverageSupport": number,
-            "total": number },
-        "summationWeightedMacroAverageMetrics": {
-            "averagePrecision": number,
-            "averageRecall": number,
-            "averageF1Score": number,
-            "averageAccuracy": number,
-            "averageTruePositives": number,
-            "averageFalsePositives": number,
-            "averageTrueNegatives": number,
-            "averageFalseNegatives": number,
-            "averageSupport": number,
-            "total": number } };
+    generateConfusionMatrixMetricStructure(quantileConfiguration: number): IConfusionMatrixagglomeratedMetricStructure;
 
     getNumberLabels(): number;
     getLabels(): string[];
@@ -123,116 +28,34 @@ export interface IConfusionMatrix {
 
     getTotal(binaryConfusionMatrices: BinaryConfusionMatrix[]): number;
 
-    getMicroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number): {
-        "quantilesPrecisions": number[],
-        "quantilesRecalls": number[],
-        "quantilesF1Scores": number[],
-        "quantilesTruePositives": number[],
-        "quantilesFalsePositives": number[],
-        "quantilesTrueNegatives": number[],
-        "quantilesFalseNegatives": number[],
-        "quantilesAccuracies": number[],
-        "quantilesSupports": number[],
-        "total": number };
+    getMicroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number):
+        IConfusionMatrixQuantileMetrics;
 
-    getMacroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number): {
-        "quantilesPrecisions": number[],
-        "quantilesRecalls": number[],
-        "quantilesF1Scores": number[],
-        "quantilesTruePositives": number[],
-        "quantilesFalsePositives": number[],
-        "quantilesTrueNegatives": number[],
-        "quantilesFalseNegatives": number[],
-        "quantilesAccuracies": number[],
-        "quantilesSupports": number[],
-        "total": number };
+    getMacroQuantileMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[], quantileConfiguration: number):
+        IConfusionMatrixQuantileMetrics;
 
-    getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecisionRecallF1Accuracy": number,
-        "truePositives": number,
-        "falsePositives": number,
-        "falseNegatives": number,
-        "total": number };
+    getMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): IConfusionMatrixBaseMicroAverageMetrics;
 
-    getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "summationPrecision": number,
-        "summationRecall": number,
-        "summationF1Score": number,
-        "summationTruePositives": number,
-        "summationFalsePositives": number,
-        "summationTrueNegatives": number,
-        "summationFalseNegatives": number,
-        "summationAccuracy": number,
-        "summationSupport": number,
-        "total": number };
+    getSummationMicroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixSummationMetrics;
 
-    getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanMetrics;
 
-    getSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanMetrics;
 
-    getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getPositiveSupportLabelMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanMetrics;
 
-    getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getPositiveSupportLabelSummationMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanMetrics;
 
-    getWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanDerivedMetrics;
 
-    getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]): {
-        "averagePrecision": number,
-        "averageRecall": number,
-        "averageF1Score": number,
-        "averageTruePositives": number,
-        "averageFalsePositives": number,
-        "averageTrueNegatives": number,
-        "averageFalseNegatives": number,
-        "averageAccuracy": number,
-        "averageSupport": number,
-        "total": number };
+    getSummationWeightedMacroAverageMetrics(binaryConfusionMatrices: BinaryConfusionMatrix[]):
+        IConfusionMatrixMeanMetrics;
 
     validateLabelId(
         labelId: number,
