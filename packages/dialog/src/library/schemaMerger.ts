@@ -556,6 +556,7 @@ export class SchemaMerger {
             return
         }
         this.log('Parsing component .schema files')
+        let triedMetaSchema = false
         for (const componentPath of componentPaths) {
             try {
                 const path = componentPath.path
@@ -576,14 +577,17 @@ export class SchemaMerger {
                     if (!component.$schema) {
                         this.missingSchemaError()
                     } else if (!this.metaSchema) {
-                        // Pick up meta-schema from first .dialog file
-                        this.metaSchemaId = component.$schema
-                        this.currentFile = this.metaSchemaId
-                        this.metaSchema = await getJSON(component.$schema)
-                        this.validator.addSchema(this.metaSchema, 'componentSchema')
-                        this.vlog(`  Using ${this.metaSchemaId} to define components`)
-                        this.currentFile = path
-                        this.validateSchema(component)
+                        if (!triedMetaSchema) {
+                            // Pick up meta-schema from first .dialog file and if failed don't try again
+                            triedMetaSchema = true
+                            this.metaSchemaId = component.$schema
+                            this.currentFile = this.metaSchemaId
+                            this.metaSchema = await getJSON(component.$schema)
+                            this.validator.addSchema(this.metaSchema, 'componentSchema')
+                            this.vlog(`  Using ${this.metaSchemaId} to define components`)
+                            this.currentFile = path
+                            this.validateSchema(component)
+                        }
                     } else if (component.$schema !== this.metaSchemaId) {
                         this.parsingWarning(`Component schema ${component.$schema} does not match ${this.metaSchemaId}`)
                     } else {
@@ -902,13 +906,13 @@ export class SchemaMerger {
         }
         return exts
     }
-    
+
     // Ensure kinds in policies exist and we expand to any extensions
     private validateAndExpandPolicies(): void {
         walkJSON(this.definitions, (val, _obj, path) => {
             if (val.$policies?.requiresKind) {
                 let expanded: string[] = []
-                for(const kind of val.$policies.requiresKind) {
+                for (const kind of val.$policies.requiresKind) {
                     if (!this.definitions[kind]) {
                         this.genericError(`Error ${path} has non-existent $kind ${kind}`)
                     }
@@ -1499,7 +1503,7 @@ export class SchemaMerger {
      * @param canOverride True if definition can override extension.
      */
     private mergeInto(extensionName: string, definition: any, canOverride?: boolean) {
-        const extension = this.definitions[extensionName] || this.metaSchema.definitions[extensionName]
+        const extension = this.definitions[extensionName] || this.metaSchema?.definitions[extensionName]
         if (!extension) {
             this.mergingError(`Cannot extend ${extensionName} because it is not included`)
         } else {
