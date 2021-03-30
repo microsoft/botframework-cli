@@ -5,7 +5,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
-import {test, expect} from '@oclif/test'
+import {test} from '@oclif/test'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import {TestUtil} from './test-util'
