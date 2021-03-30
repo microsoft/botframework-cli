@@ -8,7 +8,7 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {TemplateParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import {TemplatesParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
@@ -180,7 +180,7 @@ export default class ExpandCommand extends Command {
 
     const newContent = `#${this.TempTemplateName} \r\n - ${inlineStr}`
 
-    return TemplateParser.parseTextWithRef(newContent, lgFile)
+    return TemplatesParser.parseTextWithRef(newContent, lgFile)
   }
 
   private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
@@ -188,7 +188,11 @@ export default class ExpandCommand extends Command {
     for (const template of expandedTemplates) {
       result += '# ' + template[0] + '\n'
       if (Array.isArray(template[1])) {
-        for (const templateStr of template[1]) {
+        for (let templateStr of template[1]) {
+          if (typeof templateStr !== 'string') {
+            templateStr = JSON.stringify(templateStr)
+          }
+
           if (templateStr.includes('\n')) {
             // multiline
             result += '-```\n' + templateStr.trim() + '\n```\n'

@@ -8,6 +8,7 @@
     "no-await-in-loop": "off",
     "no-negated-condition": "off",
     "max-params": "off",
+    "@typescript-eslint/consistent-type-assertions": "off",
     "file-header": [
       true,
       {

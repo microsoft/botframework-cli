@@ -38,6 +38,7 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf lg:expand`](#bf-lgexpand)
 * [`bf lg:translate`](#bf-lgtranslate)
 * [`bf lg:verify`](#bf-lgverify)
+* [`bf lg:analyze`](#bf-lganalyze)
 * [`bf luis`](#bf-luis)
 * [`bf luis:application:assignazureaccount`](#bf-luisapplicationassignazureaccount)
 * [`bf luis:application:create`](#bf-luisapplicationcreate)
@@ -463,10 +464,28 @@ OPTIONS
   -h, --help     lg:verify help
   -i, --in=in    (required) Folder that contains .lg file.
   -o, --out=out  Output file or folder name. If not specified stdout will be used as output
-  -r, --recurse  Considere sub-folders to find .lg file(s)
+  -r, --recurse  Considers sub-folders to find .lg file(s)
 ```
 
 _See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/verify.ts)_
+
+## `bf lg:analyze`
+
+Analyze templates in .lg files to show all the places where a template is used.
+
+```
+USAGE
+  $ bf lg:analyze
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     lg:analyze help
+  -i, --in=in    (required) LG File or folder that contains .lg file(s)
+  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse  Considers sub-folders to find .lg file(s)
+```
+
+_See code: [src/commands/lg/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
 
 ## `bf luis`
 
