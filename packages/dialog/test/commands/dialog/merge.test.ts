@@ -11,6 +11,8 @@ import 'mocha'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as merger from '../../../src/library/schemaMerger'
+const nock = require('nock')
+
 let srcDir = ppath.resolve('test/commands/dialog/')
 let tempDir = ppath.join(os.tmpdir(), 'test.out')
 
@@ -140,6 +142,21 @@ describe('dialog:merge', async () => {
         assert(merged, 'Could not merge')
         assert(countMatches(/error|warning/i, lines) === 0, 'Error merging schemas')
         await compareToOracle('app.schema')
+    })
+
+    it('missing component schema', async () => {
+        console.log('Start missing component schema')
+        let [merged, lines] = await merge(['schemas/badSchemas/missingComponent.schema'], 'app.schema')
+        assert(!merged, 'Merge should have failed')
+        assert(countMatches(/file does not exist/i, lines) === 1, 'No missing component schema')
+    })
+
+    it('mismatched component schema', async () => {
+        console.log('Start missing component schema')
+        let [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingComponent.schema'], 'app.schema')
+        assert(merged, 'Could not merge')
+        assert(countMatches(/error|warning/i, lines) === 1, 'Too many errors or warnings')
+        assert(countMatches(/does not match/i, lines) === 1, 'No mismatched component schema')
     })
 
     it('bad json', async () => {
@@ -441,15 +458,18 @@ describe('dialog:merge', async () => {
         }
     })
 
-    /* Example of invoking library through test because of issues with launch.json
-    it('botbuilder-schema', async () => {
-        console.log('\nStart botbuilder-schema')
-        let [merged, lines] = await merge(['../../../../../../botbuilder-dotnet/libraries/**\*.schema',
-    '../../../../../../botbuilder-dotnet/tests/**\*.schema'], 'sdk.schema', true)
-        console.log(merged)
-        console.log(lines)
+    it('500 error', async () => {
+        console.log('Start 500 error')
+        const scope = nock('https://schemas.botframework.com')
+            .get(/schemas/)
+            .reply(500, 'Internal Server Error')
+            .persist()
+        let [merged, lines] = await merge(['schemas/*.schema'], 'app.schema')
+        assert(!merged, 'Merging should fail')
+        assert(countMatches(/internal server error/i, lines) === 1, 'Did not detect server error')
+        scope.done()
+        nock.cleanAll()
     })
-    */
 })
 
 /* TODO: These tests are related to verify and need to be updated and moved there.
