@@ -111,11 +111,11 @@ export default class AnalyzeCommand extends Command {
     const errors = diagnostics.filter(u => u.severity === DiagnosticSeverity.Error)
     if (errors && errors.length > 0) {
       throw new CLIError(errors.map(u => u.toString()).join('\n'))
-    } else {
-      const warnings = diagnostics.filter(u => u.severity === DiagnosticSeverity.Warning)
-      if (warnings && warnings.length > 0) {
-        this.warn(warnings.map(u => u.toString()).join('\n'))
-      }
+    }
+
+    const warnings = diagnostics.filter(u => u.severity === DiagnosticSeverity.Warning)
+    if (warnings && warnings.length > 0) {
+      this.warn(warnings.map(u => u.toString()).join('\n'))
     }
   }
 
