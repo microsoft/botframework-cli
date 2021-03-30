@@ -9,7 +9,10 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 import {Label}  from '@microsoft/bf-dispatcher';
+
 import {OrchestratorHelper} from './orchestratorhelper';
 
 import {PredictionStructureWithPluralEvaluationLabelObject} from '@microsoft/bf-dispatcher';
@@ -68,11 +71,7 @@ export class OrchestratorAssess {
     const assessmentSetEntitySummaryHtmlOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntitySummaryHtmlOutputFilename);
     const assessmentSetEntityLabelsOutputFilename: string = path.join(outputPath, OrchestratorAssess.assessmentSetEntityLabelsOutputFilename);
     // ---- NOTE ---- process the ground-truth set and retrieve labels -------
-    const groundTruthFileProcessedUtteranceLabelsMap: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+    const groundTruthFileProcessedUtteranceLabelsMap: ITextUtteranceLabelMapDataStructure =
       await OrchestratorHelper.getUtteranceLabelsMap(groundTruthFileConfiguration, false);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...groundTruthFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
@@ -127,11 +126,7 @@ export class OrchestratorAssess {
     Utility.debuggingLog(`OrchestratorAssess.runAsync(), number of ground-truth entity set duplicate utterance/label pairs=${groundTruthSetUtteranceEntityLabelDuplicateMap.size}`);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the prediction set and retrieve labels ---------
-    const predictionFileProcessedUtteranceLabelsMap: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+    const predictionFileProcessedUtteranceLabelsMap: ITextUtteranceLabelMapDataStructure =
       await OrchestratorHelper.getUtteranceLabelsMap(predictionFileConfiguration, false);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...predictionFileProcessedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorAssess.runAsync(), predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
@@ -218,9 +213,7 @@ export class OrchestratorAssess {
     const intentEvaluationOutput: {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -241,9 +234,7 @@ export class OrchestratorAssess {
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -321,9 +312,7 @@ export class OrchestratorAssess {
     const entityEvaluationOutput: {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -344,9 +333,7 @@ export class OrchestratorAssess {
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;

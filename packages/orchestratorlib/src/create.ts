@@ -7,7 +7,9 @@ import * as path from 'path';
 
 // require('fast-text-encoding');
 
-import {Label} from '@microsoft/bf-dispatcher';
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
+// import {Label} from '@microsoft/bf-dispatcher';
+
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
@@ -52,11 +54,7 @@ export class OrchestratorCreate {
     }
     Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createAsync()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
-    const processedUtteranceLabelsMap: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+    const processedUtteranceLabelsMap: ITextUtteranceLabelMapDataStructure =
       await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);

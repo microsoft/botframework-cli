@@ -6,6 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+import {IConfusionMatrixMeanMetrics} from '@microsoft/bf-dispatcher';
+import {IConfusionMatrixMeanDerivedMetrics} from '@microsoft/bf-dispatcher';
 import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {BinaryConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelConfusionMatrix} from '@microsoft/bf-dispatcher';
@@ -18,6 +20,8 @@ import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 // ---- TO-REFACTOR ----
 import {CryptoUtility} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
+// import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 import {Example} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
@@ -327,9 +331,7 @@ export class Utility {
     if (!Utility.isEmptyString(inputLabelEntry)) {
       if (Number.isInteger(Number(inputLabelEntry))) {
         const inputLabelEntryIndex: number = Number(inputLabelEntry);
-        const currentModelLabelArrayAndMap: {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;} =
+        const currentModelLabelArrayAndMap: ILabelArrayAndMap =
           Utility.buildStringIdNumberValueDictionaryFromStringArray(modelLabels);
         const modelLabelStringArray: string[] = currentModelLabelArrayAndMap.stringArray;
         // eslint-disable-next-line max-depth
@@ -360,9 +362,7 @@ export class Utility {
     predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]>): {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -383,9 +383,7 @@ export class Utility {
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -429,9 +427,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportGroundTruthSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -467,9 +463,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReport(), ready to call Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportPredictionSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -596,9 +590,7 @@ export class Utility {
     // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- evaluationSummaryTagSpuriousLabelUtteranceStatistics: string,
     ensureUnknownLabelInLabelArrayAndMap: boolean): {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -619,9 +611,7 @@ export class Utility {
       'utteranceLabelDuplicateHtml': string;
     } {
     // ---- NOTE ---- create a label-index map.
-    const labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;} =
+    const labelArrayAndMap: ILabelArrayAndMap =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
@@ -726,9 +716,7 @@ export class Utility {
   public static generateAssessmentLabelObjectEvaluationReportAnalyses(
     evaluationSummary: string,
     predictionStructureWithPluralEvaluationLabelObjectArray: PredictionStructureWithPluralEvaluationLabelObject[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
         'predictingMisclassifiedUtterancesArrays': string[][];
@@ -818,9 +806,7 @@ export class Utility {
 
   public static generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
     predictionStructureWithPluralEvaluationLabelObjectArray: PredictionStructureWithPluralEvaluationLabelObject[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -872,9 +858,7 @@ export class Utility {
   public static assessLabelObjectPredictions(
     groundTruthSetUtteranceLabelsMap: Map<string, Label[]>,
     predictionSetUtteranceLabelsMap: Map<string, Label[]>,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): PredictionStructureWithPluralEvaluationLabelObject[] {
+    labelArrayAndMap: ILabelArrayAndMap): PredictionStructureWithPluralEvaluationLabelObject[] {
     const predictionStructureWithPluralEvaluationLabelObjectArray: PredictionStructureWithPluralEvaluationLabelObject[] = [];
     for (const groundTruthSetUtteranceLabels of groundTruthSetUtteranceLabelsMap.entries()) {
       const utterance: string = groundTruthSetUtteranceLabels[0];
@@ -1066,9 +1050,7 @@ export class Utility {
     predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>>): {
       'evaluationReportGroundTruthSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -1089,9 +1071,7 @@ export class Utility {
         'utteranceLabelDuplicateHtml': string; };
       'evaluationReportPredictionSetLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -1135,9 +1115,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), ready to call Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportGroundTruthSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -1174,9 +1152,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateAssessmentEvaluationReport(), ready to call Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportPredictionSetLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -1295,9 +1271,7 @@ export class Utility {
   public static generateAssessmentEvaluationReportAnalyses(
     evaluationSummary: string,
     predictionStructureWithPluralEvaluationLabelStringArray: PredictionStructureWithPluralEvaluationLabelString[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'evaluationSummary': string;
       'misclassifiedAnalysis': {
         'predictingMisclassifiedUtterancesArrays': string[][];
@@ -1387,9 +1361,7 @@ export class Utility {
 
   public static generateAssessmentConfusionMatrixMetricsAndHtmlTable<TL>(
     predictionStructureArray: PredictionStructure<TL>[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -1429,9 +1401,7 @@ export class Utility {
     confusionMatrix: IConfusionMatrix,
     multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact,
     multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -1729,18 +1699,8 @@ export class Utility {
       Utility.DescriptionSummationMicroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const macroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getMacroAverageMetrics([]);
+    const macroAverageMetrics: IConfusionMatrixMeanMetrics =
+      confusionMatrix.getMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineMacroAverage: any[] = [
       Utility.ColumnNameMacroAverage,
       Utility.round(macroAverageMetrics.averagePrecision),
@@ -1760,18 +1720,8 @@ export class Utility {
       Utility.DescriptionMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const summationMacroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getSummationMacroAverageMetrics([]);
+    const summationMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+      confusionMatrix.getSummationMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineSummationMacroAverage: any[] = [
       Utility.ColumnNameSummationMacroAverage,
       Utility.round(summationMacroAverageMetrics.averagePrecision),
@@ -1791,18 +1741,8 @@ export class Utility {
       Utility.DescriptionSummationMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const positiveSupportLabelMacroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getPositiveSupportLabelMacroAverageMetrics([]);
+    const positiveSupportLabelMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+      confusionMatrix.getPositiveSupportLabelMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLinePositiveSupportLabelMacroAverage: any[] = [
       Utility.ColumnNamePositiveSupportMacroAverage,
       Utility.round(positiveSupportLabelMacroAverageMetrics.averagePrecision),
@@ -1822,18 +1762,8 @@ export class Utility {
       Utility.DescriptionPositiveSupportMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const positiveSupportLabelSummationMacroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics([]);
+    const positiveSupportLabelSummationMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+      confusionMatrix.getPositiveSupportLabelSummationMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLinePositiveSupportLabelSummationMacroAverage: any[] = [
       Utility.ColumnNamePositiveSupportSummationMacroAverage,
       Utility.round(positiveSupportLabelSummationMacroAverageMetrics.averagePrecision),
@@ -1853,14 +1783,8 @@ export class Utility {
       Utility.DescriptionPositiveSupportSummationMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const weightedMacroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getWeightedMacroAverageMetrics([]);
+    const weightedMacroAverageMetrics: IConfusionMatrixMeanDerivedMetrics =
+      confusionMatrix.getWeightedMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineWeightedMacroAverage: any[] = [
       Utility.ColumnNameWeightedMacroAverage,
       Utility.round(weightedMacroAverageMetrics.averagePrecision),
@@ -1880,18 +1804,8 @@ export class Utility {
       Utility.DescriptionWeightedMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const summationWeightedMacroAverageMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = confusionMatrix.getSummationWeightedMacroAverageMetrics([]);
+    const summationWeightedMacroAverageMetrics: IConfusionMatrixMeanMetrics =
+      confusionMatrix.getSummationWeightedMacroAverageMetrics([]);
     const predictingConfusionMatrixOutputLineSummationWeightedMacroAverage: any[] = [
       Utility.ColumnNameWeightedSummationMacroAverage,
       Utility.round(summationWeightedMacroAverageMetrics.averagePrecision),
@@ -1911,18 +1825,8 @@ export class Utility {
       Utility.DescriptionWeightedSummationMacroAverage,
     ]);
     // -----------------------------------------------------------------------
-    const exactMacroAggregateMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]);
+    const exactMacroAggregateMetrics: IConfusionMatrixMeanMetrics =
+      multiLabelObjectConfusionMatrixExact.getMacroAverageMetrics([]);
     if (exactMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineExactMacroAggregate: any[] = [
         Utility.ColumnNameMultiLabelExactAggregate,
@@ -1944,18 +1848,8 @@ export class Utility {
       ]);
     }
     // -----------------------------------------------------------------------
-    const subsetMacroAggregateMetrics: {
-      'averagePrecision': number;
-      'averageRecall': number;
-      'averageF1Score': number;
-      'averageAccuracy': number;
-      'averageTruePositives': number;
-      'averageFalsePositives': number;
-      'averageTrueNegatives': number;
-      'averageFalseNegatives': number;
-      'averageSupport': number;
-      'total': number;
-    } = multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]);
+    const subsetMacroAggregateMetrics: IConfusionMatrixMeanMetrics =
+      multiLabelObjectConfusionMatrixSubset.getMacroAverageMetrics([]);
     if (subsetMacroAggregateMetrics.total > 0) {
       const predictingConfusionMatrixOutputLineSubsetMacroAggregate: any[] = [
         Utility.ColumnNameMultiLabelSubsetAggregate,
@@ -2036,9 +1930,7 @@ export class Utility {
   public static assessMultiLabelIntentPredictions(
     groundTruthSetUtteranceLabelsMap: Map<string, Set<string>>,
     predictionSetUtteranceLabelsMap: Map<string, Set<string>>,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): PredictionStructureWithPluralEvaluationLabelString[] {
+    labelArrayAndMap: ILabelArrayAndMap): PredictionStructureWithPluralEvaluationLabelString[] {
     const predictionStructureWithPluralEvaluationLabelStringArray: PredictionStructureWithPluralEvaluationLabelString[] = [];
     for (const groundTruthSetUtteranceLabels of groundTruthSetUtteranceLabelsMap.entries()) {
       const utterance: string = groundTruthSetUtteranceLabels[0];
@@ -2094,9 +1986,7 @@ export class Utility {
   public static createEmptyLabelStringEvaluationReport(): {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -2145,9 +2035,7 @@ export class Utility {
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -2249,9 +2137,7 @@ export class Utility {
   public static createEmptyLabelObjectEvaluationReport(): {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -2300,9 +2186,7 @@ export class Utility {
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -2457,9 +2341,7 @@ export class Utility {
   public static generateLabelStringEvaluationReport(
     scoringFunctionToPredictionStructureWithScoreLabelString: (
       utteranceLabelsPairArray: StructTextLabelStrings[],
-      labelArrayAndMap: {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;},
+      labelArrayAndMap: ILabelArrayAndMap,
       multiLabelPredictionThreshold: number,
       unknownLabelPredictionThreshold: number) => PredictionStructureWithScoreLabelString[],
     dataSetLabels: string[],
@@ -2478,9 +2360,7 @@ export class Utility {
       'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean;}): {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -2532,9 +2412,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateLabelStringEvaluationReport(), ready to call Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -2693,9 +2571,7 @@ export class Utility {
     evaluationSummaryTagSpuriousLabelUtteranceStatistics: string,
     ensureUnknownLabelInLabelArrayAndMap: boolean): {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -2716,9 +2592,7 @@ export class Utility {
       'utteranceLabelDuplicateHtml': string;
     } {
     // ---- NOTE ---- create a label-index map.
-    const labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;} =
+    const labelArrayAndMap: ILabelArrayAndMap =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
@@ -2817,9 +2691,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateLabelStringEvaluationReportAnalyses(
     evaluationSummary: string,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[],
     ambiguousClosenessThreshold: number,
     lowConfidenceScoreThreshold: number,
@@ -3118,9 +2990,7 @@ export class Utility {
 
   public static generateLabelStringConfusionMatrixMetricsAndHtmlTable(
     predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -3304,9 +3174,7 @@ export class Utility {
 
   public static generateLabelStringLabelStatisticsAndHtmlTable(
     utteranceLabelsMap: Map<string, Set<string>>,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
@@ -3379,9 +3247,7 @@ export class Utility {
   public static generateLabelObjectEvaluationReport(
     scoringFunctionToPredictionStructureWithScoreLabelObject: (
       utteranceLabelsPairArray: StructTextLabelObjects[],
-      labelArrayAndMap: {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;},
+      labelArrayAndMap: ILabelArrayAndMap,
       multiLabelPredictionThreshold: number,
       unknownLabelPredictionThreshold: number) => PredictionStructureWithScoreLabelObject[],
     dataSetLabels: string[],
@@ -3400,9 +3266,7 @@ export class Utility {
       'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean;}): {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -3454,9 +3318,7 @@ export class Utility {
     Utility.debuggingLog('Utility.generateLabelObjectEvaluationReport(), ready to call Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics()');
     const evaluationReportLabelUtteranceStatistics: {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -3614,9 +3476,7 @@ export class Utility {
     evaluationSummaryTagSpuriousLabelUtteranceStatistics: string,
     ensureUnknownLabelInLabelArrayAndMap: boolean): {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -3637,9 +3497,7 @@ export class Utility {
       'utteranceLabelDuplicateHtml': string;
     } {
     // ---- NOTE ---- create a label-index map.
-    const labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;} =
+    const labelArrayAndMap: ILabelArrayAndMap =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
@@ -3738,9 +3596,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateLabelObjectEvaluationReportAnalyses(
     evaluationSummary: string,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[],
     ambiguousClosenessThreshold: number,
     lowConfidenceScoreThreshold: number,
@@ -4047,9 +3903,7 @@ export class Utility {
 
   public static generateLabelObjectConfusionMatrixMetricsAndHtmlTable(
     predictionStructureWithScoreLabelObjectArray: PredictionStructureWithScoreLabelObject[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -4233,9 +4087,7 @@ export class Utility {
 
   public static generateLabelObjectLabelStatisticsAndHtmlTable(
     utteranceLabelsMap: Map<string, Label[]>,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
@@ -4307,9 +4159,7 @@ export class Utility {
   // eslint-disable-next-line max-params
   public static generateEvaluationReportAnalyses<TL>(
     evaluationSummary: string,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     predictionStructureWithScoreArray: PredictionStructureWithScore<TL>[],
     ambiguousClosenessThreshold: number,
     lowConfidenceScoreThreshold: number,
@@ -4401,9 +4251,7 @@ export class Utility {
 
   public static generateConfusionMatrixMetricsAndHtmlTable<TL>(
     predictionStructureWithScoreArray: PredictionStructureWithScore<TL>[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
       'confusionMatrix': IConfusionMatrix;
       'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
       'multiLabelObjectConfusionMatrixSubset': MultiLabelObjectConfusionMatrixSubset;
@@ -4588,9 +4436,7 @@ export class Utility {
 
   public static generateLabelStatisticsAndHtmlTable(
     labelUtterancesMap: Map<string, Set<string>>,
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;}): {
+    labelArrayAndMap: ILabelArrayAndMap): {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
@@ -6406,9 +6252,7 @@ export class Utility {
   }
 
   public static buildStringIdNumberValueDictionaryFromStringArray(
-    inputStringArray: string[]): {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;} {
+    inputStringArray: string[]): ILabelArrayAndMap {
     const stringSet: Set<string> = new Set(inputStringArray);
     let stringArray: string[] = [...stringSet];
     stringArray = Utility.sortStringArray(stringArray);
@@ -6418,9 +6262,7 @@ export class Utility {
   }
 
   public static buildStringIdNumberValueDictionaryFromStringArrays(
-    inputStringArrays: string[][]): {
-      'stringArray': string[];
-      'stringMap': Map<string, number>; } {
+    inputStringArrays: string[][]): ILabelArrayAndMap {
     const stringSet: Set<string> = new Set();
     for (const elementStringArray of inputStringArrays) {
       for (const elementString of elementStringArray) {

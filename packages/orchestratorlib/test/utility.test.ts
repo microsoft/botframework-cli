@@ -11,6 +11,8 @@ import {} from 'mocha';
 
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
+
 import {OrchestratorBaseModel} from '../src/basemodel';
 // import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
@@ -72,9 +74,7 @@ describe('Test Suite - utility', () => {
     Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const labels: string[] = ['A', 'B', 'C'];
-    const labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;} =
+    const labelArrayAndMap: ILabelArrayAndMap =
       Utility.buildStringIdNumberValueDictionaryFromStringArray(labels);
     Utility.debuggingLog(`labelArrayAndMap.stringArray=${labelArrayAndMap.stringArray}`);
     Utility.debuggingLog(`labelArrayAndMap.stringMap=${labelArrayAndMap.stringMap}`);

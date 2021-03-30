@@ -49,6 +49,11 @@ export { TMapStringKeyGenericArrays } from "./data_structure/TMapStringKeyGeneri
 export { TMapStringKeyGenericSet } from "./data_structure/TMapStringKeyGenericSet";
 export { TMapStringKeyGenericValue } from "./data_structure/TMapStringKeyGenericValue";
 
+export { ILabelArrayAndMap } from "./label_structure/ILabelArrayAndMap";
+export { ITextUtteranceLabelMapDataStructure } from "./label_structure/ITextUtteranceLabelMapDataStructure";
+export { ITextUtteranceLabelObjectMapDataStructure } from "./label_structure/ITextUtteranceLabelObjectMapDataStructure";
+export { ITextUtteranceLabelStringMapDataStructure } from "./label_structure/ITextUtteranceLabelStringMapDataStructure";
+
 export { Example } from "./label_structure/Example";
 export { Label } from "./label_structure/Label";
 export { LabelStructureUtility } from "./label_structure/LabelStructureUtility";

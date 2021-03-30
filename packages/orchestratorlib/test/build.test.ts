@@ -2,6 +2,12 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
+import {Example} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
+
 import {Orchestrator} from '../src/orchestrator';
 import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {OrchestratorBuild} from '../src/build';
@@ -9,9 +15,6 @@ import {OrchestratorBaseModel} from '../src/basemodel';
 import {LabelResolver} from '../src/labelresolver';
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
-import {Example} from '@microsoft/bf-dispatcher';
-import {Label} from '@microsoft/bf-dispatcher';
-import {Span} from '@microsoft/bf-dispatcher';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -62,11 +65,8 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example2, labelResolver);
     LabelResolver.addExample(example3, labelResolver);
 
-    const examples: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples !== null);
     assert.ok(examples.utteranceLabelsMap.size === 3);
   });
@@ -77,11 +77,8 @@ describe('OrchestratorBuildTests', function () {
     const filename: string =
       'resources/data/LU/syncLabelResolver/same_as_code.lu';
     const fileContents: string = OrchestratorHelper.readFile(filename);
-    const examples: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorBuild.getExamplesLU(fileContents);
+    const examples: ITextUtteranceLabelMapDataStructure =
+      await OrchestratorBuild.getExamplesLU(fileContents);
     assert.ok(examples !== null);
     assert.ok(examples.utteranceLabelsMap.size === 3);
   });
@@ -128,11 +125,8 @@ describe('OrchestratorBuildTests', function () {
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
 
     // Assert
-    const examples_after_sync: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
     assert.ok(examples_after_sync.utteranceLabelsMap.size === 3);
     assert.ok(examples_after_sync.utteranceLabelsMap.has('book a flight to miami.'));
@@ -175,11 +169,8 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example3, labelResolver);
 
     // Check  examples before sync
-    const examples_before_sync: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_before_sync: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-A');
     assert.ok(examples_before_sync !== null);
     assert.ok(examples_before_sync.utteranceLabelsMap.size === 3);
@@ -194,11 +185,8 @@ describe('OrchestratorBuildTests', function () {
     await OrchestratorBuild.syncLabelResolver(labelResolver, luContents);
 
     // Assert
-    const examples_after_sync: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     Utility.debuggingLog('OrchestratorBuildTests Test.0003, checkpoint-C');
     assert.ok(examples_after_sync !== null);
     Utility.debuggingLog(`OrchestratorBuildTests Test.0003, checkpoint-D: examples_after_sync.utteranceLabelsMap.size=${examples_after_sync.utteranceLabelsMap.size}`);
@@ -244,11 +232,8 @@ describe('OrchestratorBuildTests', function () {
     LabelResolver.addExample(example3, labelResolver);
 
     // Check  examples before sync
-    const examples_before_sync: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_before_sync: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_before_sync !== null);
     assert.ok(examples_before_sync.utteranceLabelsMap.size === 3);
 
@@ -262,11 +247,8 @@ describe('OrchestratorBuildTests', function () {
     Utility.debuggingLog('OrchestratorBuildTests Test.0004, after calling OrchestratorBuild.syncLabelResolver()');
 
     // Assert
-    const examples_after_sync: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const examples_after_sync: ITextUtteranceLabelMapDataStructure =
+      OrchestratorBuild.getExamplesLR(labelResolver);
     assert.ok(examples_after_sync !== null);
     // eslint-disable-next-line no-console
     console.log(`>>>>>>>examples after sync: ${examples_after_sync.utteranceLabelsMap.size} (expected:2)`);

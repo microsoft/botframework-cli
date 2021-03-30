@@ -15,6 +15,7 @@ import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
 import {Example} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
@@ -130,11 +131,9 @@ export class OrchestratorPredict {
 
   protected newIntentLabels: string[] = [];
 
-  protected currentLabelArrayAndMap: {
-    'stringArray': string[];
-    'stringMap': Map<string, number>;} = {
-      stringArray: [],
-      stringMap: new Map<string, number>()};
+  protected currentLabelArrayAndMap: ILabelArrayAndMap = {
+    stringArray: [],
+    stringMap: new Map<string, number>()};
 
   protected currentUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
@@ -143,9 +142,7 @@ export class OrchestratorPredict {
   protected currentIntentEvaluationOutput: {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
@@ -195,9 +192,7 @@ export class OrchestratorPredict {
   protected currentEntityEvaluationOutput: {
     'evaluationReportLabelUtteranceStatistics': {
       'evaluationSummary': string;
-      'labelArrayAndMap': {
-        'stringArray': string[];
-        'stringMap': Map<string, number>;};
+      'labelArrayAndMap': ILabelArrayAndMap;
       'labelStatisticsAndHtmlTable': {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;

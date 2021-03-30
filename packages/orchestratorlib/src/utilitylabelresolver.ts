@@ -7,6 +7,7 @@ import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Result} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelString, PredictionType} from '@microsoft/bf-dispatcher';
 import {PredictionStructureWithScoreLabelObject} from '@microsoft/bf-dispatcher';
 
@@ -82,9 +83,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line complexity
   public static scoreBatchStringLabels(
     utteranceLabelsPairArray: StructTextLabelStrings[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelString[] {
     // -----------------------------------------------------------------------
@@ -310,9 +309,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line complexity
   public static scoreBatchObjectLabels(
     utteranceLabelsPairArray: StructTextLabelObjects[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelObject[] {
     // -----------------------------------------------------------------------
@@ -580,9 +577,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line complexity
   public static scoreStringLabels(
     utteranceLabelsPairArray: StructTextLabelStrings[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelString[] {
     // -----------------------------------------------------------------------
@@ -766,9 +761,7 @@ export class UtilityLabelResolver {
   // eslint-disable-next-line complexity
   public static scoreObjectLabels(
     utteranceLabelsPairArray: StructTextLabelObjects[],
-    labelArrayAndMap: {
-      'stringArray': string[];
-      'stringMap': Map<string, number>;},
+    labelArrayAndMap: ILabelArrayAndMap,
     multiLabelPredictionThreshold: number,
     unknownLabelPredictionThreshold: number): PredictionStructureWithScoreLabelObject[] {
     // -----------------------------------------------------------------------

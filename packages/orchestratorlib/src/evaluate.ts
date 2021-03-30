@@ -9,6 +9,7 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
 import {Example} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
@@ -225,9 +226,7 @@ export class OrchestratorEvaluate {
     const evaluationOutput: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -327,9 +326,7 @@ export class OrchestratorEvaluate {
     const evaluationOutputLabelObject: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;

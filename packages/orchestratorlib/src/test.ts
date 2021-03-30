@@ -9,6 +9,8 @@ import {IConfusionMatrix} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixExact} from '@microsoft/bf-dispatcher';
 import {MultiLabelObjectConfusionMatrixSubset} from '@microsoft/bf-dispatcher';
 
+import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 
@@ -151,11 +153,7 @@ export class OrchestratorTest {
       new Set<string>(snapshotSetEntityLabels);
     // -----------------------------------------------------------------------
     // ---- NOTE ---- load the testing set.
-    const processedUtteranceLabelsMap: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } =
+    const processedUtteranceLabelsMap: ITextUtteranceLabelMapDataStructure =
       await OrchestratorHelper.getUtteranceLabelsMap(testPathConfiguration, false);
     // Utility.debuggingLog(`OrchestratorTest.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorTest.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
@@ -216,9 +214,7 @@ export class OrchestratorTest {
     const evaluationOutputLabelString: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;
@@ -324,9 +320,7 @@ export class OrchestratorTest {
     const evaluationOutputLabelObject: {
       'evaluationReportLabelUtteranceStatistics': {
         'evaluationSummary': string;
-        'labelArrayAndMap': {
-          'stringArray': string[];
-          'stringMap': Map<string, number>;};
+        'labelArrayAndMap': ILabelArrayAndMap;
         'labelStatisticsAndHtmlTable': {
           'labelUtterancesMap': Map<string, Set<string>>;
           'labelUtterancesTotal': number;

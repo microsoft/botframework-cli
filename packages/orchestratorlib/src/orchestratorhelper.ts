@@ -7,6 +7,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelStructureUtility} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
@@ -137,11 +138,7 @@ export class OrchestratorHelper {
   public static async getUtteranceLabelsMap(
     filePathConfiguration: string,
     hierarchical: boolean = false,
-    routingName: string = ''): Promise<{
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
+    routingName: string = ''): Promise<ITextUtteranceLabelMapDataStructure> {
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
     const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
@@ -1277,15 +1274,11 @@ export class OrchestratorHelper {
     if (fullEmbedding) {
       UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbedding);
     }
-    const result: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
-        utteranceLabelsMap: new Map<string, Set<string>>(),
-        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
-        utteranceEntityLabelsMap: new Map<string, Label[]>(),
-        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    const result: ITextUtteranceLabelMapDataStructure = {
+      utteranceLabelsMap: new Map<string, Set<string>>(),
+      utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+      utteranceEntityLabelsMap: new Map<string, Label[]>(),
+      utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
     await OrchestratorHelper.parseLuContent(
       luObject.id,
       luObject.content,

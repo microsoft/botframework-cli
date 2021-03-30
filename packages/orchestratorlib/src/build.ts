@@ -4,13 +4,16 @@
  */
 
 import * as path from 'path';
+
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {Utility} from './utility';
-// import {stringify} from 'querystring';
-import {Label, Span} from '@microsoft/bf-dispatcher';
-import {LabelType} from '@microsoft/bf-dispatcher';
+
 // import {Example} from '@microsoft/bf-dispatcher';
+import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
+import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
+import {Span} from '@microsoft/bf-dispatcher';
 
 export class OrchestratorBuild {
   public static Orchestrator: any;
@@ -101,11 +104,7 @@ export class OrchestratorBuild {
 
   // Get sorted examples from Label Resolver.
   static getExamplesLR(
-    labelResolver: LabelResolver): {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } {
+    labelResolver: LabelResolver): ITextUtteranceLabelMapDataStructure {
     const labelResolverExamples: any = LabelResolver.getExamples(labelResolver);
     // ---- NOTE-FOR-REFERENCE ---- const labelResolverExamples: Example[] = LabelResolver.getExamples(labelResolver).map(
     // ---- NOTE-FOR-REFERENCE ----   (x: any) => new Example(
@@ -118,15 +117,11 @@ export class OrchestratorBuild {
     // ---- NOTE-FOR-REFERENCE ----         y.span.length)))));
     // ---- NOTE-FOR-REFERENCE ---- labelResolverExamples.sort(Example.sortFunction);
     // ---- NOTE-FOR-REFERENCE ---- return labelResolverExamples;
-    const exampleIntentsEntitiesUtterances: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
-        utteranceLabelsMap: new Map<string, Set<string>>(),
-        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
-        utteranceEntityLabelsMap: new Map<string, Label[]>(),
-        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    const exampleIntentsEntitiesUtterances: ITextUtteranceLabelMapDataStructure = {
+      utteranceLabelsMap: new Map<string, Set<string>>(),
+      utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+      utteranceEntityLabelsMap: new Map<string, Label[]>(),
+      utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
     OrchestratorHelper.getExampleArrayIntentsEntitiesUtterances(
       labelResolverExamples,
       '',
@@ -139,20 +134,12 @@ export class OrchestratorBuild {
 
   // Get sorted examples from LU file
   static async getExamplesLU(
-    luContent: string): Promise<{
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; }> {
-    const luIntentsEntitiesUtterances: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = {
-        utteranceLabelsMap: new Map<string, Set<string>>(),
-        utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
-        utteranceEntityLabelsMap: new Map<string, Label[]>(),
-        utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    luContent: string): Promise<ITextUtteranceLabelMapDataStructure> {
+    const luIntentsEntitiesUtterances: ITextUtteranceLabelMapDataStructure = {
+      utteranceLabelsMap: new Map<string, Set<string>>(),
+      utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+      utteranceEntityLabelsMap: new Map<string, Label[]>(),
+      utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
     await OrchestratorHelper.parseLuContent(
       '',
       luContent,
@@ -168,18 +155,10 @@ export class OrchestratorBuild {
 
   // Synchronize an active LabelResolver instance with with an LU file.
   static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
-    const subject: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = OrchestratorBuild.getExamplesLR(labelResolver);
+    const subject: ITextUtteranceLabelMapDataStructure = OrchestratorBuild.getExamplesLR(labelResolver);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceLabelsMap.size=${subject.utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
-    const target: {
-      'utteranceLabelsMap': Map<string, Set<string>>;
-      'utteranceLabelDuplicateMap': Map<string, Set<string>>;
-      'utteranceEntityLabelsMap': Map<string, Label[]>;
-      'utteranceEntityLabelDuplicateMap': Map<string, Label[]>; } = await OrchestratorBuild.getExamplesLU(luContent);
+    const target: ITextUtteranceLabelMapDataStructure = await OrchestratorBuild.getExamplesLU(luContent);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceLabelsMap.size=${target.utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceEntityLabelsMap.size=${target.utteranceEntityLabelsMap.size}`);
     // ---- NOTE ---- delete example intent label if it is not in target.
