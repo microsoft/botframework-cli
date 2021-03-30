@@ -3,12 +3,8 @@
  * Licensed under the MIT License.
  */
 
-// import { IMultiLabelObjectConfusionMatrix } from "./IMultiLabelObjectConfusionMatrix";
 import { MultiLabelObjectConfusionMatrixBase } from "./MultiLabelObjectConfusionMatrixBase";
-import { LabelObjectConfusionMatrixBase } from "./LabelObjectConfusionMatrixBase";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
 

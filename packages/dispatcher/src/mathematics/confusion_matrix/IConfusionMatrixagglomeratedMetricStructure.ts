@@ -4,8 +4,6 @@
  */
 
 import { IConfusionMatrixBaseMetrics } from "./IConfusionMatrixBaseMetrics";
-// import { IConfusionMatrixBaseMicroAverageMetrics } from "./IConfusionMatrixBaseMicroAverageMetrics";
-// import { IConfusionMatrixMeanDerivedMetrics } from "./IConfusionMatrixMeanDerivedMetrics";
 import { IConfusionMatrixMeanDerivedWeightedMetrics } from "./IConfusionMatrixMeanDerivedWeightedMetrics";
 import { IConfusionMatrixMeanMetrics } from "./IConfusionMatrixMeanMetrics";
 import { IConfusionMatrixQuantileMetrics } from "./IConfusionMatrixQuantileMetrics";

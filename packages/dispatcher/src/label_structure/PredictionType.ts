@@ -36,5 +36,5 @@ export enum PredictionTypeArrayOutputIndex {
     IndexForFalsePositive = 1,
     IndexForFalseNegative = 2,
     IndexForTrueNegative = 3,
-    // ---- NOTE ---- sometimes, true negative is not recorded, so it's placed at last and can be omitted!
+    // ---- NOTE ---- sometimes, true negative is not recorded, so it's placed at the end and can be omitted!
 }

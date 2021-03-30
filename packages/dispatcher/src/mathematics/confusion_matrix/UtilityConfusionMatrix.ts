@@ -3,11 +3,9 @@
  * Licensed under the MIT License.
  */
 
-// import { Label } from "../../label_structure/Label";
 import { PredictionStructureWithPluralEvaluationLabelObject } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelObject";
 import { PredictionStructureWithPluralEvaluationLabelString } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelString";
 
-import { IConfusionMatrixBaseMetrics } from "./IConfusionMatrixBaseMetrics";
 import { IConfusionMatrixBaseMicroAverageMetrics } from "./IConfusionMatrixBaseMicroAverageMetrics";
 import { IConfusionMatrixMeanDerivedMetrics } from "./IConfusionMatrixMeanDerivedMetrics";
 import { IConfusionMatrixMeanMetrics } from "./IConfusionMatrixMeanMetrics";
@@ -259,17 +257,7 @@ export class UtilityConfusionMatrix {
                 "confusionMatrixAverageDescriptionMetricsHtml": string;
             };
         } {
-        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyArrays(labels)) {
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labels is empty");
-        // ---- NOTE-DEPRECATED ---- }
-        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyArrays(labelsPredicted)) {
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsPredicted is empty");
-        // ---- NOTE-DEPRECATED ---- }
         const numberInstances: number = predictionStructures.length;
-        // ---- NOTE-DEPRECATED ---- if (labelsPredicted.length !== numberInstances) {
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow(`labelsPredicted.length|${labelsPredicted.length}| != numberInstances|${numberInstances}|`);
-        // ---- NOTE-DEPRECATED ---- }
         const multiLabelObjectConfusionMatrix: MultiLabelObjectConfusionMatrix =
             new MultiLabelObjectConfusionMatrix(
                 labelArrayAndMap.stringArray,
@@ -418,17 +406,7 @@ export class UtilityConfusionMatrix {
                 "confusionMatrixAverageDescriptionMetricsHtml": string;
             };
         } {
-        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyNumberArrays(labelsIndexes)) {
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsIndexes is empty");
-        // ---- NOTE-DEPRECATED ---- }
-        // ---- NOTE-DEPRECATED ---- if (Utility.isEmptyNumberArrays(labelsPredictedIndexes)) {
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow("labelsPredictedIndexes is empty");
-        // ---- NOTE-DEPRECATED ---- }
         const numberInstances: number = predictionStructures.length;
-        // ---- NOTE-DEPRECATED ---- if (labelsPredictedIndexes.length !== numberInstances) {
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-DEPRECATED ----     Utility.debuggingThrow(`labelsPredictedIndexes.length|${labelsPredictedIndexes.length}| != numberInstances|${numberInstances}|`);
-        // ---- NOTE-DEPRECATED ---- }
         const multiLabelConfusionMatrix: MultiLabelConfusionMatrix =
             new MultiLabelConfusionMatrix(
                 labelArrayAndMap.stringArray,

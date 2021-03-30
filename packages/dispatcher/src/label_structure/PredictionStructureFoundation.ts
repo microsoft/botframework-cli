@@ -9,30 +9,36 @@ import { Utility } from "../utility/Utility";
 
 export class PredictionStructureFoundation {
 
-    // ---- NOTE-DOCUMENTATION ---- A PredictionStructureFoundation object has
-    // ---- NOTE-DOCUMENTATION ---- a text, which can be a NLP utterance, sentence, or document.
-    // ---- NOTE-DOCUMENTATION ---- It contains all the feature information for a prediction,
-    // ---- NOTE-DOCUMENTATION ---- thus it can also be an aggreagte of all the featuer records
-    // ---- NOTE-DOCUMENTATION ---- from a traditional multi-variate, machine-learning data instance.
+    /** ---- NOTE-DOCUMENTATION ----
+     *  A PredictionStructureFoundation object has
+     *  a text, which can be a NLP utterance, sentence, or document.
+     *  It contains all the feature information for a prediction,
+     *  thus it can also be an aggreagte of all the featuer records
+     *  from a traditional multi-variate, machine-learning data instance.
+     */
     public text: string;
 
-    // ---- NOTE-DOCUMENTATION ---- A PredictionStructureFoundation object has a ground-truth
-    // ---- NOTE-DOCUMENTATION ---- collection (i.e., multi-labeled) of label indexes, that can contain 0, 1,
-    // ---- NOTE-DOCUMENTATION ---- or more labels in integer indexes.
-    // ---- NOTE-DOCUMENTATION ---- Empty label arrays are for an unsupervised-learning problem.
-    // ---- NOTE-DOCUMENTATION ---- If there is only one label in the array, then it's for a single-label
-    // ---- NOTE-DOCUMENTATION ---- supervised-learning problem, otherwise the instance is for
-    // ---- NOTE-DOCUMENTATION ---- a multi-label problem.
+    /** ---- NOTE-DOCUMENTATION ----
+     *  A PredictionStructureFoundation object has a ground-truth
+     *  collection (i.e., multi-labeled) of label indexes, that can contain 0, 1,
+     *  or more labels in integer indexes.
+     *  Empty label arrays are for an unsupervised-learning problem.
+     *  If there is only one label in the array, then it's for a single-label
+     *  supervised-learning problem, otherwise the instance is for
+     *  a multi-label problem.
+     */
     public labelsIndexes: number[];
 
-    // ---- NOTE-DOCUMENTATION ---- A PredictionStructureFoundation object has a predicted
-    // ---- NOTE-DOCUMENTATION ---- collection (i.e., multi-labeled) of label indexes, that can contain 0, 1,
-    // ---- NOTE-DOCUMENTATION ---- or more labels in integer indexes.
-    // ---- NOTE-DOCUMENTATION ---- Empty label arrays are for an unsupervised-learning problem.
-    // ---- NOTE-DOCUMENTATION ---- If there is only one label in the array, then it's for a single-label
-    // ---- NOTE-DOCUMENTATION ---- supervised-learning problem, otherwise the instance is for
-    // ---- NOTE-DOCUMENTATION ---- a multi-label problem.
-    public labelsPredictedIndexes: number[];
+    /** ---- NOTE-DOCUMENTATION ----
+     *  A PredictionStructureFoundation object has a predicted
+     *  collection (i.e., multi-labeled) of label indexes, that can contain 0, 1,
+     *  or more labels in integer indexes.
+     *  Empty label arrays are for an unsupervised-learning problem.
+     *  If there is only one label in the array, then it's for a single-label
+     *  supervised-learning problem, otherwise the instance is for
+     *  a multi-label problem.
+     */
+     public labelsPredictedIndexes: number[];
 
     constructor(
         text: string,

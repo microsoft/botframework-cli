@@ -10,8 +10,8 @@ import { Utility } from "../utility/Utility";
 
 export class Result {
     public static utilityRound(score: number, digits: number): number {
-        return score; // ---- NOTE ---- null logic, per request to see the original score, not rounded one.
-        // ---- NOTE-FOR-REFERENCE-PLACE-HOLDER ---- return Utility.round(score, digits);
+        return score; // ---- NOTE ---- default logic per request for see the original, raw score that is not rounded.
+        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-PLACE-HOLDER ---- return Utility.round(score, digits);
     }
 
     public label: Label;

@@ -176,7 +176,7 @@ export class ColumnarData extends Data {
     }
 
     public retrieveColumnarUtterances(content: string): ITextIntentSequenceLabelObjectByPosition[] {
-        // ---- NOTE the return is newly allocated, unlike the one of LuData
+        // ---- NOTE ---- the return is newly allocated, unlike the one in LuData
         const intentsUtterancesWeights: { "intents": string[], "utterances": string[], "weights": number[] } =
             Utility.loadLabelUtteranceColumnarContent(
                 content,               // ---- filename: string,

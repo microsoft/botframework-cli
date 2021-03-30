@@ -3,14 +3,9 @@
  * Licensed under the MIT License.
  */
 
-// import { IMultiLabelObjectConfusionMatrix } from "./IMultiLabelObjectConfusionMatrix";
 import { MultiLabelObjectConfusionMatrixWithBinaryBase } from "./MultiLabelObjectConfusionMatrixWithBinaryBase";
-import { LabelObjectConfusionMatrixBase } from "./LabelObjectConfusionMatrixBase";
-import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { Label } from "../../label_structure/Label";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
 
 import { Utility } from "../../utility/Utility";
 
@@ -63,42 +58,6 @@ extends MultiLabelObjectConfusionMatrixWithBinaryBase {
             return;
         }
         this.getBinaryConfusionMatrix().addToTruePositives(value, true);
-        // ---- NOTE-FOR-REFERENCE ---- for (const predictedLabel of predictedLabels) {
-        // ---- NOTE-FOR-REFERENCE ----     let predictedIsInGroundTruth: boolean = false;
-        // ---- NOTE-FOR-REFERENCE ----     for (const groundTrueLabel of groundTrueLabels) {
-        // ---- NOTE-FOR-REFERENCE ----         if (predictedLabel.equals(groundTrueLabel)) {
-        // ---- NOTE-FOR-REFERENCE ----             predictedIsInGroundTruth = true;
-        // ---- NOTE-FOR-REFERENCE ----             break;
-        // ---- NOTE-FOR-REFERENCE ----         }
-        // ---- NOTE-FOR-REFERENCE ----     }
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-FOR-REFERENCE ----     const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
-        // ---- NOTE-FOR-REFERENCE ----     if (predictedIsInGroundTruth) {
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[predictedLabelId].addToTruePositives(value, false);
-        // ---- NOTE-FOR-REFERENCE ----     } else {
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[predictedLabelId].addToFalsePositives(value, false);
-        // ---- NOTE-FOR-REFERENCE ----     }
-        // ---- NOTE-FOR-REFERENCE ---- }
-        // ---- NOTE-FOR-REFERENCE ---- for (const groundTrueLabel of groundTrueLabels) {
-        // ---- NOTE-FOR-REFERENCE ----     let groundTruthIsInPredicted: boolean = false;
-        // ---- NOTE-FOR-REFERENCE ----     for (const predictedLabel of predictedLabels) {
-        // ---- NOTE-FOR-REFERENCE ----         if (groundTrueLabel.equals(predictedLabel)) {
-        // ---- NOTE-FOR-REFERENCE ----             groundTruthIsInPredicted = true;
-        // ---- NOTE-FOR-REFERENCE ----             break;
-        // ---- NOTE-FOR-REFERENCE ----         }
-        // ---- NOTE-FOR-REFERENCE ----     }
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-FOR-REFERENCE ----     const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
-        // ---- NOTE-FOR-REFERENCE ----     if (!groundTruthIsInPredicted) {
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-FOR-REFERENCE ----         this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);
-        // ---- NOTE-FOR-REFERENCE ----     }
-        // ---- NOTE-FOR-REFERENCE ---- }
-        // ---- NOTE-FOR-REFERENCE ---- for (let labelId: number = 0; labelId < this.getNumberLabels(); labelId++) {
-        // ---- NOTE-FOR-REFERENCE ----     this.getBinaryConfusionMatrices()[labelId].calculateDerivedCells();
-        // ---- NOTE-FOR-REFERENCE ---- }
     }
 
     public addInstanceByLabelIndexes(

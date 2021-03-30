@@ -3,14 +3,8 @@
  * Licensed under the MIT License.
  */
 
-// import { IPerInstanceMultiLabelObjectConfusionMatrix } from "./IPerInstanceMultiLabelObjectConfusionMatrix";
 import { PerInstanceMultiLabelObjectConfusionMatrixBase } from "./PerInstanceMultiLabelObjectConfusionMatrixBase";
-import { LabelObjectConfusionMatrixBase } from "./LabelObjectConfusionMatrixBase";
 import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
-
-import { Utility } from "../../utility/Utility";
 
 export abstract class PerInstanceMultiLabelObjectConfusionMatrixWithBinaryArrayBase
 extends PerInstanceMultiLabelObjectConfusionMatrixBase {

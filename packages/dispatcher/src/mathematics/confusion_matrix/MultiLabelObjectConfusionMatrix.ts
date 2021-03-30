@@ -3,16 +3,9 @@
  * Licensed under the MIT License.
  */
 
-// import { IMultiLabelObjectConfusionMatrix } from "./IMultiLabelObjectConfusionMatrix";
 import { MultiLabelObjectConfusionMatrixWithBinaryArrayBase } from "./MultiLabelObjectConfusionMatrixWithBinaryArrayBase";
-import { LabelObjectConfusionMatrixBase } from "./LabelObjectConfusionMatrixBase";
-import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { Label } from "../../label_structure/Label";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
-
-import { Utility } from "../../utility/Utility";
 
 export class MultiLabelObjectConfusionMatrix
 extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
@@ -32,12 +25,6 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
         this.validateLabelObjects(predictedLabels);
         for (const predictedLabel of predictedLabels) {
             const predictedIsInGroundTruth: boolean = this.isLabelObjectInArray(groundTrueLabels, predictedLabel);
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- if (predictedLabel.name === "served_dish") {
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----     Utility.debuggingLog(
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         "==== XXXXX=DEBUG=XXXXX ==== " +
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         `predictedLabel=${predictedLabel.toSimpleString()}, ` +
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         `predictedIsInGroundTruth=${predictedIsInGroundTruth}`);
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- }
             const predictedLabelId: number = this.labelMap.get(predictedLabel.name) as number;
             if (predictedIsInGroundTruth) {
                 this.getBinaryConfusionMatrices()[predictedLabelId].addToTruePositives(value, false);
@@ -47,12 +34,6 @@ extends MultiLabelObjectConfusionMatrixWithBinaryArrayBase {
         }
         for (const groundTrueLabel of groundTrueLabels) {
             const groundTruthIsInPredicted: boolean = this.isLabelObjectInArray(predictedLabels, groundTrueLabel);
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- if (groundTrueLabel.name === "served_dish") {
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----     Utility.debuggingLog(
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         "==== XXXXX=DEBUG=XXXXX ==== " +
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         `groundTrueLabel=${groundTrueLabel.toSimpleString()}, ` +
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ----         `groundTruthIsInPredicted=${groundTruthIsInPredicted}`);
-            // ---- NOTE-PLACE-HOLDER-FOR-TRACING ---- }
             if (!groundTruthIsInPredicted) {
                 const groundTrueLabelId: number = this.labelMap.get(groundTrueLabel.name) as number;
                 this.getBinaryConfusionMatrices()[groundTrueLabelId].addToFalseNegatives(value, false);

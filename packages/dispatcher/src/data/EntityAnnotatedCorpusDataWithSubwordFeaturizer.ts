@@ -206,7 +206,8 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
     }
 
     // tslint:disable-next-line: max-line-length
-    public retrieveEntityAnnotatedCorpusUtterances( // ---- NOTE the return is newly allocated, unlike the one for LuDataWithSubwordFeaturizer
+    public retrieveEntityAnnotatedCorpusUtterances(
+        // ---- NOTE ---- the return is newly allocated, unlike the one in LuDataWithSubwordFeaturizer
         content: string,
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",

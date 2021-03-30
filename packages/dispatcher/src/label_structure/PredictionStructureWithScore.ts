@@ -17,10 +17,13 @@ extends PredictionStructure<TL> {
     constructor(
         text: string,
         labelsPredictedEvaluation: number,
-        // ---- NOTE ---- PredictionType.TruePositive(1):TP
-        // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-        // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-        // ---- NOTE ---- PredictionType.TrueNegative(8):TN
+        /** ---- NOTE-DOCUMENTATION ----
+         *  labelsPredictedEvaluation can be of following:
+         *    PredictionType.TruePositive(1):TP
+         *    PredictionType.FalsePositive(2):FP
+         *    PredictionType.FalseNegative(4):FN
+         *    PredictionType.TrueNegative(8):TN
+         */
         labels: TL[],
         labelsConcatenated: string,
         labelsConcatenatedToHtmlTable: string,
@@ -58,10 +61,13 @@ extends PredictionStructure<TL> {
     public toObjectPredictionStructureWithScore(): {
         "text": string;
         "labelsPredictedEvaluation": number;
-        // ---- NOTE ---- PredictionType.TruePositive(1):TP
-        // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-        // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-        // ---- NOTE ---- PredictionType.TrueNegative(8):TN
+        /** ---- NOTE-DOCUMENTATION ----
+         *  labelsPredictedEvaluation can be of following:
+         *    PredictionType.TruePositive(1):TP
+         *    PredictionType.FalsePositive(2):FP
+         *    PredictionType.FalseNegative(4):FN
+         *    PredictionType.TrueNegative(8):TN
+         */
         "labelsIndexes": number[];
         "labelsPredictedIndexes": number[];
         "labels": TL[];
@@ -73,10 +79,13 @@ extends PredictionStructure<TL> {
             text: this.text,
             labelsPredictedEvaluation:
               this.predictionStructureFoundationSingularEvaluation.labelsPredictedEvaluation,
-            // ---- NOTE ---- PredictionType.TruePositive(1):TP
-            // ---- NOTE ---- PredictionType.FalsePositive(2):FP
-            // ---- NOTE ---- PredictionType.FalseNegative(4):FN
-            // ---- NOTE ---- PredictionType.TrueNegative(8):TN
+            /** ---- NOTE-DOCUMENTATION ----
+             *  labelsPredictedEvaluation can be of following:
+             *    PredictionType.TruePositive(1):TP
+             *    PredictionType.FalsePositive(2):FP
+             *    PredictionType.FalseNegative(4):FN
+             *    PredictionType.TrueNegative(8):TN
+             */
             labelsIndexes:
               this.labelsIndexes,
             labelsPredictedIndexes:

@@ -9,36 +9,50 @@ import { PredictionTypeArrayOutputIndex } from "./PredictionType";
 
 export class PredictionStructureFoundationPluralEvaluation {
 
-    // ---- NOTE-DOCUMENTATION ---- A PredictionStructureFoundationPluralEvaluation object has
-    // ---- NOTE-DOCUMENTATION ---- an array of evaluation values that an evaluating algorithm can
-    // ---- NOTE-DOCUMENTATION ---- determine the values based on the information possibly from
-    // ---- NOTE-DOCUMENTATION ---- a PredictionStructureFoundation object.
+    /** ---- NOTE-DOCUMENTATION ----
+     *  A PredictionStructureFoundationPluralEvaluation object has
+     *  an array of evaluation values that an evaluating algorithm can
+     *  determine the values based on the information possibly from
+     *  a PredictionStructureFoundation object.
+     */
     public labelsPredictedEvaluationArray: number[];
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
-    // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+    /** ---- NOTE-DOCUMENTATION ----
+     *  labelsPredictedEvaluationArray cells are
+     *    index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+     *    index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+     *    index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+     */
 
     constructor(
         labelsPredictedEvaluationArray: number[],
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+        /** ---- NOTE-DOCUMENTATION ----
+         *  labelsPredictedEvaluationArray cells are
+         *    index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+         *    index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+         *    index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+         */
         ) {
         this.labelsPredictedEvaluationArray = labelsPredictedEvaluationArray;
     }
 
     public toObjectPredictionStructureFoundationPluralEvaluation(): {
         "labelsPredictedEvaluationArray": number[];
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
-        // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
-    } {
+        /** ---- NOTE-DOCUMENTATION ----
+         *  labelsPredictedEvaluationArray cells are
+         *    index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+         *    index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+         *    index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+         */
+        } {
         return {
             labelsPredictedEvaluationArray: this.labelsPredictedEvaluationArray,
-            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
-            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
-            // ---- NOTE ---- index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
-        };
+            /** ---- NOTE-DOCUMENTATION ----
+             *  labelsPredictedEvaluationArray cells are
+             *    index-PredictionTypeArrayOutputIndex.IndexForTruePositive(0): #TP
+             *    index-PredictionTypeArrayOutputIndex.IndexForFalsePositive(1): #FP
+             *    index-PredictionTypeArrayOutputIndex.IndexForFalseNegative(2): #FN
+             */
+            };
     }
 
     public hasMisclassified(): boolean {

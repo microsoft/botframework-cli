@@ -152,7 +152,8 @@ export class EntityAnnotatedCorpusData extends Data {
             filteringIndexSet);
     }
 
-    public retrieveEntityAnnotatedCorpusUtterances( // ---- NOTE the return is newly allocated, unlike the one of LuData
+    public retrieveEntityAnnotatedCorpusUtterances(
+        // ---- NOTE ---- the return is newly allocated, unlike the one in LuData
         content: string,
         includePartOfSpeechTagTagAsEntities: boolean = true,
         utteranceReconstructionDelimiter: string = " ",

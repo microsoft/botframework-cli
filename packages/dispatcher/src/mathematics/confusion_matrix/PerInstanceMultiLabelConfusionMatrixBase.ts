@@ -112,7 +112,8 @@ implements IPerInstanceMultiLabelConfusionMatrix {
         return true;
     }
 
-    // ---- NOTE ---- label id set is usually very small, mostly 1, so a linear search is sufficiently fast.
+    /** ---- NOTE ---- label id set is usually very small, mostly 1, so a linear search is sufficiently fast.
+     */
     public isLabelIdInArray(labelIds: number[], labelId: number): boolean {
         return labelIds.includes(labelId);
     }

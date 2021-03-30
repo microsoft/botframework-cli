@@ -57,8 +57,9 @@ implements IMultiLabelObjectConfusionMatrix {
         return true;
     }
 
-    // ---- NOTE ---- label set is usually very small, mostly 1, so a linear search is sufficiently fast.
-    public isLabelObjectInArray(labels: Label[], label: Label): boolean {
+    /** ---- NOTE ---- label set is usually very small, mostly 1, so a linear search is sufficiently fast.
+     */
+     public isLabelObjectInArray(labels: Label[], label: Label): boolean {
         for (const labelEntry of labels) {
             if (label.equals(labelEntry)) {
                 return true;

@@ -57,19 +57,20 @@ export class BinaryConfusionMatrix {
         potentialRow1: number = 0,
         potentialRow2: number = 0,
         throwIfNotProper: boolean = true) {
-        //
-        // A binary confusion matrix can be represented as a 2X2 table with
-        // cells defined below:
-        //
-        //                            || Predicted Positive | Predicted Negative |
-        // ----------------------------------------------------------------------------------------------
-        // ----------------------------------------------------------------------------------------------
-        //     Ground - True Positive || True Positive      | False Nagative     | Ground - True Positive
-        // ----------------------------------------------------------------------------------------------
-        //     Ground - True Negative || False Positive     | True Nagative      | Ground - True Negative
-        // ----------------------------------------------------------------------------------------------
-        //                            || Predicted Positive | Predicted Negative | Total
-        //
+        /**
+         *  A binary confusion matrix can be represented as a 2X2 table with
+         *  cells defined below:
+         *
+         *                             || Predicted Positive | Predicted Negative |
+         *  ----------------------------------------------------------------------------------------------
+         *  ----------------------------------------------------------------------------------------------
+         *      Ground - True Positive || True Positive      | False Nagative     | Ground - True Positive
+         *  ----------------------------------------------------------------------------------------------
+         *      Ground - True Negative || False Positive     | True Nagative      | Ground - True Negative
+         *  ----------------------------------------------------------------------------------------------
+         *                             || Predicted Positive | Predicted Negative | Total
+         *
+         */
         this.total = total;
         this.cell11 = cell11;
         this.row1 = row1;

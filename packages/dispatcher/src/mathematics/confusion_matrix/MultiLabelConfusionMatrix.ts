@@ -3,17 +3,10 @@
  * Licensed under the MIT License.
  */
 
-// import { IMultiLabelConfusionMatrix } from "./IMultiLabelConfusionMatrix";
 import { MultiLabelConfusionMatrixWithBinaryArrayBase } from "./MultiLabelConfusionMatrixWithBinaryArrayBase";
-import { ConfusionMatrixBase } from "./ConfusionMatrixBase";
-import { BinaryConfusionMatrix } from "./BinaryConfusionMatrix";
 
 import { PredictionType } from "../../label_structure/PredictionType";
 import { PredictionTypeArrayOutputIndex } from "../../label_structure/PredictionType";
-
-import { DictionaryMapUtility } from "../../data_structure/DictionaryMapUtility";
-
-import { Utility } from "../../utility/Utility";
 
 export class MultiLabelConfusionMatrix
 extends MultiLabelConfusionMatrixWithBinaryArrayBase {
@@ -21,23 +14,27 @@ extends MultiLabelConfusionMatrixWithBinaryArrayBase {
         if (predictions.length <= 0) {
             if (groundTruths.length <= 0) {
                 return PredictionType.TrueNegative;
-                // ---- NOTE ---- PredictionType.TrueNegative for
-                // ---- NOTE ---- true negative as there is no prediction on an empty ground-truth set.
+                /** ---- NOTE ---- PredictionType.TrueNegative for
+                 *  true negative as there is no prediction on an empty ground-truth set.
+                 */
             }
             return PredictionType.FalseNegative;
-            // ---- NOTE ---- PredictionType.FalseNegative for
-            // ---- NOTE ---- false negative as there is no prediction on a non-empty ground-truth set.
+            /** ---- NOTE ---- PredictionType.FalseNegative for
+             * false negative as there is no prediction on a non-empty ground-truth set.
+             */
         }
         for (const prediction of predictions) {
             if (!groundTruths.includes(prediction)) {
                 return PredictionType.FalsePositive;
-                // ---- NOTE ---- PredictionType.FalsePositive for
-                // ---- NOTE ---- false positive as there is a prediction not in the ground-truth set.
+                /** ---- NOTE ---- PredictionType.FalsePositive for
+                 *  false positive as there is a prediction not in the ground-truth set.
+                 */
             }
         }
         return PredictionType.TruePositive;
-        // ---- NOTE ---- PredictionType.TruePositive for
-        // ---- NOTE ---- true positive as every prediction is in the ground-trueh set.
+        /** ---- NOTE ---- PredictionType.TruePositive for
+         *  true positive as every prediction is in the ground-trueh set.
+         */
     }
 
       public static evaluateMultiLabelPrediction(groundTruths: any[], predictions: any[]): number[] {
@@ -45,19 +42,22 @@ extends MultiLabelConfusionMatrixWithBinaryArrayBase {
         for (const prediction of predictions) {
             if (groundTruths.includes(prediction)) {
                 microConfusionMatrix[PredictionTypeArrayOutputIndex.IndexForTruePositive]++;
-                // ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForTruePositive for
-                // ---- NOTE ---- true positive as the prediction is in the ground-truth set.
+                /** ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForTruePositive for
+                 *  true positive as the prediction is in the ground-truth set.
+                 */
             } else {
                 microConfusionMatrix[PredictionTypeArrayOutputIndex.IndexForFalsePositive]++;
-                // ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForFalsePositive for
-                // ---- NOTE ---- false positive as the prediction is not in the ground-truth set.
+                /** ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForFalsePositive for
+                 *  false positive as the prediction is not in the ground-truth set.
+                 */
             }
         }
         for (const groundTruth of groundTruths) {
             if (!predictions.includes(groundTruth)) {
                 microConfusionMatrix[PredictionTypeArrayOutputIndex.IndexForFalseNegative]++;
-                // ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForFalseNegative for
-                // ---- NOTE ---- false negative as the ground-truth is not in the prediction set.
+                /** ---- NOTE ---- PredictionTypeArrayOutputIndex.IndexForFalseNegative for
+                 *  false negative as the ground-truth is not in the prediction set.
+                 */
             }
         }
         return microConfusionMatrix;
