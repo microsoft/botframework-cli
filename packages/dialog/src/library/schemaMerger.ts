@@ -9,7 +9,7 @@ import * as nuget from '@snyk/nuget-semver'
 import * as os from 'os'
 import * as ppath from 'path'
 import * as xp from 'xml2js'
-import Ajv = require('ajv');
+import Ajv = require('ajv')
 import parser from '@apidevtools/json-schema-ref-parser'
 import {JsonPointer as ptr} from 'json-ptr'
 
@@ -87,6 +87,26 @@ function mergeObjects(obj1: any, obj2: any): any {
         finalTarget[key] = target[key]
     }
     return finalTarget
+}
+
+async function removeEmptyDirectories(directory: string): Promise<void> {
+    const fileStats = await fs.lstat(directory)
+    if (fileStats.isDirectory()) {
+        let fileNames = await fs.readdir(directory)
+        if (fileNames.length > 0) {
+            const recursiveRemovalPromises = fileNames.map(
+                fileName => removeEmptyDirectories(ppath.join(directory, fileName)),
+            )
+            await Promise.all(recursiveRemovalPromises)
+
+            // Check to see if we are empty now
+            fileNames = await fs.readdir(directory)
+        }
+
+        if (fileNames.length === 0) {
+            await fs.rmdir(directory)
+        }
+    }
 }
 
 // Build a tree of component (project or package) references in order to compute a topological sort.
@@ -450,7 +470,7 @@ export class SchemaMerger {
      */
     public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns.map(forwardSlashes)
-        this.negativePatterns = this.patterns.filter(p => p.startsWith('!'))
+        this.negativePatterns = this.patterns.filter(p => p.startsWith('!')).map(p => '!' + ppath.resolve(p.substring(1)))
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
         this.imports = imports ?? ppath.join(ppath.dirname(this.output), 'imported')
         this.checkOnly = checkOnly
@@ -472,6 +492,12 @@ export class SchemaMerger {
     public async merge(): Promise<Imports | undefined> {
         let imports: Imports | undefined
         try {
+            if (!this.checkOnly) {
+                await fs.remove(this.output + '.schema')
+                await fs.remove(this.output + '.schema.final')
+                await fs.remove(this.output + '.schema.expanded')
+                await fs.remove(this.output + '.uischema')
+            }
             this.log('Finding component files')
             await this.expandPackages(await glob(this.patterns))
             await this.analyze()
@@ -532,14 +558,7 @@ export class SchemaMerger {
             return parser.dereference(schema)
         }
 
-        // Delete existing output
         const outputPath = ppath.resolve(this.output + '.schema')
-        if (!this.checkOnly) {
-            await fs.remove(this.output + '.schema')
-            await fs.remove(this.output + '.schema.final')
-            await fs.remove(this.output + '.schema.expanded')
-        }
-
         const componentPaths: PathComponent[] = []
         const schemas = this.files.get('.schema')
         if (schemas) {
@@ -688,10 +707,6 @@ export class SchemaMerger {
      * Does extensive error checking and validation against the schema.
      */
     private async mergeUISchemas(schema: any): Promise<void> {
-        if (!this.checkOnly) {
-            await fs.remove(this.output + '.uischema')
-        }
-
         const uiSchemas = this.files.get('.uischema')
         const result = {}
         if (uiSchemas) {
@@ -789,6 +804,17 @@ export class SchemaMerger {
         return [kindName, locale]
     }
 
+    // Return the package name as either directory or scope/directory
+    private packageName(path: string): string {
+        const parts = ppath.relative(this.imports, path).split(ppath.sep)
+        let name = parts[0]
+        if (name.startsWith('@') && parts.length > 1) {
+            // This is a node scoped path
+            name += '/' + parts[1]
+        }
+        return name
+    }
+
     // Copy all exported assets into imported assets
     private async copyAssets(): Promise<Imports | undefined> {
         const imports: Imports | undefined = this.failed ? undefined : {
@@ -813,9 +839,10 @@ export class SchemaMerger {
                         component.metadata.includesExports = true
 
                         // Copy all exported files
-                        for (const path of await glob(forwardSlashes(ppath.join(exported, '**')))) {
+                        for (const globPath of await glob(forwardSlashes(ppath.join(exported, '**')))) {
+                            const path = ppath.normalize(globPath)
                             const destination = ppath.join(imported, ppath.relative(exported, path))
-                            used.add(forwardSlashes(destination))
+                            used.add(destination)
                             let msg = `Copy ${path} to ${destination}`
                             try {
                                 let copy = true
@@ -849,7 +876,8 @@ export class SchemaMerger {
                         }
 
                         // Delete removed files
-                        for (const path of await glob(forwardSlashes(ppath.join(imported, '**')))) {
+                        for (const globPath of await glob(forwardSlashes(ppath.join(imported, '**')))) {
+                            const path = ppath.normalize(globPath)
                             if (!used.has(path)) {
                                 const {unchanged} = await hash.isUnchanged(path)
                                 if (unchanged) {
@@ -870,25 +898,24 @@ export class SchemaMerger {
 
             // Identify previously imported components that are not there any more
             if (await fs.pathExists(this.imports)) {
-                for (const importedDir of await fs.readdir(this.imports)) {
-                    const importPath = ppath.join(this.imports, importedDir)
-                    // On a mac .DS_STORE throws an error if you try to glob it so ensure directory
-                    if (!processed.has(importedDir) && (await fs.lstat(importPath)).isDirectory()) {
-                        for (const path of await glob(forwardSlashes(ppath.join(this.imports, importedDir, '**')))) {
-                            const {unchanged} = await hash.isUnchanged(path)
-                            if (unchanged) {
-                                imports.deleted.push(path)
-                                this.vlog(`Delete ${path}`)
-                            } else {
-                                imports.conflicts.push({definition: '', path})
-                                this.warn(`Warning deleted modified ${path}`)
-                            }
+                for (const path of await glob(forwardSlashes(ppath.join(this.imports, '**')))) {
+                    const packageName = this.packageName(path)
+                    if (!processed.has(packageName)) {
+                        const {unchanged} = await hash.isUnchanged(path)
+                        const normalizedPath = ppath.normalize(path)
+                        if (unchanged) {
+                            imports.deleted.push(path)
+                            this.vlog(`Delete ${normalizedPath}`)
+                        } else {
+                            imports.conflicts.push({definition: '', path})
+                            this.warn(`Warning deleted modified ${path}`)
                         }
                         if (!this.checkOnly) {
-                            await fs.remove(ppath.join(this.imports, importedDir))
+                            await fs.remove(path)
                         }
                     }
                 }
+                await removeEmptyDirectories(this.imports)
             }
         }
         return imports
