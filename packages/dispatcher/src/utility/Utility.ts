@@ -1912,9 +1912,9 @@ export class Utility {
             fs.mkdirSync(path.dirname(filename), {recursive: true});
             fs.writeFileSync(filename, content, encoding);
         } catch (error) {
-          // ---- NOTE ---- An error occurred
-          Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);
-          return "";
+            // ---- NOTE ---- An error occurred
+            Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);
+            return "";
         }
         return filename;
     }
@@ -1967,7 +1967,7 @@ export class Utility {
         try {
             fs.renameSync(entryname, entrynameNew);
         } catch (error) {
-          // ---- NOTE ---- An error occurred
+            // ---- NOTE ---- An error occurred
             Utility.debuggingThrow(`FAILED to rename a entry system entry: entryname=${entrynameNew}, entryname=${entrynameNew}, error=${error}`);
             return "";
         }

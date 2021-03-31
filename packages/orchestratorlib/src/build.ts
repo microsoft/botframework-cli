@@ -9,7 +9,6 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {Utility} from './utility';
 
-// import {Example} from '@microsoft/bf-dispatcher';
 import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';

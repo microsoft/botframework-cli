@@ -53,6 +53,9 @@ export { ILabelArrayAndMap } from "./label_structure/ILabelArrayAndMap";
 export { ITextUtteranceLabelMapDataStructure } from "./label_structure/ITextUtteranceLabelMapDataStructure";
 export { ITextUtteranceLabelObjectMapDataStructure } from "./label_structure/ITextUtteranceLabelObjectMapDataStructure";
 export { ITextUtteranceLabelStringMapDataStructure } from "./label_structure/ITextUtteranceLabelStringMapDataStructure";
+export { ITextUtteranceWeightedLabelMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelMapDataStructure";
+export { ITextUtteranceWeightedLabelObjectMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelObjectMapDataStructure";
+export { ITextUtteranceWeightedLabelStringMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelStringMapDataStructure";
 
 export { Example } from "./label_structure/Example";
 export { Label } from "./label_structure/Label";

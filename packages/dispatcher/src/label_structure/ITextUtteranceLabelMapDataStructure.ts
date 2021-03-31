@@ -3,11 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import { Label } from "./Label";
+import { ITextUtteranceLabelObjectMapDataStructure } from "./ITextUtteranceLabelObjectMapDataStructure";
+import { ITextUtteranceLabelStringMapDataStructure } from "./ITextUtteranceLabelStringMapDataStructure";
 
-export interface ITextUtteranceLabelMapDataStructure {
-    utteranceLabelsMap: Map<string, Set<string>>;
-    utteranceLabelDuplicateMap: Map<string, Set<string>>;
-    utteranceEntityLabelsMap: Map<string, Label[]>;
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>;
+export interface ITextUtteranceLabelMapDataStructure extends
+ITextUtteranceLabelObjectMapDataStructure, ITextUtteranceLabelStringMapDataStructure {
 }

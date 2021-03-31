@@ -88,11 +88,12 @@ export class OrchestratorQuery {
     Utility.debuggingLog('OrchestratorQuery.runAsync(), ready to call LabelResolver.addSnapshot()');
     await LabelResolver.addSnapshot(snapshot);
     Utility.debuggingLog('OrchestratorQuery.runAsync(), after calling LabelResolver.addSnapshot()');
-    // ---- NOTE ---- retrieve labels
-    // const snapshotSetLabels: string[] =
-    //   LabelResolver.getLabels(LabelType.Intent);
-    // const snapshotSetLabelSet: Set<string> =
-    //   new Set<string>(snapshotSetLabels);
+    /** ---- NOTE ---- retrieve labels
+     *  const snapshotSetLabels: string[] =
+     *    LabelResolver.getLabels(LabelType.Intent);
+     *  const snapshotSetLabelSet: Set<string> =
+     *    new Set<string>(snapshotSetLabels);
+     */
     // -----------------------------------------------------------------------
     const scoreResults: any = (entityBaseModelPath) ?
       await LabelResolver.score(queryConfiguration, LabelType.All) :

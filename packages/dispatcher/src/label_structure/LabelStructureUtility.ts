@@ -6,6 +6,9 @@
 import { BinaryConfusionMatrix } from "../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
 import { ILabelArrayAndMap } from "./ILabelArrayAndMap";
+import { ITextUtteranceLabelMapDataStructure } from "./ITextUtteranceLabelMapDataStructure";
+import { ITextUtteranceLabelObjectMapDataStructure } from "./ITextUtteranceLabelObjectMapDataStructure";
+import { ITextUtteranceLabelStringMapDataStructure } from "./ITextUtteranceLabelStringMapDataStructure";
 
 import { Label } from "./Label";
 import { LabelType } from "./LabelType";
@@ -61,6 +64,27 @@ export class LabelStructureUtility {
             return LabelType.Unknown;
         }
         return LabelType.Unknown;
+    }
+
+    // =======================================================================
+    // ITextUtteranceLabelMapDataStructure-related utility functions
+    // =======================================================================
+    public static instantiateITextUtteranceLabelMapDataStructure(): ITextUtteranceLabelMapDataStructure {
+        return {
+            utteranceLabelsMap: new Map<string, Set<string>>(),
+            utteranceLabelDuplicateMap: new Map<string, Set<string>>(),
+            utteranceEntityLabelsMap: new Map<string, Label[]>(),
+            utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    }
+    public static instantiateITextUtteranceLabelObjectMapDataStructure(): ITextUtteranceLabelObjectMapDataStructure {
+        return {
+            utteranceEntityLabelsMap: new Map<string, Label[]>(),
+            utteranceEntityLabelDuplicateMap: new Map<string, Label[]>()};
+    }
+    public static instantiateITextUtteranceLabelStringMapDataStructure(): ITextUtteranceLabelStringMapDataStructure {
+        return {
+            utteranceLabelsMap: new Map<string, Set<string>>(),
+            utteranceLabelDuplicateMap: new Map<string, Set<string>>()};
     }
 
     // =======================================================================

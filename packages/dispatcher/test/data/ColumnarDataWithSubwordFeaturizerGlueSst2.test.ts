@@ -20,8 +20,10 @@ import { UnitTestHelper } from "../utility/Utility.test";
 
 /* tslint:disable */
 
-// ---- NOTE ---- The dataset in ColumnarContentGlueSst2 was minorly revised (` to ') from
-// ---- NOTE ---- the GLUE SST2 dataset. See the reference at https://gluebenchmark.com/tasks
+/** ---- NOTE ----
+ *  The dataset in ColumnarContentGlueSst2 was minorly revised (` to ') from
+ *  the GLUE SST2 dataset. See the reference at https://gluebenchmark.com/tasks
+*/
 
 export const ColumnarContentGlueSst2: string =
 `sentence	label

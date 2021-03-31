@@ -373,11 +373,13 @@ export class Utility {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -394,11 +396,13 @@ export class Utility {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -438,11 +442,13 @@ export class Utility {
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+      /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+       *  'spuriousLabelStatisticsAndHtmlTable': {
+       *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+       *    'spuriousLabelUtterancesTotal': number;
+       *    'spuriousLabelStatistics': string[][];
+       *    'spuriousLabelStatisticsHtml': string; };
+       */
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
@@ -474,11 +480,13 @@ export class Utility {
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+      /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+       *  'spuriousLabelStatisticsAndHtmlTable': {
+       *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+       *    'spuriousLabelUtterancesTotal': number;
+       *    'spuriousLabelStatistics': string[][];
+       *    'spuriousLabelStatisticsHtml': string; };
+       */
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
@@ -601,11 +609,13 @@ export class Utility {
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+      /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+       *  'spuriousLabelStatisticsAndHtmlTable': {
+       *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+       *    'spuriousLabelUtterancesTotal': number;
+       *    'spuriousLabelStatistics': string[][];
+       *    'spuriousLabelStatisticsHtml': string; };
+       */
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;
@@ -652,21 +662,25 @@ export class Utility {
       labelsUtterancesStatisticsHtml);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagEntityLabelUtteranceStatistics} content`);
     // ---- NOTE ---- generate spurious label statistics.
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- const spuriousLabelStatisticsAndHtmlTable: {
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----     utteranceEntityLabelsMap,
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----     labelArrayAndMap);
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
+    /** ---- NOTE-SPURIOUS-PLACE-HOLDER ---
+     *  const spuriousLabelStatisticsAndHtmlTable: {
+     *    'spuriousLabelUtterancesMap': Array<StructTextLabelObjects>;
+     *    'spuriousLabelUtterancesTotal': number;
+     *    'spuriousLabelStatistics': string[][];
+     *    'spuriousLabelStatisticsHtml': string; } = Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable(
+     *      utteranceEntityLabelsMap,
+     *      labelArrayAndMap);
+     *  Utility.debuggingLog('Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished calling Utility.generateLabelObjectSpuriousLabelStatisticsAndHtmlTable()');
+     */
     // ---- NOTE ---- create the evaluation SPURIOUS_UTTERANCE_LABELS summary from template.
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- const spuriousLabelsUtterancesStatisticsHtml: string =
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   spuriousLabelStatisticsAndHtmlTable.spuriousLabelStatisticsHtml;
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- evaluationSummary = evaluationSummary.replace(
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   evaluationSummaryTagSpuriousLabelUtteranceStatistics,
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   spuriousLabelsUtterancesStatisticsHtml);
-    // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagSpuriousLabelUtteranceStatistics} content`);
+    /** ---- NOTE-SPURIOUS-PLACE-HOLDER ---
+     *  const spuriousLabelsUtterancesStatisticsHtml: string =
+     *    spuriousLabelStatisticsAndHtmlTable.spuriousLabelStatisticsHtml;
+     *  evaluationSummary = evaluationSummary.replace(
+     *    evaluationSummaryTagSpuriousLabelUtteranceStatistics,
+     *    spuriousLabelsUtterancesStatisticsHtml);
+     *  Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), finished generating ${evaluationSummaryTagSpuriousLabelUtteranceStatistics} content`);
+     */
     // ---- NOTE ---- generate duplicate report.
     const utterancesMultiLabelArrays: StructTextText[] = [...utteranceEntityLabelsMap.keys()].map(
       (x: string) => new StructTextLabelObjects(x, utteranceEntityLabelsMap.get(x) as Label[])).filter(
@@ -1061,11 +1075,13 @@ export class Utility {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -1082,11 +1098,13 @@ export class Utility {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -1126,11 +1144,13 @@ export class Utility {
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
         'utteranceStatisticsHtml': string;};
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-      // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+      /** ---- NOTE-SPURIOUS-PLACE-HOLDER ----
+       *  'spuriousLabelStatisticsAndHtmlTable': {
+       *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+       *    'spuriousLabelUtterancesTotal': number;
+       *    'spuriousLabelStatistics': string[][];
+       *    'spuriousLabelStatisticsHtml': string; };
+       */
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
       'utteranceLabelDuplicateHtml': string;

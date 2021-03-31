@@ -158,12 +158,14 @@ export class UtilityLabelResolver {
         const labelsConcatenatedToHtmlTable: string = Utility.concatenateDataArrayToHtmlTable(
           '', // ---- 'Label',
           labelsStringArray);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ----   Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- }
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- const scoreResults: any = LabelResolver.score(utterance, LabelType.Intent);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), after calling LabelResolver.LabelResolver.score(), utterance=${utterance}`);
+        /** ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ----
+         *  if (Utility.toPrintDetailedDebuggingLogToConsole) {
+         *    Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
+         *  }
+         *  // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
+         *  const scoreResults: any = LabelResolver.score(utterance, LabelType.Intent);
+         *  // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchStringLabels(), after calling LabelResolver.LabelResolver.score(), utterance=${utterance}`);
+         */
         if (!scoreResults) {
           Utility.debuggingThrow(`UtilityLabelResolver.scoreBatchStringLabels() failed to produce a prediction for utterance "${utterance}"`);
         }
@@ -390,12 +392,14 @@ export class UtilityLabelResolver {
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), labelsConcatenatedToHtmlTable=${labelsConcatenatedToHtmlTable}`);
         }
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ----   Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- }
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- const scoreResults: any = LabelResolver.score(utterance, LabelType.Entity);
-        // ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), after calling LabelResolver.LabelResolver.score(), utterance=${utterance}`);
+        /** ---- NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ----
+         *  if (Utility.toPrintDetailedDebuggingLogToConsole) {
+         *    Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
+         *  }
+         *  // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), before calling LabelResolver.score(), utterance=${utterance}`);
+         *  const scoreResults: any = LabelResolver.score(utterance, LabelType.Entity);
+         *  // Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), after calling LabelResolver.LabelResolver.score(), utterance=${utterance}`);
+         */
         if (!scoreResults) {
           Utility.debuggingThrow(`UtilityLabelResolver.scoreBatchObjectLabels() failed to produce a prediction for utterance "${utterance}"`);
         }
@@ -435,8 +439,10 @@ export class UtilityLabelResolver {
           argMax.max;
         const labelsPredictedIndexesMax: number[] =
           argMax.indexesMax;
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- let labelsPredictedMax: Label[] =
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedIndexesMax.map((x: number) => scoreResultArray[x].label);
+        /** ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----
+         *  let labelsPredictedMax: Label[] =
+         *    labelsPredictedIndexesMax.map((x: number) => scoreResultArray[x].label);
+         */
         // -------------------------------------------------------------------
         const labelsPredicted: Label[] =
           scoreResultArrayFiltered.map((x: Result) => x.label);
@@ -451,12 +457,14 @@ export class UtilityLabelResolver {
         // -------------------------------------------------------------------
         const labelsPredictedClosestText: string[] =
           labelsPredictedIndexesMax.map((x: number) => scoreResultArrayFiltered[x].closesttext);
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- const unknownPrediction: boolean = labelsPredictedScoreMax < unknownLabelPredictionThreshold;
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- if (unknownPrediction) {
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedIndexesMax = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedMax = [Label.newLabel(LabelType.Entity, Utility.UnknownLabel, 0, 0)];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedClosestText = [];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- }
+        /** ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----
+         *  const unknownPrediction: boolean = labelsPredictedScoreMax < unknownLabelPredictionThreshold;
+         *  if (unknownPrediction) {
+         *    labelsPredictedIndexesMax = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
+         *    labelsPredictedMax = [Label.newLabel(LabelType.Entity, Utility.UnknownLabel, 0, 0)];
+         *    labelsPredictedClosestText = [];
+         *  }
+         */
         // -------------------------------------------------------------------
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), labelsPredictedIndexes=${Utility.jsonStringify(labelsPredictedIndexes)}`);
@@ -479,14 +487,15 @@ export class UtilityLabelResolver {
         }
         let labelsPredictedEvaluation: number = Utility.evaluateMultiLabelObjectExactPrediction(labels, labelsPredicted);
         if (labelsPredictedEvaluation === PredictionType.TrueNegative) {
-          labelsPredictedEvaluation = PredictionType.FalseNegative; // ---- NOTE ----override the default logic, for entity, true negative does not exist.
+          labelsPredictedEvaluation = PredictionType.FalseNegative; // ---- NOTE ----override the default logic, for entity, there is no true negative.
         }
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), labelsPredictedEvaluation="${labelsPredictedEvaluation}"`);
         }
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- const predictedScoreStructureHtmlTable: string =
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   labelsPredictedConcatenatedToHtmlTable;
+        /** ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
+         *  const predictedScoreStructureHtmlTable: string =
+         *    labelsPredictedConcatenatedToHtmlTable;
+         */
         const predictedScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArrayFiltered,
           [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsPredictedIndexes,
@@ -501,17 +510,19 @@ export class UtilityLabelResolver {
         // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
         const labelsScoreStructureHtmlTable: string =
           labelsConcatenatedToHtmlTable;
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   scoreResultArrayFiltered,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsIndexes,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   unknownLabelPredictionThreshold,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   '',
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   ['Label', 'Score', 'Closest Example'],
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   ['30%', '10%', '60%']);
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- }
+        /** ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
+         *  const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
+         *    scoreResultArrayFiltered,
+         *    [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsIndexes,
+         *    unknownLabelPredictionThreshold,
+         *    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
+         *    '',
+         *    ['Label', 'Score', 'Closest Example'],
+         *    ['30%', '10%', '60%']);
+         *  if (Utility.toPrintDetailedDebuggingLogToConsole) {
+         *    Utility.debuggingLog(`UtilityLabelResolver.scoreBatchObjectLabels(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
+         *  }
+         */
         predictionStructureWithScoreLabelObjectArray.push(new PredictionStructureWithScoreLabelObject(
           utterance,
           labelsPredictedEvaluation,
@@ -851,8 +862,10 @@ export class UtilityLabelResolver {
           argMax.max;
         const labelsPredictedIndexesMax: number[] =
           argMax.indexesMax;
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- let labelsPredictedMax: Label[] =
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedIndexesMax.map((x: number) => scoreResultArray[x].label);
+        /** ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----
+         *  let labelsPredictedMax: Label[] =
+         *    labelsPredictedIndexesMax.map((x: number) => scoreResultArray[x].label);
+         */
         // -------------------------------------------------------------------
         const labelsPredicted: Label[] =
           scoreResultArrayFiltered.map((x: Result) => x.label);
@@ -867,12 +880,14 @@ export class UtilityLabelResolver {
         // -------------------------------------------------------------------
         const labelsPredictedClosestText: string[] =
           labelsPredictedIndexesMax.map((x: number) => scoreResultArrayFiltered[x].closesttext);
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- const unknownPrediction: boolean = labelsPredictedScoreMax < unknownLabelPredictionThreshold;
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- if (unknownPrediction) {
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedIndexesMax = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedMax = [Label.newLabel(LabelType.Entity, Utility.UnknownLabel, 0, 0)];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----   labelsPredictedClosestText = [];
-        // ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ---- }
+        /** ---- NOTE-FOR-REFERENCE-all-entity-prediction-is-included-no-need-for-ArgMax-and-UNKNOWN-threshold ----
+         *  const unknownPrediction: boolean = labelsPredictedScoreMax < unknownLabelPredictionThreshold;
+         *  if (unknownPrediction) {
+         *    labelsPredictedIndexesMax = [Utility.carefullyAccessStringMap(labelArrayAndMap.stringMap, Utility.UnknownLabel)];
+         *    labelsPredictedMax = [Label.newLabel(LabelType.Entity, Utility.UnknownLabel, 0, 0)];
+         *    labelsPredictedClosestText = [];
+         *  }
+         */
         // -------------------------------------------------------------------
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(), labelsPredictedIndexes=${Utility.jsonStringify(labelsPredictedIndexes)}`);
@@ -895,14 +910,15 @@ export class UtilityLabelResolver {
         }
         let labelsPredictedEvaluation: number = Utility.evaluateMultiLabelObjectExactPrediction(labels, labelsPredicted);
         if (labelsPredictedEvaluation === PredictionType.TrueNegative) {
-          labelsPredictedEvaluation = PredictionType.FalseNegative; // ---- NOTE ----override the default logic, for entity, true negative does not exist.
+          labelsPredictedEvaluation = PredictionType.FalseNegative; // ---- NOTE ----override the default logic, for entity, there is no true negative.
         }
         if (Utility.toPrintDetailedDebuggingLogToConsole) {
           Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(), labelsPredictedEvaluation="${labelsPredictedEvaluation}"`);
         }
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- const predictedScoreStructureHtmlTable: string =
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   labelsPredictedConcatenatedToHtmlTable;
+        /** ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
+         *  const predictedScoreStructureHtmlTable: string =
+         *    labelsPredictedConcatenatedToHtmlTable;
+         */
         const predictedScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
           scoreResultArrayFiltered,
           [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsPredictedIndexes,
@@ -917,17 +933,19 @@ export class UtilityLabelResolver {
         // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
         const labelsScoreStructureHtmlTable: string =
           labelsConcatenatedToHtmlTable;
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   scoreResultArrayFiltered,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsIndexes,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   unknownLabelPredictionThreshold,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   '',
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   ['Label', 'Score', 'Closest Example'],
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   ['30%', '10%', '60%']);
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- if (Utility.toPrintDetailedDebuggingLogToConsole) {
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----   Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
-        // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- }
+        /** ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ----
+         *  const labelsScoreStructureHtmlTable: string = Utility.selectedScoreResultsToHtmlTable(
+         *    scoreResultArrayFiltered,
+         *    [...(new Array(scoreResultArrayFiltered.length)).keys()], // ---- NOTE-MAY-NOT-HAVE-SCORE-FOR-ALL-LABELS ---- labelsIndexes,
+         *    unknownLabelPredictionThreshold,
+         *    UtilityLabelResolver.toObfuscateLabelTextInReportUtilityLabelResolver,
+         *    '',
+         *    ['Label', 'Score', 'Closest Example'],
+         *    ['30%', '10%', '60%']);
+         *  if (Utility.toPrintDetailedDebuggingLogToConsole) {
+         *    Utility.debuggingLog(`UtilityLabelResolver.scoreObjectLabels(), labelsScoreStructureHtmlTable="${labelsScoreStructureHtmlTable}"`);
+         *  }
+         */
         predictionStructureWithScoreLabelObjectArray.push(new PredictionStructureWithScoreLabelObject(
           utterance,
           labelsPredictedEvaluation,

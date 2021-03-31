@@ -29,6 +29,9 @@ import { IDictionaryStringIdGenericArrays } from "../data_structure/IDictionaryS
 import { IDictionaryStringIdGenericValue } from "../data_structure/IDictionaryStringIdGenericValue";
 import { IDictionaryStringIdGenericSet } from "../data_structure/IDictionaryStringIdGenericSet";
 
+// tslint:disable-next-line: max-line-length
+import { ITextUtteranceLabelStringMapDataStructure } from "../label_structure/ITextUtteranceLabelStringMapDataStructure";
+
 import { Utility } from "../utility/Utility";
 
 export class DictionaryMapUtility {
@@ -39,11 +42,7 @@ export class DictionaryMapUtility {
         new Set<string>(["", "NONE", DictionaryMapUtility.UnknownLabel]);
 
     public static processUnknownSpuriousLabelsInUtteranceLabelsMap(
-        utteranceLabels: {
-            "utteranceLabelsMap": Map<string, Set<string>>;
-            "utteranceLabelDuplicateMap": Map<string, Set<string>>; }): {
-                "utteranceLabelsMap": Map<string, Set<string>>;
-                "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
+        utteranceLabels: ITextUtteranceLabelStringMapDataStructure): ITextUtteranceLabelStringMapDataStructure {
         const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {
@@ -93,12 +92,8 @@ export class DictionaryMapUtility {
     }
 
     public static processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
-        utteranceLabels: {
-            "utteranceLabelsMap": Map<string, Set<string>>;
-            "utteranceLabelDuplicateMap": Map<string, Set<string>>; },
-        labelSet: Set<string>): {
-            "utteranceLabelsMap": Map<string, Set<string>>;
-            "utteranceLabelDuplicateMap": Map<string, Set<string>>; } {
+        utteranceLabels: ITextUtteranceLabelStringMapDataStructure,
+        labelSet: Set<string>): ITextUtteranceLabelStringMapDataStructure {
         const utteranceLabelsMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelsMap;
         const utteranceLabelDuplicateMap: Map<string, Set<string>> = utteranceLabels.utteranceLabelDuplicateMap;
         if (utteranceLabelsMap) {

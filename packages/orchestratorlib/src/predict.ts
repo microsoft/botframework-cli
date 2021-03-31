@@ -442,9 +442,11 @@ export class OrchestratorPredict {
   }
 
   public async commandLetLoop(): Promise<number> {
-    // ---- NOTE ---- need to dynamically create an 'interactive' object
-    // ---- NOTE ---- and call close() when it's not needed, otherwise this resource cannot be
-    // ---- NOTE ---- properly disposed of and a unit test on this object will hang.
+    /** ---- NOTE ----
+     *  need to dynamically create an 'interactive' object
+     *  and call close() when it's not needed, otherwise this resource cannot be
+     *  properly disposed of and a unit test on this object will hang.
+     */
     try {
       this.trackEventFunction(`${this.cliCmmandId}:commandLetLoop`, {callee: 'commandLetLoop'});
     } catch (error) {
@@ -898,9 +900,11 @@ export class OrchestratorPredict {
       Utility.debuggingLog(`this.currentIntentEvaluationOutput=${Utility.jsonStringify(this.currentIntentEvaluationOutput)}`);
     }
     // -----------------------------------------------------------------------
-    // ---- NOTE ---- Transfer non-object-label utterance from
-    // ---- NOTE ---- utteranceLabelsMap to utteranceEntityLabelsMap
-    // ---- NOTE ---- only do this when there is a entity model for evaluation.
+    /** ---- NOTE ----
+     *  Transfer non-object-label utterance from
+     *  utteranceLabelsMap to utteranceEntityLabelsMap
+     *  only do this when there is a entity model for evaluation.
+     */
     if (!UtilityDispatcher.isEmptyString(this.entityBaseModelPath)) {
       const numberUtterancesCopied: number = Utility.copyNonExistentUtteranceLabelsFromStringToObjectStructure(
         utteranceLabelsMap,

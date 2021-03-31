@@ -8,6 +8,8 @@ import assert = require("assert");
 import { IDictionaryStringIdGenericValue } from "../../src/data_structure/IDictionaryStringIdGenericValue";
 import { DictionaryMapUtility } from "../../src/data_structure/DictionaryMapUtility";
 
+import { ITextUtteranceLabelStringMapDataStructure } from "../../src/label_structure/ITextUtteranceLabelStringMapDataStructure";
+
 import { Utility } from "../../src/utility/Utility";
 
 import { UnitTestHelper } from "../utility/Utility.test";
@@ -39,9 +41,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         const labelSet3: Set<string> = new Set<string>(labelArray3);
         utteranceLabelsMap.set(utterance3, labelSet3);
         utteranceLabelDuplicateMap.set(utterance3, labelSet3);
-        const utteranceLabels: {
-          "utteranceLabelsMap": Map<string, Set<string>>;
-          "utteranceLabelDuplicateMap": Map<string, Set<string>>; } = {
+        const utteranceLabels: ITextUtteranceLabelStringMapDataStructure = {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
         Utility.debuggingLog(
@@ -95,9 +95,7 @@ describe("Test Suite - data_structure/DictionaryMapUtility", () => {
         utteranceLabelsMap.set(utterance3, labelSet3);
         utteranceLabelDuplicateMap.set(utterance3, labelSet3);
         const labelSet: Set<string> = new Set<string>(["greeting"]);
-        const utteranceLabels: {
-          "utteranceLabelsMap": Map<string, Set<string>>;
-          "utteranceLabelDuplicateMap": Map<string, Set<string>>; } = {
+        const utteranceLabels: ITextUtteranceLabelStringMapDataStructure = {
             utteranceLabelsMap,
             utteranceLabelDuplicateMap};
         Utility.debuggingLog(
