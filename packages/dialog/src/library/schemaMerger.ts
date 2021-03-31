@@ -470,7 +470,7 @@ export class SchemaMerger {
      */
     public constructor(patterns: string[], output: string, imports: string | undefined, checkOnly: boolean, verbose: boolean, log: any, warn: any, error: any, extensions?: string[], schema?: string, debug?: boolean, nugetRoot?: string) {
         this.patterns = patterns.map(forwardSlashes)
-        this.negativePatterns = this.patterns.filter(p => p.startsWith('!'))
+        this.negativePatterns = this.patterns.filter(p => p.startsWith('!')).map(p => '!' + ppath.resolve(p.substring(1)))
         this.output = output ? ppath.join(ppath.dirname(output), ppath.basename(output, ppath.extname(output))) : ''
         this.imports = imports ?? ppath.join(ppath.dirname(this.output), 'imported')
         this.checkOnly = checkOnly
