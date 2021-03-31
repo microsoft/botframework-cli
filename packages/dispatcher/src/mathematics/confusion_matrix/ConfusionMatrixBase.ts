@@ -416,9 +416,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
         }
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const precisions: StructValueCount[] = binaryConfusionMatrices.map(
@@ -478,9 +480,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
         }
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const precisions: number[] = binaryConfusionMatrices.map(
@@ -539,9 +543,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
         }
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const truePositives: number =
@@ -654,9 +660,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         const averageSupport: number =
             binaryConfusionMatrices.reduce(
                 (accumulation, entry) => accumulation + entry.getSupport(), 0) / numberLabels;
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
@@ -681,9 +689,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         }
         const numberLabels: number =
             binaryConfusionMatrices.length;
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const averageTruePositives: number =
@@ -779,9 +789,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices.reduce(
                 (accumulation, entry) => accumulation + (entry.getSupport() > 0 ? entry.getSupport() : 0), 0) /
                 numberPositiveSupportLabels;
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const macroAverageMetrics: IConfusionMatrixMeanMetrics = {
@@ -807,9 +819,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
         const numberPositiveSupportLabels: number =
             binaryConfusionMatrices.reduce(
                 (accumulation, entry) => accumulation + (entry.getSupport() > 0 ? 1 : 0), 0);
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const averageTruePositives: number =
@@ -870,9 +884,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
         }
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const averagePrecision: number =
@@ -906,9 +922,11 @@ export abstract class ConfusionMatrixBase implements IConfusionMatrix {
             binaryConfusionMatrices =
                 this.getBinaryConfusionMatrices();
         }
-        // ---- NOTE-use-getTotal() ---- const total: number =
-        // ---- NOTE-use-getTotal() ----     binaryConfusionMatrices.reduce(
-        // ---- NOTE-use-getTotal() ----         (accumulation, entry) => accumulation + entry.getPositives(), 0);
+        /** ---- NOTE-use-getTotal() ----
+         *  const total: number =
+         *      binaryConfusionMatrices.reduce(
+         *          (accumulation, entry) => accumulation + entry.getPositives(), 0);
+         */
         const total: number =
             this.getTotal(binaryConfusionMatrices);
         const averageTruePositives: number =

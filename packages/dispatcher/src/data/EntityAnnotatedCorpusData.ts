@@ -127,9 +127,6 @@ export class EntityAnnotatedCorpusData extends Data {
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
             existingData as EntityAnnotatedCorpusData,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
             samplingIndexArray);
     }
@@ -145,9 +142,6 @@ export class EntityAnnotatedCorpusData extends Data {
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
             existingData as EntityAnnotatedCorpusData,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusData ---- weightColumnIndex,
             linesToSkip,
             filteringIndexSet);
     }

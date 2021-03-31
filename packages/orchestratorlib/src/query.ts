@@ -126,9 +126,6 @@ export class OrchestratorQuery {
       let slicedScoreResultArray: Result[] = [];
       slicedScoreResultArray = slicedScoreResultArray.concat(scoreResultArrayIntent);
       slicedScoreResultArray = slicedScoreResultArray.concat(scoreResultArrayEntity);
-      // ---- NOTE-FOR-REFERENCE ---- // eslint-disable-next-line no-console
-      // ---- NOTE-FOR-REFERENCE ---- console.log(
-      // ---- NOTE-FOR-REFERENCE ----   slicedScoreResultArray.map((x: Result) => x.toSimpleAlternateObjectFormatted()));
       Utility.writeAnyJsonifiedToConsoleStdout(
         slicedScoreResultArray.map((x: Result) => x.toSimpleAlternateObjectFormatted()));
     } else {

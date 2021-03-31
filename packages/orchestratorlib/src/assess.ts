@@ -83,23 +83,25 @@ export class OrchestratorAssess {
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       groundTruthFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetJsonObjectArray,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   '',
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelsMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   groundTruthSetUtteranceEntityLabelDuplicateMap);
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   {
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----     utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   });
+    /** ---- NOTE-FOR-REFERENCE-REFACTORED ----
+     *   const groundTruthSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+     *   const groundTruthSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+     *   const groundTruthSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+     *   const groundTruthSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+     *   const groundTruthSetJsonObjectArray: any = fs.readJsonSync(groundTruthFileConfiguration);
+     *   OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+     *     groundTruthSetJsonObjectArray,
+     *     '',
+     *     groundTruthSetUtteranceLabelsMap,
+     *     groundTruthSetUtteranceLabelDuplicateMap,
+     *     groundTruthSetUtteranceEntityLabelsMap,
+     *     groundTruthSetUtteranceEntityLabelDuplicateMap);
+     *   Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(
+     *     {
+     *       utteranceLabelsMap: groundTruthSetUtteranceLabelsMap,
+     *       utteranceLabelDuplicateMap: groundTruthSetUtteranceLabelDuplicateMap,
+     *     });
+     */
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for groundTruth set');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process the ground-truth set intent labels -------------
@@ -138,28 +140,32 @@ export class OrchestratorAssess {
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelsMap;
     const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> =
       predictionFileProcessedUtteranceLabelsMap.utteranceEntityLabelDuplicateMap;
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ---- OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetJsonObjectArray,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   '',
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelsMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceLabelDuplicateMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelsMap,
-    // ---- NOTE-REFACTORED-FOR-REFERENCE ----   predictionSetUtteranceEntityLabelDuplicateMap);
+    /** ---- NOTE-FOR-REFERENCE-REFACTORED ----
+     *  const predictionSetUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+     *  const predictionSetUtteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+     *  const predictionSetUtteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+     *  const predictionSetUtteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+     *  const predictionSetJsonObjectArray: any = fs.readJsonSync(predictionFileConfiguration);
+     *  OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+     *    predictionSetJsonObjectArray,
+     *    '',
+     *    predictionSetUtteranceLabelsMap,
+     *    predictionSetUtteranceLabelDuplicateMap,
+     *    predictionSetUtteranceEntityLabelsMap,
+     *    predictionSetUtteranceEntityLabelDuplicateMap);
+     */
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling OrchestratorHelper.getUtteranceLabelsMap() for prediction set');
     // -----------------------------------------------------------------------
     // ---- NOTE ---- process unknown intent labels --------------------------
-    // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousLabelsProcessed: {
-    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownLabelsMap': Map<string, Set<string>>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownLabelDuplicateMap': Map<string, Set<string>>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelsMap': Map<string, Set<string>>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+    /** ---- NOTE-FOR-REFERENCE-NOT-USED-YET ----
+     * const unknownSpuriousLabelsProcessed: {
+     *   'utteranceUnknownLabelsMap': Map<string, Set<string>>;
+     *   'utteranceUnknownLabelDuplicateMap': Map<string, Set<string>>;
+     *   'utteranceSpuriousLabelsMap': Map<string, Set<string>>;
+     *   'utteranceSpuriousLabelDuplicateMap': Map<string, Set<string>>;
+     *   'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+     *   'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+     */
     Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(
       {
         utteranceLabelsMap: predictionSetUtteranceLabelsMap,
@@ -167,13 +173,15 @@ export class OrchestratorAssess {
       groundTruthSetLabelSet);
     Utility.debuggingLog('OrchestratorAssess.runAsync(), after calling Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet() for prediction intent labels');
     // ---- NOTE ---- process unknown entity labels --------------------------
-    // ---- NOTE-NOT-USED-YET ---- const unknownSpuriousEntityLabelsProcessed: {
-    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownEntityLabelsMap': Map<string, Label[]>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceUnknownEntityLabelDuplicateMap': Map<string, Label[]>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelsMap': Map<string, Label[]>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
-    // ---- NOTE-NOT-USED-YET ----   'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+    /** ---- NOTE-FOR-REFERENCE-NOT-USED-YET ----
+     *  const unknownSpuriousEntityLabelsProcessed: {
+     *    'utteranceUnknownEntityLabelsMap': Map<string, Label[]>;
+     *    'utteranceUnknownEntityLabelDuplicateMap': Map<string, Label[]>;
+     *    'utteranceSpuriousEntityLabelsMap': Map<string, Label[]>;
+     *    'utteranceSpuriousEntityLabelDuplicateMap': Map<string, Label[]>;
+     *    'utteranceLabelMapSetAddedWithUnknownLabel': boolean;
+     *    'utteranceLabelDuplicateMapSetAddedWithUnknownLabel': boolean; } =
+     */
     Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(
       {
         utteranceEntityLabelsMap: predictionSetUtteranceEntityLabelsMap,
@@ -224,11 +232,13 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -245,11 +255,13 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -323,11 +335,13 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };
@@ -344,11 +358,13 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ---- 'spuriousLabelStatisticsAndHtmlTable': {
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesMap': StructTextStringSet[];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelUtterancesTotal': number;
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatistics': string[][];
-        // ---- NOTE-SPURIOUS-PLACE-HOLDER ----   'spuriousLabelStatisticsHtml': string; };
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+         *  'spuriousLabelStatisticsAndHtmlTable': {
+         *    'spuriousLabelUtterancesMap': StructTextStringSet[];
+         *    'spuriousLabelUtterancesTotal': number;
+         *    'spuriousLabelStatistics': string[][];
+         *    'spuriousLabelStatisticsHtml': string; };
+         */
         'utterancesMultiLabelArrays': StructTextText[];
         'utterancesMultiLabelArraysHtml': string;
         'utteranceLabelDuplicateHtml': string; };

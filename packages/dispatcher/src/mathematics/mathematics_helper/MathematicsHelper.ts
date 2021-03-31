@@ -265,27 +265,27 @@ export class MathematicsHelper implements IMathematicsHelper {
                 instanceGroundTruthPositiveLabelIndexes[instanceFeatureVectorIndex];
             const softmaxVector: number[] =
                 softmaxVectors[instance];
-            /* ---- NOTE-FOR-REFERENCE ---- the loop for calculating gradients.
-            for (let label: number = 0; label < numberLabels; label++) {
-                const probability: number = softmaxVector[label];
-                const labelWeightGradientDenseArray: number[] =
-                    matrixWeightGradientDenseArrays[label];
-                {
-                    const gradient: number = probability;
-                    if (label == instanceLabel) {
-                        gradient = probability - 1;
-                    }
-                    {
-                        for (let featureIndex of instanceFeatureVectorSparseIndexArray) {
-                            labelWeightGradientDenseArray[featureIndex] += gradient;
-                        }
-                        {
-                            biasVectorGradientDenseValueArray[label] += gradient;
-                        }
-                    }
-                }
-            }
-            */
+            /** ---- NOTE-FOR-REFERENCE ---- the loop for calculating gradients.
+             *  for (let label: number = 0; label < numberLabels; label++) {
+             *      const probability: number = softmaxVector[label];
+             *      const labelWeightGradientDenseArray: number[] =
+             *          matrixWeightGradientDenseArrays[label];
+             *      {
+             *          const gradient: number = probability;
+             *          if (label == instanceLabel) {
+             *              gradient = probability - 1;
+             *          }
+             *          {
+             *              for (let featureIndex of instanceFeatureVectorSparseIndexArray) {
+             *                  labelWeightGradientDenseArray[featureIndex] += gradient;
+             *              }
+             *              {
+             *                  biasVectorGradientDenseValueArray[label] += gradient;
+             *              }
+             *          }
+             *      }
+             *  }
+             */
             {
                 { // ---- NOTE: un-looping for optimizing the gradient computation process.
                     const probability: number = softmaxVector[instanceLabel];
@@ -293,9 +293,11 @@ export class MathematicsHelper implements IMathematicsHelper {
                         matrixWeightGradientDenseArrays[instanceLabel];
                     {
                         const gradient: number = probability - 1;
-                        // ---- NOTE-FOR-REFERENCE ---- if (label == instanceLabel) {
-                        // ---- NOTE-FOR-REFERENCE ----     gradient = probability - 1;
-                        // ---- NOTE-FOR-REFERENCE ---- }
+                        /** ---- NOTE-FOR-REFERENCE ----
+                         *  if (label == instanceLabel) {
+                         *      gradient = probability - 1;
+                         *  }
+                         */
                         {
                             for (const featureIndex of instanceFeatureVectorSparseIndexArray) {
                                 labelWeightGradientDenseArray[featureIndex] += gradient;
@@ -313,9 +315,11 @@ export class MathematicsHelper implements IMathematicsHelper {
                         matrixWeightGradientDenseArrays[label];
                     {
                         const gradient: number = probability;
-                        // ---- NOTE-FOR-REFERENCE ---- if (label == instanceLabel) {
-                        // ---- NOTE-FOR-REFERENCE ----     gradient = probability - 1;
-                        // ---- NOTE-FOR-REFERENCE ---- }
+                        /** ---- NOTE-FOR-REFERENCE ----
+                         *  if (label == instanceLabel) {
+                         *      gradient = probability ;
+                         *  }
+                         */
                         {
                             for (const featureIndex of instanceFeatureVectorSparseIndexArray) {
                                 labelWeightGradientDenseArray[featureIndex] += gradient;
@@ -333,9 +337,11 @@ export class MathematicsHelper implements IMathematicsHelper {
                         matrixWeightGradientDenseArrays[label];
                     {
                         const gradient: number = probability;
-                        // ---- NOTE-FOR-REFERENCE ---- if (label == instanceLabel) {
-                        // ---- NOTE-FOR-REFERENCE ----     gradient = probability - 1;
-                        // ---- NOTE-FOR-REFERENCE ---- }
+                        /** ---- NOTE-FOR-REFERENCE ----
+                         *  if (label == instanceLabel) {
+                         *      gradient = probability;
+                         *  }
+                         */
                         {
                             for (const featureIndex of instanceFeatureVectorSparseIndexArray) {
                                 labelWeightGradientDenseArray[featureIndex] += gradient;
@@ -914,7 +920,7 @@ export class MathematicsHelper implements IMathematicsHelper {
         }
         return vectorMatrixProduct;
     }
-    public vectorMatrixProductPartialDenseValuesTo( // ---- TODO
+    public vectorMatrixProductPartialDenseValuesTo( // ---- NOTE-TODO ----
         vectorMatrixProduct: number[],
         vectorDenseValueArray: number[],
         matrixWeightDenseArrays: number[][],
@@ -975,7 +981,7 @@ export class MathematicsHelper implements IMathematicsHelper {
         }
         return (dotProduct + weightBias);
     }
-    public dotProductPartialDenseValues( // ---- TODO
+    public dotProductPartialDenseValues( // ---- NOTE-TODO
         denseValueArray: number[],
         weights: number[],
         offsetDenseValueArray: number = 0,

@@ -3,6 +3,8 @@
  * Licensed under the MIT License.
  */
 
+import { ILabelArrayAndMap } from "../../label_structure/ILabelArrayAndMap";
+
 import { PredictionStructureWithPluralEvaluationLabelObject } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelObject";
 import { PredictionStructureWithPluralEvaluationLabelString } from "../../label_structure/PredictionStructureWithPluralEvaluationLabelString";
 
@@ -20,6 +22,10 @@ import { MultiLabelConfusionMatrix } from "./MultiLabelConfusionMatrix";
 import { MultiLabelObjectConfusionMatrix } from "./MultiLabelObjectConfusionMatrix";
 import { MultiLabelObjectConfusionMatrixExact } from "./MultiLabelObjectConfusionMatrixExact";
 import { MultiLabelObjectConfusionMatrixSubset } from "./MultiLabelObjectConfusionMatrixSubset";
+
+import { IMultiLabelObjectConfusionMatrixEvaluationStructure } from "./IMultiLabelObjectConfusionMatrixEvaluationStructure";
+import { IMultiLabelObjectConfusionMatrixExactEvaluationStructure } from "./IMultiLabelObjectConfusionMatrixExactEvaluationStructure";
+import { IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure } from "./IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure";
 
 import { Utility } from "../../utility/Utility";
 
@@ -213,49 +219,22 @@ export class UtilityConfusionMatrix {
 
     public static generateAssessmentLabelObjectConfusionMatrixMetricsAndHtmlTable(
         predictionStructures: PredictionStructureWithPluralEvaluationLabelObject[],
-        labelArrayAndMap: {
-            "stringArray": string[];
-            "stringMap": Map<string, number>;
-        },
+        labelArrayAndMap: ILabelArrayAndMap,
         toIncludeTrueNegatives: boolean = false,
         toObfuscate: boolean = false, // ---- NOTE: most likely applicable to entity evaluation, where TF is not used.
         quantileConfiguration: number = 4): {
             multiLabelObjectConfusionMatrix:
                 MultiLabelObjectConfusionMatrix;
-            multiLabelObjectConfusionMatrixEvaluation: {
-                "binaryConfusionMatrices": BinaryConfusionMatrix[];
-                "confusionMatrixOutputLines": string[][];
-                "confusionMatrixMetricsHtml": string;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
-            multiLabelObjectConfusionMatrixExactEvaluation: {
-                "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
-            multiLabelObjectConfusionMatrixSubsetEvaluation: {
-                "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
+            multiLabelObjectConfusionMatrixEvaluation:
+                IMultiLabelObjectConfusionMatrixEvaluationStructure;
+            multiLabelObjectConfusionMatrixExactEvaluation:
+                IMultiLabelObjectConfusionMatrixExactEvaluationStructure;
+            multiLabelObjectConfusionMatrixSubsetEvaluation:
+                IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure;
             perInstanceMultiLabelObjectConfusionMatrix:
                 PerInstanceMultiLabelObjectConfusionMatrix;
-            perInstanceMultiLabelObjectConfusionMatrixEvaluation: {
-                "binaryConfusionMatrices": BinaryConfusionMatrix[];
-                "confusionMatrixOutputLines": string[][];
-                "confusionMatrixMetricsHtml": string;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
+            perInstanceMultiLabelObjectConfusionMatrixEvaluation:
+                IMultiLabelObjectConfusionMatrixEvaluationStructure;
         } {
         const numberInstances: number = predictionStructures.length;
         const multiLabelObjectConfusionMatrix: MultiLabelObjectConfusionMatrix =
@@ -294,62 +273,42 @@ export class UtilityConfusionMatrix {
                 predictionStructures[i].labels,
                 predictionStructures[i].labelsPredicted);
         }
-        const multiLabelObjectConfusionMatrixEvaluation: {
-            "binaryConfusionMatrices": BinaryConfusionMatrix[];
-            "confusionMatrixOutputLines": string[][];
-            "confusionMatrixMetricsHtml": string;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
-            multiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
-            labelArrayAndMap,
-            [],
-            [],
-            [],
-            UtilityConfusionMatrix.ColumnNamePerLabel + " ",
-            toObfuscate,
-            quantileConfiguration);
-        const multiLabelObjectConfusionMatrixExactEvaluation: {
-            "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
-            multiLabelObjectConfusionMatrixExact,
-            labelArrayAndMap,
-            [],
-            []);
-        const multiLabelObjectConfusionMatrixSubsetEvaluation: {
-            "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
-            multiLabelObjectConfusionMatrixSubset,
-            labelArrayAndMap,
-            [],
-            []);
-        const perInstanceMultiLabelObjectConfusionMatrixEvaluation: {
-            "binaryConfusionMatrices": BinaryConfusionMatrix[];
-            "confusionMatrixOutputLines": string[][];
-            "confusionMatrixMetricsHtml": string;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
-            perInstanceMultiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
-            labelArrayAndMap,
-            [],
-            [],
-            [],
-            UtilityConfusionMatrix.ColumnNamePerInstance + " ",
-            toObfuscate,
-            quantileConfiguration);
+        const multiLabelObjectConfusionMatrixEvaluation:
+            IMultiLabelObjectConfusionMatrixEvaluationStructure =
+            UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+                multiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
+                labelArrayAndMap,
+                [],
+                [],
+                [],
+                UtilityConfusionMatrix.ColumnNamePerLabel + " ",
+                toObfuscate,
+                quantileConfiguration);
+        const multiLabelObjectConfusionMatrixExactEvaluation:
+            IMultiLabelObjectConfusionMatrixExactEvaluationStructure =
+            UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
+                multiLabelObjectConfusionMatrixExact,
+                labelArrayAndMap,
+                [],
+                []);
+        const multiLabelObjectConfusionMatrixSubsetEvaluation:
+            IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure =
+            UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
+                multiLabelObjectConfusionMatrixSubset,
+                labelArrayAndMap,
+                [],
+                []);
+        const perInstanceMultiLabelObjectConfusionMatrixEvaluation:
+            IMultiLabelObjectConfusionMatrixEvaluationStructure =
+            UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+                perInstanceMultiLabelObjectConfusionMatrix.getBinaryConfusionMatrices(),
+                labelArrayAndMap,
+                [],
+                [],
+                [],
+                UtilityConfusionMatrix.ColumnNamePerInstance + " ",
+                toObfuscate,
+                quantileConfiguration);
         return {
             multiLabelObjectConfusionMatrix,
             multiLabelObjectConfusionMatrixEvaluation,
@@ -362,49 +321,22 @@ export class UtilityConfusionMatrix {
 
     public static generateAssessmentLabelStringConfusionMatrixMetricsAndHtmlTable(
         predictionStructures: PredictionStructureWithPluralEvaluationLabelString[],
-        labelArrayAndMap: {
-            "stringArray": string[];
-            "stringMap": Map<string, number>;
-        },
+        labelArrayAndMap: ILabelArrayAndMap,
         toIncludeTrueNegatives: boolean = true,
         toObfuscate: boolean = false,
         quantileConfiguration: number = 4): {
             multiLabelConfusionMatrix:
                 MultiLabelConfusionMatrix;
-            multiLabelConfusionMatrixEvaluation: {
-                "binaryConfusionMatrices": BinaryConfusionMatrix[];
-                "confusionMatrixOutputLines": string[][];
-                "confusionMatrixMetricsHtml": string;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
-            multiLabelObjectConfusionMatrixExactEvaluation: {
-                "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
-            multiLabelObjectConfusionMatrixSubsetEvaluation: {
-                "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
+            multiLabelConfusionMatrixEvaluation:
+                IMultiLabelObjectConfusionMatrixEvaluationStructure;
+            multiLabelObjectConfusionMatrixExactEvaluation:
+                IMultiLabelObjectConfusionMatrixExactEvaluationStructure;
+            multiLabelObjectConfusionMatrixSubsetEvaluation:
+                IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure;
             perInstanceMultiLabelConfusionMatrix:
                 PerInstanceMultiLabelConfusionMatrix;
-            perInstanceMultiLabelConfusionMatrixEvaluation: {
-                "binaryConfusionMatrices": BinaryConfusionMatrix[];
-                "confusionMatrixOutputLines": string[][];
-                "confusionMatrixMetricsHtml": string;
-                "confusionMatrixAverageOutputLines": string[][];
-                "confusionMatrixAverageMetricsHtml": string;
-                "confusionMatrixAverageDescriptionOutputLines": string[][];
-                "confusionMatrixAverageDescriptionMetricsHtml": string;
-            };
+            perInstanceMultiLabelConfusionMatrixEvaluation:
+                IMultiLabelObjectConfusionMatrixEvaluationStructure;
         } {
         const numberInstances: number = predictionStructures.length;
         const multiLabelConfusionMatrix: MultiLabelConfusionMatrix =
@@ -443,62 +375,42 @@ export class UtilityConfusionMatrix {
                 predictionStructures[i].labelsIndexes,
                 predictionStructures[i].labelsPredictedIndexes);
         }
-        const multiLabelConfusionMatrixEvaluation: {
-            "binaryConfusionMatrices": BinaryConfusionMatrix[];
-            "confusionMatrixOutputLines": string[][];
-            "confusionMatrixMetricsHtml": string;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
-            multiLabelConfusionMatrix.getBinaryConfusionMatrices(),
-            labelArrayAndMap,
-            [],
-            [],
-            [],
-            UtilityConfusionMatrix.ColumnNamePerLabel + " ",
-            toObfuscate,
-            quantileConfiguration);
-        const multiLabelObjectConfusionMatrixExactEvaluation: {
-            "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
-            multiLabelObjectConfusionMatrixExact,
-            labelArrayAndMap,
-            [],
-            []);
-        const multiLabelObjectConfusionMatrixSubsetEvaluation: {
-            "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
-            multiLabelObjectConfusionMatrixSubset,
-            labelArrayAndMap,
-            [],
-            []);
-        const perInstanceMultiLabelConfusionMatrixEvaluation: {
-            "binaryConfusionMatrices": BinaryConfusionMatrix[];
-            "confusionMatrixOutputLines": string[][];
-            "confusionMatrixMetricsHtml": string;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } = UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
-            perInstanceMultiLabelConfusionMatrix.getBinaryConfusionMatrices(),
-            labelArrayAndMap,
-            [],
-            [],
-            [],
-            UtilityConfusionMatrix.ColumnNamePerInstance + " ",
-            toObfuscate,
-            quantileConfiguration);
+        const multiLabelConfusionMatrixEvaluation:
+            IMultiLabelObjectConfusionMatrixEvaluationStructure =
+            UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+                multiLabelConfusionMatrix.getBinaryConfusionMatrices(),
+                labelArrayAndMap,
+                [],
+                [],
+                [],
+                UtilityConfusionMatrix.ColumnNamePerLabel + " ",
+                toObfuscate,
+                quantileConfiguration);
+        const multiLabelObjectConfusionMatrixExactEvaluation:
+            IMultiLabelObjectConfusionMatrixExactEvaluationStructure =
+            UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
+                multiLabelObjectConfusionMatrixExact,
+                labelArrayAndMap,
+                [],
+                []);
+        const multiLabelObjectConfusionMatrixSubsetEvaluation:
+            IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure =
+            UtilityConfusionMatrix.aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
+                multiLabelObjectConfusionMatrixSubset,
+                labelArrayAndMap,
+                [],
+                []);
+        const perInstanceMultiLabelConfusionMatrixEvaluation:
+            IMultiLabelObjectConfusionMatrixEvaluationStructure =
+            UtilityConfusionMatrix.aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
+                perInstanceMultiLabelConfusionMatrix.getBinaryConfusionMatrices(),
+                labelArrayAndMap,
+                [],
+                [],
+                [],
+                UtilityConfusionMatrix.ColumnNamePerInstance + " ",
+                toObfuscate,
+                quantileConfiguration);
         return {
             multiLabelConfusionMatrix,
             multiLabelConfusionMatrixEvaluation,
@@ -511,24 +423,13 @@ export class UtilityConfusionMatrix {
 
     public static aggregateBinaryConfusionMatrixArrayIntoEvaluationOutputs(
         binaryConfusionMatrices: BinaryConfusionMatrix[],
-        labelArrayAndMap: {
-            "stringArray": string[];
-            "stringMap": Map<string, number>;
-        },
+        labelArrayAndMap: ILabelArrayAndMap,
         confusionMatrixOutputLines: string[][],
         confusionMatrixAverageOutputLines: string[][],
         confusionMatrixAverageDescriptionOutputLines: string[][],
         columnNamePreffix: string,
         toObfuscate: boolean = false,
-        quantileConfiguration: number = 4): {
-            "binaryConfusionMatrices": BinaryConfusionMatrix[];
-            "confusionMatrixOutputLines": string[][];
-            "confusionMatrixMetricsHtml": string;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } {
+        quantileConfiguration: number = 4): IMultiLabelObjectConfusionMatrixEvaluationStructure {
         // -----------------------------------------------------------------------
         const confusionMatrix: ConfusionMatrix =
             new ConfusionMatrix(labelArrayAndMap.stringArray, labelArrayAndMap.stringMap);
@@ -960,18 +861,10 @@ export class UtilityConfusionMatrix {
      */
     public static aggregateMultiLabelObjectConfusionMatrixExactIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixExact: MultiLabelObjectConfusionMatrixExact,
-        labelArrayAndMap: {
-            "stringArray": string[];
-            "stringMap": Map<string, number>;
-        },
+        labelArrayAndMap: ILabelArrayAndMap,
         confusionMatrixAverageOutputLines: string[][],
-        confusionMatrixAverageDescriptionOutputLines: string[][]): {
-            "multiLabelObjectConfusionMatrixExact": MultiLabelObjectConfusionMatrixExact;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } {
+        confusionMatrixAverageDescriptionOutputLines: string[][]):
+        IMultiLabelObjectConfusionMatrixExactEvaluationStructure {
         // -----------------------------------------------------------------------
         const confusionMatrix: ConfusionMatrix =
             new ConfusionMatrix(labelArrayAndMap.stringArray, labelArrayAndMap.stringMap);
@@ -1047,18 +940,10 @@ export class UtilityConfusionMatrix {
      */
     public static aggregateMultiLabelObjectConfusionMatrixSubsetIntoEvaluationOutputs(
         multiLabelObjectConfusionMatrixSubset: MultiLabelObjectConfusionMatrixSubset,
-        labelArrayAndMap: {
-            "stringArray": string[];
-            "stringMap": Map<string, number>;
-        },
+        labelArrayAndMap: ILabelArrayAndMap,
         confusionMatrixAverageOutputLines: string[][],
-        confusionMatrixAverageDescriptionOutputLines: string[][]): {
-            "multiLabelObjectConfusionMatrixSubset": MultiLabelObjectConfusionMatrixSubset;
-            "confusionMatrixAverageOutputLines": string[][];
-            "confusionMatrixAverageMetricsHtml": string;
-            "confusionMatrixAverageDescriptionOutputLines": string[][];
-            "confusionMatrixAverageDescriptionMetricsHtml": string;
-        } {
+        confusionMatrixAverageDescriptionOutputLines: string[][]):
+        IMultiLabelObjectConfusionMatrixSubsetEvaluationStructure {
         // -----------------------------------------------------------------------
         const confusionMatrix: ConfusionMatrix =
             new ConfusionMatrix(labelArrayAndMap.stringArray, labelArrayAndMap.stringMap);

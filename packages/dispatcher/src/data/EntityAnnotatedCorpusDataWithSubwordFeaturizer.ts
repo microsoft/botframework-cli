@@ -178,9 +178,6 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizerFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
             existingDataWithSubwordFeaturizer as EntityAnnotatedCorpusDataWithSubwordFeaturizer,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- weightColumnIndex,
             linesToSkip,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
@@ -197,9 +194,6 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizerFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
             existingDataWithSubwordFeaturizer as EntityAnnotatedCorpusDataWithSubwordFeaturizer,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-EntityAnnotatedCorpusDataWithSubwordFeaturizer ---- weightColumnIndex,
             linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);

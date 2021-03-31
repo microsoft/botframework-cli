@@ -615,9 +615,9 @@ export class Utility {
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateAssessmentLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
-    // ---- TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
-    // ---- TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
-    // ---- TODO ---- }
+    // ---- NOTE-TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
+    // ---- NOTE-TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
+    // ---- NOTE-TODO ---- }
     // ---- NOTE ---- as the unknown threshold is greater than 0, the score function can make an UNKNOWN prediction.
     if (ensureUnknownLabelInLabelArrayAndMap) {
       if (!(labelArrayAndMap.stringMap.has(Utility.UnknownLabel))) {
@@ -2596,9 +2596,9 @@ export class Utility {
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateLabelStringEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
-    // ---- TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
-    // ---- TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
-    // ---- TODO ---- }
+    // ---- NOTE-TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
+    // ---- NOTE-TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
+    // ---- NOTE-TODO ---- }
     // ---- NOTE ---- as the unknown threshold is greater than 0, the score function can make an UNKNOWN prediction.
     if (ensureUnknownLabelInLabelArrayAndMap ||
        (unknownSpuriousLabelsProcessed.utteranceUnknownLabelsMap.size > 0) ||
@@ -3501,9 +3501,9 @@ export class Utility {
       Utility.buildStringIdNumberValueDictionaryFromStringArray(dataSetLabels);
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringArray=${Utility.jsonStringify(labelArrayAndMap.stringArray)}`);
     Utility.debuggingLog(`Utility.generateLabelObjectEvaluationReportLabelUtteranceStatistics(), labelArrayAndMap.stringMap=${Utility.jsonStringify(labelArrayAndMap.stringMap)}`);
-    // ---- TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
-    // ---- TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
-    // ---- TODO ---- }
+    // ---- NOTE-TODO ---- if (Utility.isEmptyStringArray(labelArrayAndMap.stringArray)) {
+    // ---- NOTE-TODO ----   Utility.debuggingThrow('there is no label, something wrong?');
+    // ---- NOTE-TODO ---- }
     // ---- NOTE ---- as the unknown threshold is greater than 0, the score function can make an UNKNOWN prediction.
     if (ensureUnknownLabelInLabelArrayAndMap ||
        (unknownSpuriousEntityLabelsProcessed.utteranceUnknownEntityLabelsMap.size > 0) ||

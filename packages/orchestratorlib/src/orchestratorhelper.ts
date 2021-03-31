@@ -452,10 +452,12 @@ export class OrchestratorHelper {
         // eslint-disable-next-line no-console
         Utility.debuggingLog(`processed lineIndex=${lineIndex}`);
       }
-      // ---- NOTE-FOR-TESTING ---- if (lineIndex >= 8630000) {
-      // ---- NOTE-FOR-TESTING ----   // eslint-disable-next-line no-console
-      // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`processed lineIndex=${lineIndex}, line='${line}'`);
-      // ---- NOTE-FOR-TESTING ---- }
+      /** ---- NOTE-FOR-TESTING-INSTRUMENTATION ----
+       *  if (lineIndex >= 8630000) {
+       *    // eslint-disable-next-line no-console
+       *    Utility.debuggingLog(`processed lineIndex=${lineIndex}, line='${line}'`);
+       *  }
+       */
       const lineTrimmed: string = line.trim();
       if (lineTrimmed.length <= 0) {
         Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', lineTrimmed.length <= 0`);
@@ -474,15 +476,17 @@ export class OrchestratorHelper {
           let utterance: string = items[utteranceIdx] ? items[utteranceIdx] : '';
           labels = labels.trim();
           utterance = utterance.trim();
-          // ---- NOTE-FOR-TESTING ---- if (utterance === 'constructor') {
-          // ---- NOTE-FOR-TESTING ----   Utility.debuggingLog(`WARNING processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
-          // ---- NOTE-FOR-TESTING ----   numberLinesIgnored++;
-          // ---- NOTE-FOR-TESTING ----   if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
-          // ---- NOTE-FOR-TESTING ----     // eslint-disable-next-line no-console
-          // ---- NOTE-FOR-TESTING ----     Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
-          // ---- NOTE-FOR-TESTING ----   }
-          // ---- NOTE-FOR-TESTING ----   return;
-          // ---- NOTE-FOR-TESTING ---- }
+          /** ---- NOTE-FOR-TESTING-INSTRUMENTATION ----
+           *  if (utterance === 'constructor') {
+           *    Utility.debuggingLog(`WARNING processing, utterance === 'constructor', lineIndex=${lineIndex}, line='${line}'`);
+           *    numberLinesIgnored++;
+           *    if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
+           *      // eslint-disable-next-line no-console
+           *      Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
+           *    }
+           *    return;
+           *  }
+           */
           const labelArray: string[] = labels.split(',');
           for (const label of labelArray) {
             if (label) {

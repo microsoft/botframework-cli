@@ -64,27 +64,31 @@ export class OrchestratorCreate {
     // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addExamples()');
     // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- LabelResolver.addExamples(processedUtteranceLabelsMap);
     // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addExamples()');
-    // ---- NOTE-FOR-DEBUGGING ---- const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
-    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), labels=${Utility.jsonStringify(labels)}`);
-    // ---- NOTE-FOR-DEBUGGING ---- const examples: any = LabelResolver.getExamples();
-    // ---- NOTE-FOR-DEBUGGING ---- const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
-    // ---- NOTE-FOR-DEBUGGING ---- for (const example of exampleStructureArray) {
-    // ---- NOTE-FOR-DEBUGGING ----   const labels: Label[] = example.labels;
-    // ---- NOTE-FOR-DEBUGGING ----   if (labels.length > 1) {
-    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog(`utterance=${example.text}`);
-    // ---- NOTE-FOR-DEBUGGING ----   } else {
-    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog('');
-    // ---- NOTE-FOR-DEBUGGING ----   }
-    // ---- NOTE-FOR-DEBUGGING ----   for (const label of labels) {
-    // ---- NOTE-FOR-DEBUGGING ----     Utility.debuggingLog(`label=${label.name}`);
-    // ---- NOTE-FOR-DEBUGGING ----   }
-    // ---- NOTE-FOR-DEBUGGING ---- }
+    /** ---- NOTE-FOR-DEBUGGING ----
+     *  const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
+     *  Utility.debuggingLog(`OrchestratorCreate.runAsync(), labels=${Utility.jsonStringify(labels)}`);
+     *  const examples: any = LabelResolver.getExamples();
+     *  const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
+     *  for (const example of exampleStructureArray) {
+     *    const labels: Label[] = example.labels;
+     *    if (labels.length > 1) {
+     *      Utility.debuggingLog(`utterance=${example.text}`);
+     *    } else {
+     *      Utility.debuggingLog('');
+     *    }
+     *    for (const label of labels) {
+     *      Utility.debuggingLog(`label=${label.name}`);
+     *    }
+     *  }
+     */
     Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createSnapshot()');
     const snapshot: any = LabelResolver.createSnapshot();
     Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createSnapshot()');
-    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshot=${snapshot}`);
-    // ---- NOTE-FOR-DEBUGGING ---- const snapshotInString: string = (new TextDecoder()).decode(snapshot);
-    // ---- NOTE-FOR-DEBUGGING ---- Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshotInString=${snapshotInString}`);
+    /** ---- NOTE-FOR-DEBUGGING ----
+     *  Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshot=${snapshot}`);
+     *  const snapshotInString: string = (new TextDecoder()).decode(snapshot);
+     *  Utility.debuggingLog(`OrchestratorCreate.runAsync(), snapshotInString=${snapshotInString}`);
+     */
     const outPath: string = OrchestratorHelper.getSnapshotFilePath(outputPath, inputPathConfiguration);
     const resolvedFilePath: string = OrchestratorHelper.writeToFile(outPath, snapshot);
     if (Utility.isEmptyString(resolvedFilePath)) {

@@ -37,10 +37,6 @@ export class LuData extends Data {
             }
             luLuisJsonStructure.utterances.push(utterancesArray[index]);
         }
-        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
-        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
-        // ---- NOTE-FOR-REFERENCE ----         return (samplingIndexArray.has(index));
-        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
         luData.luUtterances =
             luData.retrieveLuUtterances(luLuisJsonStructure);
@@ -81,10 +77,6 @@ export class LuData extends Data {
             }
             luLuisJsonStructure.utterances.push(utterancesArray[index]);
         }
-        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
-        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
-        // ---- NOTE-FOR-REFERENCE ----         return (filteringIndexSet.has(index));
-        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
         luData.luUtterances =
             luData.retrieveLuUtterances(luLuisJsonStructure);
@@ -149,10 +141,6 @@ export class LuData extends Data {
         samplingIndexArray: number[]): Promise<Data> {
         return await LuData.createLuDataFromSamplingExistingLuDataUtterances(
             existingData as LuData,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
             samplingIndexArray);
     }
 
@@ -166,10 +154,6 @@ export class LuData extends Data {
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
         return LuData.createLuDataFromFilteringExistingLuDataUtterances(
             existingData as LuData,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- weightColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuData ---- linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
     }
@@ -199,7 +183,6 @@ export class LuData extends Data {
                 });
             });
         return luUtterances;
-        // ---- NOTE-FOR-REFERENCE ---- return (luLuisJsonStructure.utterances as any[]);
     }
 
     public getLuObject(): any {

@@ -796,9 +796,11 @@ export class BinaryConfusionMatrix {
     public getHitRate(): number {
         return this.getTruePositiveRate();
     }
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- public getRecall(): number {
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     return this.getTruePositiveRate();
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- }
+    /** ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----
+     *  public getRecall(): number {
+     *      return this.getTruePositiveRate();
+     *  }
+     */
     public getProbabilityOfDetection(): number {
         return this.getTruePositiveRate();
     }
@@ -808,9 +810,11 @@ export class BinaryConfusionMatrix {
     public getSpecificity(): number {
         return this.getTrueNegativeRate();
     }
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- public getPrecision(): number {
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     return this.getPositivePredictiveValue();
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- }
+    /** ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----
+     *  public getPrecision(): number {
+     *      return this.getPositivePredictiveValue();
+     *  }
+     */
     public getFallOut(): number {
         return this.getFalsePositiveRate();
     }
@@ -824,13 +828,15 @@ export class BinaryConfusionMatrix {
     public getAccuracy(): number {
         return BinaryConfusionMatrix.MathematicsHelperObject.safeDivide((this.getTruePositives() + this.getTrueNegatives()), this.getTotal());
     }
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- public getF1Score(): number {
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     double truePositiveFactor = (2 * this.getTruePositives());
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----     return
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----         BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----             truePositiveFactor,
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----             (truePositiveFactor + this.getFalsePositives() + this.getFalseNegatives()));
-    // ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ---- }
+    /** ---- NOTE-BASIC-METRIC-DEFINED-ALREADY-FOR-COMPLETENESS ----
+     *  public getF1Score(): number {
+     *      double truePositiveFactor = (2 * this.getTruePositives());
+     *      return
+     *          BinaryConfusionMatrix.MathematicsHelperObject.safeDivide(
+     *              truePositiveFactor,
+     *              (truePositiveFactor + this.getFalsePositives() + this.getFalseNegatives()));
+     *  }
+     */
     public getGMeasure(): number {
         return Math.sqrt(this.getPrecision() *  this.getRecall());
     }
@@ -884,10 +890,10 @@ export class BinaryConfusionMatrix {
     public getF1Measure(): number {
         return this.getFMeasure(1);
     }
-    public getF2Measure(): number { // ---- emphasize recall more than precision
+    public getF2Measure(): number { // ---- NOTE: emphasize recall more than precision
         return this.getFMeasure(2);
     }
-    public getF05Measure(): number { // ---- emphasize precision more than recall
+    public getF05Measure(): number { // ---- NOTE: emphasize precision more than recall
         return this.getFMeasure(0.5);
     }
     public getEffectivenessMeasure(effectivenessMeasureAlpha: number = 0.5): number {

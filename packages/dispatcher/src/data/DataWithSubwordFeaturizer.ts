@@ -5,11 +5,6 @@
 
 import { Data } from "./Data";
 
-// ---- NOTE-FOR-REFERENCE ---- @deprecated — since v4.0.0 - use value === null instead.
-// ---- NOTE-FOR-REFERENCE ---- 'isNull' is deprecatedts(6385)
-// ---- NOTE-FOR-REFERENCE ---- import { isNull } from "util";
-// ---- NOTE-FOR-REFERENCE ---- import { isUndefined } from "util";
-
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
 import { Utility } from "../utility/Utility";
@@ -20,9 +15,7 @@ export abstract class DataWithSubwordFeaturizer extends Data {
 
     protected constructor(featurizer: NgramSubwordFeaturizer) {
         super();
-        if (// ---- NOTE-FOR-REFERENCE ---- isNull(featurizer) || isUndefined(featurizer)
-            (featurizer === null) || (featurizer === undefined)
-        ) {
+        if ((featurizer === null) || (featurizer === undefined)) {
             Utility.debuggingThrow(
                 "input featurizer is null");
         }

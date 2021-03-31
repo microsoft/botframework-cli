@@ -5,14 +5,14 @@
 
 import { BinaryConfusionMatrix } from "../mathematics/confusion_matrix/BinaryConfusionMatrix";
 
+import { ILabelArrayAndMap } from "./ILabelArrayAndMap";
+
 import { Label } from "./Label";
 import { LabelType } from "./LabelType";
-// import { Result } from "./Result";
 import { ScoreEntity } from "./ScoreEntity";
 import { ScoreIntent } from "./ScoreIntent";
 import { ScoreEntityUtterancePrediction } from "./ScoreEntityUtterancePrediction";
 import { ScoreIntentUtterancePrediction } from "./ScoreIntentUtterancePrediction";
-// import { Span } from "./Span";
 
 import { StructTextNumber } from "./StructTextNumber";
 
@@ -72,9 +72,7 @@ export class LabelStructureUtility {
     // -----------------------------------------------------------------------
 
     public static evaluateIntentUtterancePredictionScoresToBinaryConfusionMatrices(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, Set<string>>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[]>,
         length: number):
@@ -162,9 +160,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateEntityUtterancePredictionScoresToBinaryConfusionMatrices(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceEntityLabelsMapGroundTruth: Map<string, Label[]>,
         utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[]>,
         length: number):
@@ -252,9 +248,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateIntentUtterancePredictionScores(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, Set<string>>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[]>):
         Map<string, ScoreIntentUtterancePrediction[]> {
@@ -343,9 +337,7 @@ export class LabelStructureUtility {
         return labelScoreIntentUtterancePredictionsMap;
     }
     public static evaluateIntentUtterancePredictionScoresLabelOriented(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, Set<string>>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[]>):
         Map<string, ScoreIntentUtterancePrediction[]> {
@@ -389,9 +381,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateEntityUtterancePredictionScores(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceEntityLabelsMapGroundTruth: Map<string, Label[]>,
         utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[]>):
         Map<string, ScoreEntityUtterancePrediction[]> {
@@ -754,9 +744,7 @@ export class LabelStructureUtility {
     // -----------------------------------------------------------------------
 
     public static evaluateIntentUtterancePredictionScoresToBinaryConfusionMatricesWithWeight(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>,
         length: number):
@@ -845,9 +833,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateEntityUtterancePredictionScoresToBinaryConfusionMatricesWithWeight(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceEntityLabelsMapGroundTruth: Map<string, Array<[Label, number]>>,
         utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[][]>,
         length: number):
@@ -937,9 +923,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateIntentUtterancePredictionScoresWithWeight(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>):
         Map<string, Array<[ScoreIntentUtterancePrediction, number]>> {
@@ -953,11 +937,11 @@ export class LabelStructureUtility {
         utterances.forEach((utterance: string) => {
             const utteranceGroundTruthLabels: StructTextNumber[] =
                 utteranceIntentLabelsMapGroundTruth.get(utterance) as StructTextNumber[];
-            // ---- TODO ---- check array size
+            // ---- NOTE-TODO ---- check array size
             if (utteranceIntentLabelScoresMapPrediction.has(utterance)) {
                 const utteranceIntentPredictionScores: ScoreIntent[][] =
                     utteranceIntentLabelScoresMapPrediction.get(utterance) as ScoreIntent[][];
-                // ---- TODO ---- check array size
+                // ---- NOTE-TODO ---- check array size
                 // ---- NOTE-PLACEHOLDER-USE-THE-FIRST-SCORE-FOR-NOW ----
                 utteranceIntentPredictionScores[0].forEach((utteranceIntentPredictionScore: ScoreIntent) => {
                     const utteranceIntentPredictionScoreLabel: string =
@@ -1050,9 +1034,7 @@ export class LabelStructureUtility {
         return labelScoreIntentUtterancePredictionsMap;
     }
     public static evaluateIntentUtterancePredictionScoresWithWeightLabelOriented(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceIntentLabelsMapGroundTruth: Map<string, StructTextNumber[]>,
         utteranceIntentLabelScoresMapPrediction: Map<string, ScoreIntent[][]>):
         Map<string, Array<[ScoreIntentUtterancePrediction, number]>> {
@@ -1082,7 +1064,7 @@ export class LabelStructureUtility {
                 if (utteranceIntentLabelScoresMapPrediction.has(utterance)) {
                     const utteranceIntentPredictionScores: ScoreIntent[][] =
                         utteranceIntentLabelScoresMapPrediction.get(utterance) as ScoreIntent[][];
-                    // ---- TODO ---- check array size
+                    // ---- NOTE-TODO ---- check array size
                     // ---- NOTE-PLACEHOLDER-USE-THE-FIRST-SCORE-FOR-NOW ----
                     for (const utteranceIntentPredictionScore of utteranceIntentPredictionScores) {
                         if (utteranceIntentPredictionScore[0].intent === label) {
@@ -1105,9 +1087,7 @@ export class LabelStructureUtility {
     }
 
     public static evaluateEntityUtterancePredictionScoresWithWeight(
-        labelArrayAndMap: {
-            "stringArray": string[],
-            "stringMap": Map<string, number> },
+        labelArrayAndMap: ILabelArrayAndMap,
         utteranceEntityLabelsMapGroundTruth: Map<string, Array<[Label, number]>>,
         utteranceEntityLabelScoresMapPrediction: Map<string, ScoreEntity[][]>):
         Map<string, Array<[ScoreEntityUtterancePrediction, number]>> {
@@ -1121,11 +1101,11 @@ export class LabelStructureUtility {
         utterances.forEach((utterance: string) => {
             const utteranceGroundTruthLabels: Array<[Label, number]> =
                 utteranceEntityLabelsMapGroundTruth.get(utterance) as Array<[Label, number]>;
-            // ---- TODO ---- check array size
+            // ---- NOTE-TODO ---- check array size
             if (utteranceEntityLabelScoresMapPrediction.has(utterance)) {
                 const utteranceEntityPredictionScores: ScoreEntity[][] =
                     utteranceEntityLabelScoresMapPrediction.get(utterance) as ScoreEntity[][];
-                // ---- TODO ---- check array size
+                // ---- NOTE-TODO ---- check array size
                 // ---- NOTE-PLACEHOLDER-USE-THE-FIRST-SCORE-FOR-NOW ----
                 utteranceEntityPredictionScores[0].forEach((utteranceEntityPredictionScore: ScoreEntity) => {
                     const utteranceEntityPredictionScoreLabel: Label =

@@ -67,15 +67,17 @@ AbstractBaseBootstrapSampler<T, IDictionaryStringIdGenericValue<number>, IDictio
         numberInstancesPerLabelReduce =
             Utility.getRoundInteger(numberInstancesPerLabelReduce * this.getSampleSizeConfiguration());
         return numberInstancesPerLabelReduce;
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ---- const numberInstancesPerLabelSpreadArray: number[] =
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ----     [...this.instances].map((x) => x[1].length);
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ---- Utility.debuggingLog(`numberInstancesPerLabelSpreadArray=` +
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ----     `${[...numberInstancesPerLabelSpreadArray]}`);
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ---- const numberInstancesPerLabelSpread: number =
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ----     Math.max(...[...this.instances].map((x) => x[1].length));
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ---- Utility.debuggingLog(`numberInstancesPerLabelSpread=` +
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ----     `${numberInstancesPerLabelSpread}`);
-        // ---- NOTE-NEED-UNIT-TEST-TO-CHECK ---- return numberInstancesPerLabelSpread;
+        /** ---- NOTE ---- another implementation that requires checking maybe with some unit tests.
+         *  const numberInstancesPerLabelSpreadArray: number[] =
+         *      [...this.instances].map((x) => x[1].length);
+         *  Utility.debuggingLog(`numberInstancesPerLabelSpreadArray=` +
+         *      `${[...numberInstancesPerLabelSpreadArray]}`);
+         *  const numberInstancesPerLabelSpread: number =
+         *      Math.max(...[...this.instances].map((x) => x[1].length));
+         *  Utility.debuggingLog(`numberInstancesPerLabelSpread=` +
+         *      `${numberInstancesPerLabelSpread}`);
+         *  return numberInstancesPerLabelSpread;
+         */
     }
 
     public createSampleInstancesGenerator(): Generator<T, void, unknown> {

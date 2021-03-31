@@ -3,11 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// ---- NOTE-FOR-REFERENCE ---- @deprecated — since v4.0.0 - use value === null instead.
-// ---- NOTE-FOR-REFERENCE ---- 'isNull' is deprecatedts(6385)
-// ---- NOTE-FOR-REFERENCE ---- import { isNull } from "util";
-// ---- NOTE-FOR-REFERENCE ---- import { isUndefined } from "util";
-
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
 // import { Data } from "./Data";
@@ -36,9 +31,7 @@ export class DataWithSubwordFeaturizerUtility extends DataUtility {
         if (Utility.isEmptyString(filetype)) {
             filetype = DataUtility.getDataFileTypeFromFilenameExtension(filename);
         }
-        if (// ---- NOTE-FOR-REFERENCE ---- isNull(featurizerNullable) || isUndefined(featurizerNullable)
-            (featurizerNullable === null) || (featurizerNullable === undefined)
-        ) {
+        if ((featurizerNullable === null) || (featurizerNullable === undefined)) {
             featurizerNullable = new NgramSubwordFeaturizer();
             toResetFeaturizerLabelFeatureMaps = true;
         }

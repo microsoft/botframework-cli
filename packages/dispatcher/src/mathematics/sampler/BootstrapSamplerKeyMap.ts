@@ -45,10 +45,10 @@ AbstractBaseBootstrapSampler<T, TMapStringKeyGenericValue<number>, TMapStringKey
         let numberInstances: number = 0;
         for (const entry of this.instances) {
             if (entry) {
-                // ---- Utility.debuggingLog(`sampleInstances(): entry=` +
-                // ----     `${entry}`);
-                // ---- side effect is to remove TSLint warning for
-                // ---- 'in' statements must be filtered with an if statement.
+                /** ---- NOTE ---- need an if statement to remove a TSLint warning for using "in"
+                 *  Utility.debuggingLog(`sampleInstances(): entry=` +
+                 *      `${entry}`);
+                 */
                 const instanceArray: T[] = entry[1];
                 numberInstances += instanceArray.length;
             }
@@ -58,15 +58,18 @@ AbstractBaseBootstrapSampler<T, TMapStringKeyGenericValue<number>, TMapStringKey
 
     public computeSamplingNumberInstancesPerLabel(label: string = ""): number {
         // ---- NOTE: can be overridden in child class.
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ---- const numberInstancesPerLabelReduce: number =
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ----     this.labels.reduce(
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ----         (maxValue: number, key: string) =>
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ----         (this.instances.get(key) as T[]).length > maxValue ? (this.instances.get(key) as T[]).length : maxValue,
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ----         0);
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ---- Utility.debuggingLog(`numberInstancesPerLabelReduce=` +
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ----     `${numberInstancesPerLabelReduce}`);
-        // ---- NOTE-DOES-NOT-WORK-NEED-TO-CHECK ---- return numberInstancesPerLabelReduce;
+        /** ---- NOTE-FOR-REFERENCE-IMPLEMENTATION-DOES-NOT-WORK-NEED-TO-DOUBLE-CHECK ----
+         *  const numberInstancesPerLabelReduce: number =
+         *      this.labels.reduce(
+         *          (maxValue: number, key: string) =>
+         *            ((this.instances.get(key) as T[]).length > maxValue) ?
+         *            (this.instances.get(key) as T[]).length :
+         *            maxValue,
+         *          0);
+         *  Utility.debuggingLog(`numberInstancesPerLabelReduce=` +
+         *      `${numberInstancesPerLabelReduce}`);
+         *  return numberInstancesPerLabelReduce;
+         */
         const numberInstancesPerLabelSpreadArray: number[] =
             [...this.instances].map((x) => x[1].length);
         Utility.debuggingLog(`numberInstancesPerLabelSpreadArray=` +

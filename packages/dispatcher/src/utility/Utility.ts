@@ -414,7 +414,7 @@ export class Utility {
         return Utility.objectToStringMapArray<V>(JSON.parse(jsonString));
     }
 
-    // ---- NOTE-REFERENCE:
+    // ---- NOTE-REFERENCE ----
     // https://github.com/v8/v8/blob/085fed0fb5c3b0136827b5d7c190b4bd1c23a23e/src/base
     // /utils/random-number-generator.h#L102
     public static getXorshift128plusState0(): number {
@@ -2711,16 +2711,18 @@ export class Utility {
             input,
             ",",
             "\"");
-        // ---- NOTE-FOR-REFERENCE ---- const splittedStrings: string[] = [];
-        // ---- NOTE-FOR-REFERENCE ---- const commaIndexIndexes: number[] =
-        // ---- NOTE-FOR-REFERENCE ----     Utility.getCommaIndexesFilteredByDoubleQuotes(input);
-        // ---- NOTE-FOR-REFERENCE ---- let index: number = 0;
-        // ---- NOTE-FOR-REFERENCE ---- for (const commaIndex of commaIndexIndexes) {
-        // ---- NOTE-FOR-REFERENCE ----     splittedStrings.push(input.substring(index, commaIndex));
-        // ---- NOTE-FOR-REFERENCE ----     index = commaIndex + 1;
-        // ---- NOTE-FOR-REFERENCE ---- }
-        // ---- NOTE-FOR-REFERENCE ---- splittedStrings.push(input.substring(index));
-        // ---- NOTE-FOR-REFERENCE ---- return splittedStrings;
+        /** ---- NOTE-FOR-REFERENCE ----
+         *  const splittedStrings: string[] = [];
+         *  const commaIndexIndexes: number[] =
+         *      Utility.getCommaIndexesFilteredByDoubleQuotes(input);
+         *  let index: number = 0;
+         *  for (const commaIndex of commaIndexIndexes) {
+         *      splittedStrings.push(input.substring(index, commaIndex));
+         *      index = commaIndex + 1;
+         *  }
+         *  splittedStrings.push(input.substring(index));
+         *  return splittedStrings;
+         */
     }
     public static splitStringWithColumnDelimitersFilteredByQuotingDelimiters(
         input: string,
@@ -2745,10 +2747,12 @@ export class Utility {
             input,
             ",",
             "\"");
-        // ---- NOTE-FOR-REFERENCE ---- const commaIndexes: number[] = Utility.getCommaIndexes(input);
-        // ---- NOTE-FOR-REFERENCE ---- return Utility.filterOrderedNumberArrayFromOrderedRanges(
-        // ---- NOTE-FOR-REFERENCE ----     commaIndexes,
-        // ---- NOTE-FOR-REFERENCE ----     Utility.getDoubleQuoteIndexPairs(input));
+        /** ---- NOTE-FOR-REFERENCE ----
+         *  const commaIndexes: number[] = Utility.getCommaIndexes(input);
+         *  return Utility.filterOrderedNumberArrayFromOrderedRanges(
+         *      commaIndexes,
+         *      Utility.getDoubleQuoteIndexPairs(input));
+         */
     }
     public static getColumnDelimiterIndexesFilteredByQuotingDelimiters(
         input: string,

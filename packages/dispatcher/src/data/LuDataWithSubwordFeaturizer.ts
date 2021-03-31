@@ -43,10 +43,6 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
             }
             luLuisJsonStructure.utterances.push(utterancesArray[index]);
         }
-        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
-        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
-        // ---- NOTE-FOR-REFERENCE ----         return (samplingIndexArray.has(index));
-        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
         luDataWithSubwordFeaturizer.luUtterances =
             luDataWithSubwordFeaturizer.retrieveLuUtterances(luLuisJsonStructure);
@@ -95,10 +91,6 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
             }
             luLuisJsonStructure.utterances.push(utterancesArray[index]);
         }
-        // ---- NOTE-FOR-REFERENCE ---- luLuisJsonStructure.utterances = utterancesArray.filter(
-        // ---- NOTE-FOR-REFERENCE ----     (value: any, index: number, array: any[]) => {
-        // ---- NOTE-FOR-REFERENCE ----         return (filteringIndexSet.has(index));
-        // ---- NOTE-FOR-REFERENCE ----     });
         // -------------------------------------------------------------------
         luDataWithSubwordFeaturizer.luUtterances =
             luDataWithSubwordFeaturizer.retrieveLuUtterances(luLuisJsonStructure);
@@ -179,10 +171,6 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
         return await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizerFromSamplingExistingLuDataUtterances(
             existingData as LuDataWithSubwordFeaturizer,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- weightColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- linesToSkip,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
     }
@@ -197,10 +185,6 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
         return LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizerFromFilteringExistingLuDataUtterances(
             existingData as LuDataWithSubwordFeaturizer,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- labelColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- textColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- weightColumnIndex,
-            // ---- NOTE-NO-NEED-FOR-LuDataWithSubwordFeaturizer ---- linesToSkip,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
     }
@@ -230,7 +214,6 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
                 });
             });
         return luUtterances;
-        // ---- NOTE-FOR-REFERENCE ---- return (luLuisJsonStructure.utterances as any[]);
     }
 
     public getLuObject(): any {

@@ -106,17 +106,19 @@ export class OrchestratorBuild {
   static getExamplesLR(
     labelResolver: LabelResolver): ITextUtteranceLabelMapDataStructure {
     const labelResolverExamples: any = LabelResolver.getExamples(labelResolver);
-    // ---- NOTE-FOR-REFERENCE ---- const labelResolverExamples: Example[] = LabelResolver.getExamples(labelResolver).map(
-    // ---- NOTE-FOR-REFERENCE ----   (x: any) => new Example(
-    // ---- NOTE-FOR-REFERENCE ----     x.text,
-    // ---- NOTE-FOR-REFERENCE ----     x.labels.map((y: any) => new Label(
-    // ---- NOTE-FOR-REFERENCE ----       y.label_type,
-    // ---- NOTE-FOR-REFERENCE ----       y.name,
-    // ---- NOTE-FOR-REFERENCE ----       new Span(
-    // ---- NOTE-FOR-REFERENCE ----         y.span.offset,
-    // ---- NOTE-FOR-REFERENCE ----         y.span.length)))));
-    // ---- NOTE-FOR-REFERENCE ---- labelResolverExamples.sort(Example.sortFunction);
-    // ---- NOTE-FOR-REFERENCE ---- return labelResolverExamples;
+    /** ---- NOTE-FOR-REFERENCE ----
+     *  const labelResolverExamples: Example[] = LabelResolver.getExamples(labelResolver).map(
+     *    (x: any) => new Example(
+     *      x.text,
+     *      x.labels.map((y: any) => new Label(
+     *        y.label_type,
+     *        y.name,
+     *        new Span(
+     *          y.span.offset,
+     *          y.span.length)))));
+     *  labelResolverExamples.sort(Example.sortFunction);
+     *  return labelResolverExamples;
+     */
     const exampleIntentsEntitiesUtterances: ITextUtteranceLabelMapDataStructure = {
       utteranceLabelsMap: new Map<string, Set<string>>(),
       utteranceLabelDuplicateMap: new Map<string, Set<string>>(),

@@ -223,12 +223,13 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing1(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing1(
+         *      arrayT,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition2<T, U>(
         arrayT: T[],
@@ -242,13 +243,14 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing2(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing2(
+         *      arrayT,
+         *      arrayU,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition3<T, U, V>(
         arrayT: T[],
@@ -264,14 +266,15 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing3(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayV,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing3(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition4<T, U, V, W>(
         arrayT: T[],
@@ -289,15 +292,16 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing4(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayV,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayW,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing4(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition5<T, U, V, W, X>(
         arrayT: T[],
@@ -317,16 +321,17 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing5(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayV,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayW,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayX,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing5(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition6<T, U, V, W, X, Y>(
         arrayT: T[],
@@ -348,17 +353,18 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing6(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayV,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayW,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayX,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayY,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing6(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      arrayY,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
     public static partition7<T, U, V, W, X, Y, Z>(
         arrayT: T[],
@@ -382,18 +388,19 @@ export class ListArrayUtility {
             from,
             to,
             pivot);
-        // tslint:disable-next-line: max-line-length
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ---- return partitionOneEndProgressing7(
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayT,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayU,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayV,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayW,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayX,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayY,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     arrayZ,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     from,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     to,
-        // ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----     pivot);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  return partitionOneEndProgressing7(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      arrayY,
+         *      arrayZ,
+         *      from,
+         *      to,
+         *      pivot);
+         */
     }
 
     public static partitionThreeWayDutchNationalFlagProgressing1<T>(
@@ -1409,10 +1416,12 @@ export class ListArrayUtility {
             arrayT,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning1(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning1(
+         *      arrayT,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort2<T, U>(
         arrayT: T[],
@@ -1424,11 +1433,13 @@ export class ListArrayUtility {
             arrayU,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning2(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning2(
+         *      arrayT,
+         *      arrayU,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort3<T, U, V>(
         arrayT: T[],
@@ -1442,12 +1453,14 @@ export class ListArrayUtility {
             arrayV,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning3(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayV,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning3(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort4<T, U, V, W>(
         arrayT: T[],
@@ -1463,13 +1476,15 @@ export class ListArrayUtility {
             arrayW,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning4(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayV,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayW,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning4(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort5<T, U, V, W, X>(
         arrayT: T[],
@@ -1487,14 +1502,16 @@ export class ListArrayUtility {
             arrayX,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning5(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayV,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayW,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayX,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning5(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort6<T, U, V, W, X, Y>(
         arrayT: T[],
@@ -1514,15 +1531,17 @@ export class ListArrayUtility {
             arrayY,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning6(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayV,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayW,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayX,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayY,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning6(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      arrayY,
+         *      from,
+         *      to);
+         */
     }
     public static sequentialQuickSort7<T, U, V, W, X, Y, Z>(
         arrayT: T[],
@@ -1544,16 +1563,18 @@ export class ListArrayUtility {
             arrayZ,
             from,
             to);
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ---- ListArrayUtility.sequentialQuickSortByBinaryPartitioning7(
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayT,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayU,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayV,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayW,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayX,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayY,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     arrayZ,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     from,
-        // ---- NOTE-PREFER-THREE-WAY-PARTITIONING ----     to);
+        /** ---- NOTE-MAY-LEAD-TO-SKEW-PARTITIONING-WHEN-ALL-ELEMENTS-ARE-THE-SAME ----
+         *  ListArrayUtility.sequentialQuickSortByBinaryPartitioning7(
+         *      arrayT,
+         *      arrayU,
+         *      arrayV,
+         *      arrayW,
+         *      arrayX,
+         *      arrayY,
+         *      arrayZ,
+         *      from,
+         *      to);
+         */
     }
 
     public static sequentialQuickSortByThreeWayPartitioning1<T>(

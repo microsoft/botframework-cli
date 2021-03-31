@@ -78,9 +78,11 @@ export class OrchestratorTest {
     if (Utility.isEmptyString(baseModelPath)) {
       Utility.debuggingThrow(`The baseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
     }
-    // ---- NOTE-PLACEHOLDER-entity-model-is-optional ---- if (Utility.isEmptyString(entityBaseModelPath)) {
-    // ---- NOTE-PLACEHOLDER-entity-model-is-optional ----   Utility.debuggingThrow(`The entityBaseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
-    // ---- NOTE-PLACEHOLDER-entity-model-is-optional ---- }
+    /** ---- NOTE-FOR-REFERENCE-entity-model-is-optional ----
+     *  if (Utility.isEmptyString(entityBaseModelPath)) {
+     *    Utility.debuggingThrow(`The entityBaseModelPath argument is empty, CWD=${process.cwd()}, called from OrchestratorTest.runAsync()`);
+     *  }
+     */
     if (baseModelPath) {
       baseModelPath = path.resolve(baseModelPath);
     } else {
@@ -202,9 +204,11 @@ export class OrchestratorTest {
     // ---- Utility.debuggingLog(`OrchestratorTest.runAsync(), Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(utteranceEntityLabelDuplicateMap)=${Utility.jsonStringify(Utility.convertStringKeyGenericSetNativeMapToDictionary<string>(utteranceEntityLabelDuplicateMap))}`);
     Utility.debuggingLog(`OrchestratorTest.runAsync(), number of unique utterances=${utteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorTest.runAsync(), number of duplicate utterance/label pairs=${utteranceEntityLabelDuplicateMap.size}`);
-    // ---- NOTE-entity-model-is-optional ---- if (utteranceEntityLabelsMap.size <= 0) {
-    // ---- NOTE-entity-model-is-optional ----   Utility.debuggingThrow('There is no example, something wrong?');
-    // ---- NOTE-entity-model-is-optional ---- }
+    /** ---- NOTE-FOR-REFERENCE-entity-model-is-optional ----
+     * if (utteranceEntityLabelsMap.size <= 0) {
+     *   Utility.debuggingThrow('There is no example, something wrong?');
+     * }
+     */
     // -----------------------------------------------------------------------
     // ---- NOTE ---- integrated step to produce intent analysis reports.
     Utility.debuggingLog('OrchestratorTest.runAsync(), ready to call UtilityLabelResolver.resetLabelResolverSettingIgnoreSameExample("false")');
