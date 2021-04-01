@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs-extra')
 
 const updateUrls = async () => {
-  let plugins = ['config', 'chatdown', 'dialog', 'qnamaker', 'luis', 'plugins', 'lg', 'cli']
+  let plugins = ['config', 'chatdown', 'dialog', 'qnamaker', 'luis', 'plugins', 'lg', 'orchestrator', 'cli']
   for (let i = 0; i < plugins.length; i++) {
       await cleanUrls(plugins[i])
   }
