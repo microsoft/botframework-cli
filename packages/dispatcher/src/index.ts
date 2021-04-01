@@ -49,13 +49,36 @@ export { TMapStringKeyGenericArrays } from "./data_structure/TMapStringKeyGeneri
 export { TMapStringKeyGenericSet } from "./data_structure/TMapStringKeyGenericSet";
 export { TMapStringKeyGenericValue } from "./data_structure/TMapStringKeyGenericValue";
 
+export { IEntity } from "./label_structure/IEntity";
+export { IEntityByPosition } from "./label_structure/IEntityByPosition";
+export { IEntityWithText } from "./label_structure/IEntityWithText";
+export { IEntityWithTextByPosition } from "./label_structure/IEntityWithTextByPosition";
+export { ILabel } from "./label_structure/ILabel";
+export { ILabelAlternate } from "./label_structure/ILabelAlternate";
 export { ILabelArrayAndMap } from "./label_structure/ILabelArrayAndMap";
+export { IResult } from "./label_structure/IResult";
+export { IResultAlternate } from "./label_structure/IResultAlternate";
+export { IScoreEntity } from "./label_structure/IScoreEntity";
+export { IScoreEntityByPosition } from "./label_structure/IScoreEntityByPosition";
+export { IScoreEntityCore } from "./label_structure/IScoreEntityCore";
+export { IScoreIntent } from "./label_structure/IScoreIntent";
+export { IScoreLabel } from "./label_structure/IScoreLabel";
+export { IScoreLabelByPosition } from "./label_structure/IScoreLabelByPosition";
+export { IScoreLabelCore } from "./label_structure/IScoreLabelCore";
+export { ISpan } from "./label_structure/ISpan";
+export { ISpanByPosition } from "./label_structure/ISpanByPosition";
 export { ITextUtteranceLabelMapDataStructure } from "./label_structure/ITextUtteranceLabelMapDataStructure";
 export { ITextUtteranceLabelObjectMapDataStructure } from "./label_structure/ITextUtteranceLabelObjectMapDataStructure";
 export { ITextUtteranceLabelStringMapDataStructure } from "./label_structure/ITextUtteranceLabelStringMapDataStructure";
 export { ITextUtteranceWeightedLabelMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelMapDataStructure";
 export { ITextUtteranceWeightedLabelObjectMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelObjectMapDataStructure";
 export { ITextUtteranceWeightedLabelStringMapDataStructure } from "./label_structure/ITextUtteranceWeightedLabelStringMapDataStructure";
+export { IUtterancePrediction } from "./label_structure/IUtterancePrediction";
+export { IUtterancePredictionWithScoreEntity } from "./label_structure/IUtterancePredictionWithScoreEntity";
+export { IUtterancePredictionWithScoreEntityByPosition } from "./label_structure/IUtterancePredictionWithScoreEntityByPosition";
+export { IUtterancePredictionWithScoreIntent } from "./label_structure/IUtterancePredictionWithScoreIntent";
+export { IUtterancePredictionWithScoreLabel } from "./label_structure/IUtterancePredictionWithScoreLabel";
+export { IUtterancePredictionWithScoreLabelByPosition } from "./label_structure/IUtterancePredictionWithScoreLabelByPosition";
 
 export { Example } from "./label_structure/Example";
 export { Label } from "./label_structure/Label";
@@ -160,22 +183,14 @@ export { ReservoirSamplerKeyMap } from "./mathematics/sampler/ReservoirSamplerKe
 export { ComposerBootstrapSampler } from "./mathematics/sampler/ComposerBootstrapSampler";
 export { ComposerReservoirSampler } from "./mathematics/sampler/ComposerReservoirSampler";
 
-export { mainCrossValidatorWithColumnarContent } from "./model/evaluation/cross_validation/AppCrossValidator";
-export { mainCrossValidatorWithLuContent } from "./model/evaluation/cross_validation/AppCrossValidator";
-export { mainCrossValidator } from "./model/evaluation/cross_validation/AppCrossValidator";
 export { CrossValidator } from "./model/evaluation/cross_validation/CrossValidator";
 
-export { mainPredictor } from "./model/evaluation/predict/AppPredictor";
 export { Predictor } from "./model/evaluation/predict/Predictor";
 
-export { mainDataProfileReporter } from "./model/evaluation/report/AppDataProfileReporter";
 export { DataProfileReporter } from "./model/evaluation/report/DataProfileReporter";
-export { mainModelMetaDataProfileReporter } from "./model/evaluation/report/AppModelMetaDataProfileReporter";
 export { ModelMetaDataProfileReporter } from "./model/evaluation/report/ModelMetaDataProfileReporter";
-export { mainThresholdReporter } from "./model/evaluation/report/AppThresholdReporter";
 export { ThresholdReporter } from "./model/evaluation/report/ThresholdReporter";
 
-export { mainTester } from "./model/evaluation/test/AppTester";
 export { Tester } from "./model/evaluation/test/Tester";
 
 export { ISparseTextFeaturizer } from "./model/language_understanding/featurizer/ISparseTextFeaturizer";

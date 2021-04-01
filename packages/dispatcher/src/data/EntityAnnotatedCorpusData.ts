@@ -122,6 +122,9 @@ export class EntityAnnotatedCorpusData extends Data {
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingData instanceof EntityAnnotatedCorpusData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a EntityAnnotatedCorpusData object.");
+        }
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
             existingData as EntityAnnotatedCorpusData,
@@ -137,6 +140,9 @@ export class EntityAnnotatedCorpusData extends Data {
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingData instanceof EntityAnnotatedCorpusData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a EntityAnnotatedCorpusData object.");
+        }
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusData.createEntityAnnotatedCorpusDataFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
             existingData as EntityAnnotatedCorpusData,

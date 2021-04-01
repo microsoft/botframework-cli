@@ -3,10 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import {LabelType} from "./LabelType";
-import {Span} from "./Span";
+import { IEntityByPosition } from "./IEntityByPosition";
+import { IEntityWithTextByPosition } from "./IEntityWithTextByPosition";
+import { ILabel } from "./ILabel";
+import { ILabelAlternate} from "./ILabelAlternate";
+import { LabelType } from "./LabelType";
+import { Span } from "./Span";
 
-import {Utility} from "../utility/Utility";
+import { Utility } from "../utility/Utility";
 
 export class Label {
     public static newIntentLabel(label: string, spanOffset: number = 0, spanLength: number = 0): Label {
@@ -99,35 +103,20 @@ export class Label {
         return `${nameObfuscated}-${this.labeltype}-${offsetObfuscated}-${lengthObfuscated}`;
     }
 
-    public toObject(toObfuscate: boolean = false): {
-        "name": string;
-        "labeltype": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toObject(toObfuscate: boolean = false): ILabel {
         if (toObfuscate) {
             return this.toObfuscatedObject();
         }
         return this.toSimpleObject();
     }
-    public toSimpleObject(): {
-        "name": string;
-        "labeltype": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toSimpleObject(): ILabel {
         return {
             name: this.name,
             labeltype: this.labeltype,
             span: this.span.toSimpleObject(),
         };
     }
-    public toObfuscatedObject(): {
-        "name": string;
-        "labeltype": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toObfuscatedObject(): ILabel {
         const nameObfuscated: string = Utility.obfuscateString(this.name);
         return {
             name: nameObfuscated,
@@ -136,35 +125,20 @@ export class Label {
         };
     }
 
-    public toAlternateObject(toObfuscate: boolean = false): {
-        "name": string;
-        "label_type": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toAlternateObject(toObfuscate: boolean = false): ILabelAlternate {
         if (toObfuscate) {
             return this.toObfuscatedAlternateObject();
         }
         return this.toSimpleAlternateObject();
     }
-    public toSimpleAlternateObject(): {
-        "name": string;
-        "label_type": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toSimpleAlternateObject(): ILabelAlternate {
         return {
             name: this.name,
             label_type: this.labeltype,
             span: this.span.toSimpleObject(),
         };
     }
-    public toObfuscatedAlternateObject(): {
-        "name": string;
-        "label_type": number;
-        "span": {
-            "offset": number;
-            "length": number; }; } {
+    public toObfuscatedAlternateObject(): ILabelAlternate {
         const nameObfuscated: string = Utility.obfuscateString(this.name);
         return {
             name: nameObfuscated,
@@ -173,29 +147,20 @@ export class Label {
         };
     }
 
-    public toEntityObject(toObfuscate: boolean = false): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number; } {
+    public toEntityObject(toObfuscate: boolean = false): IEntityByPosition {
         if (toObfuscate) {
             return this.toObfuscatedEntityObject();
         }
         return this.toSimpleEntityObject();
     }
-    public toSimpleEntityObject(): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number; } {
+    public toSimpleEntityObject(): IEntityByPosition {
         return {
             entity: this.name,
             startPos: this.getStartPos(),
             endPos: this.getEndPos(),
         };
     }
-    public toObfuscatedEntityObject(): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number; } {
+    public toObfuscatedEntityObject(): IEntityByPosition {
         const nameObfuscated: string = Utility.obfuscateString(this.name);
         const startPosObfuscated: number = Utility.obfuscateNumber(this.getStartPos());
         const endPosObfuscated: number = Utility.obfuscateNumber(this.getEndPos());
@@ -206,21 +171,13 @@ export class Label {
         };
     }
 
-    public toEntityObjectWithText(utterance: string, toObfuscate: boolean = false): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number;
-        "text": string; } {
+    public toEntityObjectWithText(utterance: string, toObfuscate: boolean = false): IEntityWithTextByPosition {
         if (toObfuscate) {
             return this.toObfuscatedEntityObjectWithText(utterance);
         }
         return this.toSimpleEntityObjectWithText(utterance);
     }
-    public toSimpleEntityObjectWithText(utterance: string): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number;
-        "text": string; } {
+    public toSimpleEntityObjectWithText(utterance: string): IEntityWithTextByPosition {
         return {
             entity: this.name,
             startPos: this.getStartPos(),
@@ -228,11 +185,7 @@ export class Label {
             text: utterance.substring(this.getStartPos(), this.getEndPos() + 1),
         };
     }
-    public toObfuscatedEntityObjectWithText(utterance: string): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number;
-        "text": string; } {
+    public toObfuscatedEntityObjectWithText(utterance: string): IEntityWithTextByPosition {
         const nameObfuscated: string = Utility.obfuscateString(this.name);
         const startPosObfuscated: number = Utility.obfuscateNumber(this.getStartPos());
         const endPosObfuscated: number = Utility.obfuscateNumber(this.getEndPos());

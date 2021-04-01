@@ -3,11 +3,13 @@
  * Licensed under the MIT License.
  */
 
-import {LabelType} from "./LabelType";
-import {Label} from "./Label";
-import {Result} from "./Result";
-import {ScoreLabel} from "./ScoreLabel";
-import {PredictionType} from "./PredictionType";
+import { IUtterancePredictionWithScoreLabel } from "./IUtterancePredictionWithScoreLabel";
+import { IUtterancePredictionWithScoreLabelByPosition } from "./IUtterancePredictionWithScoreLabelByPosition";
+import { LabelType } from "./LabelType";
+import { Label } from "./Label";
+import { Result } from "./Result";
+import { ScoreLabel } from "./ScoreLabel";
+import { PredictionType } from "./PredictionType";
 
 export class ScoreLabelUtterancePrediction extends ScoreLabel {
     public static newScoreLabelUtterancePrediction(
@@ -57,13 +59,7 @@ export class ScoreLabelUtterancePrediction extends ScoreLabel {
         this.predictionType = predictionType;
     }
 
-    public toObject(): {
-        "utterance": string,
-        "predictionType": PredictionType,
-        "label": string;
-        "offset": number;
-        "length": number;
-        "score": number; } {
+    public toObject(): IUtterancePredictionWithScoreLabel {
         return {
             utterance: this.utterance,
             predictionType: this.predictionType,
@@ -74,13 +70,7 @@ export class ScoreLabelUtterancePrediction extends ScoreLabel {
         };
     }
 
-    public toObjectByPosition(): {
-        "utterance": string,
-        "predictionType": PredictionType,
-        "label": string;
-        "startPos": number;
-        "endPos": number;
-        "score": number; } {
+    public toObjectByPosition(): IUtterancePredictionWithScoreLabelByPosition {
         return {
             utterance: this.utterance,
             predictionType: this.predictionType,

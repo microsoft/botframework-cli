@@ -3,7 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { PredictionType } from "./PredictionType";
 import { PredictionStructureWithSingularEvaluationGenericLabel } from "./PredictionStructureWithSingularEvaluationGenericLabel";
 import { PredictionStructureFoundationDisplay } from "./PredictionStructureFoundationDisplay";
 

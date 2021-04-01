@@ -5,8 +5,6 @@
 
 import { PredictionType } from "./PredictionType";
 
-import { Utility } from "../utility/Utility";
-
 export class PredictionStructureFoundationSingularEvaluation {
 
     /** ---- NOTE-DOCUMENTATION ----

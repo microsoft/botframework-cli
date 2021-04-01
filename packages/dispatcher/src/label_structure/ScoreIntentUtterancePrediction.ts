@@ -3,10 +3,11 @@
  * Licensed under the MIT License.
  */
 
-import {Label} from "./Label";
-import {Result} from "./Result";
-import {ScoreIntent} from "./ScoreIntent";
-import {PredictionType} from "./PredictionType";
+import { IUtterancePredictionWithScoreIntent } from "./IUtterancePredictionWithScoreIntent";
+import { Label } from "./Label";
+import { Result } from "./Result";
+import { ScoreIntent } from "./ScoreIntent";
+import { PredictionType } from "./PredictionType";
 
 export class ScoreIntentUtterancePrediction extends ScoreIntent {
     public static newScoreIntentUtterancePrediction(
@@ -30,11 +31,7 @@ export class ScoreIntentUtterancePrediction extends ScoreIntent {
         this.predictionType = predictionType;
     }
 
-    public toObject(): {
-        "utterance": string,
-        "predictionType": PredictionType,
-        "intent": string;
-        "score": number; } {
+    public toObject(): IUtterancePredictionWithScoreIntent {
         return {
             utterance: this.utterance,
             predictionType: this.predictionType,

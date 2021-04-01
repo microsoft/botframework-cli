@@ -173,6 +173,9 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof EntityAnnotatedCorpusDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a EntityAnnotatedCorpusDataWithSubwordFeaturizer object.");
+        }
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizerFromSamplingExistingEntityAnnotatedCorpusDataUtterances(
             existingDataWithSubwordFeaturizer as EntityAnnotatedCorpusDataWithSubwordFeaturizer,
@@ -189,6 +192,9 @@ export class EntityAnnotatedCorpusDataWithSubwordFeaturizer extends DataWithSubw
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof EntityAnnotatedCorpusDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a EntityAnnotatedCorpusDataWithSubwordFeaturizer object.");
+        }
         // tslint:disable-next-line: max-line-length
         return EntityAnnotatedCorpusDataWithSubwordFeaturizer.createEntityAnnotatedCorpusDataWithSubwordFeaturizerFromFilteringExistingEntityAnnotatedCorpusDataUtterances(
             existingDataWithSubwordFeaturizer as EntityAnnotatedCorpusDataWithSubwordFeaturizer,

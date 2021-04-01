@@ -3,10 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import {Label} from "./Label";
-import {Result} from "./Result";
-import {ScoreEntity} from "./ScoreEntity";
-import {PredictionType} from "./PredictionType";
+import { IUtterancePredictionWithScoreEntity } from "./IUtterancePredictionWithScoreEntity";
+import { IUtterancePredictionWithScoreEntityByPosition } from "./IUtterancePredictionWithScoreEntityByPosition";
+import { Label } from "./Label";
+import { Result } from "./Result";
+import { ScoreEntity } from "./ScoreEntity";
+import { PredictionType } from "./PredictionType";
 
 export class ScoreEntityUtterancePrediction extends ScoreEntity {
     public static newScoreEntityUtterancePrediction(
@@ -52,13 +54,7 @@ export class ScoreEntityUtterancePrediction extends ScoreEntity {
         this.predictionType = predictionType;
     }
 
-    public toObject(): {
-        "utterance": string,
-        "predictionType": PredictionType,
-        "entity": string;
-        "offset": number;
-        "length": number;
-        "score": number; } {
+    public toObject(): IUtterancePredictionWithScoreEntity {
         return {
             utterance: this.utterance,
             predictionType: this.predictionType,
@@ -69,13 +65,7 @@ export class ScoreEntityUtterancePrediction extends ScoreEntity {
         };
     }
 
-    public toObjectByPosition(): {
-        "utterance": string,
-        "predictionType": PredictionType,
-        "entity": string;
-        "startPos": number;
-        "endPos": number;
-        "score": number; } {
+    public toObjectByPosition(): IUtterancePredictionWithScoreEntityByPosition {
         return {
             utterance: this.utterance,
             predictionType: this.predictionType,

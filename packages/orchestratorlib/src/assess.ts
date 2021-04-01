@@ -232,7 +232,7 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER-FOR-FUTURE-NEED ----
          *  'spuriousLabelStatisticsAndHtmlTable': {
          *    'spuriousLabelUtterancesMap': StructTextStringSet[];
          *    'spuriousLabelUtterancesTotal': number;
@@ -255,7 +255,7 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER-FOR-FUTURE-NEED ----
          *  'spuriousLabelStatisticsAndHtmlTable': {
          *    'spuriousLabelUtterancesMap': StructTextStringSet[];
          *    'spuriousLabelUtterancesTotal': number;
@@ -335,7 +335,7 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER-FOR-FUTURE-NEED ----
          *  'spuriousLabelStatisticsAndHtmlTable': {
          *    'spuriousLabelUtterancesMap': StructTextStringSet[];
          *    'spuriousLabelUtterancesTotal': number;
@@ -358,7 +358,7 @@ export class OrchestratorAssess {
           'utteranceStatistics': StructTextNumber[];
           'utteranceCount': number;
           'utteranceStatisticsHtml': string;};
-        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER ----
+        /** ---- NOTE-SPURIOUS-STATISTICS-AND-OUTPUT-HTML-TABLE-PLACE-HOLDER-FOR-FUTURE-NEED ----
          *  'spuriousLabelStatisticsAndHtmlTable': {
          *    'spuriousLabelUtterancesMap': StructTextStringSet[];
          *    'spuriousLabelUtterancesTotal': number;

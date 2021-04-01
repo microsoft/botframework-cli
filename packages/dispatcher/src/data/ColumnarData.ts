@@ -148,6 +148,9 @@ export class ColumnarData extends Data {
         weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[]): Promise<Data> {
+        if (!(existingData instanceof ColumnarData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a ColumnarData object.");
+        }
         return ColumnarData.createColumnarDataFromSamplingExistingColumnarDataUtterances(
             existingData as ColumnarData,
             labelColumnIndex,
@@ -164,6 +167,9 @@ export class ColumnarData extends Data {
         weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>): Promise<Data> {
+        if (!(existingData instanceof ColumnarData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a ColumnarData object.");
+        }
         return ColumnarData.createColumnarDataFromFilteringExistingColumnarDataUtterances(
             existingData as ColumnarData,
             labelColumnIndex,

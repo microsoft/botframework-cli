@@ -139,6 +139,9 @@ export class LuData extends Data {
         weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[]): Promise<Data> {
+        if (!(existingData instanceof LuData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a LuData object.");
+        }
         return await LuData.createLuDataFromSamplingExistingLuDataUtterances(
             existingData as LuData,
             samplingIndexArray);
@@ -152,6 +155,9 @@ export class LuData extends Data {
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingData instanceof LuData)) {
+           Utility.debuggingThrow("logic error: the input Data object should be a LuData object.");
+        }
         return LuData.createLuDataFromFilteringExistingLuDataUtterances(
             existingData as LuData,
             filteringIndexSet,

@@ -3,10 +3,12 @@
  * Licensed under the MIT License.
  */
 
-import {LabelType} from "./LabelType";
-import {Label} from "./Label";
-import {Result} from "./Result";
-import {Score} from "./Score";
+import { IScoreEntity } from "./IScoreEntity";
+import { IScoreEntityByPosition } from "./IScoreEntityByPosition";
+import { LabelType } from "./LabelType";
+import { Label } from "./Label";
+import { Result } from "./Result";
+import { Score } from "./Score";
 
 import { Utility } from "../utility/Utility";
 
@@ -47,11 +49,7 @@ export class ScoreEntity extends Score {
         this.entity = entity;
     }
 
-    public toObject(): {
-        "entity": string;
-        "offset": number;
-        "length": number;
-        "score": number; } {
+    public toObject(): IScoreEntity {
         return {
             entity: this.entity.name,
             offset: this.entity.span.offset,
@@ -60,11 +58,7 @@ export class ScoreEntity extends Score {
         };
     }
 
-    public toObjectByPosition(): {
-        "entity": string;
-        "startPos": number;
-        "endPos": number;
-        "score": number; } {
+    public toObjectByPosition(): IScoreEntityByPosition {
         return {
             entity: this.entity.name,
             startPos: this.entity.getStartPos(),

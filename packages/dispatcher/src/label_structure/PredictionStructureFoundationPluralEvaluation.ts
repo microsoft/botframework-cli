@@ -5,8 +5,6 @@
 
 import { PredictionTypeArrayOutputIndex } from "./PredictionType";
 
-// import { Utility } from "../utility/Utility";
-
 export class PredictionStructureFoundationPluralEvaluation {
 
     /** ---- NOTE-DOCUMENTATION ----

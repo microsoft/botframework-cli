@@ -162,29 +162,35 @@ export class LuDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer {
     }
 
     public async createDataFromSamplingExistingDataUtterances(
-        existingData: DataWithSubwordFeaturizer,
+        existingDataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof LuDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a LuDataWithSubwordFeaturizer object.");
+        }
         return await LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizerFromSamplingExistingLuDataUtterances(
-            existingData as LuDataWithSubwordFeaturizer,
+            existingDataWithSubwordFeaturizer as LuDataWithSubwordFeaturizer,
             samplingIndexArray,
             toResetFeaturizerLabelFeatureMaps);
     }
 
     public async createDataFromFilteringExistingDataUtterances(
-        existingData: DataWithSubwordFeaturizer,
+        existingDataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof LuDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a LuDataWithSubwordFeaturizer object.");
+        }
         return LuDataWithSubwordFeaturizer.createLuDataWithSubwordFeaturizerFromFilteringExistingLuDataUtterances(
-            existingData as LuDataWithSubwordFeaturizer,
+            existingDataWithSubwordFeaturizer as LuDataWithSubwordFeaturizer,
             filteringIndexSet,
             toResetFeaturizerLabelFeatureMaps);
     }

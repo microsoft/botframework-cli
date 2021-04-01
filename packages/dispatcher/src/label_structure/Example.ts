@@ -3,7 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {Label} from "./Label";
+import { ILabel } from "./ILabel";
+import { ILabelAlternate } from "./ILabelAlternate";
+import { Label } from "./Label";
 
 export class Example {
     public static newIntentExample(
@@ -49,12 +51,7 @@ export class Example {
 
     public toObject(): {
         "text": string;
-        "labels": Array<{
-            "name": string;
-            "labeltype": number;
-            "span": {
-                "offset": number;
-                "length": number; }; }>; } {
+        "labels": ILabel[]; } {
         return {
           text: this.text,
           labels: this.labels.map((x: Label) => x.toObject()),
@@ -63,12 +60,7 @@ export class Example {
 
     public toAlternateObject(): {
         "text": string;
-        "labels": Array<{
-            "name": string;
-            "label_type": number;
-            "span": {
-                "offset": number;
-                "length": number; }; }>; } {
+        "labels": ILabelAlternate[]; } {
         return {
           text: this.text,
           labels: this.labels.map((x: Label) => x.toAlternateObject()),

@@ -182,16 +182,19 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
     }
 
     public async createDataFromSamplingExistingDataUtterances(
-        existingData: DataWithSubwordFeaturizer,
+        existingDataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
         samplingIndexArray: number[],
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof ColumnarDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a ColumnarDataWithSubwordFeaturizer object.");
+        }
         return ColumnarDataWithSubwordFeaturizer.
             createColumnarDataWithSubwordFeaturizerFromSamplingExistingColumnarDataUtterances(
-                existingData as ColumnarDataWithSubwordFeaturizer,
+                existingDataWithSubwordFeaturizer as ColumnarDataWithSubwordFeaturizer,
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,
@@ -201,16 +204,19 @@ export class ColumnarDataWithSubwordFeaturizer extends DataWithSubwordFeaturizer
     }
 
     public async createDataFromFilteringExistingDataUtterances(
-        existingData: DataWithSubwordFeaturizer,
+        existingDataWithSubwordFeaturizer: DataWithSubwordFeaturizer,
         labelColumnIndex: number,
         textColumnIndex: number,
         weightColumnIndex: number,
         linesToSkip: number,
         filteringIndexSet: Set<number>,
         toResetFeaturizerLabelFeatureMaps: boolean): Promise<Data> {
+        if (!(existingDataWithSubwordFeaturizer instanceof ColumnarDataWithSubwordFeaturizer)) {
+           Utility.debuggingThrow("logic error: the input DataWithSubwordFeaturizer object should be a ColumnarDataWithSubwordFeaturizer object.");
+        }
         return ColumnarDataWithSubwordFeaturizer.
             createColumnarDataWithSubwordFeaturizerFromFilteringExistingColumnarDataUtterances(
-                existingData as ColumnarDataWithSubwordFeaturizer,
+                existingDataWithSubwordFeaturizer as ColumnarDataWithSubwordFeaturizer,
                 labelColumnIndex,
                 textColumnIndex,
                 weightColumnIndex,

@@ -177,35 +177,35 @@ export class SoftmaxRegressionSparse {
             const logLossVectorInGradientUpdate: number[] = new Array<number>();
             while (true) {
                 if (miniBatchIndexBegin >= numberInstances) {
-                    // Utility.debuggingLog(
-                    //     `G-epoch=${epoch}/${epochs}` +
-                    //     `, numberInstances=${numberInstances}` +
-                    //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                    //     `, numberInstances=${numberInstances}`);
+                    Utility.debuggingLog(
+                        `G-epoch=${epoch}/${epochs}` +
+                        `, numberInstances=${numberInstances}` +
+                        `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                        `, numberInstances=${numberInstances}`);
                     break;
                 }
-                // Utility.debuggingLog(
-                //     `-1-epoch=${epoch}/${epochs}` +
-                //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                //     `, miniBatchSize=${miniBatchSize}` +
-                //     `, numberInstances=${numberInstances}`);
+                Utility.debuggingLog(
+                    `-1-epoch=${epoch}/${epochs}` +
+                    `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                    `, miniBatchSize=${miniBatchSize}` +
+                    `, numberInstances=${numberInstances}`);
                 let miniBatchIndexEnd: number =
                     miniBatchIndexBegin + miniBatchSize;
-                // Utility.debuggingLog(
-                //     `0-epoch=${epoch}/${epochs}` +
-                //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
-                //     `, miniBatchSize=${miniBatchSize}` +
-                //     `, numberInstances=${numberInstances}`);
+                Utility.debuggingLog(
+                    `0-epoch=${epoch}/${epochs}` +
+                    `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                    `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
+                    `, miniBatchSize=${miniBatchSize}` +
+                    `, numberInstances=${numberInstances}`);
                 if (miniBatchIndexEnd > numberInstances) {
                     miniBatchIndexEnd = numberInstances;
                 }
-                // Utility.debuggingLog(
-                //     `A-epoch=${epoch}/${epochs}` +
-                //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
-                //     `, miniBatchSize=${miniBatchSize}` +
-                //     `, numberInstances=${numberInstances}`);
+                Utility.debuggingLog(
+                    `A-epoch=${epoch}/${epochs}` +
+                    `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                    `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
+                    `, miniBatchSize=${miniBatchSize}` +
+                    `, numberInstances=${numberInstances}`);
                 const softmaxVectors: number[][] =
                     SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLossGradientUpdate(
                         groundTruthPositiveLabelIndexes,
@@ -222,13 +222,13 @@ export class SoftmaxRegressionSparse {
                         SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
                             softmaxVectors,
                             groundTruthPositiveLabelIndexes);
-                    // Utility.debuggingLog(
-                    //     `B-epoch=${epoch}/${epochs}` +
-                    //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                    //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
-                    //     `, miniBatchSize=${miniBatchSize}` +
-                    //     `, numberInstances=${numberInstances}` +
-                    //     `, logLossInGradientUpdate=${logLossInGradientUpdate}`);
+                    Utility.debuggingLog(
+                        `B-epoch=${epoch}/${epochs}` +
+                        `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                        `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
+                        `, miniBatchSize=${miniBatchSize}` +
+                        `, numberInstances=${numberInstances}` +
+                        `, logLossInGradientUpdate=${logLossInGradientUpdate}`);
                     logLossVectorInGradientUpdate.push(logLossInGradientUpdate);
                 }
                 if (toCalculateOverallLossAfterGradientUpdate) {
@@ -243,21 +243,21 @@ export class SoftmaxRegressionSparse {
                         SoftmaxRegressionSparse.MathematicsHelperObject.softmaxLogLoss(
                             softmaxVectorsAfterGradientUpdate,
                             groundTruthPositiveLabelIndexes);
-                    // Utility.debuggingLog(
-                    //     `C-epoch=${epoch}/${epochs}` +
-                    //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                    //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
-                    //     `, miniBatchSize=${miniBatchSize}` +
-                    //     `, numberInstances=${numberInstances}` +
-                    //     `, logLossAfterGradientUpdate=${logLossAfterGradientUpdate}`);
+                    Utility.debuggingLog(
+                        `C-epoch=${epoch}/${epochs}` +
+                        `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                        `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
+                        `, miniBatchSize=${miniBatchSize}` +
+                        `, numberInstances=${numberInstances}` +
+                        `, logLossAfterGradientUpdate=${logLossAfterGradientUpdate}`);
                     logLossVectorAfterGradientUpdate.push(logLossAfterGradientUpdate);
                 }
-                // Utility.debuggingLog(
-                //     `D-epoch=${epoch}/${epochs}` +
-                //     `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
-                //     `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
-                //     `, miniBatchSize=${miniBatchSize}` +
-                //     `, numberInstances=${numberInstances}`);
+                Utility.debuggingLog(
+                    `D-epoch=${epoch}/${epochs}` +
+                    `, miniBatchIndexBegin=${miniBatchIndexBegin}` +
+                    `, miniBatchIndexEnd=${miniBatchIndexEnd}` +
+                    `, miniBatchSize=${miniBatchSize}` +
+                    `, numberInstances=${numberInstances}`);
                 miniBatchIndexBegin = miniBatchIndexEnd;
             }
             if (toCalculateOverallLossInGradientUpdate) {
