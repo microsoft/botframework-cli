@@ -3,8 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
-// import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
 import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
 
 import { Data } from "./Data";

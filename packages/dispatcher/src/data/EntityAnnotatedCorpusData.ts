@@ -4,8 +4,6 @@
  */
 
 import { IEntityAnnotationObject } from "./IEntityAnnotationObject";
-// import { IEntityObjectByPosition } from "./IEntityObjectByPosition";
-// import { IPartOfSpeechTagObjectByPosition } from "./IPartOfSpeechTagObjectByPosition";
 import { ITextIntentSequenceLabelObjectByPosition} from "./ITextIntentSequenceLabelObjectByPosition";
 
 import { Data } from "./Data";

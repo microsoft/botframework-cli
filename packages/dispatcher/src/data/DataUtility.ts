@@ -3,10 +3,6 @@
  * Licensed under the MIT License.
  */
 
-// import { Data } from "./Data";
-
-// import { Utility } from "../utility/Utility";
-
 export class DataUtility {
 
     public static readonly DATA_FORMAT_TYPE_LU: string = "lu";

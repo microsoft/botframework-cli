@@ -5,7 +5,6 @@
 
 import { NgramSubwordFeaturizer } from "../model/language_understanding/featurizer/NgramSubwordFeaturizer";
 
-// import { Data } from "./Data";
 import { DataWithSubwordFeaturizer } from "./DataWithSubwordFeaturizer";
 
 import { ColumnarDataWithSubwordFeaturizer } from "./ColumnarDataWithSubwordFeaturizer";
