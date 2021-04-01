@@ -1,0 +1,75 @@
+AddFlag	add flag to the email mary just sent to me
+AddFlag	make the email flagged
+AddFlag	i want to add a flag to this email
+AddFlag	attach a flag please
+AddFlag	flag this email as important
+AddMore	i need to add something more to my email to cheryl
+AddMore	add more and revise the message
+AddMore	i need to write more to the email
+AddMore	add: call me tonight after dinner
+AddMore	write thanks
+CancelMessages	cancel my draft to jane
+CancelMessages	don't show me the email
+CancelMessages	don't send the last email
+CancelMessages	can you cancel it, please
+CancelMessages	don't send to her
+CheckMessages	do i have new messages?
+CheckMessages	does anyone send message to me now
+CheckMessages	do i receive new message from work
+CheckMessages	does anyone send email to me just now
+CheckMessages	do i have any new mails?
+ConfirmMessages	no problem, go ahead and send the mail
+ConfirmMessages	do it
+ConfirmMessages	yes, send to alex
+ConfirmMessages	ok, good, just go ahead and send it
+ConfirmMessages	sure, just delete the mail
+Delete	please delete it
+Delete	delete the last 4 emails
+Delete	empty the email inbox and move them to recycle bin
+Delete	put the email in the recycle bin
+Delete	delete the email from my personal account
+Forward	forward message to mary
+Forward	forward email to mary
+Forward	could you please forward this email to my brother
+Forward	forward to allen tonight
+Forward	forward this email to patricia now
+None	etherb wger3b
+None	the first one wd
+None	the second one, nothing new
+None	the third one, nonsense
+None	wdfwdf wefqwefw edfwf
+QueryLastText	please tell me who sent me the last email
+QueryLastText	open the lastest email
+QueryLastText	move to the last
+QueryLastText	what was in the lastest email
+QueryLastText	what is the lastest email i received from mom
+ReadAloud	read me the email on iphone
+ReadAloud	read email out loud
+ReadAloud	read my most recent email to me
+ReadAloud	read my lastest email
+ReadAloud	read aloud my newest email
+Reply	reply and say i love you
+Reply	reply yeah
+Reply	reply with hi
+Reply	email back now
+Reply	reply to the first email
+SearchMessages	show me emails from clara chen
+SearchMessages	email sent from beth
+SearchMessages	search keyword no. one keyword no. two from inbox
+SearchMessages	did i get any email from chris
+SearchMessages	find mails with the title recommended courses
+SendEmail	email my presentation to manager
+SendEmail	send and email about swim team practice this week
+SendEmail	email to cynthia and mike, that the dinner last week was great.
+SendEmail	send an urgent email from my work account to christian now
+SendEmail	send an email to jacqueline about the great test result
+ShowNext	move on to the next mail
+ShowNext	move to next email by jason
+ShowNext	show the next email by wong
+ShowNext	show me next from lily
+ShowNext	next email, please
+ShowPrevious	show me the last four mails
+ShowPrevious	show me the previous email in inbox
+ShowPrevious	show the previous one in inbox
+ShowPrevious	go to the previous mail
+ShowPrevious	show me the previous email from jack
