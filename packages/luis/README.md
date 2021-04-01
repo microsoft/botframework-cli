@@ -71,10 +71,12 @@ USAGE
 OPTIONS
   -h, --help                                 show CLI help
   --accountName=accountName                  (required) Account name
-  --appId=appId                              (required) LUIS application Id (defaults to config:LUIS:appId)
 
-  --armToken=armToken                        (required) The bearer authorization header to use; containing the user`s
-                                             ARM token used to validate azure accounts information
+  --appId=appId                              (required) LUIS application Id (defaults to config:set:luis --appId
+                                             {APPLICATION_ID})
+
+  --armToken=armToken                        (required) User`s ARM token used to validate azure accounts information
+                                             (default: config:set:luis --armToken {ARM_TOKEN})
 
   --azureSubscriptionId=azureSubscriptionId  (required) Azure Subscription Id
 
@@ -85,7 +87,7 @@ OPTIONS
   --resourceGroup=resourceGroup              (required) Resource Group
 
   --subscriptionKey=subscriptionKey          (required) LUIS cognitive services subscription key (default:
-                                             config:LUIS:subscriptionKey)
+                                             config:set:luis --subscriptionKey {SUBSCRIPTION_KEY})
 ```
 
 _See code: [src/commands/luis/application/assignazureaccount.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/assignazureaccount.ts)_
@@ -422,14 +424,13 @@ OPTIONS
 
   --config=config          Path to config file of mapping rules
 
+  --[no-]inner-dialog      Only do inner dialog cross train
+
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
+  --[no-]intra-dialog      Only do intra dialog cross train
+
   --log                    Writes out log messages to console
-
-  --inner-dialog            Only performs the inner dialog cross train, defalt is true, to set it as false, use --no-inner-dialog
-
-  --intra-dialog            Only performs the intra dialog cross train, defalt is true, to set it as false, use --no-intra-dialog
-
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -596,16 +597,29 @@ USAGE
   $ bf luis:translate
 
 OPTIONS
-  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help                   luis:translate help
-  -i, --in=in                  Source .lu file(s) or LUIS application JSON model
-  -o, --out=out                Output folder name. If not specified stdout will be used as output
-  -r, --recurse                Indicates if sub-folders need to be considered to file .lu file(s)
-  --srclang=srclang            Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang            (required) Comma separated list of target languages.
-  --translate_comments         When set, machine translate comments found in .lu file
-  --translate_link_text        When set, machine translate link description in .lu file
-  --translatekey=translatekey  (required) Machine translation endpoint key.
+  -f, --force                                If --out flag is provided with the path to an existing file, overwrites
+                                             that file
+
+  -h, --help                                 luis:translate help
+
+  -i, --in=in                                Source .lu file(s) or LUIS application JSON model
+
+  -o, --out=out                              Output folder name. If not specified stdout will be used as output
+
+  -r, --recurse                              Indicates if sub-folders need to be considered to file .lu file(s)
+
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+
+  --subscription_region=subscription_region  Required request header if using a Cognitive Services Resource. Optional if
+                                             using a Translator Resource.
+
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+
+  --translate_comments                       When set, machine translate comments found in .lu file
+
+  --translate_link_text                      When set, machine translate link description in .lu file
+
+  --translatekey=translatekey                (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/luis/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/translate.ts)_

@@ -14,10 +14,10 @@ This package is intended for Microsoft use only and should be consumed through @
 # Commands
 <!-- commands -->
 * [`bf lg`](#bf-lg)
+* [`bf lg:analyze`](#bf-lganalyze)
 * [`bf lg:expand`](#bf-lgexpand)
 * [`bf lg:translate`](#bf-lgtranslate)
 * [`bf lg:verify`](#bf-lgverify)
-* [`bf lg:analyze`](#bf-lganalyze)
 
 ## `bf lg`
 
@@ -32,6 +32,24 @@ OPTIONS
 ```
 
 _See code: [src/commands/lg/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/index.ts)_
+
+## `bf lg:analyze`
+
+Analyze templates in .lg files to show all the places where a template is used
+
+```
+USAGE
+  $ bf lg:analyze
+
+OPTIONS
+  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help     lg:analyze help
+  -i, --in=in    (required) LG File or folder that contains .lg file(s)
+  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
+  -r, --recurse  Consider sub-folders to find .lg file(s)
+```
+
+_See code: [src/commands/lg/analyze.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
 
 ## `bf lg:expand`
 
@@ -97,24 +115,6 @@ OPTIONS
 ```
 
 _See code: [src/commands/lg/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/verify.ts)_
-
-## `bf lg:analyze`
-
-Analyze templates in .lg files to show all the places where a template is used.
-
-```
-USAGE
-  $ bf lg:analyze
-
-OPTIONS
-  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help     lg:analyze help
-  -i, --in=in    (required) LG File or folder that contains .lg file(s)
-  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
-  -r, --recurse  Consider sub-folders to find .lg file(s)
-```
-
-_See code: [src/commands/lg/verify.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
 <!-- commandsstop -->
 
 [1]:https://aka.ms/lg-file-format

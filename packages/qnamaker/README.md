@@ -643,16 +643,29 @@ USAGE
   $ bf qnamaker:translate
 
 OPTIONS
-  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help                   qnamaker:translate help
-  -i, --in=in                  Source .qna file(s) or QnA maker application JSON model
-  -o, --out=out                Output folder name. If not specified stdout will be used as output
-  -r, --recurse                Indicates if sub-folders need to be considered to find .qna file(s)
-  --srclang=srclang            Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang            (required) Comma separated list of target languages.
-  --translate_comments         When set, machine translate comments found in .qna file
-  --translate_link_text        When set, machine translate link description in .qna file
-  --translatekey=translatekey  (required) Machine translation endpoint key.
+  -f, --force                                If --out flag is provided with the path to an existing file, overwrites
+                                             that file
+
+  -h, --help                                 qnamaker:translate help
+
+  -i, --in=in                                Source .qna file(s) or QnA maker application JSON model
+
+  -o, --out=out                              Output folder name. If not specified stdout will be used as output
+
+  -r, --recurse                              Indicates if sub-folders need to be considered to find .qna file(s)
+
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+
+  --subscription_region=subscription_region  Required request header if using a Cognitive Services Resource. Optional if
+                                             using a Translator Resource.
+
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+
+  --translate_comments                       When set, machine translate comments found in .qna file
+
+  --translate_link_text                      When set, machine translate link description in .qna file
+
+  --translatekey=translatekey                (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_
