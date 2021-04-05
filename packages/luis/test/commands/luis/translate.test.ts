@@ -108,7 +108,7 @@ xdescribe('luis:translate References can be skipped from being translated', asyn
 })
 
 describe('luis:translate Intents and utterances are translated correctly', async () => {
-  const response = require('./../../fixtures/translation/serviceresponses/intentsAndutterances.json')
+  const response = require('./../../fixtures/translation/serviceresponses/intentsAndUtterances.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
   })
