@@ -24,7 +24,7 @@ module.exports = {
     const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
     const configContent = await file.getConfigContent(config)
 
-    let importResolver = async function (_, idsToFind) {
+    let importResolver = async function (id, idsToFind) {
       let importedContents = []
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
@@ -41,8 +41,10 @@ module.exports = {
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
-              
-              importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.LUFile))
+              const curPath = path.resolve(id);
+              const newPath = path.resolve(curPath, filename.filePath);
+              const importContent = await file.getContentFromFile(newPath);
+              importedContents.push(importContent);
             }
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
             const found = qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile))
