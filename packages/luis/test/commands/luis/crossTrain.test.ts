@@ -148,4 +148,16 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption7/dia1.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption7/dia1.qna')).to.be.true
     })
+
+    test
+    .only()
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/application')}`,
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/application/cross-train.config.json')}`,
+      '--out', './interruptionGen2',
+      '--force'])
+    .it('luis:cross training only do intra dialog', async () => {
+      
+    })
 })

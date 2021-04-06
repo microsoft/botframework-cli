@@ -37,9 +37,20 @@ module.exports = {
         } else {
           const fileName = path.basename(file.filePath)
           if (fileName.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...luContents.filter(luContent => luContent.id === path.basename(fileName, fileExtEnum.LUFile)))
+            const found = luContents.filter(luContent => luContent.id === path.basename(fileName, fileExtEnum.LUFile))
+            if(found.length > 0) {
+              importedContents.push(...found)
+            } else {
+              
+              importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            }
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
-            importedContents.push(...qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile)))
+            const found = qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile))
+            if (found.length > 0) {
+              importedContents.push(...found)
+            } else {
+              importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.QnAFile))
+            }
           }
         }
       }
