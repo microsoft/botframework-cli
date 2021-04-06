@@ -4,7 +4,7 @@
  */
 
 const path = require('path')
-const file = require('../../utils/filehelper')
+const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
 
@@ -20,9 +20,9 @@ module.exports = {
    */
   train: async function (input, intentName, config, verbose, trainingOpt) {
     // Get all related file content.
-    const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
-    const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
-    const configContent = await file.getConfigContent(config)
+    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile)
+    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile)
+    const configContent = await filehelper.getConfigContent(config)
 
     let importResolver = async function (id, idsToFind) {
       let importedContents = []
@@ -30,9 +30,9 @@ module.exports = {
         let file = idsToFind[idx]
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
-            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.QnAFile))
+            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
           }
         } else {
           const fileName = path.basename(file.filePath)
@@ -41,9 +41,11 @@ module.exports = {
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
-              const curPath = path.resolve(id);
-              const newPath = path.resolve(curPath, filename.filePath);
-              const importContent = await file.getContentFromFile(newPath);
+              const matchedLuisFiles = luContents.filter(luContent => path.basename(luContent.fullPath) === id);
+              //ToDo: add a check of whethear the file exists
+              const sourceFileDir = path.dirname(matchedLuisFiles[0].fullPath)
+              const newPath = path.resolve(sourceFileDir, file.filePath);
+              const importContent = await filehelper.getFilesContent(newPath, fileExtEnum.LUFile);
               importedContents.push(importContent);
             }
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
@@ -51,7 +53,11 @@ module.exports = {
             if (found.length > 0) {
               importedContents.push(...found)
             } else {
-              importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.QnAFile))
+              const matchedLuisFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id);
+              const sourceFileDir = path.dirname(matchedLuisFiles[0].fullPath)
+              const newPath = path.resolve(sourceFileDir, file.filePath);
+              const importContent = await filehelper.getFilesContent(newPath, fileExtEnum.QnAFile);
+              importedContents.push(importContent);
             }
           }
         }
