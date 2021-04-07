@@ -10,7 +10,6 @@ const crossTrainer = require('../../../src/parser/cross-train/crossTrainer')
 const sectionTypes = require('../../../src/parser/utils/enums/lusectiontypes')
 const luObject = require('../../../src/parser/lu/lu')
 const luOptions = require('../../../src/parser/lu/luOptions')
-const crossTrain = require('../../../src/parser/cross-train/cross-train')
 
 const rootDir = path.join(__dirname, './../../fixtures/')
 

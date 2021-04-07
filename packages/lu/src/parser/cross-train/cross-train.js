@@ -42,13 +42,13 @@ module.exports = {
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
-              const matchedLuisFiles = luContents.filter(luContent => path.basename(luContent.fullPath) === id);
+              const matchedLuisFiles = luContents.filter(luContent => path.basename(luContent.fullPath) === id)
               for (const matchFile of matchedLuisFiles) {
                 const sourceFileDir = path.dirname(matchFile.fullPath)
                 const targetPath = path.resolve(sourceFileDir, file.filePath)
                 if (fs.existsSync(targetPath)) {
-                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.LUFile);
-                  importedContents.push(...importContent);
+                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.LUFile)
+                  importedContents.push(...importContent)
                 }
               }
             }
@@ -57,13 +57,13 @@ module.exports = {
             if (found.length > 0) {
               importedContents.push(...found)
             } else {
-              const matchedQnAFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id);
+              const matchedQnAFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id)
               for (const matchedFile of matchedQnAFiles) {
                 const sourceFileDir = path.dirname(matchedFile.fullPath)
                 const targetPath = path.resolve(sourceFileDir, file.filePath)
                 if (fs.existsSync(targetPath)) {
                   const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.QnAFile)
-                  importedContents.push(...importContent);
+                  importedContents.push(...importContent)
                 }
               }
             }
