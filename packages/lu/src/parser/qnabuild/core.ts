@@ -21,111 +21,93 @@ export class QnaBuildCore {
   }
 
   public async getKBList() {
-    const response = await this.service.createRequest('/knowledgebases', 'GET')
-    const text = await response.text()
-    const kbList = JSON.parse(text)
-    if (kbList.error) {
-      throw new Error(kbList.error.message)
+    const kbList = await this.service.httpRequest('/knowledgebases', 'GET')
+    if (kbList?.error) {
+      throw kbList.error
     }
 
     return kbList
   }
 
   public async getKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'GET')
-    const text = await response.text()
-    const kb = JSON.parse(text)
-    if (kb.error) {
-      throw new Error(kb.error.message)
+    const kb = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'GET')
+    if (kb?.error) {
+      throw kb.error
     }
 
     return kb
   }
 
   public async importKB(kbPayload: any) {
-    const response = await this.service.createRequest('/knowledgebases/createasync', 'POST', kbPayload)
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw new Error(status.error.message)
+    const status = await this.service.httpRequest('/knowledgebases/createasync', 'POST', kbPayload)
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async getOperationStatus(operationId: string) {
-    const response = await this.service.createRequest(`/operations/${operationId}`, 'GET')
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw new Error(status.error.message)
+    const status = await this.service.httpRequest(`/operations/${operationId}`, 'GET')
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async exportKB(kbId: string, environment: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}/${environment}/qna`, 'GET')
-    const text = await response.text()
-    const kb = JSON.parse(text)
-    if (kb.error) {
-      throw new Error(kb.error.message)
+    const kb = await this.service.httpRequest(`/knowledgebases/${kbId}/${environment}/qna`, 'GET')
+    if (kb?.error) {
+      throw kb.error
     }
 
     return kb
   }
 
   public async updateKB(kbId: string, replaceKb: any) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PATCH', replaceKb)
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw new Error(status.error.message)
+    const status = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'PATCH', replaceKb)
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async replaceKB(kbId: string, replaceKb: any) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
-    const text = await response.text()
-    if (text) {
-      throw new Error(JSON.parse(text).error.message)
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async publishKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'POST')
-    const text = await response.text()
-    if (text) {
-      throw new Error(JSON.parse(text).error.message)
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'POST')
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async replaceAlt(altJson: any) {
-    const response = await this.service.createRequest('/alterations', 'PUT', altJson)
-    const text = await response.text()
-    if (text) {
-      throw new Error(JSON.parse(text).error.message)
+    const text = await this.service.httpRequest('/alterations', 'PUT', altJson)
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async getEndpointKeys() {
-    const response = await this.service.createRequest('/endpointkeys', 'GET')
-    const text = await response.text()
-    const endpointKeys = JSON.parse(text)
-    if (endpointKeys.error) {
-      throw new Error(endpointKeys.error.message)
+    const endpointKeys = await this.service.httpRequest('/endpointkeys', 'GET')
+    if (endpointKeys?.error) {
+      throw endpointKeys.error
     }
 
     return endpointKeys
   }
 
   public async deleteKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'DELETE')
-    const text = await response.text()
-    if (text) {
-      throw new Error(JSON.parse(text).error.message)
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'DELETE')
+    if (text?.error) {
+      throw text.error
     }
   }
 
