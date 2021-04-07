@@ -155,9 +155,10 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/application')}`,
       '--config', `${path.join(__dirname, './../../fixtures/testcases/application/cross-train.config.json')}`,
-      '--out', './interruptionGen2',
+      '--out', './interruptionGen',
       '--force'])
-    .it('luis:cross training only do intra dialog', async () => {
-      
+    .it('luis:cross training should able to import files out of current directory', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/application.lu', './../../fixtures/verified/interruption8/application.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/application.qna', './../../fixtures/verified/interruption8/application.qna')).to.be.true
     })
 })

@@ -1,0 +1,37 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+# LocalIntent
+- utterance for LocalIntent
+
+
+# ExternalIntent
+- utterance for ExternalIntent
+
+
+> # Entity definitions
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+
+
+
+> Source: cross training. Please do not edit these directly!
+# DeferToRecognizer_QnA_application
+- Question In Main application.qna
+- Question In ExternalFile.qna

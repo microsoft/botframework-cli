@@ -4,6 +4,7 @@
  */
 
 const path = require('path')
+const fs = require('fs-extra')
 const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
@@ -42,22 +43,29 @@ module.exports = {
               importedContents.push(...found)
             } else {
               const matchedLuisFiles = luContents.filter(luContent => path.basename(luContent.fullPath) === id);
-              //ToDo: add a check of whethear the file exists
-              const sourceFileDir = path.dirname(matchedLuisFiles[0].fullPath)
-              const newPath = path.resolve(sourceFileDir, file.filePath);
-              const importContent = await filehelper.getFilesContent(newPath, fileExtEnum.LUFile);
-              importedContents.push(importContent);
+              for (const matchFile of matchedLuisFiles) {
+                const sourceFileDir = path.dirname(matchFile.fullPath)
+                const targetPath = path.resolve(sourceFileDir, file.filePath)
+                if (fs.existsSync(targetPath)) {
+                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.LUFile);
+                  importedContents.push(...importContent);
+                }
+              }
             }
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
             const found = qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile))
             if (found.length > 0) {
               importedContents.push(...found)
             } else {
-              const matchedLuisFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id);
-              const sourceFileDir = path.dirname(matchedLuisFiles[0].fullPath)
-              const newPath = path.resolve(sourceFileDir, file.filePath);
-              const importContent = await filehelper.getFilesContent(newPath, fileExtEnum.QnAFile);
-              importedContents.push(importContent);
+              const matchedQnAFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id);
+              for (const matchedFile of matchedQnAFiles) {
+                const sourceFileDir = path.dirname(matchedFile.fullPath)
+                const targetPath = path.resolve(sourceFileDir, file.filePath)
+                if (fs.existsSync(targetPath)) {
+                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.QnAFile)
+                  importedContents.push(...importContent);
+                }
+              }
             }
           }
         }

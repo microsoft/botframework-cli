@@ -22,18 +22,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "debug",
-      "preLaunchTask": "${defaultBuildTask}",
-      "program": "${workspaceFolder}/packages/lu/lib/parser/cross-train/test.js",
-      "cwd": "${workspaceFolder}/packages/lu",
-      "args": [],
-      "internalConsoleOptions": "openOnSessionStart",
-      "outputCapture": "std",
-      "outFiles": []
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "bf Orchestrator CLI",
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/cli/bin/run",
