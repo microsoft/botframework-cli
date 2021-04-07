@@ -150,10 +150,11 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     })
 
     test
+    .only()
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/application')}`,
-      '--config', `${path.join(__dirname, './../../fixtures/testcases/application/cross-train.config.json')}`,
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/application/cross-train.config')}`,
       '--out', './interruptionGen',
       '--force'])
     .it('luis:cross training should able to import files out of current directory', async () => {
