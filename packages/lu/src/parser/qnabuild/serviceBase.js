@@ -3,9 +3,11 @@
  * Licensed under the MIT License.
  */
 
-const axios = require('axios');
+const axios = require('axios')
+const axiosHttpsProxy = require('axios-https-proxy')
 const os = require('os')
 const packageJSON = require('./../../../package')
+axios.interceptors.request.use(axiosHttpsProxy)
 
 /**
  * Base class for all services
