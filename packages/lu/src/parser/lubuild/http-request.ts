@@ -3,7 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import axios from 'axios'
+const axios = require('axios')
+const axiosHttpsProxy = require('axios-https-proxy')
+axios.interceptors.request.use(axiosHttpsProxy)
 
 export default {
   async get(
