@@ -3,20 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
-import {LUISAuthoringClient} from '@azure/cognitiveservices-luis-authoring'
-import fetch from 'node-fetch'
+import httpRequest from './http-request'
 
 const delay = require('delay')
 const os = require('os')
 const Luis = require('./../luis/luis')
 const packageJSON = require('./../../../package')
 
-const rateLimitErrorCode = 429
+const rateLimitErrorCode = '429'
 const absoluteUrlPattern = /^https?:\/\//i
 
 export class LuBuildCore {
-  private readonly client: any
   private readonly subscriptionKey: string
   private readonly endpoint: string
   private readonly retryCount: number
@@ -26,7 +23,7 @@ export class LuBuildCore {
 
   constructor(subscriptionKey: string, endpoint: string, retryCount: number, retryDuration: number) {
     this.subscriptionKey = subscriptionKey
-    this.endpoint = endpoint
+    this.endpoint = `${endpoint}/luis/authoring/v3.0-preview`
     this.retryCount = retryCount
     this.retryDuration = retryDuration
 
@@ -47,30 +44,24 @@ export class LuBuildCore {
       'User-Agent': luisUserAgent,
       'Ocp-Apim-Subscription-Key': this.subscriptionKey,
     }
-
-    // new luis api client
-    const options = {
-      userAgent: luisUserAgent
-    }
-
-    const creds = new CognitiveServicesCredentials(subscriptionKey)
-    this.client = new LUISAuthoringClient(creds, endpoint, options)
   }
 
   public async getApplicationList() {
+    const url = `${this.endpoint}/apps`
+
     let apps
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          apps = await this.client.apps.list(undefined, undefined)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        
+        apps = await httpRequest.get(url, this.headers)
+
+        if (apps.error === undefined) break
+
+        error = apps.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -84,19 +75,20 @@ export class LuBuildCore {
   }
 
   public async getApplicationInfo(appId: string) {
+    const url = `${this.endpoint}/apps/${appId}`
+
     let appInfo
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          appInfo = await this.client.apps.get(appId)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        appInfo = await httpRequest.get(url, this.headers)
+
+        if (appInfo.error === undefined) break
+
+        error = appInfo.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -110,18 +102,15 @@ export class LuBuildCore {
   }
 
   public async importApplication(currentApp: any): Promise<any> {
-    // let response = await this.client.apps.importMethod(currentApp)
-
     const name = `?appName=${currentApp.name}`
-    const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/import' + name
+    const url = `${this.endpoint}/apps/import${name}`
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify(currentApp)})
-        messageData = await response.json()
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.post(url, JSON.stringify(currentApp), this.headers)
 
         if (messageData.error === undefined) break
 
@@ -141,22 +130,20 @@ export class LuBuildCore {
   }
 
   public async exportApplication(appId: string, versionId: string) {
-    const url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/' + versionId + '/export?format=json'
+    const url = `${this.endpoint}/apps/${appId}/versions/${versionId}/export?format=json`
 
     let messageData
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          const response = await fetch(url, {method: 'GET', headers: this.headers})
-          messageData = await response.json()
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.get(url, this.headers)
+
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -164,10 +151,6 @@ export class LuBuildCore {
 
     if (retryCount === 0) {
       throw error
-    }
-
-    if (messageData.error) {
-      throw new Error(messageData.error.message)
     }
 
     return messageData
@@ -224,19 +207,15 @@ export class LuBuildCore {
   }
 
   public async importNewVersion(appId: string, app: any, options: any) {
-    // await this.client.versions.importMethod(appId, app, options)
-
     const versionId = `?versionId=${options.versionId}`
-    let url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/versions/import' + versionId
+    let url = `${this.endpoint}/apps/${appId}/versions/import${versionId}`
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify(app)})
-        messageData = await response.json()
-
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.post(url, JSON.stringify(app), this.headers)
         if (messageData.error === undefined) break
 
         error = messageData.error
@@ -255,19 +234,19 @@ export class LuBuildCore {
   }
 
   public async listApplicationVersions(appId: string) {
+    let url = `${this.endpoint}/apps/${appId}/versions`
+
     let appVersions
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          appVersions = await this.client.versions.list(appId)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        appVersions = await httpRequest.get(url, this.headers)
+        if (appVersions.error === undefined) break
+
+        error = appVersions.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -281,18 +260,19 @@ export class LuBuildCore {
   }
 
   public async deleteVersion(appId: string, versionId: string) {
+    let url = `${this.endpoint}/apps/${appId}/versions/${versionId}`
+
+    let messageData
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          await this.client.versions.deleteMethod(appId, versionId)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.delete(url, this.headers)
+        if (messageData.error === undefined) break
+
+        error = messageData.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -301,20 +281,21 @@ export class LuBuildCore {
     if (retryCount === 0) {
       throw error
     }
+
+    return messageData
   }
 
   public async trainApplication(appId: string, versionId: string, trainMode: string) {
     let mode = trainMode || this.trainMode
-    let url = `${this.endpoint}/luis/authoring/v3.0-preview/apps/${appId}/versions/${versionId}/train`
+    let url = `${this.endpoint}/apps/${appId}/versions/${versionId}/train`
     url += mode ? `?mode=${mode}` : ''
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers: this.headers})
-        messageData = await response.json()
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.post(url, '', this.headers)
 
         if (messageData.error === undefined) break
 
@@ -334,19 +315,19 @@ export class LuBuildCore {
   }
 
   public async getTrainingStatus(appId: string, versionId: string) {
+    let url = `${this.endpoint}/apps/${appId}/versions/${versionId}/train`
+
     let status
     let retryCount = this.retryCount + 1
     let error
     while (retryCount > 0) {
-      if (error === undefined || error.statusCode === rateLimitErrorCode) {
-        try {
-          status = await this.client.train.getStatus(appId, versionId)
-          break
-        } catch (e) {
-          error = e
-          retryCount--
-          if (retryCount > 0) await delay(this.retryDuration)
-        }
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        status = await httpRequest.get(url, this.headers)
+        if (status.error === undefined) break
+
+        error = status.error
+        retryCount--
+        if (retryCount > 0) await delay(this.retryDuration)
       } else {
         throw error
       }
@@ -360,19 +341,21 @@ export class LuBuildCore {
   }
 
   public async publishApplication(appId: string, versionId: string, isStaging: boolean, directVersionPublish: boolean) {
-    let url = this.endpoint + '/luis/authoring/v3.0-preview/apps/' + appId + '/publish'
+    let url = `${this.endpoint}/apps/${appId}/publish`
 
     let messageData
     let retryCount = this.retryCount + 1
     let error: any
     while (retryCount > 0) {
-      if (error === undefined || error.code === rateLimitErrorCode.toString()) {
-        let response = await fetch(url, {method: 'POST', headers: this.headers, body: JSON.stringify({
-          versionId,
-          isStaging,
-          directVersionPublish
-        })})
-        messageData = await response.json()
+      if (error === undefined || error.code === rateLimitErrorCode) {
+        messageData = await httpRequest.post(
+          url,
+          JSON.stringify({
+            versionId,
+            isStaging,
+            directVersionPublish
+          }),
+          this.headers)
 
         if (messageData.error === undefined) break
 

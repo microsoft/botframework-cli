@@ -33,10 +33,10 @@
     ]
   },
   "dependencies": {
-    "@azure/cognitiveservices-luis-authoring": "4.0.0-preview.1",
-    "@azure/ms-rest-azure-js": "2.0.1",
     "@types/node-fetch": "~2.5.5",
     "antlr4": "~4.8.0",
+    "axios": "~0.21.1",
+    "axios-https-proxy": "^0.1.1",
     "chalk": "2.4.1",
     "console-stream": "^0.1.1",
     "deep-equal": "^1.0.1",
