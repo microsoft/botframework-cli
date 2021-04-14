@@ -46,7 +46,7 @@
     "@types/xml2js": "^0.4.4",
     "ajv": "^6.12.2",
     "axios": "~0.21.1",
-    "axios-https-proxy": "^0.1.1",
+    "https-proxy-agent": "^5.0.0",
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
