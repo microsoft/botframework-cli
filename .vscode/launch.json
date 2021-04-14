@@ -24,22 +24,23 @@
       "request": "launch",
       "name": "bf Orchestrator CLI",
       "preLaunchTask": "${defaultBuildTask}",
-      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "program": "${workspaceFolder}/packages/orchestrator/bin/run",
       "outputCapture": "std",
       "outFiles": [
         "${workspaceFolder}/packages/orchestrator/lib/**"
       ],
       "args": [
-        "orchestrator:create",
-        "--in",
-        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/CognitiveModels",
-        "--out",
-        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/generated",
-        "--model",
-        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model",
-        "--entityModel",
-        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model/entity",
-        "--hierarchical"
+        "orchestrator:add",
+        "-t",
+        "qna",
+        "--id",
+        "315ac233-5d1d-4744-8eb9-62555dda4764",
+        "--key",
+        "0c6d4b2072734dc194e8dba2793339d3",
+        "--routingName",
+        "TESTQNA",
+        "-m",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "cwd": "${workspaceFolder}"

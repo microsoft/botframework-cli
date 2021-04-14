@@ -7,7 +7,7 @@ import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Utility} from './utility';
 const unzip: any = require('unzip-stream');
-const fetch: any = require('node-fetch');
+const fetch: any = require('node-fetch-with-proxy');
 
 export class OrchestratorBaseModel {
   public static NlrVersionsSchema: string = '0.2';
