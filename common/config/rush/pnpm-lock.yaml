@@ -59,6 +59,7 @@ dependencies:
   md5: 2.2.1
   mime-types: 2.1.26
   minimist: 1.2.0
+  node-fetch-with-proxy: 0.1.4
   nyc: 14.1.1
   orchestrator-core: 4.13.0-rc0
   os: 0.1.1
@@ -1009,6 +1010,14 @@ packages:
       node: '>= 4.0.0'
     resolution:
       integrity: sha512-salcGninV0nPrwpGNn4VTXBb1SOuXQBiqbrNXoeizJsHrsL6ERFM2Ne3JUSBWRE6aeNJI2ROP/WEEIDUiDe3cg==
+  /agent-base/6.0.2:
+    dependencies:
+      debug: 4.1.1
+    dev: false
+    engines:
+      node: '>= 6.0.0'
+    resolution:
+      integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==
   /ajv/6.12.0:
     dependencies:
       fast-deep-equal: 3.1.1
@@ -1212,6 +1221,14 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-WWZ/QfrdTyDMvCu5a41Pf3jsA2c=
+  /ast-types/0.13.4:
+    dependencies:
+      tslib: 2.0.3
+    dev: false
+    engines:
+      node: '>=4'
+    resolution:
+      integrity: sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==
   /astral-regex/1.0.0:
     dev: false
     engines:
@@ -1429,6 +1446,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-Jw8HbFpywC9bZaR9+Uxf46J4iS8=
+  /bytes/3.1.0:
+    dev: false
+    engines:
+      node: '>= 0.8'
+    resolution:
+      integrity: sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
   /cache-base/1.0.1:
     dependencies:
       collection-visit: 1.0.0
@@ -2075,6 +2098,16 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-jwK2UV4cnPpbcG7+VRARKTZPUWowwXA8bzH5NP6ud0oeAxyYPuGZUAC7hMugpCdz4BeSZl2Dl9k66CHJ/46ZYQ==
+  /degenerator/2.2.0:
+    dependencies:
+      ast-types: 0.13.4
+      escodegen: 1.14.3
+      esprima: 4.0.1
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-aiQcQowF01RxFI4ZLFMpzyotbQonhNpBao6dkI8JPk5a+hmSjR5ErHp2CQySmQe8os3VBqLCIh87nDBgZXvsmg==
   /delay/4.3.0:
     dev: false
     engines:
@@ -2097,6 +2130,12 @@ packages:
     dev: false
     resolution:
       integrity: sha1-hMbhWbgZBP3KWaDvRM2HDTElD5o=
+  /depd/1.1.2:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-m81S4UwJd2PnSbJ0xDRu0uVgtak=
   /detect-indent/6.0.0:
     dev: false
     engines:
@@ -2261,6 +2300,20 @@ packages:
       node: '>=0.8.0'
     resolution:
       integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=
+  /escodegen/1.14.3:
+    dependencies:
+      esprima: 4.0.1
+      estraverse: 4.3.0
+      esutils: 2.0.3
+      optionator: 0.8.3
+    dev: false
+    engines:
+      node: '>=4.0'
+    hasBin: true
+    optionalDependencies:
+      source-map: 0.6.1
+    resolution:
+      integrity: sha512-qFcX0XJkdg+PB3xjZZG/wKSuT1PnQWx57+TVSjIMmILd2yC/6ByYElPwJnslDsuWuSAp4AwJGumarAAmJch5Kw==
   /eslint-ast-utils/1.1.0:
     dependencies:
       lodash.get: 4.4.2
@@ -3371,6 +3424,28 @@ packages:
       node: '>=8.0.0'
     resolution:
       integrity: sha512-ahwimsC23ICE4kPl9xTBjKB4inbRaeLyZeRunC/1Jy/Z6X8tv22MEAjK+KBOMSVLaqXPTTmd8638waVIKLGx2w==
+  /http-errors/1.7.3:
+    dependencies:
+      depd: 1.1.2
+      inherits: 2.0.4
+      setprototypeof: 1.1.1
+      statuses: 1.5.0
+      toidentifier: 1.0.0
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha512-ZTTX0MWrsQ2ZAhA1cejAwDLycFsd7I7nVtnkT3Ol0aqodaKW+0CTZDQ1uBv5whptCnc8e8HeRRJxRs0kmm/Qfw==
+  /http-proxy-agent/4.0.1:
+    dependencies:
+      '@tootallnate/once': 1.0.0
+      agent-base: 6.0.2
+      debug: 4.1.1
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-k0zdNgqWTGA6aeIRVpvfVob4fL52dTfaehylg0Y4UvSySvOq/Y+BOyPrgpUrA7HylqvU8vIZGsRuXmspskV0Tg==
   /http-signature/1.2.0:
     dependencies:
       assert-plus: 1.0.0
@@ -3391,6 +3466,15 @@ packages:
       node: '>= 4.5.0'
     resolution:
       integrity: sha512-OmvfoQ53WLjtA9HeYP9RNrWMJzzAz1JGaSFr1nijg0PVR1JaD/xbJq1mdEIIlxGpXp9eSe/O2LgU9DJmTPd0Eg==
+  /https-proxy-agent/5.0.0:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.1.1
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-EkYm5BcKUGiduxzSt3Eppko+PiNWNEpa4ySk9vTC6wDsQJW9rHSa+UhGNJoRYp7bz6Ht1eaRIa6QaJqO5rCFbA==
   /hyperlinker/1.0.0:
     dev: false
     engines:
@@ -3528,6 +3612,10 @@ packages:
       node: '>=4'
     resolution:
       integrity: sha1-+ni/XS5pE8kRzp+BnuUUa7bYROk=
+  /ip/1.1.5:
+    dev: false
+    resolution:
+      integrity: sha1-vd7XARQpCCjAoDnnLvJfWq7ENUo=
   /is-accessor-descriptor/0.1.6:
     dependencies:
       kind-of: 3.2.2
@@ -4598,6 +4686,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-AO81vsIO1k1sM4Zrd6Hu7regmJN1NSiAja10gc4bX3F0wd+9rQmcuHQaHVQCYIEC8iFXnE+mavh23GOt7wBgug==
+  /netmask/2.0.2:
+    dev: false
+    engines:
+      node: '>= 0.4.0'
+    resolution:
+      integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==
   /nice-try/1.0.5:
     dev: false
     resolution:
@@ -4662,12 +4756,25 @@ packages:
     dev: false
     resolution:
       integrity: sha512-VNYPRfGfmZLx0Ye20jWzHUjyTW/c+6Wq+iLhDzUI4XmhrDd9l/FozXV3F2xOaXjvp0co0+v1YSR3CMP6g+VvLQ==
+  /node-fetch-with-proxy/0.1.4:
+    dependencies:
+      node-fetch: 2.6.1
+      proxy-agent: 4.0.1
+    dev: false
+    resolution:
+      integrity: sha512-rqkZGl0YSpqwXazy3qInWAnAJtZ6MB2ku2aOlN8Ey70/JOpk2GAM+sqszFlLlBlCXaveweh7J9oJY+KQXO0DrQ==
   /node-fetch/2.6.0:
     dev: false
     engines:
       node: 4.x || >=6.0.0
     resolution:
       integrity: sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
+  /node-fetch/2.6.1:
+    dev: false
+    engines:
+      node: 4.x || >=6.0.0
+    resolution:
+      integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==
   /node-gyp/7.1.2:
     dependencies:
       env-paths: 2.2.1
@@ -5048,6 +5155,32 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-R4nPAVTAU0B9D35/Gk3uJf/7XYbQcyohSKdvAxIRSNghFl4e71hVoGnBNQz9cWaXxO2I10KTC+3jMdvvoKw6dQ==
+  /pac-proxy-agent/4.1.0:
+    dependencies:
+      '@tootallnate/once': 1.0.0
+      agent-base: 6.0.2
+      debug: 4.1.1
+      get-uri: 3.0.2
+      http-proxy-agent: 4.0.1
+      https-proxy-agent: 5.0.0
+      pac-resolver: 4.2.0
+      raw-body: 2.4.1
+      socks-proxy-agent: 5.0.0
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-ejNgYm2HTXSIYX9eFlkvqFp8hyJ374uDf0Zq5YUAifiSh1D6fo+iBivQZirGvVv8dCYUsLhmLBRhlAYvBKI5+Q==
+  /pac-resolver/4.2.0:
+    dependencies:
+      degenerator: 2.2.0
+      ip: 1.1.5
+      netmask: 2.0.2
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-rPACZdUyuxT5Io/gFKUeeZFfE5T7ve7cAkE5TUZRRfuKP0u5Hocwe48X7ZEm6mYB+bTB0Qf+xlVlA/RM/i6RCQ==
   /package-hash/3.0.0:
     dependencies:
       graceful-fs: 4.2.3
@@ -5294,6 +5427,25 @@ packages:
       node: '>= 8'
     resolution:
       integrity: sha512-vGrhOavPSTz4QVNuBNdcNXePNdNMaO1xj9yBeH1ScQPjk/rhg9sSlCXPhMkFuaNNW/syTvYqsnbIJxMBfRbbag==
+  /proxy-agent/4.0.1:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.1.1
+      http-proxy-agent: 4.0.1
+      https-proxy-agent: 5.0.0
+      lru-cache: 5.1.1
+      pac-proxy-agent: 4.1.0
+      proxy-from-env: 1.1.0
+      socks-proxy-agent: 5.0.0
+    dev: false
+    engines:
+      node: '>=6'
+    resolution:
+      integrity: sha512-ODnQnW2jc/FUVwHHuaZEfN5otg/fMbvMxz9nMSUQfJ9JU7q2SZvSULSsjLloVgJOiv9yhc8GlNMKc4GkFmcVEA==
+  /proxy-from-env/1.1.0:
+    dev: false
+    resolution:
+      integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
   /proxyquire/2.1.3:
     dependencies:
       fill-keys: 1.0.2
@@ -5373,6 +5525,17 @@ packages:
     dev: false
     resolution:
       integrity: sha512-hLWjpy7EnsDBb0p+Z3B7rPi3GDeRG5ZtiI33kJhTt+ORCd38AbAIjB/9zRIUoeTbE/AVX5ZkU7m6bznsvrf8eQ==
+  /raw-body/2.4.1:
+    dependencies:
+      bytes: 3.1.0
+      http-errors: 1.7.3
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+    dev: false
+    engines:
+      node: '>= 0.8'
+    resolution:
+      integrity: sha512-9WmIKF6mkvA0SLmA2Knm9+qj89e+j1zqgyn8aXGd7+nAduPoqgI9lO57SAZNn/Byzo5P7JhXTyg9PzaJbH73bA==
   /rc/1.2.8:
     dependencies:
       deep-extend: 0.6.0
@@ -5760,6 +5923,10 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-JxHc1weCN68wRY0fhCoXpyK55m/XPHafOmK4UWD7m2CI14GMcFypt4w/0+NV5f/ZMby2F6S2wwA7fgynh9gWSw==
+  /setprototypeof/1.1.1:
+    dev: false
+    resolution:
+      integrity: sha512-JvdAWfbXeIGaZ9cILp38HntZSFSo3mWg6xGcJJsd+d4aRMOqauag1C63dJfDw7OaMYwEbHMOxEZ1lqVRYP2OAw==
   /shebang-command/1.2.0:
     dependencies:
       shebang-regex: 1.0.0
@@ -5827,6 +5994,13 @@ packages:
       node: '>=6'
     resolution:
       integrity: sha512-Qu+VC3EwYLldKa1fCxuuvULvSJOKEgk9pi8dZeCVK7TqBfUNTH4sFkk4joj8afVSfAYgJoSOetjx9QWOJ5mYoQ==
+  /smart-buffer/4.1.0:
+    dev: false
+    engines:
+      node: '>= 6.0.0'
+      npm: '>= 3.0.0'
+    resolution:
+      integrity: sha512-iVICrxOzCynf/SNaBQCw34eM9jROU/s5rzIhpOvzhzuYHfJR/DhZfDkXiZSgKXfgv26HT3Yni3AV/DGw0cGnnw==
   /snapdragon-node/2.1.1:
     dependencies:
       define-property: 1.0.0
@@ -5860,6 +6034,26 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-FtyOnWN/wCHTVXOMwvSv26d+ko5vWlIDD6zoUJ7LW8vh+ZBC8QdljveRP+crNrtBwioEUWy/4dMtbBjA4ioNlg==
+  /socks-proxy-agent/5.0.0:
+    dependencies:
+      agent-base: 6.0.2
+      debug: 4.1.1
+      socks: 2.6.0
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-lEpa1zsWCChxiynk+lCycKuC502RxDWLKJZoIhnxrWNjLSDGYRFflHA1/228VkRcnv9TIb8w98derGbpKxJRgA==
+  /socks/2.6.0:
+    dependencies:
+      ip: 1.1.5
+      smart-buffer: 4.1.0
+    dev: false
+    engines:
+      node: '>= 10.13.0'
+      npm: '>= 3.0.0'
+    resolution:
+      integrity: sha512-mNmr9owlinMplev0Wd7UHFlqI4ofnBnNzFuzrm63PPaHgbkqCFe4T5LzwKmtQ/f2tX0NTpcdVLyD/FHxFBstYw==
   /sort-keys/2.0.0:
     dependencies:
       is-plain-obj: 1.1.0
@@ -5991,6 +6185,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha1-YICcOcv/VTNyJv1eC1IPNB8ftcY=
+  /statuses/1.5.0:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-Fhx9rBd2Wf2YEfQ3cfqZOBR4Yow=
   /stdout-stderr/0.1.13:
     dependencies:
       debug: 4.1.1
@@ -6350,6 +6550,12 @@ packages:
       node: '>=0.10.0'
     resolution:
       integrity: sha512-FWtleNAtZ/Ki2qtqej2CXTOayOH9bHDQF+Q48VpWyDXjbYxA4Yz8iDB31zXOBUlOHHKidDbqGVrTUvQMPmBGBw==
+  /toidentifier/1.0.0:
+    dev: false
+    engines:
+      node: '>=0.6'
+    resolution:
+      integrity: sha512-yaOH/Pk/VEhBWWTlhI+qXxDFXlejDGcQipMlyxda9nthulaxLZUNcUqFxokp0vcYnvteJln5FNQDRrxj3YcbVw==
   /tough-cookie/2.5.0:
     dependencies:
       psl: 1.7.0
@@ -6763,6 +6969,12 @@ packages:
       node: '>= 10.0.0'
     resolution:
       integrity: sha512-hAZsKq7Yy11Zu1DE0OzWjw7nnLZmJZYTDZZyEFHZdUhV8FkH5MCfoU1XMaxXovpyW5nq5scPqq0ZDP9Zyl04oQ==
+  /unpipe/1.0.0:
+    dev: false
+    engines:
+      node: '>= 0.8'
+    resolution:
+      integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=
   /unset-value/1.0.0:
     dependencies:
       has-value: 0.3.1
@@ -7480,7 +7692,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-luis-cli'
     resolution:
-      integrity: sha512-hi+iOx5Yq08FxsCiGuAIZzdB1/4wcaP/qnDaXfBNMsoT1AB/hjHydm0OyRR/QtBwjFAxMzUCafPmHKqD3JdhPw==
+      integrity: sha512-fg5B1E3kaqUNQDT45ZWxBSAHE/gNVmIAbz2VCKEcK1/xK7DYLvcGlX5bFMC4AaYw7vSnJZ4Q5S3JYugPG6TinQ==
       tarball: 'file:projects/bf-luis-cli.tgz'
     version: 0.0.0
   'file:projects/bf-orchestrator-cli.tgz':
@@ -7531,6 +7743,7 @@ packages:
       mocha: 6.2.2
       nock: 11.9.1
       node-fetch: 2.6.0
+      node-fetch-with-proxy: 0.1.4
       nyc: 14.1.1
       orchestrator-core: 4.13.0-rc0
       read-text-file: 1.1.0
@@ -7543,7 +7756,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-RuEMKNVk/o3ADR0rMPhJ3PHMYQAG+51GLBBfVlbCyy6OuW0x6ha9IoGPwMtaWVvtvs7mZrZUP4ZkSHvdzU5DfA==
+      integrity: sha512-RO26jrhbw+a9DZ5f266oasxJ1qKv/V0wXTwU+WlchnLf+Yt/Fm49eeutRGz7LtntToIdx/W9I0DYwYlE/e8fBw==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -7594,7 +7807,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-qnamaker'
     resolution:
-      integrity: sha512-4493Sz8sTpkTWkPegzzpmpFadoboXwalx1Yj9hLwJLuw/csHob4JzWS0Ota83j6lWkfy0NtObDUb7GJrZtN5xg==
+      integrity: sha512-XZ3HKrN0Wmk+5WLyi9NfLxhOMPTkQN5R0H+Js+0vM2jaq00NmpGinUalQTDvYrJrgaTIsentVSedsEUHyUU/JQ==
       tarball: 'file:projects/bf-qnamaker.tgz'
     version: 0.0.0
   'file:projects/botframework-cli.tgz':
@@ -7695,6 +7908,7 @@ specifiers:
   md5: ^2.2.1
   mime-types: ^2.1.18
   minimist: ^1.2.0
+  node-fetch-with-proxy: ^0.1.4
   nyc: ^14.1.1
   orchestrator-core: rc
   os: ~0.1.1

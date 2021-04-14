@@ -90,3 +90,6 @@ model_dte_roberta_for_test_command
 **/**assessment**.html
 **/**assessment**.txt
 
+*.dialog
+*.lu
+
