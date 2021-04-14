@@ -37,36 +37,27 @@ module.exports = {
           }
         } else {
           const fileName = path.basename(file.filePath)
-          if (fileName.endsWith(fileExtEnum.LUFile)) {
-            const found = luContents.filter(luContent => luContent.id === path.basename(fileName, fileExtEnum.LUFile))
+          const updateImportedContents = async function(typedContents, fileExt) {
+            const found = typedContents.filter(content => content.id === path.basename(fileName, fileExt))
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
-              const matchedLuisFiles = luContents.filter(luContent => path.basename(luContent.fullPath) === id)
+              const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
               for (const matchFile of matchedLuisFiles) {
                 const sourceFileDir = path.dirname(matchFile.fullPath)
                 const targetPath = path.resolve(sourceFileDir, file.filePath)
                 if (fs.existsSync(targetPath)) {
-                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.LUFile)
+                  const importContent = await filehelper.getFilesContent(targetPath, fileExt)
                   importedContents.push(...importContent)
                 }
               }
             }
+          }
+
+          if (fileName.endsWith(fileExtEnum.LUFile)) {
+            await updateImportedContents(luContents, fileExtEnum.LUFile)
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
-            const found = qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile))
-            if (found.length > 0) {
-              importedContents.push(...found)
-            } else {
-              const matchedQnAFiles = qnaContents.filter(qnaContent => path.basename(qnaContent.fullPath) === id)
-              for (const matchedFile of matchedQnAFiles) {
-                const sourceFileDir = path.dirname(matchedFile.fullPath)
-                const targetPath = path.resolve(sourceFileDir, file.filePath)
-                if (fs.existsSync(targetPath)) {
-                  const importContent = await filehelper.getFilesContent(targetPath, fileExtEnum.QnAFile)
-                  importedContents.push(...importContent)
-                }
-              }
-            }
+            await updateImportedContents(qnaContents, fileExtEnum.LUFile)
           }
         }
       }
