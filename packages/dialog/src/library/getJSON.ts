@@ -8,40 +8,34 @@ const axios = require('axios')
 const url = require('url')
 const httpsProxyAgent = require('https-proxy-agent')
 
-function httpsProxy (config) {
-  /* istanbul ignore if */
-  if (config.socketPath != null) return config
-
-  let parsed = url.parse(config.url)
+const httpsProxy = function (config) {
+  const parsed = url.parse(config.url)
   const protocol = parsed.protocol
-  /* istanbul ignore if */
-  if (protocol !== 'https:') return config
-
-  var proxyUrl = process.env['HTTPS_PROXY'] || process.env['https_proxy']
-  /* istanbul ignore if */
-  if (!proxyUrl) return config
-
-  parsed = url.parse(proxyUrl)
-  const proxyOptions = {
-  hostname: parsed.hostname,
-  port: parsed.port,
-  auth: undefined
+  if (protocol !== 'https:') {
+      return config
   }
 
-  if (parsed.auth) {
-  proxyOptions.auth = parsed.auth
+  /* tslint:disable:no-string-literal */
+  const envProxy = process.env['HTTPS_PROXY'] || process.env['https_proxy']
+  /* tslint:enable:no-string-literal */
+  if (envProxy) {
+    const parsed = url.parse(envProxy)
+    const proxyOpt = {
+    hostname: parsed.hostname,
+    port: parsed.port
+    }
+
+    if (parsed.auth) {
+    (proxyOpt as any).auth = parsed.auth
+    }
+    
+    config.httpsAgent = httpsProxyAgent(proxyOpt)
+    //Disable direct proxy
+    config.proxy = false
   }
-
-
-  // HTTPS request must use tunnel proxy protocol
-  config.httpsAgent = httpsProxyAgent(proxyOptions)
-
-  // Disable direct proxy protocol in axios http adapter
-  config.proxy = false
 
   return config
 }
-
 axios.interceptors.request.use(httpsProxy)
 
 const filePrefix = 'file:///'
