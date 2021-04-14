@@ -1424,6 +1424,7 @@ export class SchemaMerger {
         for (const [ext, files] of this.files.entries()) {
             for (const [file, records] of files.entries()) {
                 const winner = records[0]
+                let winnerSrc = ''
                 const same: PathComponent[] = []
                 const conflicts: PathComponent[] = []
                 for (const alt of records) {
@@ -1431,18 +1432,24 @@ export class SchemaMerger {
                         alt.node.metadata.includesSchema = true
                     }
                     if (alt !== winner) {
-                        if (winner.node === alt.node) {
-                            same.push(alt)
-                        } else if (ext === '.schema') {
-                            // Check for same content which can happen when project and nuget from project are 
-                            // both being used.
-                            const winnerSrc = await fs.readFile(winner.path, 'utf8')
-                            const altSrc = await fs.readFile(alt.path, 'utf8')
-                            if (winnerSrc !== altSrc) {
+                        if (!winnerSrc) {
+                            winnerSrc = await fs.readFile(winner.path, 'utf8')
+                        }
+                        const altSrc = await fs.readFile(alt.path, 'utf8')
+                        // If content is identical, then don't treat as a duplicate.
+                        // This is mainly about nuget packages which like to have multiple copies of files.
+                        if (winnerSrc !== altSrc) {
+                            if (winner.node === alt.node) {
+                                same.push(alt)
+                            } else if (ext === '.schema') {
+                                const winnerSrc = await fs.readFile(winner.path, 'utf8')
+                                const altSrc = await fs.readFile(alt.path, 'utf8')
+                                if (winnerSrc !== altSrc) {
+                                    conflicts.push(alt)
+                                }
+                            } else if (ext !== '.uischema') {
                                 conflicts.push(alt)
                             }
-                        } else if (ext !== '.uischema') {
-                            conflicts.push(alt)
                         }
                     }
                 }
