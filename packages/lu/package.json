@@ -46,7 +46,7 @@
     "globby": "^10.0.1",
     "intercept-stdout": "^0.1.2",
     "lodash": "^4.17.19",
-    "node-fetch": "~2.6.0",
+    "node-fetch-with-proxy": "^0.1.4",
     "semver": "^5.5.1",
     "tslib": "^2.0.3"
   },

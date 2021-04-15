@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings} from '@microsoft/bf-orchestrator';
+import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file.';
@@ -15,8 +15,8 @@ export default class OrchestratorAdd extends Command {
     $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/	
     $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/	
     $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
-    $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingname l_Weather --endpoint 
-    $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingname q_kb
+    $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingName l_Weather --endpoint 
+    $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingName q_kb
     `]
 
   static flags: flags.Input<any> = {
@@ -58,6 +58,9 @@ export default class OrchestratorAdd extends Command {
       }
 
       if (type.length > 0) {
+        if (type === 'luis' && Utility.isEmptyString(endpoint)) {
+          throw new CLIError('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
+        }
         OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true);
         const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
         await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);

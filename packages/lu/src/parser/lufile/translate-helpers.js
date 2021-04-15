@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-const fetch = require('node-fetch');
+const fetch = require('node-fetch-with-proxy');
 const PARSERCONSTS = require('./../utils/enums/parserconsts');
 const retCode = require('./../utils/enums/CLI-errors');
 const chalk = require('chalk');

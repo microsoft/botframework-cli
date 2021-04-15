@@ -12,10 +12,10 @@ import * as xp from 'xml2js'
 import Ajv = require('ajv')
 import parser from '@apidevtools/json-schema-ref-parser'
 import {JsonPointer as ptr} from 'json-ptr'
+import getJSON from './getJSON'
 
 const allof = require('json-schema-merge-allof')
 const clone = require('clone')
-const getUri = require('get-uri')
 const glob = require('globby')
 const semverRsort = require('semver/functions/rsort')
 const util = require('util')
@@ -40,16 +40,6 @@ function pathName(path: string | undefined, extension: string): string {
     return path ? `${path}/${extension}` : extension
 }
 
-// Get JSON from a URI.
-async function getJSON(uri: string): Promise<any> {
-    const stream = await getUri(uri)
-    let data = ''
-    for await (const chunk of stream) {
-        data += chunk.toString()
-    }
-    return JSON.parse(data)
-}
-
 // Convert to the right kind of slash. 
 // ppath.normalize did not do this properly on the mac.
 function normalize(path: string): string {
@@ -65,6 +55,11 @@ function normalize(path: string): string {
 // Replace backslash with forward slash for glob
 function forwardSlashes(input: string): string {
     return input.replace(/\\/g, '/')
+}
+
+// Consistent sort comparison
+function sortFunction(a: any, b: any): number {
+    return a.localeCompare(b, 'en')
 }
 
 // Deep merge of JSON objects
@@ -83,7 +78,7 @@ function mergeObjects(obj1: any, obj2: any): any {
     merger(obj1)
     merger(obj2)
     const finalTarget = {}
-    for (const key of Object.keys(target).sort()) {
+    for (const key of Object.keys(target).sort(sortFunction)) {
         finalTarget[key] = target[key]
     }
     return finalTarget
@@ -649,7 +644,7 @@ export class SchemaMerger {
         this.validateAndExpandPolicies()
         const oneOf = Object.keys(this.definitions)
             .filter(kind => !this.isInterface(kind) && this.definitions[kind].$role)
-            .sort()
+            .sort(sortFunction)
             .map(kind => {
                 return {$ref: `#/definitions/${kind}`}
             })
@@ -661,7 +656,7 @@ export class SchemaMerger {
             this.currentFile = this.output + '.schema'
             this.currentKind = ''
             const finalDefinitions: any = {}
-            for (const key of Object.keys(this.definitions).sort()) {
+            for (const key of Object.keys(this.definitions).sort(sortFunction)) {
                 finalDefinitions[key] = this.definitions[key]
             }
             let finalSchema: any = {
@@ -778,7 +773,7 @@ export class SchemaMerger {
             if (!this.failed) {
                 for (const locale of Object.keys(result)) {
                     const uischema = {$schema: this.metaUISchemaId}
-                    for (const key of Object.keys(result[locale]).sort()) {
+                    for (const key of Object.keys(result[locale]).sort(sortFunction)) {
                         uischema[key] = result[locale][key]
                     }
                     this.currentFile = ppath.join(ppath.dirname(this.output), outputName + (locale ? '.' + locale : '') + '.uischema')
@@ -1788,7 +1783,7 @@ export class SchemaMerger {
         for (this.currentKind in this.definitions) {
             const definition = this.definitions[this.currentKind]
             if (this.isInterface(this.currentKind) && definition.oneOf) {
-                definition.oneOf = definition.oneOf.sort((a: any, b: any) => (a.$ref || a.type).localeCompare(b.$ref || b.type))
+                definition.oneOf = definition.oneOf.sort((a: any, b: any) => sortFunction(a.$ref ?? a.type, b.$ref ?? b.type))
             }
         }
     }

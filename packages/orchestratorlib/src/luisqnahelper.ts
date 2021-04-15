@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-const fetch: any = require('node-fetch');
+const fetch: any = require('node-fetch-with-proxy');
 const LuisUrlPath: string = '/luis/authoring/v3.0-preview/apps';
 const DefaultQnaMakerEndpoint: string = 'https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/';
 const DefaultLuisVersion: any = '0.1';

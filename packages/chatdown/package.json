@@ -18,7 +18,7 @@
     "latest-version": "^4.0.0",
     "mime-types": "^2.1.18",
     "minimist": "^1.2.0",
-    "node-fetch": "~2.6.0",
+    "node-fetch-with-proxy": "^0.1.4",
     "please-upgrade-node": "^3.0.1",
     "semver": "^5.5.1",
     "tslib": "^2.0.3",
