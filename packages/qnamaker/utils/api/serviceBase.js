@@ -7,7 +7,7 @@ const { insertParametersFromObject } = require('../insertParametersFromObject');
 const deriveParamsFromPath = require('../deriveParamsFromPath');
 const packageJSON = require('./../../package');
 const axios = require('axios');
-const nodeFetch = require('node-fetch');
+const nodeFetch = require('node-fetch-with-proxy');
 
 global.fetch = function (...args) {
     // No Proxy

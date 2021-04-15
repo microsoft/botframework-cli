@@ -38,7 +38,7 @@
     "@microsoft/bf-lu": "1.0.0",
     "@microsoft/bf-dispatcher": "1.0.0",
     "@types/node-fetch": "~2.5.5",
-    "node-fetch": "~2.6.0",
+    "node-fetch-with-proxy": "^0.1.4",
     "tslib": "^2.0.3",
     "orchestrator-core": "rc",
     "@types/fs-extra": "~8.1.0",
