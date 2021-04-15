@@ -4,8 +4,9 @@
  */
 
 const axios = require('axios')
-const axiosHttpsProxy = require('axios-https-proxy')
-axios.interceptors.request.use(axiosHttpsProxy)
+const httpsProxy = require('../utils/httpsProxy')
+
+axios.interceptors.request.use(httpsProxy)
 
 export default {
   async get(
