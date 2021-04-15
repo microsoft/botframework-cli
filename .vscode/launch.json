@@ -161,6 +161,26 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Dialog merge root-package schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
+      "args": [
+        "dialog:merge",
+        "npm/node_modules/root-package/package.json",
+        "-o",
+        "oracles/root-package",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog/"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "BotBuilder schema",
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",

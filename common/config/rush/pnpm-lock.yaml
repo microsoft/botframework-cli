@@ -48,9 +48,7 @@ dependencies:
   fast-text-encoding: 1.0.3
   fetch-mock: 7.7.3
   get-stdin: 6.0.0
-  get-uri: 3.0.2
   glob: 7.1.6
-  https-proxy-agent: 2.2.4
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
   json-ptr: 1.3.1
@@ -7504,6 +7502,7 @@ packages:
       '@types/xml2js': 0.4.5
       adaptive-expressions: 4.8.0-preview
       ajv: 6.12.6
+      axios: 0.21.1
       botbuilder-lg: 4.8.0-preview
       chai: 4.2.0
       chalk: 2.4.2
@@ -7513,6 +7512,7 @@ packages:
       get-json: 1.0.1
       get-uri: 3.0.2
       globby: 11.0.0
+      https-proxy-agent: 5.0.0
       json-ptr: 1.3.1
       json-schema-merge-allof: 0.7.0
       json-schema-ref-parser: 8.0.0
@@ -7535,7 +7535,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-f835rOeaw5mMWjEF+Ch/yTnPHAw/8Q16iVrMlPHb27reOi0t1qtOSOuOKpXWUCIr65oCvvzE32JwnPCy8XFG7w==
+      integrity: sha512-Pe+h+iEst6RqFvAkWH/RzlUSuJlXoXI957ACIv2jtNe73ps02BYaynLquChghKVuXnZ2Ul+oceCyXx+D9dFQog==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -7897,9 +7897,7 @@ specifiers:
   fast-text-encoding: ^1.0.3
   fetch-mock: ^7.3.9
   get-stdin: ^6.0.0
-  get-uri: ~3.0.2
   glob: ^7.1.3
-  https-proxy-agent: ^2.2.1
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
   json-ptr: ~1.3.0
