@@ -4,10 +4,12 @@
  */
 
 const axios = require('axios')
-const axiosHttpsProxy = require('axios-https-proxy')
+const httpsProxy = require('../utils/httpsProxy')
 const os = require('os')
 const packageJSON = require('./../../../package')
-axios.interceptors.request.use(axiosHttpsProxy)
+
+axios.interceptors.request.use(httpsProxy)
+
 
 /**
  * Base class for all services
