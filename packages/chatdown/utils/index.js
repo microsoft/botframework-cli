@@ -17,7 +17,7 @@ const ChannelAccount = require('./serializable/channelAccount');
 const ConversationAccount = require('./serializable/conversationAccount');
 const Attachment = require('./serializable/attachment');
 const chalk = require('chalk');
-const request = require('node-fetch-with-proxy');
+const request = require('node-fetch');
 const NEWLINE = require('os').EOL;
 let activityId = 1;
 

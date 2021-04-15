@@ -86,11 +86,7 @@ tsconfig.tsbuildinfo
 model_dte_roberta_for_test_command
 **/*.blu
 **/*.json
-**/model/**
+**/model/**/
 **/**assessment**.html
 **/**assessment**.txt
-
-*.dialog
-*.lu
-*.qna
 

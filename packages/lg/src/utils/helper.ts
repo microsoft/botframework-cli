@@ -10,7 +10,7 @@ import * as path from 'path'
 import * as fs from 'fs-extra'
 import {CLIError} from '@microsoft/bf-cli-command'
 // eslint-disable-next-line node/no-extraneous-require
-const fetch = require('node-fetch-with-proxy')
+const fetch = require('node-fetch')
 const NEWLINE = require('os').EOL
 const ANY_NEWLINE = /\r\n|\r|\n/g
 

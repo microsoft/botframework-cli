@@ -13,7 +13,7 @@ const compareLuFiles =  function(file1, file2) {
 
 
 describe('LU instance', function() {
-    const response = require('./../../fixtures/translation/serviceresponses/intentsAndUtterances.json')
+    const response = require('./../../fixtures/translation/serviceresponses/intentsAndutterances.json')
   
     before(function(){
       nock('https://api.cognitive.microsofttranslator.com')

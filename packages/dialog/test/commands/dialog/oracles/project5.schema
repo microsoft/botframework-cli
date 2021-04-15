@@ -33,129 +33,6 @@
     }
   ],
   "definitions": {
-    "arrayExpression": {
-      "$role": "expression",
-      "title": "Array or expression",
-      "description": "Array or expression to evaluate.",
-      "oneOf": [
-        {
-          "type": "array",
-          "title": "Array",
-          "description": "Array constant."
-        },
-        {
-          "$ref": "#/definitions/equalsExpression"
-        }
-      ]
-    },
-    "booleanExpression": {
-      "$role": "expression",
-      "title": "Boolean or expression",
-      "description": "Boolean constant or expression to evaluate.",
-      "oneOf": [
-        {
-          "type": "boolean",
-          "title": "Boolean",
-          "description": "Boolean constant.",
-          "default": false,
-          "examples": [
-            false
-          ]
-        },
-        {
-          "$ref": "#/definitions/equalsExpression",
-          "examples": [
-            "=user.isVip"
-          ]
-        }
-      ]
-    },
-    "component": {
-      "required": [
-        "$kind"
-      ],
-      "additionalProperties": false,
-      "patternProperties": {
-        "^\\$": {
-          "title": "Tooling property",
-          "description": "Open ended property for tooling."
-        }
-      },
-      "properties": {
-        "$kind": {
-          "title": "Kind of dialog object",
-          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
-          "type": "string",
-          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
-        },
-        "$designer": {
-          "title": "Designer information",
-          "type": "object",
-          "description": "Extra information for the Bot Framework Composer."
-        }
-      }
-    },
-    "condition": {
-      "$role": "expression",
-      "title": "Boolean condition",
-      "description": "Boolean constant or expression to evaluate.",
-      "oneOf": [
-        {
-          "$ref": "#/definitions/expression"
-        },
-        {
-          "type": "boolean",
-          "title": "Boolean",
-          "description": "Boolean value.",
-          "default": true,
-          "examples": [
-            false
-          ]
-        }
-      ]
-    },
-    "equalsExpression": {
-      "$role": "expression",
-      "type": "string",
-      "title": "Expression",
-      "description": "Expression starting with =.",
-      "pattern": "^=.*\\S.*",
-      "examples": [
-        "=user.name"
-      ]
-    },
-    "expression": {
-      "$role": "expression",
-      "type": "string",
-      "title": "Expression",
-      "description": "Expression to evaluate.",
-      "pattern": "^.*\\S.*",
-      "examples": [
-        "user.age > 13"
-      ]
-    },
-    "integerExpression": {
-      "$role": "expression",
-      "title": "Integer or expression",
-      "description": "Integer constant or expression to evaluate.",
-      "oneOf": [
-        {
-          "type": "integer",
-          "title": "Integer",
-          "description": "Integer constant.",
-          "default": 0,
-          "examples": [
-            15
-          ]
-        },
-        {
-          "$ref": "#/definitions/equalsExpression",
-          "examples": [
-            "=user.age"
-          ]
-        }
-      ]
-    },
     "Microsoft.AdaptiveDialog": {
       "$role": "implements(Microsoft.IDialog)",
       "title": "Adaptive Dialog",
@@ -872,6 +749,129 @@
           "description": "Extra information for the Bot Framework Composer."
         }
       }
+    },
+    "arrayExpression": {
+      "$role": "expression",
+      "title": "Array or expression",
+      "description": "Array or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "array",
+          "title": "Array",
+          "description": "Array constant."
+        },
+        {
+          "$ref": "#/definitions/equalsExpression"
+        }
+      ]
+    },
+    "booleanExpression": {
+      "$role": "expression",
+      "title": "Boolean or expression",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean constant.",
+          "default": false,
+          "examples": [
+            false
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.isVip"
+          ]
+        }
+      ]
+    },
+    "component": {
+      "required": [
+        "$kind"
+      ],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^\\$": {
+          "title": "Tooling property",
+          "description": "Open ended property for tooling."
+        }
+      },
+      "properties": {
+        "$kind": {
+          "title": "Kind of dialog object",
+          "description": "Defines the valid properties for the component you are configuring (from a dialog .schema file)",
+          "type": "string",
+          "pattern": "^[a-zA-Z][a-zA-Z0-9.]*$"
+        },
+        "$designer": {
+          "title": "Designer information",
+          "type": "object",
+          "description": "Extra information for the Bot Framework Composer."
+        }
+      }
+    },
+    "condition": {
+      "$role": "expression",
+      "title": "Boolean condition",
+      "description": "Boolean constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "$ref": "#/definitions/expression"
+        },
+        {
+          "type": "boolean",
+          "title": "Boolean",
+          "description": "Boolean value.",
+          "default": true,
+          "examples": [
+            false
+          ]
+        }
+      ]
+    },
+    "equalsExpression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression starting with =.",
+      "pattern": "^=.*\\S.*",
+      "examples": [
+        "=user.name"
+      ]
+    },
+    "expression": {
+      "$role": "expression",
+      "type": "string",
+      "title": "Expression",
+      "description": "Expression to evaluate.",
+      "pattern": "^.*\\S.*",
+      "examples": [
+        "user.age > 13"
+      ]
+    },
+    "integerExpression": {
+      "$role": "expression",
+      "title": "Integer or expression",
+      "description": "Integer constant or expression to evaluate.",
+      "oneOf": [
+        {
+          "type": "integer",
+          "title": "Integer",
+          "description": "Integer constant.",
+          "default": 0,
+          "examples": [
+            15
+          ]
+        },
+        {
+          "$ref": "#/definitions/equalsExpression",
+          "examples": [
+            "=user.age"
+          ]
+        }
+      ]
     },
     "nuget3.component1": {
       "$role": [],

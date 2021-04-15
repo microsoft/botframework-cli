@@ -16,7 +16,7 @@ const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
-const fetch = require('node-fetch-with-proxy');
+const fetch = require('node-fetch');
 
 module.exports = {
     /**

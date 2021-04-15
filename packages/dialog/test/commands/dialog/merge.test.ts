@@ -148,7 +148,7 @@ describe('dialog:merge', async () => {
         console.log('Start missing component schema')
         const [merged, lines] = await merge(['schemas/badSchemas/missingComponent.schema'], 'app.schema')
         assert(!merged, 'Merge should have failed')
-        assert(countMatches(/status code 404/i, lines) === 1, 'No missing component schema')
+        assert(countMatches(/file does not exist/i, lines) === 1, 'No missing component schema')
     })
 
     it('mismatched component schema', async () => {
@@ -495,7 +495,7 @@ describe('dialog:merge', async () => {
             .persist()
         const [merged, lines] = await merge(['schemas/*.schema'], 'app.schema')
         assert(!merged, 'Merging should fail')
-        assert(countMatches(/status code 500/i, lines) === 1, 'Did not detect server error')
+        assert(countMatches(/internal server error/i, lines) === 1, 'Did not detect server error')
         scope.done()
         nock.cleanAll()
     })
