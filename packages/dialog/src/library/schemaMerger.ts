@@ -684,7 +684,7 @@ export class SchemaMerger {
             if (!this.failed) {
                 // Verify all refs work
                 const start = process.hrtime.bigint()
-                fullSchema = await parser.dereference(clone(finalSchema))
+                // fullSchema = await parser.dereference(clone(finalSchema))
                 const end = process.hrtime.bigint()
                 const elapsed = Number(end - start) / 1000000000
                 this.vlog(`Expanding all $ref took ${elapsed} seconds`)
@@ -1952,6 +1952,10 @@ export class SchemaMerger {
         for (const entry of schema.oneOf) {
             this.currentKind = entry.$ref.substring(entry.$ref.lastIndexOf('/') + 1)
             const definition = schema.definitions[this.currentKind]
+            debugger
+            if (this.currentKind === 'missingSchemaRef') {
+                debugger
+            }
             const verifyProperty = (val, path) => {
                 if (val.$ref) {
                     val = clone(val)
@@ -1995,6 +1999,7 @@ export class SchemaMerger {
             }
             walkJSON(definition, (val, _, path) => {
                 if (val.$schema && path) {
+                    // Embedded non-component schema
                     return true
                 }
                 if (val.properties && (!path || !path.endsWith('properties'))) {

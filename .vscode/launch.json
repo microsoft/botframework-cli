@@ -58,7 +58,7 @@
         "999999",
         "--colors",
         "-g",
-        "dialog:merge.*"
+        "dialog:merge.*missing schema.*"
       ],
       "cwd": "${workspaceFolder}/packages/dialog",
       "internalConsoleOptions": "openOnSessionStart",
