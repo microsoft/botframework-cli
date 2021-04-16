@@ -9,8 +9,10 @@
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import {CLIError} from '@microsoft/bf-cli-command'
+import {httpsProxy} from './https-proxy'
 // eslint-disable-next-line node/no-extraneous-require
-const fetch = require('node-fetch')
+const axios = require('axios')
+axios.interceptors.request.use(httpsProxy)
 const NEWLINE = require('os').EOL
 const ANY_NEWLINE = /\r\n|\r|\n/g
 
@@ -118,8 +120,6 @@ export class Helper {
     let tUri = `${baseUri}?api-version=3.0&to=${translateOption.to_lang}&includeAlignment=true`
     if (translateOption.src_lang) tUri += `&from=${translateOption.src_lang}`
     const options = {
-      method: 'POST',
-      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
         'Ocp-Apim-Subscription-Key': translateOption.subscriptionKey,
@@ -127,12 +127,14 @@ export class Helper {
         'X-ClientTraceId': Helper.get_guid(),
       },
     }
-    const res = await fetch(tUri, options)
-    if (!res.ok) {
+    const res = await axios.post(tUri, payload, options)
+    // eslint-disable-next-line no-console
+    console.log(res)
+    if (res.status !== 200) {
       throw (new CLIError('Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'))
     }
 
-    const data = await res.json()
+    const data = await res.data
     return data
   }
 

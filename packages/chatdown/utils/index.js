@@ -17,9 +17,11 @@ const ChannelAccount = require('./serializable/channelAccount');
 const ConversationAccount = require('./serializable/conversationAccount');
 const Attachment = require('./serializable/attachment');
 const chalk = require('chalk');
-const request = require('node-fetch');
+const axios = require('axios');
+const httpsProxy = require('./httpsProxy');
 const NEWLINE = require('os').EOL;
 let activityId = 1;
+axios.interceptors.request.use(httpsProxy);
 
 // Matches [someActivityOrInstruction=value]
 const commandRegExp = /(?:\[)([\s\S]*?)(?:])/i;
@@ -482,8 +484,8 @@ async function addAttachment(activity, arg) {
         contentType = mime.lookup(contentUrl) || cardContentTypes[path.extname(contentUrl)];
 
         if (!contentType && contentUrl && contentUrl.indexOf('http') == 0) {
-            let response = await request(contentUrl, {method: 'HEAD'});
-            contentType = response.headers.get('content-type').split(';')[0];
+            let response = await axios.get(contentUrl, {method: 'HEAD'});
+            contentType = response.headers['content-type'].split(';')[0];
         }
     }
 

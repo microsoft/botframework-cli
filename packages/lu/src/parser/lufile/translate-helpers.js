@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-const fetch = require('node-fetch');
+const axios = require('axios');
 const PARSERCONSTS = require('./../utils/enums/parserconsts');
 const retCode = require('./../utils/enums/CLI-errors');
 const chalk = require('chalk');
@@ -12,6 +12,8 @@ const helpers = require('./../utils/helpers');
 const NEWLINE = require('os').EOL;
 const MAX_TRANSLATE_BATCH_SIZE = 25;
 const MAX_CHAR_IN_REQUEST = 4990;
+const httpsProxy = require('../utils/httpsProxy')
+axios.interceptors.request.use(httpsProxy)
 
 const translateHelpers = {
     translationSettings : class {
@@ -260,8 +262,6 @@ const translateHelpers = {
         let tUri = 'https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=' + translationSettings.to_lang + '&includeAlignment=true';
         if(translationSettings.src_lang) tUri += '&from=' + translationSettings.src_lang;
         const options = {
-            method: 'POST',
-            body: JSON.stringify (payload),
             headers: {
                 'Content-Type': 'application/json',
                 'Ocp-Apim-Subscription-Key' : translationSettings.subscriptionKey,
@@ -273,11 +273,11 @@ const translateHelpers = {
             options.headers['Ocp-Apim-Subscription-Region'] = translationSettings.region
         }
 
-        const res = await fetch(tUri, options);
-        if (!res.ok) {
+        const res = await axios.post(tUri, payload, options)
+        if (res.status !== 200) {
             throw(new exception(retCode.errorCode.TRANSLATE_SERVICE_FAIL,'Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'));
         }
-        let data = await res.json();
+        let data = await res.data;
         return data;
     }
 };
