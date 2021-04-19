@@ -195,7 +195,7 @@ describe('dialog:merge', async () => {
         console.log('\nStart missing schema reference')
         const [merged, lines] = await merge(['schemas/*.schema', 'schemas/badSchemas/missingSchemaRef.schema'])
         assert(!merged, 'Merging should have failed')
-        assert(countMatches(/error|warning/i, lines) === 1, 'Wrong number of errors or warnings')
+        assert(countMatches(/error|warning/i, lines) === 3, 'Wrong number of errors or warnings')
         assert(countMatches('does not exist', lines) === 1, 'Did not detect missing schema ref')
     })
 
