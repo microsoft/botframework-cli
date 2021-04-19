@@ -127,9 +127,8 @@ export class Helper {
         'X-ClientTraceId': Helper.get_guid(),
       },
     }
+
     const res = await axios.post(tUri, payload, options)
-    // eslint-disable-next-line no-console
-    console.log(res)
     if (res.status !== 200) {
       throw (new CLIError('Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'))
     }

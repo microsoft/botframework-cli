@@ -16,10 +16,11 @@
    const envProxy = process.env['HTTPS_PROXY'] || process.env['https_proxy']
    if (envProxy) {
      const parsed = url.parse(envProxy)
-     const proxyOpt = {
-     hostname: parsed.hostname,
-     port: parsed.port
-     }
+     const proxyOpt =
+      {
+        hostname: parsed.hostname,
+        port: parsed.port
+      }
  
      if (parsed.auth) {
      proxyOpt.auth = parsed.auth
