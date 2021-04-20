@@ -9,7 +9,6 @@ import {Url, parse} from 'url'
 
 export function httpsProxy(config: AxiosRequestConfig) {
   const parsed: Url = parse(config.url || '')
-  console.log(config.url)
   const protocol = parsed.protocol
   if (protocol !== 'https:') {
     return config
