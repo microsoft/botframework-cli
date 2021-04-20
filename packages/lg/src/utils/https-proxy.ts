@@ -5,10 +5,11 @@
 
 import httpsProxyAgent from 'https-proxy-agent'
 import {AxiosRequestConfig} from 'axios'
-import url, {Url} from 'url'
+import {Url, parse} from 'url'
 
 export function httpsProxy(config: AxiosRequestConfig) {
-  const parsed: Url = url.parse(config.url || '')
+  const parsed: Url = parse(config.url || '')
+  console.log(config.url)
   const protocol = parsed.protocol
   if (protocol !== 'https:') {
     return config
@@ -16,7 +17,7 @@ export function httpsProxy(config: AxiosRequestConfig) {
 
   const envProxy = process.env.HTTPS_PROXY || process.env.https_proxy
   if (envProxy) {
-    const parsed: Url = url.parse(envProxy)
+    const parsed: Url = parse(envProxy)
     const proxyOpt: any =
     {
       hostname: parsed.hostname,
