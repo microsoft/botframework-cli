@@ -5,7 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import url from 'url';
+import url, {Url} from 'url';
 import httpsProxyAgent from 'https-proxy-agent';
 
 import {IConfusionMatrixMeanMetrics} from '@microsoft/bf-dispatcher';
@@ -52,6 +52,7 @@ import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-temp
 import {UtilityLabelResolver} from './utilitylabelresolver';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+import { AxiosRequestConfig } from 'axios';
 
 export class Utility {
   public static toPrintDebuggingLogToConsole: boolean = false;
@@ -6855,20 +6856,18 @@ export class Utility {
   }
 }
 
-export function httpsProxy(config: any) {
-  const parsed: any = url.parse(config.url);
-  const protocol: any = parsed.protocol;
+export function httpsProxy(config: AxiosRequestConfig) {
+  const parsed: Url = url.parse(config.url || '');
+  const protocol: string | undefined = parsed.protocol;
   if (protocol !== 'https:') {
     return config;
   }
 
-  /* tslint:disable:no-string-literal */
-  // eslint-disable-next-line dot-notation
-  const envProxy: any = process.env['HTTPS_PROXY'] || process.env.https_proxy;
-  /* tslint:enable:no-string-literal */
+  const envProxy: string | undefined = process.env.HTTPS_PROXY || process.env.https_proxy;
   if (envProxy) {
-    const parsed: any = url.parse(envProxy);
-    const proxyOpt: any = {
+    const parsed: Url = url.parse(envProxy);
+    const proxyOpt: any =
+    {
       hostname: parsed.hostname,
       port: parsed.port,
     };

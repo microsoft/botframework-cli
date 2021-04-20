@@ -277,7 +277,7 @@ const translateHelpers = {
         if (res.status !== 200) {
             throw(new exception(retCode.errorCode.TRANSLATE_SERVICE_FAIL,'Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'));
         }
-        let data = await res.data;
+        let data = res.data;
         return data;
     }
 };

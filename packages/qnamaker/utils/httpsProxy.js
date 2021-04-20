@@ -3,11 +3,11 @@
  * Licensed under the MIT License.
  */
 
- const url = require('url')
+ import {URL} from 'url'
  const httpsProxyAgent = require('https-proxy-agent')
  
  const httpsProxy = function(config) {
-   const parsed = url.parse(config.url)
+   const parsed = new URL(config.url)
    const protocol = parsed.protocol
    if (protocol !== 'https:') {
        return config
@@ -15,8 +15,8 @@
  
    const envProxy = process.env['HTTPS_PROXY'] || process.env['https_proxy']
    if (envProxy) {
-     const parsed = url.parse(envProxy)
-     const proxyOpt =
+     const parsed = new URL(envProxy)
+     const proxyOpt = 
       {
         hostname: parsed.hostname,
         port: parsed.port
@@ -34,4 +34,4 @@
    return config
  }
  
- module.exports = httpsProxy;
+ module.exports = httpsProxy

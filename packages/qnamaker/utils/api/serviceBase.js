@@ -7,7 +7,7 @@ const { insertParametersFromObject } = require('../insertParametersFromObject');
 const deriveParamsFromPath = require('../deriveParamsFromPath');
 const packageJSON = require('./../../package');
 const axios = require('axios');
-const httpsProxy = require('../httpProxy');
+const httpsProxy = require('../httpsProxy');
 axios.interceptors.request.use(httpsProxy)
 
 /**

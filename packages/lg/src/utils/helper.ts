@@ -133,7 +133,7 @@ export class Helper {
       throw (new CLIError('Text translator service call failed with [' + res.status + '] : ' + res.statusText + '.\nPlease check key & language code validity'))
     }
 
-    const data = await res.data
+    const data = res.data
     return data
   }
 
