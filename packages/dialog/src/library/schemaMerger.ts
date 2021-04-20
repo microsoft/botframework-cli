@@ -682,12 +682,7 @@ export class SchemaMerger {
             // Final verification
             this.verifySchema(finalSchema)
             if (!this.failed) {
-                // Verify all refs work
-                const start = process.hrtime.bigint()
-                fullSchema = await parser.dereference(clone(finalSchema))
-                const end = process.hrtime.bigint()
-                const elapsed = Number(end - start) / 1000000000
-                this.vlog(`Expanding all $ref took ${elapsed} seconds`)
+                fullSchema = finalSchema
                 if (!this.checkOnly) {
                     this.log(`Writing ${this.currentFile}`)
                     await fs.writeJSON(this.currentFile, finalSchema, this.jsonOptions)
@@ -1954,14 +1949,19 @@ export class SchemaMerger {
             const definition = schema.definitions[this.currentKind]
             const verifyProperty = (val, path) => {
                 if (val.$ref) {
-                    val = clone(val)
                     const ref: any = ptr.get(schema, val.$ref)
-                    for (const prop in ref) {
-                        if (!val[prop]) {
-                            val[prop] = ref[prop]
+                    if (!ref) {
+                        this.mergingError(`${path} $ref ${val.$ref} does not exist`)
+                    } else {
+                        // Expand $ref to check locally
+                        val = clone(val)
+                        for (const prop in ref) {
+                            if (!val[prop]) {
+                                val[prop] = ref[prop]
+                            }
                         }
+                        delete val.$ref
                     }
-                    delete val.$ref
                 }
                 if (!val.$schema) {
                     // Assume $schema is an external reference and ignore error checking
@@ -1995,6 +1995,7 @@ export class SchemaMerger {
             }
             walkJSON(definition, (val, _, path) => {
                 if (val.$schema && path) {
+                    // Embedded non-component schema
                     return true
                 }
                 if (val.properties && (!path || !path.endsWith('properties'))) {
