@@ -176,7 +176,7 @@ export async function getFilesContent(input: string, extType: string) {
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{id: path.basename(filePath, extType), content}]
+    return [{id: path.basename(filePath, extType), content, fullPath: filePath}]
   }
 
   if (!fileStat.isDirectory()) {
@@ -186,7 +186,7 @@ export async function getFilesContent(input: string, extType: string) {
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {id: path.basename(itemPath, extType), content}
+    return {id: path.basename(itemPath, extType), content, fullPath: itemPath}
   }))
 }
 
