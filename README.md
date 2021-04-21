@@ -26,9 +26,9 @@ $ bf
 
 ## Troubleshooting
 
-For installation failures in some Linux platforms, try the following workaround:
-
-Install without the '-g' option and use [npx](https://www.npmjs.com/package/npx)
+For installation failures in some Linux platforms, try one of the following workarounds:
+- Upgrade npm to version 7.9
+- Install without the '-g' option and use [npx](https://www.npmjs.com/package/npx)
 
 ~~~
 $ npm i @microsoft/botframework-cli
