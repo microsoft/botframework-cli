@@ -8,7 +8,8 @@ import * as path from 'path';
 import {Utility} from './utility';
 import {httpsProxy} from './utility';
 const unzip: any = require('unzip-stream');
-import axios from 'axios';
+import axios, {AxiosResponse} from 'axios';
+import {Stream} from 'stream';
 axios.interceptors.request.use(httpsProxy);
 
 export class OrchestratorBaseModel {
@@ -99,8 +100,8 @@ export class OrchestratorBaseModel {
     return response.data;
   }
 
-  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<void> {
-    const response: any = await axios({
+  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<(resolve: any) => void> {
+    const response: AxiosResponse<Stream> = await axios({
       method: 'GET',
       url: modelUrl,
       responseType: 'stream',
