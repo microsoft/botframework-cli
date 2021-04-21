@@ -24,22 +24,25 @@ $ npm i -g @microsoft/botframework-cli
 $ bf
 ~~~
 
+## Troubleshooting
+
+For installation failures in some Linux platforms, try the following workaround:
+
+Install without the '-g' option and use [npx](https://www.npmjs.com/package/npx)
+
+~~~
+$ npm i @microsoft/botframework-cli
+$ npx bf
+~~~
+
 ## Available Commands
+
 The following commands are currently available:
 * [Chatdown][1]
 * [Config][2]
 * [Dialog][3]
 * [Luis][4]
 * [QnAMaker][5]
-
-<!--
-Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/main/packages/plugins#microsoftbf-cli-plugins))
-* [Dialog](https://github.com/microsoft/botframework-cli/tree/main/packages/dialog)
--->
-
-#### Future Commands
-The following commands will be ported in upcoming releases:
-* Dispatch
 
 See [Porting Map](https://github.com/microsoft/botframework-cli/blob/main/PortingMap.md) for a mapping reference between old and new tools
 
