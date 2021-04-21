@@ -99,7 +99,7 @@ export class OrchestratorBaseModel {
     return response.data;
   }
 
-  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<(resolve: any, reject: any) => void> {
+  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<void> {
     const response: any = await axios({
       method: 'GET',
       url: modelUrl,
@@ -108,13 +108,9 @@ export class OrchestratorBaseModel {
     Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling download zipped model files');
     response.data.pipe(fs.createWriteStream(modelZipPath));
 
-    return new Promise((resolve: any, reject: any) => {
+    return new Promise((resolve: any) => {
       response.data.on('end', () => {
         resolve();
-      });
-
-      response.data.on('error', () => {
-        reject();
       });
     });
   }

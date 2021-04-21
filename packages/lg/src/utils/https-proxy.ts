@@ -17,7 +17,7 @@ export function httpsProxy(config: AxiosRequestConfig) {
   const envProxy = process.env.HTTPS_PROXY || process.env.https_proxy
   if (envProxy) {
     const parsed: Url = parse(envProxy)
-    const proxyOpt: any =
+    const proxyOpt: Record<string, string | undefined> =
     {
       hostname: parsed.hostname,
       port: parsed.port,
