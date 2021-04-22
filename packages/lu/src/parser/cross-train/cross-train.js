@@ -8,7 +8,6 @@ const fs = require('fs-extra')
 const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
-const { lte } = require('lodash')
 
 module.exports = {
   /**
