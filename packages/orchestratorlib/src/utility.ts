@@ -6866,14 +6866,14 @@ export function httpsProxy(config: AxiosRequestConfig) {
   const envProxy: string | undefined = process.env.HTTPS_PROXY || process.env.https_proxy;
   if (envProxy) {
     const parsed: Url = parse(envProxy);
-    const proxyOpt: any =
+    const proxyOpt: Record<string, string | undefined> =
     {
       hostname: parsed.hostname,
       port: parsed.port,
     };
 
     if (parsed.auth) {
-      (proxyOpt as any).auth = parsed.auth;
+      proxyOpt.auth = parsed.auth;
     }
 
     config.httpsAgent = httpsProxyAgent(proxyOpt);

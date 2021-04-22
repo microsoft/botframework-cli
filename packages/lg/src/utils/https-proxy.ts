@@ -24,7 +24,7 @@ export function httpsProxy(config: AxiosRequestConfig) {
     }
 
     if (parsed.auth) {
-      (proxyOpt as any).auth = parsed.auth
+      proxyOpt.auth = parsed.auth
     }
 
     config.httpsAgent = httpsProxyAgent(proxyOpt)
