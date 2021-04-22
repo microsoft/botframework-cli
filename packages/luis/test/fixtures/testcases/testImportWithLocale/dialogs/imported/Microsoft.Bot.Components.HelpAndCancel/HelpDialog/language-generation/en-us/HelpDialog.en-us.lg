@@ -1,0 +1,13 @@
+[import](common.lg)
+
+# SendActivity_5JQ9rf()
+[Activity
+    Text = ${SendActivity_5JQ9rf_text()}
+]
+
+# SendActivity_5JQ9rf_text()
+- I'm here to help with simple asks. I'm just a basic bot for now. 
+- I'm a simple bot, I can help you with minimal requests. 
+- For now, I can only help you with simple questions.
+
+> Imported: fd66eea7833f2afea27e6bfe694a9f08

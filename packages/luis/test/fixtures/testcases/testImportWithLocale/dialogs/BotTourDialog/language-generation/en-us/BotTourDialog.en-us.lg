@@ -1,0 +1,219 @@
+[import](common.lg)
+
+# SendActivity_YRvoei()
+[Activity
+    Attachments = ${SendActivity_YRvoei_attachment_WGITEE()}
+]
+
+# BotTourTitle()
+- You can ask me...
+
+# SkillTitle()
+- Your skill
+
+# BotTourContentTextOne()
+- A first time user experience is helpful in onboarding users.
+
+# BotTourContentTextTwo()
+- You can provide a short description for core capabilities.
+
+# BotTourContentTextThree()
+- You can also provide samples to trigger connected skills.
+
+# BotTourFocusCardText()
+- You can provide a more detailed description of your skill, as well as sample utterances users can say to get started.
+
+# BotTourHeader
+- ```
+{
+    "type": "Container",
+    "items": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": 10,
+                    "spacing":"none",
+                    "verticalContentAlignment": "center",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "${BotTourIconUrl()}",
+                            "horizontalAlignment": "center"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width":"90",
+                    "spacing":"small",
+                    "verticalContentAlignment": "center",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${BotTourTitle()}",
+                            "size": "large",
+                            "weight": "Bolder"
+                        }
+                    ]
+                }
+            ]
+        }        
+    ]
+}
+```
+
+# BotTourOption(subtitle)
+-```
+{
+   "type":"Container",
+   "spacing": "medium",
+   "items":[
+      {
+         "type":"ColumnSet",
+         "columns":[
+            {
+               "type":"Column",
+                "verticalContentAlignment": "top",
+               "items":[
+                  {
+                     "type":"Image",
+                     "url":"${PlaceholderIconUrl()}",
+                     "horizontalAlignment":"center"
+                  }
+               ],
+               "width":10
+            },
+            {
+                "type":"Column",
+                "width":90,
+                "spacing":"small",
+                "verticalContentAlignment": "top",
+                "items":[
+                    {
+                        "type":"TextBlock",
+                        "text":"${SkillTitle()}",
+                        "size":"medium"
+                    },
+                    {
+                        "type":"TextBlock",
+                        "text":"${subtitle}",
+                        "wrap":true,
+                        "size":"default",
+                        "spacing": "Small",
+                        "maxLines":2
+                    }
+               ]
+            }
+         ]
+      }
+   ],
+   "selectAction":{
+      "type":"Action.Submit",
+      "title":"FocusCard",
+      "data":{
+         "intent":"FocusCard"
+      }
+   },
+   "separator": true
+}
+```
+
+# BotTourFocusCardHeader()
+- ```
+{
+    "type": "Container",
+    "items": [
+        {
+            "type": "ColumnSet",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": 10,
+                    "spacing":"none",
+                    "verticalContentAlignment": "center",
+                    "items": [
+                        {
+                            "type": "Image",
+                            "url": "${PlaceholderIconUrl()}",
+                            "horizontalAlignment": "center"
+                        }
+                    ]
+                },
+                {
+                    "type": "Column",
+                    "width":"90",
+                    "spacing":"small",
+                    "verticalContentAlignment": "center",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": "${SkillTitle()}",
+                            "size": "large",
+                            "weight": "Bolder"
+                        }
+                    ]
+                }
+            ]
+        }        
+    ]
+}
+```
+
+# BotTourFocusCardBody()
+-```
+{
+    "type": "Container",
+    "items": [
+        {
+            "type": "TextBlock",
+            "text": "${BotTourFocusCardText()}",
+            "wrap": true
+        }        
+    ]
+}
+```
+
+# BotTourFocusCardActions()
+- ```
+{
+    "type": "ActionSet",
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "\"What's next on my calendar?\"",
+            "data": {
+                "intent": "SampleAction"
+            }
+        },
+        {
+            "type": "Action.Submit",
+            "title": "\"Whats the forecast tomorrow?\"",
+            "data": {
+                "intent": "SampleAction"
+            }
+        },
+        {
+            "type": "Action.Submit",
+            "title": "\"Set a timer\"",
+            "data": {
+                "intent": "SampleAction"
+            }
+        }
+    ]
+}
+```
+
+# SendActivity_YRvoei_attachment_WGITEE()
+> Bot tour chevron card
+- ```${json(CardTemplate(BotTourHeader(), ExpandableListCardBody(createArray(BotTourOption(BotTourContentTextOne()),BotTourOption(BotTourContentTextTwo()),BotTourOption(BotTourContentTextThree())), 5), ''))}```
+
+# SendActivity_Z5JucQ()
+[Activity
+    Attachments = ${SendActivity_Z5JucQ_attachment_cKtuIu()}
+]
+
+# SendActivity_Z5JucQ_attachment_cKtuIu()
+> Focus card
+- ```${json(CardTemplate(BotTourFocusCardHeader(),BotTourFocusCardBody(), BotTourFocusCardActions()))}```

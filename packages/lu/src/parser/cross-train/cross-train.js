@@ -8,6 +8,7 @@ const fs = require('fs-extra')
 const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
+const { lte } = require('lodash')
 
 module.exports = {
   /**
@@ -19,14 +20,23 @@ module.exports = {
    * @param {inner: boolean, intra: boolean} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose, trainingOpt) {
+  train: async function (input, intentName, config, verbose, trainingOpt, ignore) {
+    // get ignored foleders
+    let ignoredFolders = undefined
+    if (ignore) {
+      ignoredFolders = ignore.split(',').map(e => e.trim())
+    }
+
     // Get all related file content.
-    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile)
-    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile)
+    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile, ignoredFolders)
+    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile, ignoredFolders)
     const configContent = await filehelper.getConfigContent(config)
+    const defaultLocale = 'en-us'
 
     let importResolver = async function (id, idsToFind) {
       let importedContents = []
+      const idWithoutExt = path.basename(id, path.extname(id))
+      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
         if (path.isAbsolute(file.filePath)) {
@@ -38,7 +48,8 @@ module.exports = {
         } else {
           const fileName = path.basename(file.filePath)
           const updateImportedContents = async function(typedContents, fileExt) {
-            const found = typedContents.filter(content => content.id === path.basename(fileName, fileExt))
+            // import resolver should be capable to find implicit import files with locale, for example '[import](b.lu)' is defined in a.en-us.lu, the resolver shoulf find b.en-us.lu
+            const found = typedContents.filter(content => (content.id === path.basename(fileName, fileExt) || content.id === `${path.basename(fileName, fileExt)}.${locale}`))
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
@@ -57,7 +68,7 @@ module.exports = {
           if (fileName.endsWith(fileExtEnum.LUFile)) {
             await updateImportedContents(luContents, fileExtEnum.LUFile)
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
-            await updateImportedContents(qnaContents, fileExtEnum.LUFile)
+            await updateImportedContents(qnaContents, fileExtEnum.QnAFile)
           }
         }
       }
