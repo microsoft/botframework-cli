@@ -48,7 +48,7 @@ module.exports = {
           const fileName = path.basename(file.filePath)
           const updateImportedContents = async function(typedContents, fileExt) {
             let found = []
-            // import resolver should be capable to find implicit import files with locale, for example '[import](b.lu)' is defined in a.en-us.lu, the resolver shoulf find b.en-us.lu
+            // import resolver should be capable to find implicit import files with locale, for example '[import](b.lu)' is defined in a.en-us.lu, the resolver should find b.en-us.lu
             const foundWithLocale = typedContents.filter(content => content.id === `${path.basename(fileName, fileExt)}.${locale}`)
             if (foundWithLocale.length > 0) {
               found = foundWithLocale
