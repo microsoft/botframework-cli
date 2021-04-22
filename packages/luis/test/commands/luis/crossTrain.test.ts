@@ -165,7 +165,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     .stdout()
     .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/testImportWithLocale')}`,
-      '--config', `${path.join(__dirname, './../../fixtures/testcases/testImportWithLocale/settings/cross-train.config.json')}`,
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/testImportWithLocale/cross-train.config')}`,
       '--out', './interruptionGen',
       '--ignore', 'bin',
       '--force'])
