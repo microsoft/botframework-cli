@@ -57,7 +57,7 @@ dependencies:
   mime-types: 2.1.26
   minimist: 1.2.0
   nyc: 14.1.1
-  orchestrator-core: 4.13.0
+  orchestrator-core: 4.13.1
   os: 0.1.1
   pascal-case: 2.0.1
   path: 0.12.7
@@ -5074,7 +5074,7 @@ packages:
       node: '>= 0.8.0'
     resolution:
       integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==
-  /orchestrator-core/4.13.0:
+  /orchestrator-core/4.13.1:
     cpu:
       - x64
       - ia32
@@ -5092,7 +5092,7 @@ packages:
       - win32
     requiresBuild: true
     resolution:
-      integrity: sha512-MJj/Fa0dExB3VldmiASnRoFvbM9OV4SwkI5qTNzv6HukhnaYPyrWidxAkufOJeavka66cpM4M8Cft+Fscc3auQ==
+      integrity: sha512-3V4Rzlc5uogicxjkdv6HryouFsT8koPzXtxGPFwmNPIF4HQXVQl93EIefF3uu8deuaoVeu6uKl6BJwSafLhssQ==
   /os-homedir/1.0.2:
     dev: false
     engines:
@@ -7732,7 +7732,7 @@ packages:
       nock: 11.9.1
       node-fetch: 2.6.0
       nyc: 14.1.1
-      orchestrator-core: 4.13.0
+      orchestrator-core: 4.13.1
       read-text-file: 1.1.0
       rimraf: 2.7.1
       sinon: 9.2.4
@@ -7743,7 +7743,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-smS6zhClWO/kUDa0NhMK9Wcag3RhCkFSCuWfIjurLa50/+2T4w7DOxnzxty6tTNzt4ylQkNPsSCaFQuA0m8B+A==
+      integrity: sha512-dDBBD9dLU08mqZzaYrkBLM2/Sm/V4an4THXwb8lZVYTa8gYTTpogJHXzIp/JRjNubbLKgS7etXvGzMjgDLp2Iw==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -7893,7 +7893,7 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nyc: ^14.1.1
-  orchestrator-core: 4.13.0
+  orchestrator-core: 4.13.1
   os: ~0.1.1
   pascal-case: ^2.0.1
   path: ^0.12.7
