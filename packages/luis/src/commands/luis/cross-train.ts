@@ -23,7 +23,7 @@ export default class LuisCrossTrain extends Command {
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     'inner-dialog': flags.boolean({description: 'Only do inner dialog cross train', default: true, allowNo: true}),
     'intra-dialog': flags.boolean({description: 'Only do intra dialog cross train', default: true, allowNo: true}),
-    ignore: flags.string({description: 'Ignore folders under the input directory, seperated by ",". If not specified, all luis and qna files will be included in the cross-train'})
+    exclude: flags.string({description: 'Excludes folders under the input directory, seperated by ",". If not specified, all luis and qna files will be included in the cross-train'})
   }
 
   async run() {
@@ -47,7 +47,7 @@ export default class LuisCrossTrain extends Command {
         intra: flags['intra-dialog']
       }
 
-      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, trainingOpt, flags.ignore)
+      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, trainingOpt, flags.exclude)
 
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')

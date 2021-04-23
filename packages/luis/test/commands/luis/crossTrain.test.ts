@@ -167,7 +167,7 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       '--in', `${path.join(__dirname, './../../fixtures/testcases/testImportWithLocale')}`,
       '--config', `${path.join(__dirname, './../../fixtures/testcases/testImportWithLocale/cross-train.config')}`,
       '--out', './interruptionGen',
-      '--ignore', 'bin',
+      '--exclude', 'bin',
       '--force'])
     .it('luis:cross training should able to import files with locale and ignore files under the directory specified', async () => {
       expect(await compareLuFiles('./../../../interruptionGen/ChitchatDialog.en-us.lu', './../../fixtures/verified/interruption9/ChitchatDialog.en-us.lu')).to.be.true

@@ -19,16 +19,16 @@ module.exports = {
    * @param {inner: boolean, intra: boolean} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose, trainingOpt, ignore) {
-    // get ignored foleders
-    let ignoredFolders = undefined
-    if (ignore) {
-      ignoredFolders = ignore.split(',').map(e => e.trim())
+  train: async function (input, intentName, config, verbose, trainingOpt, exclude) {
+    // get excluded foleders
+    let excludedFolders = undefined
+    if (exclude) {
+      excludedFolders = exclude.split(',').map(e => e.trim())
     }
 
     // Get all related file content.
-    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile, ignoredFolders)
-    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile, ignoredFolders)
+    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile, excludedFolders)
+    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile, excludedFolders)
     const configContent = await filehelper.getConfigContent(config)
     const defaultLocale = 'en-us'
 
