@@ -250,6 +250,7 @@ export class Builder {
               }
 
               let needTrainAndPublish = false
+              console.log('builder directVersionPublish', directVersionPublish)
 
               // compare models to update the model if a match found
               // otherwise create a new application
@@ -260,7 +261,7 @@ export class Builder {
                 // create a new application
                 needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
               }
-
+              console.log('builder needTrainAndPublish', needTrainAndPublish)
               if (needTrainAndPublish) {
                 // train and publish application
                 await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, directVersionPublish, trainMode)
@@ -293,7 +294,7 @@ export class Builder {
     return settingsContent
   }
 
-  async writeDialogAssets(contents: any[], options: any = {}) {
+  async writeDialogAssets(contents: any[], options: any = {}, directVersionPublish?: boolean) {
     let force = options.force || false
     let out = options.out
     let luConfig = options.luConfig
@@ -302,7 +303,7 @@ export class Builder {
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
     let settingsContents = contents.filter(c => c.id.endsWith('.json'))
 
-    if (settingsContents && settingsContents.length > 0) {
+    if (settingsContents && settingsContents.length > 0 && directVersionPublish) {
       let outPath
       if (luConfig) {
         outPath = path.join(path.resolve(path.dirname(luConfig)), settingsContents[0].id)
@@ -331,7 +332,7 @@ export class Builder {
         content.content = JSON.stringify(existingCTRecognizerObject, null, 4)
       }
 
-      if (force || !fs.existsSync(outFilePath)) {
+      if ((force || !fs.existsSync(outFilePath)) && directVersionPublish) {
         if (!fs.existsSync(path.dirname(outFilePath))) {
           fs.mkdirSync(path.dirname(outFilePath))
         }

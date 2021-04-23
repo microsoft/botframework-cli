@@ -68,6 +68,7 @@ export default class LuisBuild extends Command {
 
       // Flags override userConfig
       let luisBuildFlags = Object.keys(LuisBuild.flags)
+      console.log('luis config', luisBuildFlags)
 
       let {inVal, authoringKey, botName, region, out, defaultCulture, fallbackLocale, suffix, dialog, force, luConfig, deleteOldVersion, log, endpoint, schema, isStaging, directVersionPublish}
         = await utils.processInputs(flags, luisBuildFlags, this.config.configDir)
@@ -136,6 +137,7 @@ export default class LuisBuild extends Command {
       let keptVersionCount = 100
       if (deleteOldVersion) keptVersionCount = 1
 
+      console.log('directVersionPublish', directVersionPublish)
       const settingsContent = await builder.build(luContents, authoringKey, botName, {
         endpoint,
         suffix,
@@ -149,18 +151,19 @@ export default class LuisBuild extends Command {
       // write dialog assets based on config
       if (out) {
         const outputFolder = path.resolve(out)
+        console.log('luconfig for out', luConfig)
         if (dialog) {
           const dialogContents = await builder.generateDialogs(luContents, {
             fallbackLocale,
             schema,
             dialog
-          })
+          }, directVersionPublish)
 
           let writeDone = await builder.writeDialogAssets(dialogContents, {
             force,
             out: outputFolder,
             luConfig
-          })
+          }, directVersionPublish)
 
           if (writeDone) {
             this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
