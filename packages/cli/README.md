@@ -892,7 +892,7 @@ OPTIONS
 
   --log                    Writes out log messages to console
 
-  --ignore                ignore given folders under the input directory, for example, --ignore bin,obj,lib, this will ignore the /bin, /obj, /lib folders under the input path
+  --exclude                Excludes given folders under the input directory, for example, --exclude bin,obj,lib, this will ignore the /bin, /obj, /lib folders under the input path
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
