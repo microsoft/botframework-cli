@@ -138,7 +138,6 @@ export class OrchestratorHelper {
     const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
-    console.log(`Trying to process ${filePathConfiguration} .....`);
     for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
         // eslint-disable-next-line no-await-in-loop
@@ -259,8 +258,6 @@ export class OrchestratorHelper {
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     const ext: string = path.extname(filePath);
-    console.log(`Processing ${filePath} ....`);
-          
     if (ext !== '.lu' &&
         ext !== '.json' &&
         ext !== '.qna' &&
@@ -292,7 +289,6 @@ export class OrchestratorHelper {
         break;
       case '.json':
         if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
-          console.log(`Orchestrator settings file found ${filePath}, skipping ....`);
           return;
         }
         if (OrchestratorHelper.getIntentsEntitiesUtterances(
@@ -1135,7 +1131,7 @@ export class OrchestratorHelper {
         });
         if (!processedFiles.includes(resourceToFind)) {
           processedFiles.push(resourceToFind);
-        }  
+        }
       } else {
         throw new Error(`Content not found for ${resourceToFind}.`);
       }
