@@ -62,6 +62,14 @@ describe('luis:convert', () => {
         await assertToLu('./../../fixtures/verified/nDepthEntityInUtterance.json', './../../fixtures/verified/nDepthEntityInUtterance.lu')
     })
 
+    it('luis:convert successfully reconstructs a markdown file from a LUIS input file (with escape characters in utterances)', async () => {
+        await assertToLu('./../../fixtures/verified/escapeCharactersInUtterances.json', './../../fixtures/verified/escapeCharactersInUtterances.lu')
+    })
+
+    it('luis:convert Utterances with escape characters correctly', async () => {
+        await assertToJSON('./../../fixtures/verified/escapeCharactersInUtterances.lu', './../../fixtures/verified/escapeCharactersInUtterances.json')
+    })
+
     it('luis:convert Simple intent and utterances are parsed correctly', async () => {
         await assertToJSON('./../../fixtures/examples/1.lu', './../../fixtures/verified/1.json', '1')
     })
@@ -95,6 +103,18 @@ describe('luis:convert', () => {
 
     it('luis:convert phraselist entity types are parsed correctly', async () => {
         await assertToJSON('./../../fixtures/examples/13.lu', './../../fixtures/verified/13.json', '13')
+    })
+
+    it('luis:convert hierarchical entities defined after labels parsed correctly', async () => {
+        await assertToJSON('./../../fixtures/examples/newEntityIncludes.lu', './../../fixtures/verified/newEntityIncludes.json')
+    })
+
+    it('luis:convert utterance escaping square brackets and parenthesis correctly to json', async () => {
+        await assertToJSON('./../../fixtures/verified/escapeSquareBrackets.lu', './../../fixtures/verified/escapeSquareBrackets.json')
+    })
+
+    it('luis:convert utterance escaping square brackets and parenthesis correctly to json to lu', async () => {
+        await assertToLu('./../../fixtures/verified/escapeSquareBrackets.json', './../../fixtures/verified/escapeSquareBrackets.lu')
     })
 
     it('Parse to LU instance', async () => {
@@ -183,6 +203,22 @@ describe('luis:convert version 7 upgrade test', () => {
     it('Child entities names with spaces in them parse correctly to .lu format', async () => {
         await assertToLu('./../../fixtures/testcases/Child_Entity_With_Spaces.json', './../../fixtures/verified/Child_Entity_With_Spaces.lu')
     })
+
+    it('luis:convert successfully converts LUIS JSON model with required feature defined at top level to .lu format)', async () => {
+        await assertToJSON('./../../fixtures/verified/requiredFeatureAtTopLevel.lu', './../../fixtures/verified/requiredFeatureAtTopLevel.json')
+    })
+
+    it('luis:convert successfully converts .lu format with required feature defined at top level to LUIS JSON model', async () => {
+        await assertToLu('./../../fixtures/verified/requiredFeatureAtTopLevel.json', './../../fixtures/verified/requiredFeatureAtTopLevel.lu')
+    })
+
+    it('luis:convert successfully converts LUIS JSON model with space in child entity definition to .lu format', async () => {
+        await assertToJSON('./../../fixtures/verified/childEntityDefinitionWithSpace.lu', './../../fixtures/verified/childEntityDefinitionWithSpace.json')
+    })
+
+    it('luis:convert successfully converts .lu format with space in child entity definition to LUIS JSON model', async () => {
+        await assertToLu('./../../fixtures/verified/childEntityDefinitionWithSpace.json', './../../fixtures/verified/childEntityDefinitionWithSpace.lu')
+    })
   })
 
 describe('luis:convert negative tests', () => {
@@ -244,8 +280,43 @@ describe('luis:convert negative tests', () => {
                 LuisBuilder.fromLUAsync(res)
                     .then(res => done(res))
                     .catch(err => {
-                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
-                        assert.isTrue(err.text.includes('[ERROR] line 4:0 - line 4:20: Invalid entity line, entity name delete$Property cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        assert.isTrue(err.text.includes('[ERROR] line 2:0 - line 2:26: Invalid utterance line, entity name @addto*Property in this utterance cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when entity name defined at top level contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad6.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid entity line, entity name location* cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when intent name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad7.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid intent line, intent name greeting* cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]'))
+                        done()
+                    })
+            })
+    })
+
+    it('luis:convert should show ERR message when phraselist name contains invalid char', (done) => {
+        loadLuFile('./../../fixtures/testcases/bad8.lu')
+            .then(res => {
+                LuisBuilder.fromLUAsync(res)
+                    .then(res => done(res))
+                    .catch(err => {
+                        assert.isTrue(err.text.includes('[ERROR] line 1:0 - line 1:1: Invalid phraselist line, phraselist name pl* can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]'))
                         done()
                     })
             })

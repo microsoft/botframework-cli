@@ -22,6 +22,31 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "bf Orchestrator CLI",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/packages/orchestrator/lib/**"
+      ],
+      "args": [
+        "orchestrator:create",
+        "--in",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/CognitiveModels",
+        "--out",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/generated",
+        "--model",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model",
+        "--entityModel",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model/entity",
+        "--hierarchical"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Dialog Merge Tests",
       "preLaunchTask": "${defaultBuildTask}",
       "runtimeExecutable": "npm",
@@ -33,7 +58,7 @@
         "999999",
         "--colors",
         "-g",
-        "dialog:merge.*"
+        "dialog:merge.*missing schema.*"
       ],
       "cwd": "${workspaceFolder}/packages/dialog",
       "internalConsoleOptions": "openOnSessionStart",
@@ -131,6 +156,26 @@
       "outFiles": [
         "./packages/lu/lib/**"
       ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dialog merge root-package schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
+      "args": [
+        "dialog:merge",
+        "npm/node_modules/root-package/package.json",
+        "-o",
+        "oracles/root-package",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog/"
     },
     {
       "type": "node",

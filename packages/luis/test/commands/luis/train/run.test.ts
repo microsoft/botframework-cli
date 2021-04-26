@@ -53,4 +53,15 @@ describe('luis:train:run', () => {
     expect(ctx.stdout).to.contain('checking training status...')
   })
 
+  test
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .post(uri => uri.includes('train?mode=Standard'))
+  .reply(202, {"statusId": 2,"status": "UpToDate"})
+  )
+  .stdout()
+  .command(['luis:train:run', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--mode', 'Standard'])
+  .it('issues an asynchronous training request and reports when complete using trainning mode Standard', ctx => {
+    expect(ctx.stdout).to.contain('Training request successfully issued')
+  })
+
 })

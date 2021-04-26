@@ -73,6 +73,17 @@ describe('luis:version:export', () => {
   test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .get(uri => uri.includes('export'))
+  .reply(200, 'LU Content')
+  )
+  .stdout()
+  .command(['luis:version:export', '--appId', uuidv1(), '--versionId', '0.1', '--subscriptionKey', uuidv1(), '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--exportLU'])
+  .it('exports a luis app and displays the export contents in the console as LU format', ctx => {
+    expect(ctx.stdout).to.contain('LU Content')
+  })
+
+  test
+  .nock('https://westus.api.cognitive.microsoft.com', api => api
+  .get(uri => uri.includes('export'))
   .reply(200, {name: 'testname'})
   )
   .stdout()

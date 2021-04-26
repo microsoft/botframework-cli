@@ -187,7 +187,7 @@ const helpers = {
         if (this.isUtteranceLinkRef(utterance)) return false;
 
         // patterns must have at least one [optional] and or one (group | text)
-        let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
+        let detectPatternRegex = /(\[.*(?<!\\)\])|(\(.*?(\|.*?)+(?<!\\)\))/gi;
         return detectPatternRegex.test(utterance);
     },
     hashCode : function(s) {
@@ -567,6 +567,16 @@ const addIsRequiredProperty = function(item, phraseListInFinal = []) {
             && !item.features.find(fea => fea.featureName == feature.modelName)) {
             feature.featureName = feature.modelName;
             delete feature.modelName;
+        }
+
+        if (feature.featureName && feature.featureName.endsWith('*')) {
+            feature.featureName = feature.featureName.slice(0, feature.featureName.length - 1);
+            feature.isRequired = true;
+        }
+
+        if (feature.modelName && feature.modelName.endsWith('*')) {
+            feature.modelName = feature.modelName.slice(0, feature.modelName.length - 1);
+            feature.isRequired = true;
         }
 
         delete feature.featureType;

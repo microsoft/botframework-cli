@@ -12,6 +12,7 @@ const LuisBuilder = require('@microsoft/bf-lu').V2.LuisBuilder
 const exception = require('@microsoft/bf-lu').V2.Exception
 const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
 const luTranslator = require('@microsoft/bf-lu/lib/parser/translator/lutranslate')
+const translate = require('@microsoft/bf-lu').translate.translationSettings
 const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class LuisTranslate extends Command {
@@ -26,6 +27,7 @@ export default class LuisTranslate extends Command {
     translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
     translate_comments: flags.boolean({description: 'When set, machine translate comments found in .lu file'}),
     translate_link_text: flags.boolean({description: 'When set, machine translate link description in .lu file'}),
+    subscription_region: flags.string({description: 'Required request header if using a Cognitive Services Resource. Optional if using a Translator Resource.'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
     help: flags.help({char: 'h', description: 'luis:translate help'}),
   }
@@ -39,9 +41,18 @@ export default class LuisTranslate extends Command {
       const isLu = await fileHelper.detectLuContent(stdin, flags.in)
       let result: any = {}
 
+      let translationSettings: InstanceType<typeof translate> = {
+        subscriptionKey : flags.translatekey,
+        to_lang : flags.tgtlang,
+        src_lang : flags.srclang,
+        translate_comments : flags.translate_comments,
+        translate_link_text : flags.translate_link_text,
+        region : flags.subscription_region
+      }
+
       if (isLu) {
         const luFiles = await fileHelper.getLuObjects(stdin, flags.in, flags.recurse, fileExtEnum.LUFile)
-        const translatedLuFiles = await luTranslator.translateLuList(luFiles, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        const translatedLuFiles = await luTranslator.translateLuList(luFiles, translationSettings)
         luFiles.forEach((lu: any) => {
           if (!result[lu.id]) {
             result[lu.id] = {}
@@ -55,7 +66,7 @@ export default class LuisTranslate extends Command {
         const luisObject = new Luis(fileHelper.parseJSON(json, 'Luis'))
         const key = flags.in ? path.basename(flags.in) : 'stdin'
         const translation = new Lu(luisObject.parseToLuContent(), key)
-        const translatedLuis = await luTranslator.translateLu(translation, flags.translatekey, flags.tgtlang, flags.srclang, flags.translate_comments, flags.translate_link_text)
+        const translatedLuis = await luTranslator.translateLu(translation, translationSettings)
         result = {
           [key]: {},
         }

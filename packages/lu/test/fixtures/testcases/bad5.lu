@@ -1,4 +1,2 @@
 # greeting
 - hi {@addto*Property=foo}
-
-@ ml delete$Property

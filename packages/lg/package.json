@@ -10,7 +10,7 @@
     "@microsoft/bf-cli-command": "1.0.0",
     "@oclif/command": "^1.5.19",
     "@oclif/config": "^1.14.0",
-    "botbuilder-lg":"4.8.0-preview",
+    "botbuilder-lg":"4.13.0",
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",

@@ -176,7 +176,7 @@ export async function getFilesContent(input: string, extType: string) {
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{id: path.basename(filePath, extType), content}]
+    return [{id: path.basename(filePath, extType), content, fullPath: filePath}]
   }
 
   if (!fileStat.isDirectory()) {
@@ -186,7 +186,7 @@ export async function getFilesContent(input: string, extType: string) {
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {id: path.basename(itemPath, extType), content}
+    return {id: path.basename(itemPath, extType), content, fullPath: itemPath}
   }))
 }
 
@@ -229,7 +229,7 @@ export function getParsedObjects(contents: {id: string, content: string}[], extT
   return parsedObjects
 }
 
-export function getConfigObject(configObject: any, intentName: string, verbose: boolean) {
+export function getConfigObject(configObject: any, intentName: string, verbose: boolean, trainingOpt: {inner: boolean; intra: boolean}) {
   let finalConfigObj = Object.create(null)
   let rootFileIds: string[] = []
   if (configObject) {
@@ -272,7 +272,8 @@ export function getConfigObject(configObject: any, intentName: string, verbose: 
     rootIds: rootFileIds,
     triggerRules: finalConfigObj,
     intentName,
-    verbose
+    verbose,
+    trainingOpt
   }
 
   return crossTrainConfig

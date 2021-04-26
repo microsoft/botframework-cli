@@ -1,0 +1,13 @@
+[import](stop.lg)
+
+# greeting
+- Hello ${welcome()}
+
+# welcome
+- welcome to the new campus
+
+# cancel
+- ${stop()}
+
+# teminate
+- ${stop()}

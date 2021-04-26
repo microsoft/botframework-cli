@@ -56,7 +56,14 @@ const isDirectory = (path: string): boolean => {
 }
 
 const filterByAllowedConfigValues = (configObj: any, prefix: string) => {
-  const allowedConfigValues = [`${prefix}appId`, `${prefix}endpoint`, `${prefix}region`, `${prefix}subscriptionKey`, `${prefix}versionId`, `${prefix}authoringKey`]
+  const allowedConfigValues = [
+    `${prefix}appId`,
+    `${prefix}endpoint`,
+    `${prefix}region`,
+    `${prefix}subscriptionKey`,
+    `${prefix}versionId`,
+    `${prefix}authoringKey`,
+    `${prefix}armToken`]
   const filtered = Object.keys(configObj)
   .filter(key => allowedConfigValues.includes(key))
   .reduce((filteredConfigObj: any, key) => {
@@ -95,13 +102,17 @@ const writeToConsole = (outputContents: string) => {
   process.stdout.write(output)
 }
 
-const writeToFile = async (outputLocation: string, content: any, force: boolean) => {
+const writeToFile = async (outputLocation: string, content: any, force: boolean, text = false) => {
   const isDir = isDirectory(outputLocation)
   let writeFile = isDir ? path.join(outputLocation, 'export.json') : outputLocation
   const validatedPath = utils.validatePath(writeFile, '', force)
   try {
     await fs.ensureFile(writeFile)
-    await fs.writeJson(validatedPath, content, {spaces: 2})
+    if (text) {
+      await fs.writeFile(validatedPath, content)
+    } else {
+      await fs.writeJson(validatedPath, content, {spaces: 2})
+    }
   } catch (error) {
     throw new CLIError(error)
   }

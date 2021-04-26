@@ -1,0 +1,66 @@
+
+> LUIS application information
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 3.2.0
+
+
+> # Intent definitions
+
+# Test
+- {@Command={@Action={@BoldAction=bold}} \{{@ActionTargetPhrase=directions from seattle to portland}}\},
+- {@Command={@Action={@BoldAction=emphasise from}} "\{""{@ActionTargetRange={@ActionTargetStart=result"":\{<<json} {@ActionTargetSeparator=to} {@ActionTargetEnd=response}}}
+- {@Command={@Action={@AllCapsAction=all caps}} {@ActionTargetPhrase=delete}}()\}
+- {@Command={@Action={@DeleteAction=delete}} \{{@ActionTargetPhrase=machinename\}_\{fullidendifier\}.vdhx}}
+- {@Command={@Action={@DeleteAction=delete from}} \\{@ActionTargetRange={@ActionTargetStart=software\microsoft\windows\currentversion\explorer}\ {@ActionTargetSeparator=to} -{@ActionTargetEnd=name}}}
+- {@Command={@Action={@DeleteAction=delete}} {@ActionTargetPhrase=oneof csostoreresponses}} \{
+- {@Command={@Action={@ItalicsAction=italic from}} .\\{@ActionTargetRange={@ActionTargetStart=getpublicfolderreport.ps1} {@ActionTargetSeparator=to} -{@ActionTargetEnd=orgstatistic}}}
+- {@Command={@Action={@ItalicsAction=italicise}} {@ActionTargetPhrase=public itemactivitystat alltime \{ get; set}}; \}
+- {@Command={@Action={@ItalicsAction=italicise}} {@ActionTargetPhrase=resp->num_leds < bnxt_max_led}}) \{
+- {@Command={@Action={@RemoveFormattingAction=clear formatting from}} """{@ActionTargetPhrase=notification}}"": \{"
+- {@Command={@Action={@StrikeThroughAction=strikethrough from}} "\{(""{@ActionTargetRange={@ActionTargetStart=customuri}"", {@ActionTargetSeparator=through} {@ActionTargetEnd=<value>}}}),"
+- {@Command={@Action={@RemoveSuperscriptAction=remove superscript on}} """{@ActionTargetPhrase=from}}"": \{"
+
+
+> # Entity definitions
+
+@ ml BoldAction
+
+@ ml Action
+
+@ ml ActionTargetPhrase
+
+@ ml Command
+
+@ ml ActionTargetStart
+
+@ ml ActionTargetSeparator
+
+@ ml ActionTargetEnd
+
+@ ml ActionTargetRange
+
+@ ml AllCapsAction
+
+@ ml DeleteAction
+
+@ ml ItalicsAction
+
+@ ml RemoveFormattingAction
+
+@ ml StrikeThroughAction
+
+@ ml RemoveSuperscriptAction
+
+
+> # PREBUILT Entity definitions
+
+
+> # Phrase list definitions
+
+
+> # List entities
+
+> # RegEx entities
+
+

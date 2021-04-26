@@ -2,28 +2,14 @@
  * Copyright(c) Microsoft Corporation.All rights reserved.
  * Licensed under the MIT License.
  */
+
+const axios = require('axios')
+const httpsProxy = require('../utils/httpsProxy')
 const os = require('os')
 const packageJSON = require('./../../../package')
 
-const fetch = require('node-fetch')
+axios.interceptors.request.use(httpsProxy)
 
-global.fetch = function (...args) {
-  // No Proxy
-  if (!process.env.HTTPS_PROXY) {
-    return fetch(...args)
-  }
-  const [urlOrRequest, requestInit = {}, ...rest] = args
-  // URL is first param attach the proxy
-  // to the RequestInit
-  const HttpsProxyAgent = require('https-proxy-agent')
-  const agent = new HttpsProxyAgent(process.env.HTTPS_PROXY)
-  if (typeof urlOrRequest === 'string') {
-    requestInit.agent = agent
-  } else {
-    urlOrRequest.agent = agent
-  }
-  return fetch(urlOrRequest, requestInit, ...rest)
-}
 
 /**
  * Base class for all services
@@ -48,7 +34,7 @@ class ServiceBase {
    * @param {any} data The request data
    * @returns {Promise<Response>} The promise representing the request
    */
-  createRequest(relativeEndpoint, method, data) {
+  async httpRequest(relativeEndpoint, method, data) {
     let URL = this.rootEndpoint + relativeEndpoint
     let body
     if (typeof data === 'string') {
@@ -60,7 +46,24 @@ class ServiceBase {
       body = JSON.stringify(data)
     }
     
-    return fetch(URL, {headers: this.headers, method, body})
+    let res
+    try {
+      let response = await axios({method, url: URL, headers: this.headers, data: body})
+      res = response.data
+    } catch (error) {
+      if (error.response) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          res = error.response.data
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          return Error(error.message)
+        }
+      }
+    }
+
+    return res
   }
 
   commonHeaders(subscriptionKey) {

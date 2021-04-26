@@ -22,6 +22,7 @@ export default class LuisTrainRun extends Command {
     subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
     appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
     versionId: flags.string({description: '(required) Version to show training status (defaults to config:LUIS:versionId)'}),
+    mode: flags.string({description: 'Value specifying mode of training (Standard | Neural).'}),
     wait: flags.boolean({description: 'Wait until training complete and then display status'}),
     json: flags.boolean({description: 'Display output as JSON'}),
   }
@@ -37,7 +38,7 @@ export default class LuisTrainRun extends Command {
     utils.validateRequiredProps(requiredProps)
 
     try {
-      const trainingRequestStatus = await Train.train({subscriptionKey, endpoint, appId}, versionId)
+      const trainingRequestStatus = await Train.train({subscriptionKey, endpoint, appId}, versionId, flags.mode)
       if (trainingRequestStatus) {
         await utils.writeToConsole(trainingRequestStatus)
         const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : '\nTraining request successfully issued'
@@ -52,7 +53,7 @@ export default class LuisTrainRun extends Command {
         return this.checkTrainingStatus({subscriptionKey, endpoint, appId}, versionId, flags.json)
       }
     } catch (err) {
-      throw new CLIError(`Failed to issue training request: ${err}`)
+      throw new CLIError(`Failed to issue training request: ${err.message}`)
     }
   }
 

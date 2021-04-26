@@ -12,7 +12,7 @@ class Visitor {
         let utterance = '';
         let entities = [];
         let errorMsgs = [];
-        for (const node of ctx.children) {
+        for (const [index, node] of ctx.children.entries()) {
             const innerNode = node;
             switch (innerNode.symbol.type) {
                 case lp.DASH: break;
@@ -23,7 +23,7 @@ class Visitor {
                 }
                 case lp.ESCAPE_CHARACTER: {
                     let escapeCharacters = innerNode.getText();
-                    let escapedUtterace = escapeCharacters.length > 1 && EscapeCharsInUtterance.includes(escapeCharacters[1]) ? escapeCharacters.slice(1) : escapeCharacters;
+                    let escapedUtterace = escapeCharacters.length > 1 && (EscapeCharsInUtterance.includes(escapeCharacters[1]) || (escapeCharacters[1] === '\\' && index + 1 < ctx.children.length && ctx.children[index + 1].symbol.type === lp.EXPRESSION)) ? escapeCharacters.slice(1) : escapeCharacters;
                     utterance = utterance.concat(escapedUtterace);
                     break;
                 }
@@ -46,12 +46,6 @@ class Visitor {
     static recurselyResolveTokenizedUtterance(tokUtt, entities, errorMsgs, srcUtterance) {
         for (const item of tokUtt) {
             if (item === Object(item)) {
-                let entityName = item.entityName.trim()
-                if (entityName && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
-                    errorMsgs.push(`Invalid utterance line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`);
-                    continue;
-                }
-
                 if (item.entityValue === undefined) {
                     // we have a pattern.any entity
                     const patternStr = item.role ? `{${item.entityName}:${item.role}}` : `{${item.entityName}}`
@@ -98,7 +92,8 @@ class Visitor {
         let expChars = exp.split('');
         let escapeChar = false;
         expChars.forEach(function (char, index) {
-            if (char === '\\' && expChars.length > index + 1 && EscapeCharsInUtterance.includes(expChars[index + 1])) {
+            if (char === '\\' && !escapeChar && expChars.length > index + 1
+                && (EscapeCharsInUtterance.includes(expChars[index + 1]) || expChars[index + 1] === '\\')) {
                 escapeChar = true;
             } else if (char === '{' && !escapeChar) {
                 let newEntity = {entityName : '', role : '', entityValue : undefined, parent : curEntity};

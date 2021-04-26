@@ -1,0 +1,14 @@
+{
+    "botName":"MyProject",
+    "region": "westus",
+    "defaultCulture":"en-us",
+    "deleteOldVersion": true, 
+    "dialog": "multiLanguage",
+    "fallbackLocale": "en-us",
+    "force": true,  
+    "out": ".",
+    "suffix": "bobd",
+    "models": [
+        "./test/fixtures/adaptive/RootDialog.lu"
+    ]
+}
