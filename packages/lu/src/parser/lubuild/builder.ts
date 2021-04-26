@@ -285,7 +285,7 @@ export class Builder {
         settingsAssets.push(settings)
       }
     } catch (error) {
-      throw(new exception(retCode.errorCode.LUIS_BUILD_FAILED, `Luis build failed: ${error.message}`))
+      throw(new exception(retCode.errorCode.LUIS_BUILD_FAILED, `Luis build failed: ${error.message ?? error.text}`))
     }
 
     const settingsContent = this.generateDeclarativeAssets(settingsAssets)
