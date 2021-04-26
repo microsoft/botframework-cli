@@ -154,13 +154,13 @@ export default class LuisBuild extends Command {
             fallbackLocale,
             schema,
             dialog
-          })
+          }, directVersionPublish)
 
           let writeDone = await builder.writeDialogAssets(dialogContents, {
             force,
             out: outputFolder,
             luConfig
-          })
+          }, directVersionPublish)
 
           if (writeDone) {
             this.log(`Successfully wrote .dialog files to ${outputFolder}\n`)
@@ -173,7 +173,7 @@ export default class LuisBuild extends Command {
           force,
           out: outputFolder,
           luConfig
-        })
+        }, directVersionPublish)
 
         if (writeDone) {
           this.log(`Successfully wrote settings file to ${outputFolder}\n`)
