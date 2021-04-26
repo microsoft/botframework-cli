@@ -332,7 +332,7 @@ export class Builder {
         content.content = JSON.stringify(existingCTRecognizerObject, null, 4)
       }
 
-      if ((force || !fs.existsSync(outFilePath))) {
+      if (force || !fs.existsSync(outFilePath)) {
         if (!fs.existsSync(path.dirname(outFilePath))) {
           fs.mkdirSync(path.dirname(outFilePath))
         }
