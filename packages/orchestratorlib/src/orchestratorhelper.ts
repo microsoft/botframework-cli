@@ -1206,7 +1206,7 @@ export class OrchestratorHelper {
         Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
       }
 
-      bluPaths[baseName] = snapshotFile;
+      bluPaths[baseName] = snapshotFile.replace(/\\/g, '/');
     }
   }
 

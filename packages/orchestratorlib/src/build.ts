@@ -72,7 +72,7 @@ export class OrchestratorBuild {
         };
       } = {
         orchestrator: {
-          modelFolder: baseModelPath,
+          modelFolder: baseModelPath.replace(/\\/g, '/'),
           snapshots: new Map<string, string>(),
         },
       };
