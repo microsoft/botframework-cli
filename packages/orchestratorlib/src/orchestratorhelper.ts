@@ -7,21 +7,11 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
-import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
-import {Label} from '@microsoft/bf-dispatcher';
-import {LabelStructureUtility} from '@microsoft/bf-dispatcher';
-import {LabelType} from '@microsoft/bf-dispatcher';
-import {ScoreEntity} from '@microsoft/bf-dispatcher';
-import {ScoreIntent} from '@microsoft/bf-dispatcher';
-// import {Span} from '@microsoft/bf-dispatcher';
-
+import {ITextUtteranceLabelMapDataStructure, Label, LabelStructureUtility, LabelType, ScoreEntity, ScoreIntent} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {UtilityLabelResolver} from './utilitylabelresolver';
-
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
-
-import {OrchestratorBuild} from '.';
-
+import {OrchestratorBuild, OrchestratorSettings} from '.';
 import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -63,7 +53,11 @@ export class OrchestratorHelper {
   }
 
   public static readFile(filePath: string): string {
-    return ReadText.readSync(filePath);
+    try {
+      return ReadText.readSync(filePath);
+    } catch {
+      return '';
+    }
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
@@ -144,6 +138,7 @@ export class OrchestratorHelper {
     const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
     const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
     const filePaths: string[] = filePathConfiguration.split(',');
+    console.log(`Trying to process ${filePathConfiguration} .....`);
     for (const filePathEntry of filePaths) {
       if (OrchestratorHelper.isDirectory(filePathEntry)) {
         // eslint-disable-next-line no-await-in-loop
@@ -264,7 +259,8 @@ export class OrchestratorHelper {
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     const ext: string = path.extname(filePath);
-
+    console.log(`Processing ${filePath} ....`);
+          
     if (ext !== '.lu' &&
         ext !== '.json' &&
         ext !== '.qna' &&
@@ -295,6 +291,10 @@ export class OrchestratorHelper {
           utteranceLabelDuplicateMap);
         break;
       case '.json':
+        if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
+          console.log(`Orchestrator settings file found ${filePath}, skipping ....`);
+          return;
+        }
         if (OrchestratorHelper.getIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
           routingName,
@@ -395,6 +395,9 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
+    if (!luContent || luContent.length === 0) {
+      return;
+    }
     const luObject: any = {
       content: luContent,
       id: luFile,
@@ -1123,16 +1126,16 @@ export class OrchestratorHelper {
     (idsToFind || []).forEach((ask: any)  => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
-      if (!processedFiles.includes(resourceToFind)) {
-        processedFiles.push(resourceToFind);
-      }
-      if (fileContent) {
+      if (fileContent && fileContent.length > 0) {
         retPayload.push({
           content: fileContent,
           options: {
             id: ask.filePath,
           },
         });
+        if (!processedFiles.includes(resourceToFind)) {
+          processedFiles.push(resourceToFind);
+        }  
       } else {
         throw new Error(`Content not found for ${resourceToFind}.`);
       }
@@ -1150,10 +1153,13 @@ export class OrchestratorHelper {
     } else {
       const ext: string = path.extname(inputPath);
       if (ext === '.lu') {
-        retPayload.push({
-          content: OrchestratorHelper.readFile(inputPath),
-          id: path.basename(inputPath, '.lu'),
-        });
+        const content: string = OrchestratorHelper.readFile(inputPath);
+        if (content && content.length > 0) {
+          retPayload.push({
+            content: content,
+            id: path.basename(inputPath, '.lu'),
+          });
+        }
       }
     }
   }

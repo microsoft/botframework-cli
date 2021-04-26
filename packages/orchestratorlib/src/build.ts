@@ -44,7 +44,7 @@ export class OrchestratorBuild {
       let hasLuConfig: boolean = false;
       if (!inputs || inputs.length === 0) {
         if (!luConfig || !luConfig.models || luConfig.models.length === 0) {
-          throw new Error('Please provide lu input');
+          throw new Error('Please provide valid lu input(s)');
         } else {
           hasLuConfig = true;
         }
@@ -282,11 +282,14 @@ export class OrchestratorBuild {
   private static async processLuConfig(luConfig: any, labelResolvers: Map<string, LabelResolver>, fullEmbeddings: boolean = false): Promise<any[]> {
     const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
-      const luObject: any = {
-        content: OrchestratorHelper.readFile(file),
-        id: path.basename(file, '.lu'),
-      };
-      luObjects.push(luObject);
+      const content: string = OrchestratorHelper.readFile(file);
+      if (content && content.length > 0) {
+        const luObject: any = {
+          content: content,
+          id: path.basename(file, '.lu'),
+        };
+        luObjects.push(luObject);
+      }
     }
     return OrchestratorBuild.processInput(luObjects, labelResolvers, fullEmbeddings);
   }
