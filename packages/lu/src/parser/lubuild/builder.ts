@@ -293,7 +293,7 @@ export class Builder {
     return settingsContent
   }
 
-  async writeDialogAssets(contents: any[], options: any = {}) {
+  async writeDialogAssets(contents: any[], options: any = {}, directVersionPublish?: boolean) {
     let force = options.force || false
     let out = options.out
     let luConfig = options.luConfig
@@ -311,7 +311,8 @@ export class Builder {
       } else {
         outPath = path.resolve(settingsContents[0].id)
       }
-      writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
+
+      writeContents.push(this.mergeSettingsContent(outPath, settingsContents, directVersionPublish))
     }
 
     for (const content of writeContents) {
@@ -478,14 +479,16 @@ export class Builder {
     return contents
   }
 
-  mergeSettingsContent(settingsPath: string, contents: any[]) {
+  mergeSettingsContent(settingsPath: string, contents: any[], directVersionPublish?: boolean) {
     let settings = new Settings(settingsPath, {})
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = {
+        settings.luis[appName] = directVersionPublish ? {
           "appId": luisAppsMap[appName]["appId"],
           "version": luisAppsMap[appName]["version"]
+        } : {
+          "appId": luisAppsMap[appName]["appId"]
         }
       }
     }
