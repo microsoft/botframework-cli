@@ -1,0 +1,452 @@
+{
+    "intents": [
+      {
+        "name": "Test"
+      }
+    ],
+    "entities": [
+      {
+        "name": "BoldAction",
+        "roles": []
+      },
+      {
+        "name": "Action",
+        "roles": []
+      },
+      {
+        "name": "ActionTargetPhrase",
+        "roles": []
+      },
+      {
+        "name": "Command",
+        "roles": []
+      },
+      {
+        "name": "ActionTargetStart",
+        "roles": []
+      },
+      {
+        "name": "ActionTargetSeparator",
+        "roles": []
+      },
+      {
+        "name": "ActionTargetEnd",
+        "roles": []
+      },
+      {
+        "name": "ActionTargetRange",
+        "roles": []
+      },
+      {
+        "name": "AllCapsAction",
+        "roles": []
+      },
+      {
+        "name": "DeleteAction",
+        "roles": []
+      },
+      {
+        "name": "ItalicsAction",
+        "roles": []
+      },
+      {
+        "name": "RemoveFormattingAction",
+        "roles": []
+      },
+      {
+        "name": "StrikeThroughAction",
+        "roles": []
+      },
+      {
+        "name": "RemoveSuperscriptAction",
+        "roles": []
+      }
+    ],
+    "composites": [],
+    "closedLists": [],
+    "regex_entities": [],
+    "model_features": [],
+    "regex_features": [],
+    "utterances": [
+      {
+        "text": "bold {directions from seattle to portland},",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "BoldAction",
+            "startPos": 0,
+            "endPos": 3
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 3
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 6,
+            "endPos": 40
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 40
+          }
+        ]
+      },
+      {
+        "text": "emphasise from \"{\"\"result\"\":{<<json to response",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "BoldAction",
+            "startPos": 0,
+            "endPos": 13
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 13
+          },
+          {
+            "entity": "ActionTargetStart",
+            "startPos": 19,
+            "endPos": 34
+          },
+          {
+            "entity": "ActionTargetSeparator",
+            "startPos": 36,
+            "endPos": 37
+          },
+          {
+            "entity": "ActionTargetEnd",
+            "startPos": 39,
+            "endPos": 46
+          },
+          {
+            "entity": "ActionTargetRange",
+            "startPos": 19,
+            "endPos": 46
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 46
+          }
+        ]
+      },
+      {
+        "text": "all caps delete()}",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "AllCapsAction",
+            "startPos": 0,
+            "endPos": 7
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 7
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 9,
+            "endPos": 14
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 14
+          }
+        ]
+      },
+      {
+        "text": "delete {machinename}_{fullidendifier}.vdhx",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "DeleteAction",
+            "startPos": 0,
+            "endPos": 5
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 5
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 8,
+            "endPos": 41
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 41
+          }
+        ]
+      },
+      {
+        "text": "delete from \\software\\microsoft\\windows\\currentversion\\explorer\\ to -name",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "DeleteAction",
+            "startPos": 0,
+            "endPos": 10
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 10
+          },
+          {
+            "entity": "ActionTargetStart",
+            "startPos": 13,
+            "endPos": 62
+          },
+          {
+            "entity": "ActionTargetSeparator",
+            "startPos": 65,
+            "endPos": 66
+          },
+          {
+            "entity": "ActionTargetEnd",
+            "startPos": 69,
+            "endPos": 72
+          },
+          {
+            "entity": "ActionTargetRange",
+            "startPos": 13,
+            "endPos": 72
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 72
+          }
+        ]
+      },
+      {
+        "text": "delete oneof csostoreresponses {",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "DeleteAction",
+            "startPos": 0,
+            "endPos": 5
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 5
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 7,
+            "endPos": 29
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 29
+          }
+        ]
+      },
+      {
+        "text": "italic from .\\getpublicfolderreport.ps1 to -orgstatistic",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "ItalicsAction",
+            "startPos": 0,
+            "endPos": 10
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 10
+          },
+          {
+            "entity": "ActionTargetStart",
+            "startPos": 14,
+            "endPos": 38
+          },
+          {
+            "entity": "ActionTargetSeparator",
+            "startPos": 40,
+            "endPos": 41
+          },
+          {
+            "entity": "ActionTargetEnd",
+            "startPos": 44,
+            "endPos": 55
+          },
+          {
+            "entity": "ActionTargetRange",
+            "startPos": 14,
+            "endPos": 55
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 55
+          }
+        ]
+      },
+      {
+        "text": "italicise public itemactivitystat alltime { get; set; }",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "ItalicsAction",
+            "startPos": 0,
+            "endPos": 8
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 8
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 10,
+            "endPos": 51
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 51
+          }
+        ]
+      },
+      {
+        "text": "italicise resp->num_leds < bnxt_max_led) {",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "ItalicsAction",
+            "startPos": 0,
+            "endPos": 8
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 8
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 10,
+            "endPos": 38
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 38
+          }
+        ]
+      },
+      {
+        "text": "clear formatting from \"\"\"notification\"\": {\"",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "RemoveFormattingAction",
+            "startPos": 0,
+            "endPos": 20
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 20
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 25,
+            "endPos": 36
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 36
+          }
+        ]
+      },
+      {
+        "text": "strikethrough from \"{(\"\"customuri\"\", through <value>),\"",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "StrikeThroughAction",
+            "startPos": 0,
+            "endPos": 17
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 17
+          },
+          {
+            "entity": "ActionTargetStart",
+            "startPos": 24,
+            "endPos": 32
+          },
+          {
+            "entity": "ActionTargetSeparator",
+            "startPos": 37,
+            "endPos": 43
+          },
+          {
+            "entity": "ActionTargetEnd",
+            "startPos": 45,
+            "endPos": 51
+          },
+          {
+            "entity": "ActionTargetRange",
+            "startPos": 24,
+            "endPos": 51
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 51
+          }
+        ]
+      },
+      {
+        "text": "remove superscript on \"\"\"from\"\": {\"",
+        "intent": "Test",
+        "entities": [
+          {
+            "entity": "RemoveSuperscriptAction",
+            "startPos": 0,
+            "endPos": 20
+          },
+          {
+            "entity": "Action",
+            "startPos": 0,
+            "endPos": 20
+          },
+          {
+            "entity": "ActionTargetPhrase",
+            "startPos": 25,
+            "endPos": 28
+          },
+          {
+            "entity": "Command",
+            "startPos": 0,
+            "endPos": 28
+          }
+        ]
+      }
+    ],
+    "patterns": [],
+    "patternAnyEntities": [],
+    "prebuiltEntities": [],
+    "luis_schema_version": "3.2.0",
+    "versionId": "0.1",
+    "name": "",
+    "desc": "",
+    "culture": "en-us"
+  }

@@ -27,7 +27,7 @@ module.exports = {
    * @param {any[]} luContents the lu content array whose element includes path and content
    * @param {any[]} qnaContents the qna content array whose element includes path and content
    * @param {any} configObject cross train config json object
-   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver
+   * @param {any} options some optional parameters including configId, intentName, verbose, importResolver, trainingOpt
    * @returns {Map<string, LUResource>} map of file id and luResource
    * @throws {exception} throws errors
    */
@@ -38,10 +38,11 @@ module.exports = {
       const crossTrainConfig = fileHelper.getConfigObject(
         configObject,
         options.intentName || '_Interruption',
-        options.verbose || true)
+        options.verbose || true,
+        options.trainingOpt || {inner: true, intra: true})
 
       let {luObjectArray, qnaObjectArray} = pretreatment(luContents, qnaContents)
-      const {rootIds, triggerRules, intentName, verbose} = crossTrainConfig
+      const {rootIds, triggerRules, intentName, verbose, trainingOpt} = crossTrainConfig
 
       // parse lu content to LUResource object
       let {fileIdToResourceMap: luFileIdToResourceMap, allEmpty: allLuEmpty} = await parseAndValidateContent(luObjectArray, verbose, importResolver, fileExtEnum.LUFile)
@@ -49,7 +50,7 @@ module.exports = {
       // parse qna content to LUResource object
       let {fileIdToResourceMap: qnaFileIdToResourceMap, allEmpty: allQnAEmpty} = await parseAndValidateContent(qnaObjectArray, verbose, importResolver, fileExtEnum.QnAFile)
 
-      if (!allLuEmpty) {
+      if (!allLuEmpty && trainingOpt.intra) {
         // construct resource tree to build the father-children relationship among lu files
         let resources = constructResoureTree(luFileIdToResourceMap, triggerRules)
 
@@ -67,7 +68,7 @@ module.exports = {
         }
       }
 
-      if (!allQnAEmpty) {
+      if (!allQnAEmpty && trainingOpt.inner) {
         // do qna cross training with lu files
         qnaCrossTrain(qnaFileIdToResourceMap, luFileIdToResourceMap, intentName, allLuEmpty)
       }
@@ -355,7 +356,7 @@ const qnaCrossTrain = function (qnaFileIdToResourceMap, luFileIdToResourceMap, i
   try {
     for (const qnaObjectId of Array.from(qnaFileIdToResourceMap.keys())) {
       let fileName = path.basename(qnaObjectId, path.extname(qnaObjectId))
-      const culture = fileHelper.getCultureFromPath(qnaObjectId)
+      const culture = fileHelper.getQnACultureFromPath(qnaObjectId)
       fileName = culture ? fileName.substring(0, fileName.length - culture.length - 1) : fileName
 
       const luObjectId = Array.from(luFileIdToResourceMap.keys()).find(x => x.toLowerCase() === qnaObjectId.toLowerCase())
@@ -424,7 +425,7 @@ const qnaCrossTrainCore = function (luResource, qnaResource, fileName, interrupt
   }
 
   // construct questions content
-  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q)).filter(i => !patternWithPrebuiltEntity(i))
+  dedupedQuestions = dedupedQuestions.map(q => '- '.concat(q)).filter(i => !patternWithPrebuiltEntity(i) && !questionWithBrackets(i))
   let questionsContent = dedupedQuestions.join(NEWLINE)
 
   // cross training comments
@@ -580,4 +581,10 @@ const patternWithPrebuiltEntity = function (utterance) {
   }
 
   return false
+}
+
+const questionWithBrackets = function (question) {
+  let matched = /\([^\)]*\)/g.exec(question)
+
+  return matched !== null
 }

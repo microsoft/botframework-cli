@@ -1,0 +1,5600 @@
+[
+  {
+    "text": "add vintage 74 to my mother's Primavera Sound 2016 Barcelona playlist",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 13,
+        "text": "vintage 74"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 18,
+        "endPos": 28,
+        "text": "my mother's"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 30,
+        "endPos": 59,
+        "text": "Primavera Sound 2016 Barcelona"
+      }
+    ]
+  },
+  {
+    "text": "Rate this current essay four out of 6 .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 5,
+        "endPos": 16,
+        "text": "this current"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 18,
+        "endPos": 22,
+        "text": "essay"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 24,
+        "endPos": 27,
+        "text": "four"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 36,
+        "endPos": 36,
+        "text": "6"
+      }
+    ]
+  },
+  {
+    "text": "rate this series chronicle 0 points",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 5,
+        "endPos": 8,
+        "text": "this"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 10,
+        "endPos": 25,
+        "text": "series chronicle"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 27,
+        "endPos": 27,
+        "text": "0"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 29,
+        "endPos": 34,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "I'd like a table for natasha, bettye and kimberley at a coffeehouse with a smoking room",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_description",
+        "startPos": 21,
+        "endPos": 49,
+        "text": "natasha, bettye and kimberley"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 56,
+        "endPos": 66,
+        "text": "coffeehouse"
+      },
+      {
+        "entity": "facility",
+        "startPos": 75,
+        "endPos": 86,
+        "text": "smoking room"
+      }
+    ]
+  },
+  {
+    "text": "I need to book a restaurant with a smoking room in AL",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 17,
+        "endPos": 26,
+        "text": "restaurant"
+      },
+      {
+        "entity": "facility",
+        "startPos": 35,
+        "endPos": 46,
+        "text": "smoking room"
+      },
+      {
+        "entity": "state",
+        "startPos": 51,
+        "endPos": 52,
+        "text": "AL"
+      }
+    ]
+  },
+  {
+    "text": "I'd like a table in a smoking room in a taverna on sep. 23, 2023",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "facility",
+        "startPos": 22,
+        "endPos": 33,
+        "text": "smoking room"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 40,
+        "endPos": 46,
+        "text": "taverna"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 51,
+        "endPos": 63,
+        "text": "sep. 23, 2023"
+      }
+    ]
+  },
+  {
+    "text": "Book a table for three at a middle eastern gastropub",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 21,
+        "text": "three"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 28,
+        "endPos": 41,
+        "text": "middle eastern"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 43,
+        "endPos": 51,
+        "text": "gastropub"
+      }
+    ]
+  },
+  {
+    "text": "book a table at 04:36:28 at the northeast indian restaurant",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 16,
+        "endPos": 23,
+        "text": "04:36:28"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 32,
+        "endPos": 47,
+        "text": "northeast indian"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 49,
+        "endPos": 58,
+        "text": "restaurant"
+      }
+    ]
+  },
+  {
+    "text": "book a southeastern brazilian cusinie pub",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "cuisine",
+        "startPos": 7,
+        "endPos": 28,
+        "text": "southeastern brazilian"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 38,
+        "endPos": 40,
+        "text": "pub"
+      }
+    ]
+  },
+  {
+    "text": "Book a northeastern brazilian restaurant for 10 am",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "cuisine",
+        "startPos": 7,
+        "endPos": 28,
+        "text": "northeastern brazilian"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "restaurant"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 45,
+        "endPos": 49,
+        "text": "10 am"
+      }
+    ]
+  },
+  {
+    "text": "need a table at a highly rated south tyrolean joint",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 18,
+        "endPos": 29,
+        "text": "highly rated"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 31,
+        "endPos": 44,
+        "text": "south tyrolean"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 46,
+        "endPos": 50,
+        "text": "joint"
+      }
+    ]
+  },
+  {
+    "text": "Give me a top-rated restaurant that's eastern european",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 10,
+        "endPos": 18,
+        "text": "top-rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 20,
+        "endPos": 29,
+        "text": "restaurant"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 38,
+        "endPos": 53,
+        "text": "eastern european"
+      }
+    ]
+  },
+  {
+    "text": "susanne and carey phillips want to go to a brasserie not far from Pricedale that serves southern brazilian",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_description",
+        "startPos": 0,
+        "endPos": 25,
+        "text": "susanne and carey phillips"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 43,
+        "endPos": 51,
+        "text": "brasserie"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 53,
+        "endPos": 59,
+        "text": "not far"
+      },
+      {
+        "entity": "city",
+        "startPos": 66,
+        "endPos": 74,
+        "text": "Pricedale"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 88,
+        "endPos": 105,
+        "text": "southern brazilian"
+      }
+    ]
+  },
+  {
+    "text": "Play the theme tune that Christian Fennesz wrote",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 9,
+        "endPos": 18,
+        "text": "theme tune"
+      },
+      {
+        "entity": "artist",
+        "startPos": 25,
+        "endPos": 41,
+        "text": "Christian Fennesz"
+      }
+    ]
+  },
+  {
+    "text": "Play me a sound track by Bert Mccracken on zvooq",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 10,
+        "endPos": 20,
+        "text": "sound track"
+      },
+      {
+        "entity": "artist",
+        "startPos": 25,
+        "endPos": 38,
+        "text": "Bert Mccracken"
+      },
+      {
+        "entity": "service",
+        "startPos": 43,
+        "endPos": 47,
+        "text": "zvooq"
+      }
+    ]
+  },
+  {
+    "text": "Play me a nineties sound track",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 10,
+        "endPos": 17,
+        "text": "nineties"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 19,
+        "endPos": 29,
+        "text": "sound track"
+      }
+    ]
+  },
+  {
+    "text": "play a sound track by Vegard Sverre Tveitan",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 7,
+        "endPos": 17,
+        "text": "sound track"
+      },
+      {
+        "entity": "artist",
+        "startPos": 22,
+        "endPos": 42,
+        "text": "Vegard Sverre Tveitan"
+      }
+    ]
+  },
+  {
+    "text": "Play a 2001 sound track on Deezer .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 7,
+        "endPos": 10,
+        "text": "2001"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 12,
+        "endPos": 22,
+        "text": "sound track"
+      },
+      {
+        "entity": "service",
+        "startPos": 27,
+        "endPos": 32,
+        "text": "Deezer"
+      }
+    ]
+  },
+  {
+    "text": "Play a 1974 sound track on Vimeo .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 7,
+        "endPos": 10,
+        "text": "1974"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 12,
+        "endPos": 22,
+        "text": "sound track"
+      },
+      {
+        "entity": "service",
+        "startPos": 27,
+        "endPos": 31,
+        "text": "Vimeo"
+      }
+    ]
+  },
+  {
+    "text": "Play me a 1990 sound track",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 10,
+        "endPos": 13,
+        "text": "1990"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 15,
+        "endPos": 25,
+        "text": "sound track"
+      }
+    ]
+  },
+  {
+    "text": "Play Larry Graham sound track",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 5,
+        "endPos": 16,
+        "text": "Larry Graham"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 18,
+        "endPos": 28,
+        "text": "sound track"
+      }
+    ]
+  },
+  {
+    "text": "Play a 1998 sound track from Sam The Kid on Last Fm",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 7,
+        "endPos": 10,
+        "text": "1998"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 12,
+        "endPos": 22,
+        "text": "sound track"
+      },
+      {
+        "entity": "artist",
+        "startPos": 29,
+        "endPos": 39,
+        "text": "Sam The Kid"
+      },
+      {
+        "entity": "service",
+        "startPos": 44,
+        "endPos": 50,
+        "text": "Last Fm"
+      }
+    ]
+  },
+  {
+    "text": "play classic rock on Slacker",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 5,
+        "endPos": 16,
+        "text": "classic rock"
+      },
+      {
+        "entity": "service",
+        "startPos": 21,
+        "endPos": 27,
+        "text": "Slacker"
+      }
+    ]
+  },
+  {
+    "text": "play southern rock tunes",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 5,
+        "endPos": 17,
+        "text": "southern rock"
+      }
+    ]
+  },
+  {
+    "text": "Play some Drum & Bass",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 10,
+        "endPos": 20,
+        "text": "Drum & Bass"
+      }
+    ]
+  },
+  {
+    "text": "Play easy listening",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 5,
+        "endPos": 18,
+        "text": "easy listening"
+      }
+    ]
+  },
+  {
+    "text": "Play classic rock on Groove Shark",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 5,
+        "endPos": 16,
+        "text": "classic rock"
+      },
+      {
+        "entity": "service",
+        "startPos": 21,
+        "endPos": 32,
+        "text": "Groove Shark"
+      }
+    ]
+  },
+  {
+    "text": "Play a native us song on Last Fm",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 7,
+        "endPos": 15,
+        "text": "native us"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 17,
+        "endPos": 20,
+        "text": "song"
+      },
+      {
+        "entity": "service",
+        "startPos": 25,
+        "endPos": 31,
+        "text": "Last Fm"
+      }
+    ]
+  },
+  {
+    "text": "Play some art punk .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 10,
+        "endPos": 17,
+        "text": "art punk"
+      }
+    ]
+  },
+  {
+    "text": "I need some Hardcore Hip Hop",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 12,
+        "endPos": 27,
+        "text": "Hardcore Hip Hop"
+      }
+    ]
+  },
+  {
+    "text": "Book a party for 7 at a food court with potato salad in Alabama in eleven hours",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 17,
+        "text": "7"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 24,
+        "endPos": 33,
+        "text": "food court"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 40,
+        "endPos": 51,
+        "text": "potato salad"
+      },
+      {
+        "entity": "state",
+        "startPos": 56,
+        "endPos": 62,
+        "text": "Alabama"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 64,
+        "endPos": 78,
+        "text": "in eleven hours"
+      }
+    ]
+  },
+  {
+    "text": "I want to eat for two at a brasserie in Gwynedd Valley TN with pickled cucumber in one second",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 18,
+        "endPos": 20,
+        "text": "two"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 27,
+        "endPos": 35,
+        "text": "brasserie"
+      },
+      {
+        "entity": "city",
+        "startPos": 40,
+        "endPos": 53,
+        "text": "Gwynedd Valley"
+      },
+      {
+        "entity": "state",
+        "startPos": 55,
+        "endPos": 56,
+        "text": "TN"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 63,
+        "endPos": 78,
+        "text": "pickled cucumber"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 80,
+        "endPos": 92,
+        "text": "in one second"
+      }
+    ]
+  },
+  {
+    "text": "book a spot for six at a restaurant that serves fish and chips",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 16,
+        "endPos": 18,
+        "text": "six"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 25,
+        "endPos": 34,
+        "text": "restaurant"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 48,
+        "endPos": 61,
+        "text": "fish and chips"
+      }
+    ]
+  },
+  {
+    "text": "Book a table at a bar in Cambodia that serves cheese fries .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 18,
+        "endPos": 20,
+        "text": "bar"
+      },
+      {
+        "entity": "country",
+        "startPos": 25,
+        "endPos": 32,
+        "text": "Cambodia"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 46,
+        "endPos": 57,
+        "text": "cheese fries"
+      }
+    ]
+  },
+  {
+    "text": "Can you get me seating at a pub in South Korea that serves milk toast for supper",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 28,
+        "endPos": 30,
+        "text": "pub"
+      },
+      {
+        "entity": "country",
+        "startPos": 35,
+        "endPos": 45,
+        "text": "South Korea"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 59,
+        "endPos": 68,
+        "text": "milk toast"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 74,
+        "endPos": 79,
+        "text": "supper"
+      }
+    ]
+  },
+  {
+    "text": "Reserve a table for teresa and elnora at a fast food joint which serves fish and chips",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_description",
+        "startPos": 20,
+        "endPos": 36,
+        "text": "teresa and elnora"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 43,
+        "endPos": 57,
+        "text": "fast food joint"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 72,
+        "endPos": 85,
+        "text": "fish and chips"
+      }
+    ]
+  },
+  {
+    "text": "Book a table for 8 at a restaurant that serves far breton .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 17,
+        "text": "8"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 24,
+        "endPos": 33,
+        "text": "restaurant"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 47,
+        "endPos": 56,
+        "text": "far breton"
+      }
+    ]
+  },
+  {
+    "text": "book a stuffed ham serving pizzeria in Independence Corner",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "served_dish",
+        "startPos": 7,
+        "endPos": 17,
+        "text": "stuffed ham"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 27,
+        "endPos": 34,
+        "text": "pizzeria"
+      },
+      {
+        "entity": "city",
+        "startPos": 39,
+        "endPos": 57,
+        "text": "Independence Corner"
+      }
+    ]
+  },
+  {
+    "text": "Book a restaurant in town not far from here for me and my mother in law .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 16,
+        "text": "restaurant"
+      },
+      {
+        "entity": "poi",
+        "startPos": 18,
+        "endPos": 24,
+        "text": "in town"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 26,
+        "endPos": 32,
+        "text": "not far"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 48,
+        "endPos": 70,
+        "text": "me and my mother in law"
+      }
+    ]
+  },
+  {
+    "text": "this winter , meredith, betty and erika want to food at a gastropub that is in the same area as fran's location .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 0,
+        "endPos": 10,
+        "text": "this winter"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 14,
+        "endPos": 38,
+        "text": "meredith, betty and erika"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 58,
+        "endPos": 66,
+        "text": "gastropub"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 76,
+        "endPos": 91,
+        "text": "in the same area"
+      },
+      {
+        "entity": "poi",
+        "startPos": 96,
+        "endPos": 110,
+        "text": "fran's location"
+      }
+    ]
+  },
+  {
+    "text": "Find a reservation within walking distance of pauline's place for a party of 10 at fourteen o'clock at a restaurant that serves aioli",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 19,
+        "endPos": 41,
+        "text": "within walking distance"
+      },
+      {
+        "entity": "poi",
+        "startPos": 46,
+        "endPos": 60,
+        "text": "pauline's place"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 77,
+        "endPos": 78,
+        "text": "10"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 83,
+        "endPos": 98,
+        "text": "fourteen o'clock"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 105,
+        "endPos": 114,
+        "text": "restaurant"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 128,
+        "endPos": 132,
+        "text": "aioli"
+      }
+    ]
+  },
+  {
+    "text": "I want to book a bar neighboring our apartment .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 17,
+        "endPos": 19,
+        "text": "bar"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 21,
+        "endPos": 31,
+        "text": "neighboring"
+      },
+      {
+        "entity": "poi",
+        "startPos": 33,
+        "endPos": 45,
+        "text": "our apartment"
+      }
+    ]
+  },
+  {
+    "text": "book a spot for 1 close to geraldine's house",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 16,
+        "endPos": 16,
+        "text": "1"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 18,
+        "endPos": 22,
+        "text": "close"
+      },
+      {
+        "entity": "poi",
+        "startPos": 27,
+        "endPos": 43,
+        "text": "geraldine's house"
+      }
+    ]
+  },
+  {
+    "text": "book a restaurant close to Grant Av",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 16,
+        "text": "restaurant"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 18,
+        "endPos": 22,
+        "text": "close"
+      },
+      {
+        "entity": "poi",
+        "startPos": 27,
+        "endPos": 34,
+        "text": "Grant Av"
+      }
+    ]
+  },
+  {
+    "text": "Find a restaurant for marylou and I within walking distance of my mum's hotel",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 16,
+        "text": "restaurant"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 22,
+        "endPos": 34,
+        "text": "marylou and I"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 36,
+        "endPos": 58,
+        "text": "within walking distance"
+      },
+      {
+        "entity": "poi",
+        "startPos": 63,
+        "endPos": 76,
+        "text": "my mum's hotel"
+      }
+    ]
+  },
+  {
+    "text": "Book a restaurant at a steakhouse around in town that serves empanada for me and my son",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 16,
+        "text": "restaurant"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 23,
+        "endPos": 32,
+        "text": "steakhouse"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 34,
+        "endPos": 39,
+        "text": "around"
+      },
+      {
+        "entity": "poi",
+        "startPos": 41,
+        "endPos": 47,
+        "text": "in town"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 61,
+        "endPos": 68,
+        "text": "empanada"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 74,
+        "endPos": 86,
+        "text": "me and my son"
+      }
+    ]
+  },
+  {
+    "text": "book in town for 3 at a restaurant outdoor that is not far",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "poi",
+        "startPos": 5,
+        "endPos": 11,
+        "text": "in town"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 17,
+        "text": "3"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 24,
+        "endPos": 33,
+        "text": "restaurant"
+      },
+      {
+        "entity": "facility",
+        "startPos": 35,
+        "endPos": 41,
+        "text": "outdoor"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 51,
+        "endPos": 57,
+        "text": "not far"
+      }
+    ]
+  },
+  {
+    "text": "will the weather be cloudy at 0 PM at my current position",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 20,
+        "endPos": 25,
+        "text": "cloudy"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 30,
+        "endPos": 33,
+        "text": "0 PM"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 41,
+        "endPos": 56,
+        "text": "current position"
+      }
+    ]
+  },
+  {
+    "text": "what is the weather forecast this week close-by my current position",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 29,
+        "endPos": 37,
+        "text": "this week"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 39,
+        "endPos": 46,
+        "text": "close-by"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 51,
+        "endPos": 66,
+        "text": "current position"
+      }
+    ]
+  },
+  {
+    "text": "Can you give me weather details for my current spot",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "current_location",
+        "startPos": 39,
+        "endPos": 50,
+        "text": "current spot"
+      }
+    ]
+  },
+  {
+    "text": "Can you give me a forecast for weather at night in my current position",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 42,
+        "endPos": 46,
+        "text": "night"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 54,
+        "endPos": 69,
+        "text": "current position"
+      }
+    ]
+  },
+  {
+    "text": "weather forcast for current location now",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "current_location",
+        "startPos": 20,
+        "endPos": 35,
+        "text": "current location"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 37,
+        "endPos": 39,
+        "text": "now"
+      }
+    ]
+  },
+  {
+    "text": "what is the twenty one o'clock forecast for the current spot",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 12,
+        "endPos": 29,
+        "text": "twenty one o'clock"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 48,
+        "endPos": 59,
+        "text": "current spot"
+      }
+    ]
+  },
+  {
+    "text": "How cold is it around the current location now ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 4,
+        "endPos": 7,
+        "text": "cold"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 15,
+        "endPos": 20,
+        "text": "around"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 26,
+        "endPos": 41,
+        "text": "current location"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 43,
+        "endPos": 45,
+        "text": "now"
+      }
+    ]
+  },
+  {
+    "text": "What will it feel like in the current place in July",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "current_location",
+        "startPos": 30,
+        "endPos": 42,
+        "text": "current place"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 47,
+        "endPos": 50,
+        "text": "July"
+      }
+    ]
+  },
+  {
+    "text": "What is the weather forecast for my current place ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "current_location",
+        "startPos": 36,
+        "endPos": 48,
+        "text": "current place"
+      }
+    ]
+  },
+  {
+    "text": "Will there be a storm on Christmas Day in my current place ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 16,
+        "endPos": 20,
+        "text": "storm"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 25,
+        "endPos": 37,
+        "text": "Christmas Day"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 45,
+        "endPos": 57,
+        "text": "current place"
+      }
+    ]
+  },
+  {
+    "text": "I want to book a food court for 5 at 1 am",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 17,
+        "endPos": 26,
+        "text": "food court"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 32,
+        "endPos": 32,
+        "text": "5"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 37,
+        "endPos": 40,
+        "text": "1 am"
+      }
+    ]
+  },
+  {
+    "text": "Book a fast food restaurant .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 26,
+        "text": "fast food restaurant"
+      }
+    ]
+  },
+  {
+    "text": "book a spot at a soul food food truck in Cawker City",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "served_dish",
+        "startPos": 17,
+        "endPos": 25,
+        "text": "soul food"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 27,
+        "endPos": 36,
+        "text": "food truck"
+      },
+      {
+        "entity": "city",
+        "startPos": 41,
+        "endPos": 51,
+        "text": "Cawker City"
+      }
+    ]
+  },
+  {
+    "text": "I would like to book a puglia food court in KY",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "cuisine",
+        "startPos": 23,
+        "endPos": 28,
+        "text": "puglia"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "food court"
+      },
+      {
+        "entity": "state",
+        "startPos": 44,
+        "endPos": 45,
+        "text": "KY"
+      }
+    ]
+  },
+  {
+    "text": "Book seating for one person at a food truck",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 19,
+        "text": "one"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 33,
+        "endPos": 42,
+        "text": "food truck"
+      }
+    ]
+  },
+  {
+    "text": "Please book me seating at the food court in Hazel Green for nine",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "food court"
+      },
+      {
+        "entity": "city",
+        "startPos": 44,
+        "endPos": 54,
+        "text": "Hazel Green"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 60,
+        "endPos": 63,
+        "text": "nine"
+      }
+    ]
+  },
+  {
+    "text": "book a spot for robyn martinez, maude and I at a steakhouse not far from their place",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_description",
+        "startPos": 16,
+        "endPos": 42,
+        "text": "robyn martinez, maude and I"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 49,
+        "endPos": 58,
+        "text": "steakhouse"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 60,
+        "endPos": 66,
+        "text": "not far"
+      },
+      {
+        "entity": "poi",
+        "startPos": 73,
+        "endPos": 83,
+        "text": "their place"
+      }
+    ]
+  },
+  {
+    "text": "play some grunge",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 10,
+        "endPos": 15,
+        "text": "grunge"
+      }
+    ]
+  },
+  {
+    "text": "Play some rock music on Youtube",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 10,
+        "endPos": 13,
+        "text": "rock"
+      },
+      {
+        "entity": "service",
+        "startPos": 24,
+        "endPos": 30,
+        "text": "Youtube"
+      }
+    ]
+  },
+  {
+    "text": "Play the Busco Un Pueblo album",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "album",
+        "startPos": 9,
+        "endPos": 23,
+        "text": "Busco Un Pueblo"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 25,
+        "endPos": 29,
+        "text": "album"
+      }
+    ]
+  },
+  {
+    "text": "play the Música Da Série De Filmes O Hobbit album by Alex Otaola",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "album",
+        "startPos": 9,
+        "endPos": 42,
+        "text": "Música Da Série De Filmes O Hobbit"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 44,
+        "endPos": 48,
+        "text": "album"
+      },
+      {
+        "entity": "artist",
+        "startPos": 53,
+        "endPos": 63,
+        "text": "Alex Otaola"
+      }
+    ]
+  },
+  {
+    "text": "Open Lastfm and play a voluntad del cielo from Wax",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "service",
+        "startPos": 5,
+        "endPos": 10,
+        "text": "Lastfm"
+      },
+      {
+        "entity": "album",
+        "startPos": 21,
+        "endPos": 40,
+        "text": "a voluntad del cielo"
+      },
+      {
+        "entity": "artist",
+        "startPos": 47,
+        "endPos": 49,
+        "text": "Wax"
+      }
+    ]
+  },
+  {
+    "text": "Play the most popular song by espen lind",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 9,
+        "endPos": 20,
+        "text": "most popular"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 22,
+        "endPos": 25,
+        "text": "song"
+      },
+      {
+        "entity": "artist",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "espen lind"
+      }
+    ]
+  },
+  {
+    "text": "book me a reservation at a highly rated tavern in Hornersville",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 27,
+        "endPos": 38,
+        "text": "highly rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 40,
+        "endPos": 45,
+        "text": "tavern"
+      },
+      {
+        "entity": "city",
+        "startPos": 50,
+        "endPos": 61,
+        "text": "Hornersville"
+      }
+    ]
+  },
+  {
+    "text": "Book a highly rated fast food restaurant in Falmouth .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 7,
+        "endPos": 18,
+        "text": "highly rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 20,
+        "endPos": 39,
+        "text": "fast food restaurant"
+      },
+      {
+        "entity": "city",
+        "startPos": 44,
+        "endPos": 51,
+        "text": "Falmouth"
+      }
+    ]
+  },
+  {
+    "text": "book a highly rated bar in Burkina for georgia and I",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 7,
+        "endPos": 18,
+        "text": "highly rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 20,
+        "endPos": 22,
+        "text": "bar"
+      },
+      {
+        "entity": "country",
+        "startPos": 27,
+        "endPos": 33,
+        "text": "Burkina"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 39,
+        "endPos": 51,
+        "text": "georgia and I"
+      }
+    ]
+  },
+  {
+    "text": "play the top five songs by Gad Elbaz",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 9,
+        "endPos": 16,
+        "text": "top five"
+      },
+      {
+        "entity": "artist",
+        "startPos": 27,
+        "endPos": 35,
+        "text": "Gad Elbaz"
+      }
+    ]
+  },
+  {
+    "text": "listen to tei movement from most popular eighties music",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 10,
+        "endPos": 12,
+        "text": "tei"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 14,
+        "endPos": 21,
+        "text": "movement"
+      },
+      {
+        "entity": "sort",
+        "startPos": 28,
+        "endPos": 39,
+        "text": "most popular"
+      },
+      {
+        "entity": "year",
+        "startPos": 41,
+        "endPos": 48,
+        "text": "eighties"
+      }
+    ]
+  },
+  {
+    "text": "Book reservations at a highly rated bar on 11/23/2031",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 23,
+        "endPos": 34,
+        "text": "highly rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 36,
+        "endPos": 38,
+        "text": "bar"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 43,
+        "endPos": 52,
+        "text": "11/23/2031"
+      }
+    ]
+  },
+  {
+    "text": "Book a brazilian diner for 9 that's highly rated within the same area as Comoros",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "cuisine",
+        "startPos": 7,
+        "endPos": 15,
+        "text": "brazilian"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 17,
+        "endPos": 21,
+        "text": "diner"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 27,
+        "endPos": 27,
+        "text": "9"
+      },
+      {
+        "entity": "sort",
+        "startPos": 36,
+        "endPos": 47,
+        "text": "highly rated"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 49,
+        "endPos": 68,
+        "text": "within the same area"
+      },
+      {
+        "entity": "country",
+        "startPos": 73,
+        "endPos": 79,
+        "text": "Comoros"
+      }
+    ]
+  },
+  {
+    "text": "play a top 50 tune from the twenties by Willi Williams",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 7,
+        "endPos": 12,
+        "text": "top 50"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 14,
+        "endPos": 17,
+        "text": "tune"
+      },
+      {
+        "entity": "year",
+        "startPos": 28,
+        "endPos": 35,
+        "text": "twenties"
+      },
+      {
+        "entity": "artist",
+        "startPos": 40,
+        "endPos": 53,
+        "text": "Willi Williams"
+      }
+    ]
+  },
+  {
+    "text": "book a table not far in WY at a gastropub with internet for me, jenny and antoinette in one week",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 13,
+        "endPos": 19,
+        "text": "not far"
+      },
+      {
+        "entity": "state",
+        "startPos": 24,
+        "endPos": 25,
+        "text": "WY"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 32,
+        "endPos": 40,
+        "text": "gastropub"
+      },
+      {
+        "entity": "facility",
+        "startPos": 47,
+        "endPos": 54,
+        "text": "internet"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 60,
+        "endPos": 83,
+        "text": "me, jenny and antoinette"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 85,
+        "endPos": 95,
+        "text": "in one week"
+      }
+    ]
+  },
+  {
+    "text": "I want to take nine people to a diner close to the spa",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 15,
+        "endPos": 18,
+        "text": "nine"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 32,
+        "endPos": 36,
+        "text": "diner"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 38,
+        "endPos": 42,
+        "text": "close"
+      },
+      {
+        "entity": "facility",
+        "startPos": 51,
+        "endPos": 53,
+        "text": "spa"
+      }
+    ]
+  },
+  {
+    "text": "I need a reservation for an indoor restaurant in China",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "facility",
+        "startPos": 28,
+        "endPos": 33,
+        "text": "indoor"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 35,
+        "endPos": 44,
+        "text": "restaurant"
+      },
+      {
+        "entity": "country",
+        "startPos": 49,
+        "endPos": 53,
+        "text": "China"
+      }
+    ]
+  },
+  {
+    "text": "Book an outdoor restaurant .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "facility",
+        "startPos": 8,
+        "endPos": 14,
+        "text": "outdoor"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 16,
+        "endPos": 25,
+        "text": "restaurant"
+      }
+    ]
+  },
+  {
+    "text": "I'd like to eat at an oyster bar with a pool",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 22,
+        "endPos": 31,
+        "text": "oyster bar"
+      },
+      {
+        "entity": "facility",
+        "startPos": 40,
+        "endPos": 43,
+        "text": "pool"
+      }
+    ]
+  },
+  {
+    "text": "book a brasserie with a pool within the same area as my neighborhood for 5 people at 19:26",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 15,
+        "text": "brasserie"
+      },
+      {
+        "entity": "facility",
+        "startPos": 24,
+        "endPos": 27,
+        "text": "pool"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 29,
+        "endPos": 48,
+        "text": "within the same area"
+      },
+      {
+        "entity": "poi",
+        "startPos": 56,
+        "endPos": 67,
+        "text": "neighborhood"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 73,
+        "endPos": 73,
+        "text": "5"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 85,
+        "endPos": 89,
+        "text": "19:26"
+      }
+    ]
+  },
+  {
+    "text": "What is the weather forecast for North Carolina on October thirteenth, 2037",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "state",
+        "startPos": 33,
+        "endPos": 46,
+        "text": "North Carolina"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 51,
+        "endPos": 74,
+        "text": "October thirteenth, 2037"
+      }
+    ]
+  },
+  {
+    "text": "What's the weather forecast for the Northern Mariana Islands on 8/4/2024 ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "state",
+        "startPos": 36,
+        "endPos": 59,
+        "text": "Northern Mariana Islands"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 64,
+        "endPos": 71,
+        "text": "8/4/2024"
+      }
+    ]
+  },
+  {
+    "text": "Book me a table at the highly rated cafeteria in Federated States Of Micronesia",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 23,
+        "endPos": 34,
+        "text": "highly rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 36,
+        "endPos": 44,
+        "text": "cafeteria"
+      },
+      {
+        "entity": "state",
+        "startPos": 49,
+        "endPos": 78,
+        "text": "Federated States Of Micronesia"
+      }
+    ]
+  },
+  {
+    "text": "How will the weather be this Summer in New York ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 24,
+        "endPos": 34,
+        "text": "this Summer"
+      },
+      {
+        "entity": "state",
+        "startPos": 39,
+        "endPos": 46,
+        "text": "New York"
+      }
+    ]
+  },
+  {
+    "text": "Book a bar that serves stracciatella in North Dakota for four at four am",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 7,
+        "endPos": 9,
+        "text": "bar"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 23,
+        "endPos": 35,
+        "text": "stracciatella"
+      },
+      {
+        "entity": "state",
+        "startPos": 40,
+        "endPos": 51,
+        "text": "North Dakota"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 57,
+        "endPos": 60,
+        "text": "four"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 65,
+        "endPos": 71,
+        "text": "four am"
+      }
+    ]
+  },
+  {
+    "text": "I would like to book an AMerican Samoa restaurant for 8",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "state",
+        "startPos": 24,
+        "endPos": 37,
+        "text": "AMerican Samoa"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 39,
+        "endPos": 48,
+        "text": "restaurant"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 54,
+        "endPos": 54,
+        "text": "8"
+      }
+    ]
+  },
+  {
+    "text": "book for my girlfriend and I for truffade at a gastropub in West Virginia",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_description",
+        "startPos": 9,
+        "endPos": 27,
+        "text": "my girlfriend and I"
+      },
+      {
+        "entity": "served_dish",
+        "startPos": 33,
+        "endPos": 40,
+        "text": "truffade"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 47,
+        "endPos": 55,
+        "text": "gastropub"
+      },
+      {
+        "entity": "state",
+        "startPos": 60,
+        "endPos": 72,
+        "text": "West Virginia"
+      }
+    ]
+  },
+  {
+    "text": "I want to hear Jimmy James from the thirties , play a song on Groove Shark .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 15,
+        "endPos": 25,
+        "text": "Jimmy James"
+      },
+      {
+        "entity": "year",
+        "startPos": 36,
+        "endPos": 43,
+        "text": "thirties"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 54,
+        "endPos": 57,
+        "text": "song"
+      },
+      {
+        "entity": "service",
+        "startPos": 62,
+        "endPos": 73,
+        "text": "Groove Shark"
+      }
+    ]
+  },
+  {
+    "text": "I want to hear Ding Dong Bell on groove shark",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 15,
+        "endPos": 28,
+        "text": "Ding Dong Bell"
+      },
+      {
+        "entity": "service",
+        "startPos": 33,
+        "endPos": 44,
+        "text": "groove shark"
+      }
+    ]
+  },
+  {
+    "text": "Play some music on groove shark .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "service",
+        "startPos": 19,
+        "endPos": 30,
+        "text": "groove shark"
+      }
+    ]
+  },
+  {
+    "text": "play pop music with Groove Shark",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "genre",
+        "startPos": 5,
+        "endPos": 7,
+        "text": "pop"
+      },
+      {
+        "entity": "service",
+        "startPos": 20,
+        "endPos": 31,
+        "text": "Groove Shark"
+      }
+    ]
+  },
+  {
+    "text": "Play Clay Aiken 's The Bonny Hind on Groove Shark .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 5,
+        "endPos": 14,
+        "text": "Clay Aiken"
+      },
+      {
+        "entity": "track",
+        "startPos": 19,
+        "endPos": 32,
+        "text": "The Bonny Hind"
+      },
+      {
+        "entity": "service",
+        "startPos": 37,
+        "endPos": 48,
+        "text": "Groove Shark"
+      }
+    ]
+  },
+  {
+    "text": "play chant from the nineties with Last Fm",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 5,
+        "endPos": 9,
+        "text": "chant"
+      },
+      {
+        "entity": "year",
+        "startPos": 20,
+        "endPos": 27,
+        "text": "nineties"
+      },
+      {
+        "entity": "service",
+        "startPos": 34,
+        "endPos": 40,
+        "text": "Last Fm"
+      }
+    ]
+  },
+  {
+    "text": "Play Portsmouth by Paul Smith on Google Music .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 14,
+        "text": "Portsmouth"
+      },
+      {
+        "entity": "artist",
+        "startPos": 19,
+        "endPos": 28,
+        "text": "Paul Smith"
+      },
+      {
+        "entity": "service",
+        "startPos": 33,
+        "endPos": 44,
+        "text": "Google Music"
+      }
+    ]
+  },
+  {
+    "text": "Play Red Barchetta by Blind Lemon Jefferson .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 17,
+        "text": "Red Barchetta"
+      },
+      {
+        "entity": "artist",
+        "startPos": 22,
+        "endPos": 42,
+        "text": "Blind Lemon Jefferson"
+      }
+    ]
+  },
+  {
+    "text": "Play Robin Hood Rescuing Three Squires by Bhupinder Singh",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 37,
+        "text": "Robin Hood Rescuing Three Squires"
+      },
+      {
+        "entity": "artist",
+        "startPos": 42,
+        "endPos": 56,
+        "text": "Bhupinder Singh"
+      }
+    ]
+  },
+  {
+    "text": "Play Elastic Love by Junior Marvin",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 16,
+        "text": "Elastic Love"
+      },
+      {
+        "entity": "artist",
+        "startPos": 21,
+        "endPos": 33,
+        "text": "Junior Marvin"
+      }
+    ]
+  },
+  {
+    "text": "Play a song of I Myself And Me on Youtube",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 7,
+        "endPos": 10,
+        "text": "song"
+      },
+      {
+        "entity": "album",
+        "startPos": 15,
+        "endPos": 29,
+        "text": "I Myself And Me"
+      },
+      {
+        "entity": "service",
+        "startPos": 34,
+        "endPos": 40,
+        "text": "Youtube"
+      }
+    ]
+  },
+  {
+    "text": "Play the album Cara De Dios .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 9,
+        "endPos": 13,
+        "text": "album"
+      },
+      {
+        "entity": "album",
+        "startPos": 15,
+        "endPos": 26,
+        "text": "Cara De Dios"
+      }
+    ]
+  },
+  {
+    "text": "I want to hear Gloryhole from Mani off of Lastfm",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "album",
+        "startPos": 15,
+        "endPos": 23,
+        "text": "Gloryhole"
+      },
+      {
+        "entity": "artist",
+        "startPos": 30,
+        "endPos": 33,
+        "text": "Mani"
+      },
+      {
+        "entity": "service",
+        "startPos": 42,
+        "endPos": 47,
+        "text": "Lastfm"
+      }
+    ]
+  },
+  {
+    "text": "Play the album Shooting Silvio by Dave Sabo",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 9,
+        "endPos": 13,
+        "text": "album"
+      },
+      {
+        "entity": "album",
+        "startPos": 15,
+        "endPos": 29,
+        "text": "Shooting Silvio"
+      },
+      {
+        "entity": "artist",
+        "startPos": 34,
+        "endPos": 42,
+        "text": "Dave Sabo"
+      }
+    ]
+  },
+  {
+    "text": "I want to hear the album Suites & Sweets",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 19,
+        "endPos": 23,
+        "text": "album"
+      },
+      {
+        "entity": "album",
+        "startPos": 25,
+        "endPos": 39,
+        "text": "Suites & Sweets"
+      }
+    ]
+  },
+  {
+    "text": "Play Moondog 's Chupacabra .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 5,
+        "endPos": 11,
+        "text": "Moondog"
+      },
+      {
+        "entity": "album",
+        "startPos": 16,
+        "endPos": 25,
+        "text": "Chupacabra"
+      }
+    ]
+  },
+  {
+    "text": "play To Be Still",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "album",
+        "startPos": 5,
+        "endPos": 15,
+        "text": "To Be Still"
+      }
+    ]
+  },
+  {
+    "text": "I need a reservation for five at a top-rated english restaurant in Elma",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 25,
+        "endPos": 28,
+        "text": "five"
+      },
+      {
+        "entity": "sort",
+        "startPos": 35,
+        "endPos": 43,
+        "text": "top-rated"
+      },
+      {
+        "entity": "cuisine",
+        "startPos": 45,
+        "endPos": 51,
+        "text": "english"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 53,
+        "endPos": 62,
+        "text": "restaurant"
+      },
+      {
+        "entity": "city",
+        "startPos": 67,
+        "endPos": 70,
+        "text": "Elma"
+      }
+    ]
+  },
+  {
+    "text": "Do you have something like Impossible Is Nothing by Abderrahmane Abdelli ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 27,
+        "endPos": 47,
+        "text": "Impossible Is Nothing"
+      },
+      {
+        "entity": "artist",
+        "startPos": 52,
+        "endPos": 71,
+        "text": "Abderrahmane Abdelli"
+      }
+    ]
+  },
+  {
+    "text": "play All Of Your Toys by Chris Ledoux",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 20,
+        "text": "All Of Your Toys"
+      },
+      {
+        "entity": "artist",
+        "startPos": 25,
+        "endPos": 36,
+        "text": "Chris Ledoux"
+      }
+    ]
+  },
+  {
+    "text": "Play Martha My Dear by shannon .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 5,
+        "endPos": 18,
+        "text": "Martha My Dear"
+      },
+      {
+        "entity": "artist",
+        "startPos": 23,
+        "endPos": 29,
+        "text": "shannon"
+      }
+    ]
+  },
+  {
+    "text": "Please play Bitch Please Ii",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "track",
+        "startPos": 12,
+        "endPos": 26,
+        "text": "Bitch Please Ii"
+      }
+    ]
+  },
+  {
+    "text": "will it rain today in French Southern Territories of Highland Beach",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 8,
+        "endPos": 11,
+        "text": "rain"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 13,
+        "endPos": 17,
+        "text": "today"
+      },
+      {
+        "entity": "country",
+        "startPos": 22,
+        "endPos": 48,
+        "text": "French Southern Territories"
+      },
+      {
+        "entity": "city",
+        "startPos": 53,
+        "endPos": 66,
+        "text": "Highland Beach"
+      }
+    ]
+  },
+  {
+    "text": "What is the weather forecast for East Cleveland , Republic of the Congo",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "city",
+        "startPos": 33,
+        "endPos": 46,
+        "text": "East Cleveland"
+      },
+      {
+        "entity": "country",
+        "startPos": 50,
+        "endPos": 70,
+        "text": "Republic of the Congo"
+      }
+    ]
+  },
+  {
+    "text": "I'd like to eat at a top-rated restaurant in Turks and Caicos Islands",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "sort",
+        "startPos": 21,
+        "endPos": 29,
+        "text": "top-rated"
+      },
+      {
+        "entity": "restaurant_type",
+        "startPos": 31,
+        "endPos": 40,
+        "text": "restaurant"
+      },
+      {
+        "entity": "country",
+        "startPos": 45,
+        "endPos": 68,
+        "text": "Turks and Caicos Islands"
+      }
+    ]
+  },
+  {
+    "text": "What's the weather like in Wyandotte Netherlands Antilles",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "city",
+        "startPos": 27,
+        "endPos": 35,
+        "text": "Wyandotte"
+      },
+      {
+        "entity": "country",
+        "startPos": 37,
+        "endPos": 56,
+        "text": "Netherlands Antilles"
+      }
+    ]
+  },
+  {
+    "text": "What time is Kerasotes Theatres playing animated movies",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "location_name",
+        "startPos": 13,
+        "endPos": 30,
+        "text": "Kerasotes Theatres"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 40,
+        "endPos": 54,
+        "text": "animated movies"
+      }
+    ]
+  },
+  {
+    "text": "Find the movie schedule for animated movies in the area .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 9,
+        "endPos": 22,
+        "text": "movie schedule"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 28,
+        "endPos": 42,
+        "text": "animated movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 44,
+        "endPos": 54,
+        "text": "in the area"
+      }
+    ]
+  },
+  {
+    "text": "What animated movies are playing at KB Theatres",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 5,
+        "endPos": 19,
+        "text": "animated movies"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 36,
+        "endPos": 46,
+        "text": "KB Theatres"
+      }
+    ]
+  },
+  {
+    "text": "What is the movie schedules for animated movies in the neighbourhood",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 26,
+        "text": "movie schedules"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 32,
+        "endPos": 46,
+        "text": "animated movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 48,
+        "endPos": 67,
+        "text": "in the neighbourhood"
+      }
+    ]
+  },
+  {
+    "text": "Are there any animated movies playing in the neighborhood ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 14,
+        "endPos": 28,
+        "text": "animated movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 38,
+        "endPos": 56,
+        "text": "in the neighborhood"
+      }
+    ]
+  },
+  {
+    "text": "Find the closest movie house that plays animated movies",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 17,
+        "endPos": 27,
+        "text": "movie house"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 40,
+        "endPos": 54,
+        "text": "animated movies"
+      }
+    ]
+  },
+  {
+    "text": "Which animated movies are showing at the Neighborhood Cinema Group ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 6,
+        "endPos": 20,
+        "text": "animated movies"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 41,
+        "endPos": 65,
+        "text": "Neighborhood Cinema Group"
+      }
+    ]
+  },
+  {
+    "text": "what's the closest cinema showing animated movies",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 11,
+        "endPos": 17,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 19,
+        "endPos": 24,
+        "text": "cinema"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 34,
+        "endPos": 48,
+        "text": "animated movies"
+      }
+    ]
+  },
+  {
+    "text": "find movie times nearby for animated movies",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 5,
+        "endPos": 15,
+        "text": "movie times"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 17,
+        "endPos": 22,
+        "text": "nearby"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 28,
+        "endPos": 42,
+        "text": "animated movies"
+      }
+    ]
+  },
+  {
+    "text": "find the nearest animated movies at a movie theatre",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "nearest"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 17,
+        "endPos": 31,
+        "text": "animated movies"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 38,
+        "endPos": 50,
+        "text": "movie theatre"
+      }
+    ]
+  },
+  {
+    "text": "What will the weather be like here on february 22, 2024",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "current_location",
+        "startPos": 30,
+        "endPos": 33,
+        "text": "here"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 38,
+        "endPos": 54,
+        "text": "february 22, 2024"
+      }
+    ]
+  },
+  {
+    "text": "What will the weather be nineteen seconds from now from the Little Manatee River State Park",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 25,
+        "endPos": 49,
+        "text": "nineteen seconds from now"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 60,
+        "endPos": 90,
+        "text": "Little Manatee River State Park"
+      }
+    ]
+  },
+  {
+    "text": "What is the weather like in Great Bay National Wildlife Refuge ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "geographic_poi",
+        "startPos": 28,
+        "endPos": 61,
+        "text": "Great Bay National Wildlife Refuge"
+      }
+    ]
+  },
+  {
+    "text": "What will the weather be in Corcovado National Park on december the fifth ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "geographic_poi",
+        "startPos": 28,
+        "endPos": 50,
+        "text": "Corcovado National Park"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 55,
+        "endPos": 72,
+        "text": "december the fifth"
+      }
+    ]
+  },
+  {
+    "text": "Will it be chilly in two hundred thirteen days at Dochū-Kōtsu Prefectural Natural Park",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 16,
+        "text": "chilly"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 18,
+        "endPos": 45,
+        "text": "in two hundred thirteen days"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 50,
+        "endPos": 85,
+        "text": "Dochū-Kōtsu Prefectural Natural Park"
+      }
+    ]
+  },
+  {
+    "text": "show weather forecast for Dovre-Nationalpark",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "geographic_poi",
+        "startPos": 26,
+        "endPos": 43,
+        "text": "Dovre-Nationalpark"
+      }
+    ]
+  },
+  {
+    "text": "what is the weather forecast for Shasha Forest Reserve in 43 weeks",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "geographic_poi",
+        "startPos": 33,
+        "endPos": 53,
+        "text": "Shasha Forest Reserve"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 55,
+        "endPos": 65,
+        "text": "in 43 weeks"
+      }
+    ]
+  },
+  {
+    "text": "Will it be rainy faraway in Charleston Lake Provincial Park in 13 hours ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 11,
+        "endPos": 15,
+        "text": "rainy"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 17,
+        "endPos": 23,
+        "text": "faraway"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 28,
+        "endPos": 58,
+        "text": "Charleston Lake Provincial Park"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 60,
+        "endPos": 70,
+        "text": "in 13 hours"
+      }
+    ]
+  },
+  {
+    "text": "what is the forecast for hot temps at Bowman Bay Wildlife Sanctuary",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 25,
+        "endPos": 27,
+        "text": "hot"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 38,
+        "endPos": 66,
+        "text": "Bowman Bay Wildlife Sanctuary"
+      }
+    ]
+  },
+  {
+    "text": "What is the weather forecast for four pm close to Stretch Point State Park",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "timeRange",
+        "startPos": 33,
+        "endPos": 39,
+        "text": "four pm"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 41,
+        "endPos": 45,
+        "text": "close"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 50,
+        "endPos": 73,
+        "text": "Stretch Point State Park"
+      }
+    ]
+  },
+  {
+    "text": "Is it overcast in Ziwa Rhino Sanctuary ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 6,
+        "endPos": 13,
+        "text": "overcast"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 18,
+        "endPos": 37,
+        "text": "Ziwa Rhino Sanctuary"
+      }
+    ]
+  },
+  {
+    "text": "I want to rate the saga The Italian two to 6 points .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 19,
+        "endPos": 22,
+        "text": "saga"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 24,
+        "endPos": 34,
+        "text": "The Italian"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 36,
+        "endPos": 38,
+        "text": "two"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 43,
+        "endPos": 43,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 45,
+        "endPos": 50,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "Rate this series 2 out of 6",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 5,
+        "endPos": 8,
+        "text": "this"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 10,
+        "endPos": 15,
+        "text": "series"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 17,
+        "endPos": 17,
+        "text": "2"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 26,
+        "endPos": 26,
+        "text": "6"
+      }
+    ]
+  },
+  {
+    "text": "Rate the current saga a two",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "current"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 17,
+        "endPos": 20,
+        "text": "saga"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 24,
+        "endPos": 26,
+        "text": "two"
+      }
+    ]
+  },
+  {
+    "text": "0 stars for this current saga",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "rating_value",
+        "startPos": 0,
+        "endPos": 0,
+        "text": "0"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 2,
+        "endPos": 6,
+        "text": "stars"
+      },
+      {
+        "entity": "object_select",
+        "startPos": 17,
+        "endPos": 23,
+        "text": "current"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 25,
+        "endPos": 28,
+        "text": "saga"
+      }
+    ]
+  },
+  {
+    "text": "give 1 points to The Duel: Pakistan on the Flight Path of American Power saga",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "rating_value",
+        "startPos": 5,
+        "endPos": 5,
+        "text": "1"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 7,
+        "endPos": 12,
+        "text": "points"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 17,
+        "endPos": 71,
+        "text": "The Duel: Pakistan on the Flight Path of American Power"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 73,
+        "endPos": 76,
+        "text": "saga"
+      }
+    ]
+  },
+  {
+    "text": "Give the current series four / 6 points .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "current"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 17,
+        "endPos": 22,
+        "text": "series"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 24,
+        "endPos": 27,
+        "text": "four"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 31,
+        "endPos": 31,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 33,
+        "endPos": 38,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "I think that this chronicle should have a best rating of 6 and a value of one",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 13,
+        "endPos": 16,
+        "text": "this"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 18,
+        "endPos": 26,
+        "text": "chronicle"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 57,
+        "endPos": 57,
+        "text": "6"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 74,
+        "endPos": 76,
+        "text": "one"
+      }
+    ]
+  },
+  {
+    "text": "rate the Always Running series 0 points",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_name",
+        "startPos": 9,
+        "endPos": 22,
+        "text": "Always Running"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 24,
+        "endPos": 29,
+        "text": "series"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 31,
+        "endPos": 31,
+        "text": "0"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 33,
+        "endPos": 38,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "rate this current saga 3 out of 6 points",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 10,
+        "endPos": 16,
+        "text": "current"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 18,
+        "endPos": 21,
+        "text": "saga"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 23,
+        "endPos": 23,
+        "text": "3"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 32,
+        "endPos": 32,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 34,
+        "endPos": 39,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "Is Hollows Grove playing at any movie theatre at ten pm ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_name",
+        "startPos": 3,
+        "endPos": 15,
+        "text": "Hollows Grove"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 32,
+        "endPos": 44,
+        "text": "movie theatre"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 49,
+        "endPos": 54,
+        "text": "ten pm"
+      }
+    ]
+  },
+  {
+    "text": "Show me a movie theatre where Screamplay is playing",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_location_type",
+        "startPos": 10,
+        "endPos": 22,
+        "text": "movie theatre"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "Screamplay"
+      }
+    ]
+  },
+  {
+    "text": "What animated movies are at the closest movie house near brunch",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 5,
+        "endPos": 19,
+        "text": "animated movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 32,
+        "endPos": 38,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 40,
+        "endPos": 50,
+        "text": "movie house"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 57,
+        "endPos": 62,
+        "text": "brunch"
+      }
+    ]
+  },
+  {
+    "text": "What is the closest movie theatre showing In Pursuit of Honor ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 12,
+        "endPos": 18,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 20,
+        "endPos": 32,
+        "text": "movie theatre"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 42,
+        "endPos": 60,
+        "text": "In Pursuit of Honor"
+      }
+    ]
+  },
+  {
+    "text": "Tell me what movies are showing at seven am at the closest movie house .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 13,
+        "endPos": 18,
+        "text": "movies"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 35,
+        "endPos": 42,
+        "text": "seven am"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 51,
+        "endPos": 57,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 59,
+        "endPos": 69,
+        "text": "movie house"
+      }
+    ]
+  },
+  {
+    "text": "Find the schedule for The Band of Honest Men at the nearest movie theatre .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 9,
+        "endPos": 16,
+        "text": "schedule"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 22,
+        "endPos": 43,
+        "text": "The Band of Honest Men"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 52,
+        "endPos": 58,
+        "text": "nearest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 60,
+        "endPos": 72,
+        "text": "movie theatre"
+      }
+    ]
+  },
+  {
+    "text": "When is Bless the Child playing at the movie theatre",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_name",
+        "startPos": 8,
+        "endPos": 22,
+        "text": "Bless the Child"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 39,
+        "endPos": 51,
+        "text": "movie theatre"
+      }
+    ]
+  },
+  {
+    "text": "what's the closest movie house showing animated movies",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 11,
+        "endPos": 17,
+        "text": "closest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 19,
+        "endPos": 29,
+        "text": "movie house"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 39,
+        "endPos": 53,
+        "text": "animated movies"
+      }
+    ]
+  },
+  {
+    "text": "table for eight at The Berghoff in Sistersville in Jul.",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 10,
+        "endPos": 14,
+        "text": "eight"
+      },
+      {
+        "entity": "restaurant_name",
+        "startPos": 19,
+        "endPos": 30,
+        "text": "The Berghoff"
+      },
+      {
+        "entity": "city",
+        "startPos": 35,
+        "endPos": 46,
+        "text": "Sistersville"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 51,
+        "endPos": 54,
+        "text": "Jul."
+      }
+    ]
+  },
+  {
+    "text": "Book a table at The Vortex Bar & Grill on Alaska Day in the state of Rhode Island",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 16,
+        "endPos": 37,
+        "text": "The Vortex Bar & Grill"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 42,
+        "endPos": 51,
+        "text": "Alaska Day"
+      },
+      {
+        "entity": "state",
+        "startPos": 69,
+        "endPos": 80,
+        "text": "Rhode Island"
+      }
+    ]
+  },
+  {
+    "text": "Book a reservation for three at Clinton Street Baking Company & Restaurant",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 23,
+        "endPos": 27,
+        "text": "three"
+      },
+      {
+        "entity": "restaurant_name",
+        "startPos": 32,
+        "endPos": 73,
+        "text": "Clinton Street Baking Company & Restaurant"
+      }
+    ]
+  },
+  {
+    "text": "I need a reservation for The Original House of Pies with three people in Plandome Manor PA",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 25,
+        "endPos": 50,
+        "text": "The Original House of Pies"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 57,
+        "endPos": 61,
+        "text": "three"
+      },
+      {
+        "entity": "city",
+        "startPos": 73,
+        "endPos": 86,
+        "text": "Plandome Manor"
+      },
+      {
+        "entity": "state",
+        "startPos": 88,
+        "endPos": 89,
+        "text": "PA"
+      }
+    ]
+  },
+  {
+    "text": "book Tartine in Mississippi for 5",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 5,
+        "endPos": 11,
+        "text": "Tartine"
+      },
+      {
+        "entity": "state",
+        "startPos": 16,
+        "endPos": 26,
+        "text": "Mississippi"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 32,
+        "endPos": 32,
+        "text": "5"
+      }
+    ]
+  },
+  {
+    "text": "Book a table for nine at Canteen Lunch in the Alley at Midnight",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 17,
+        "endPos": 20,
+        "text": "nine"
+      },
+      {
+        "entity": "restaurant_name",
+        "startPos": 25,
+        "endPos": 50,
+        "text": "Canteen Lunch in the Alley"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 55,
+        "endPos": 62,
+        "text": "Midnight"
+      }
+    ]
+  },
+  {
+    "text": "I need a reservation for 3 at Clinton Street Baking Company & Restaurant",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "party_size_number",
+        "startPos": 25,
+        "endPos": 25,
+        "text": "3"
+      },
+      {
+        "entity": "restaurant_name",
+        "startPos": 30,
+        "endPos": 71,
+        "text": "Clinton Street Baking Company & Restaurant"
+      }
+    ]
+  },
+  {
+    "text": "Need a resevation for a cafeteria stle restaraunt in the country of Liberia for a party of 10",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_type",
+        "startPos": 24,
+        "endPos": 32,
+        "text": "cafeteria"
+      },
+      {
+        "entity": "restaurant_name",
+        "startPos": 57,
+        "endPos": 63,
+        "text": "country"
+      },
+      {
+        "entity": "country",
+        "startPos": 68,
+        "endPos": 74,
+        "text": "Liberia"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 91,
+        "endPos": 92,
+        "text": "10"
+      }
+    ]
+  },
+  {
+    "text": "I want to book The Commons Restaurant for five on Dec. the eighth",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 15,
+        "endPos": 36,
+        "text": "The Commons Restaurant"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 42,
+        "endPos": 45,
+        "text": "five"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 50,
+        "endPos": 64,
+        "text": "Dec. the eighth"
+      }
+    ]
+  },
+  {
+    "text": "Book me a table at The Goof for a party of eight in the state of NV",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 19,
+        "endPos": 26,
+        "text": "The Goof"
+      },
+      {
+        "entity": "party_size_number",
+        "startPos": 43,
+        "endPos": 47,
+        "text": "eight"
+      },
+      {
+        "entity": "state",
+        "startPos": 65,
+        "endPos": 66,
+        "text": "NV"
+      }
+    ]
+  },
+  {
+    "text": "Give me the forecast for the weather in Citrus Springs",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "city",
+        "startPos": 40,
+        "endPos": 53,
+        "text": "Citrus Springs"
+      }
+    ]
+  },
+  {
+    "text": "I need a table at Light Horse Tavern in City of the Dalles NH for kathleen, brianna and I",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "restaurant_name",
+        "startPos": 18,
+        "endPos": 35,
+        "text": "Light Horse Tavern"
+      },
+      {
+        "entity": "city",
+        "startPos": 40,
+        "endPos": 57,
+        "text": "City of the Dalles"
+      },
+      {
+        "entity": "state",
+        "startPos": 59,
+        "endPos": 60,
+        "text": "NH"
+      },
+      {
+        "entity": "party_size_description",
+        "startPos": 66,
+        "endPos": 88,
+        "text": "kathleen, brianna and I"
+      }
+    ]
+  },
+  {
+    "text": "Is it going to hail in Mount San Jacinto State Park",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 15,
+        "endPos": 18,
+        "text": "hail"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 23,
+        "endPos": 50,
+        "text": "Mount San Jacinto State Park"
+      }
+    ]
+  },
+  {
+    "text": "Will it snowstorm next week in West Winfield Finland ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 8,
+        "endPos": 16,
+        "text": "snowstorm"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 18,
+        "endPos": 26,
+        "text": "next week"
+      },
+      {
+        "entity": "city",
+        "startPos": 31,
+        "endPos": 43,
+        "text": "West Winfield"
+      },
+      {
+        "entity": "country",
+        "startPos": 45,
+        "endPos": 51,
+        "text": "Finland"
+      }
+    ]
+  },
+  {
+    "text": "Is it humid in Parc national de Killarney",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 6,
+        "endPos": 10,
+        "text": "humid"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 15,
+        "endPos": 40,
+        "text": "Parc national de Killarney"
+      }
+    ]
+  },
+  {
+    "text": "how much humidity in Mancos",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 9,
+        "endPos": 16,
+        "text": "humidity"
+      },
+      {
+        "entity": "city",
+        "startPos": 21,
+        "endPos": 26,
+        "text": "Mancos"
+      }
+    ]
+  },
+  {
+    "text": "Will there be a cloud here at 06:50:20",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_description",
+        "startPos": 16,
+        "endPos": 20,
+        "text": "cloud"
+      },
+      {
+        "entity": "current_location",
+        "startPos": 22,
+        "endPos": 25,
+        "text": "here"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 30,
+        "endPos": 37,
+        "text": "06:50:20"
+      }
+    ]
+  },
+  {
+    "text": "Will it be colder in Colorado nine months from now ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 16,
+        "text": "colder"
+      },
+      {
+        "entity": "state",
+        "startPos": 21,
+        "endPos": 28,
+        "text": "Colorado"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 30,
+        "endPos": 49,
+        "text": "nine months from now"
+      }
+    ]
+  },
+  {
+    "text": "Will it be hot during Winter ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 13,
+        "text": "hot"
+      },
+      {
+        "entity": "city",
+        "startPos": 22,
+        "endPos": 27,
+        "text": "Winter"
+      }
+    ]
+  },
+  {
+    "text": "Will it be cold in Chatmoss Albania 8 years and a half from now",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 14,
+        "text": "cold"
+      },
+      {
+        "entity": "city",
+        "startPos": 19,
+        "endPos": 26,
+        "text": "Chatmoss"
+      },
+      {
+        "entity": "country",
+        "startPos": 28,
+        "endPos": 34,
+        "text": "Albania"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 36,
+        "endPos": 62,
+        "text": "8 years and a half from now"
+      }
+    ]
+  },
+  {
+    "text": "Is it hot in Round Hill HI",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 6,
+        "endPos": 8,
+        "text": "hot"
+      },
+      {
+        "entity": "city",
+        "startPos": 13,
+        "endPos": 22,
+        "text": "Round Hill"
+      },
+      {
+        "entity": "state",
+        "startPos": 24,
+        "endPos": 25,
+        "text": "HI"
+      }
+    ]
+  },
+  {
+    "text": "Will it get warmer by 5 am in Washington ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 12,
+        "endPos": 17,
+        "text": "warmer"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 22,
+        "endPos": 25,
+        "text": "5 am"
+      },
+      {
+        "entity": "state",
+        "startPos": 30,
+        "endPos": 39,
+        "text": "Washington"
+      }
+    ]
+  },
+  {
+    "text": "Will it be hot in the Cayman Islands on November 12th, 2035",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 13,
+        "text": "hot"
+      },
+      {
+        "entity": "country",
+        "startPos": 22,
+        "endPos": 35,
+        "text": "Cayman Islands"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 40,
+        "endPos": 58,
+        "text": "November 12th, 2035"
+      }
+    ]
+  },
+  {
+    "text": "Will it be chilly around Kingsley Common on jan. 9 ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "condition_temperature",
+        "startPos": 11,
+        "endPos": 16,
+        "text": "chilly"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 18,
+        "endPos": 23,
+        "text": "around"
+      },
+      {
+        "entity": "geographic_poi",
+        "startPos": 25,
+        "endPos": 39,
+        "text": "Kingsley Common"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 44,
+        "endPos": 49,
+        "text": "jan. 9"
+      }
+    ]
+  },
+  {
+    "text": "Add Mary Wells Sings My Guy to the electro sur playlist.",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 26,
+        "text": "Mary Wells Sings My Guy"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 35,
+        "endPos": 45,
+        "text": "electro sur"
+      }
+    ]
+  },
+  {
+    "text": "For playlist todo latino add Absolutely Sweet Marie",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "playlist",
+        "startPos": 13,
+        "endPos": 23,
+        "text": "todo latino"
+      },
+      {
+        "entity": "entity_name",
+        "startPos": 29,
+        "endPos": 50,
+        "text": "Absolutely Sweet Marie"
+      }
+    ]
+  },
+  {
+    "text": "Add spirit touches ground to my leche con chocolate list",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 24,
+        "text": "spirit touches ground"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 29,
+        "endPos": 30,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 32,
+        "endPos": 50,
+        "text": "leche con chocolate"
+      }
+    ]
+  },
+  {
+    "text": "I want some fusil contra fusil added to my dance hits playlist.",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 12,
+        "endPos": 29,
+        "text": "fusil contra fusil"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 40,
+        "endPos": 41,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 43,
+        "endPos": 52,
+        "text": "dance hits"
+      }
+    ]
+  },
+  {
+    "text": "find animated movies in the area",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 5,
+        "endPos": 19,
+        "text": "animated movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 21,
+        "endPos": 31,
+        "text": "in the area"
+      }
+    ]
+  },
+  {
+    "text": "open Fadl Shaker on Spotify and play a melody starting with the newest",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 5,
+        "endPos": 15,
+        "text": "Fadl Shaker"
+      },
+      {
+        "entity": "service",
+        "startPos": 20,
+        "endPos": 26,
+        "text": "Spotify"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 39,
+        "endPos": 44,
+        "text": "melody"
+      },
+      {
+        "entity": "sort",
+        "startPos": 64,
+        "endPos": 69,
+        "text": "newest"
+      }
+    ]
+  },
+  {
+    "text": "Which films are playing at Consolidated Theatres ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 6,
+        "endPos": 10,
+        "text": "films"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 27,
+        "endPos": 47,
+        "text": "Consolidated Theatres"
+      }
+    ]
+  },
+  {
+    "text": "give me the movie schedules for Warren Theatres",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 26,
+        "text": "movie schedules"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 32,
+        "endPos": 46,
+        "text": "Warren Theatres"
+      }
+    ]
+  },
+  {
+    "text": "can I get the movie schedules for Goodrich Quality Theaters",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 14,
+        "endPos": 28,
+        "text": "movie schedules"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 34,
+        "endPos": 58,
+        "text": "Goodrich Quality Theaters"
+      }
+    ]
+  },
+  {
+    "text": "What movies are going to be screened at Caribbean Cinemas at fourteen o'clock ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 5,
+        "endPos": 10,
+        "text": "movies"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 40,
+        "endPos": 56,
+        "text": "Caribbean Cinemas"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 61,
+        "endPos": 76,
+        "text": "fourteen o'clock"
+      }
+    ]
+  },
+  {
+    "text": "What time do the movies play at Southern Theatres ?",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_type",
+        "startPos": 17,
+        "endPos": 22,
+        "text": "movies"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 32,
+        "endPos": 48,
+        "text": "Southern Theatres"
+      }
+    ]
+  },
+  {
+    "text": "Is Strauss Is Playing Today at the Cineplex Odeon Corporation",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_name",
+        "startPos": 3,
+        "endPos": 26,
+        "text": "Strauss Is Playing Today"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 35,
+        "endPos": 60,
+        "text": "Cineplex Odeon Corporation"
+      }
+    ]
+  },
+  {
+    "text": "What time is Tommy and Quadrophenia Live playing at Marcus Corporation",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "movie_name",
+        "startPos": 13,
+        "endPos": 39,
+        "text": "Tommy and Quadrophenia Live"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 52,
+        "endPos": 69,
+        "text": "Marcus Corporation"
+      }
+    ]
+  },
+  {
+    "text": "add vera to my 80's Jam Session playlist",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 7,
+        "text": "vera"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 12,
+        "endPos": 13,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 15,
+        "endPos": 30,
+        "text": "80's Jam Session"
+      }
+    ]
+  },
+  {
+    "text": "add undressed to my Country Icon playlist",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 12,
+        "text": "undressed"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 17,
+        "endPos": 18,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 20,
+        "endPos": 31,
+        "text": "Country Icon"
+      }
+    ]
+  },
+  {
+    "text": "add M-CABI to the playlist named Pre-Party R&B Jams",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 9,
+        "text": "M-CABI"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 33,
+        "endPos": 50,
+        "text": "Pre-Party R&B Jams"
+      }
+    ]
+  },
+  {
+    "text": "Add singing in the trees to rena's Lo mejor de Radio 3 playlist.",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "entity_name",
+        "startPos": 4,
+        "endPos": 23,
+        "text": "singing in the trees"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 28,
+        "endPos": 33,
+        "text": "rena's"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 35,
+        "endPos": 53,
+        "text": "Lo mejor de Radio 3"
+      }
+    ]
+  },
+  {
+    "text": "For the Classic Road Trip Songs add the entity unwelcome",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "playlist",
+        "startPos": 8,
+        "endPos": 30,
+        "text": "Classic Road Trip Songs"
+      },
+      {
+        "entity": "entity_name",
+        "startPos": 47,
+        "endPos": 55,
+        "text": "unwelcome"
+      }
+    ]
+  },
+  {
+    "text": "Play music from 1977",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "year",
+        "startPos": 16,
+        "endPos": 19,
+        "text": "1977"
+      }
+    ]
+  },
+  {
+    "text": "Open pandora and play the top five melody by Hanna Sjedokowa",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "service",
+        "startPos": 5,
+        "endPos": 11,
+        "text": "pandora"
+      },
+      {
+        "entity": "sort",
+        "startPos": 26,
+        "endPos": 33,
+        "text": "top five"
+      },
+      {
+        "entity": "music_item",
+        "startPos": 35,
+        "endPos": 40,
+        "text": "melody"
+      },
+      {
+        "entity": "artist",
+        "startPos": 45,
+        "endPos": 59,
+        "text": "Hanna Sjedokowa"
+      }
+    ]
+  },
+  {
+    "text": "find the nearest movie theatre with The Witness Chair",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "spatial_relation",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "nearest"
+      },
+      {
+        "entity": "object_location_type",
+        "startPos": 17,
+        "endPos": 29,
+        "text": "movie theatre"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 36,
+        "endPos": 52,
+        "text": "The Witness Chair"
+      }
+    ]
+  },
+  {
+    "text": "What time will the Amco Entertainment be plying The Teeth of the Tiger",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "location_name",
+        "startPos": 19,
+        "endPos": 36,
+        "text": "Amco Entertainment"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 48,
+        "endPos": 69,
+        "text": "The Teeth of the Tiger"
+      }
+    ]
+  },
+  {
+    "text": "What time is the Wanda Group playing The Honor of an Outlaw",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "location_name",
+        "startPos": 17,
+        "endPos": 27,
+        "text": "Wanda Group"
+      },
+      {
+        "entity": "movie_name",
+        "startPos": 37,
+        "endPos": 58,
+        "text": "The Honor of an Outlaw"
+      }
+    ]
+  },
+  {
+    "text": "Out of 6 stars the last novel gets only four",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "best_rating",
+        "startPos": 7,
+        "endPos": 7,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 9,
+        "endPos": 13,
+        "text": "stars"
+      },
+      {
+        "entity": "object_select",
+        "startPos": 19,
+        "endPos": 22,
+        "text": "last"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 24,
+        "endPos": 28,
+        "text": "novel"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 40,
+        "endPos": 43,
+        "text": "four"
+      }
+    ]
+  },
+  {
+    "text": "rate the current textbook 4 of 6 points",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 9,
+        "endPos": 15,
+        "text": "current"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 17,
+        "endPos": 24,
+        "text": "textbook"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 26,
+        "endPos": 26,
+        "text": "4"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 31,
+        "endPos": 31,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 33,
+        "endPos": 38,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "I want to watch the television show Champion",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 20,
+        "endPos": 34,
+        "text": "television show"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 36,
+        "endPos": 43,
+        "text": "Champion"
+      }
+    ]
+  },
+  {
+    "text": "Show me movie times for movies in the neighborhood",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 8,
+        "endPos": 18,
+        "text": "movie times"
+      },
+      {
+        "entity": "movie_type",
+        "startPos": 24,
+        "endPos": 29,
+        "text": "movies"
+      },
+      {
+        "entity": "spatial_relation",
+        "startPos": 31,
+        "endPos": 49,
+        "text": "in the neighborhood"
+      }
+    ]
+  },
+  {
+    "text": "Find me the movie times for the Alamo Drafthouse Cinema",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 22,
+        "text": "movie times"
+      },
+      {
+        "entity": "location_name",
+        "startPos": 32,
+        "endPos": 54,
+        "text": "Alamo Drafthouse Cinema"
+      }
+    ]
+  },
+  {
+    "text": "What is the movie schedule 1 second from now",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 25,
+        "text": "movie schedule"
+      },
+      {
+        "entity": "timeRange",
+        "startPos": 27,
+        "endPos": 43,
+        "text": "1 second from now"
+      }
+    ]
+  },
+  {
+    "text": "Show The Blue Meaning television show",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_name",
+        "startPos": 5,
+        "endPos": 20,
+        "text": "The Blue Meaning"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 22,
+        "endPos": 36,
+        "text": "television show"
+      }
+    ]
+  },
+  {
+    "text": "I rate this essay a two of 6 points",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 7,
+        "endPos": 10,
+        "text": "this"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 16,
+        "text": "essay"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 20,
+        "endPos": 22,
+        "text": "two"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 27,
+        "endPos": 27,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 29,
+        "endPos": 34,
+        "text": "points"
+      }
+    ]
+  },
+  {
+    "text": "Give Letty Fox: Her Luck 4 out of 6 stars",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_name",
+        "startPos": 5,
+        "endPos": 23,
+        "text": "Letty Fox: Her Luck"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 25,
+        "endPos": 25,
+        "text": "4"
+      },
+      {
+        "entity": "best_rating",
+        "startPos": 34,
+        "endPos": 34,
+        "text": "6"
+      },
+      {
+        "entity": "rating_unit",
+        "startPos": 36,
+        "endPos": 40,
+        "text": "stars"
+      }
+    ]
+  },
+  {
+    "text": "add Jalal Zolfonun to my Nature Noise",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 4,
+        "endPos": 17,
+        "text": "Jalal Zolfonun"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 22,
+        "endPos": 23,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 25,
+        "endPos": 36,
+        "text": "Nature Noise"
+      }
+    ]
+  },
+  {
+    "text": "add gareth gates to my autumn playlist",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 4,
+        "endPos": 15,
+        "text": "gareth gates"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 20,
+        "endPos": 21,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 23,
+        "endPos": 28,
+        "text": "autumn"
+      }
+    ]
+  },
+  {
+    "text": "add this artist to my the road to punk rock playlist",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 9,
+        "endPos": 14,
+        "text": "artist"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 19,
+        "endPos": 20,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 22,
+        "endPos": 42,
+        "text": "the road to punk rock"
+      }
+    ]
+  },
+  {
+    "text": "add the artist Ruby to my digging now list",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "music_item",
+        "startPos": 8,
+        "endPos": 13,
+        "text": "artist"
+      },
+      {
+        "entity": "artist",
+        "startPos": 15,
+        "endPos": 18,
+        "text": "Ruby"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 23,
+        "endPos": 24,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 26,
+        "endPos": 36,
+        "text": "digging now"
+      }
+    ]
+  },
+  {
+    "text": "Add jonny buckland to my playlist weekly buzz",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "artist",
+        "startPos": 4,
+        "endPos": 17,
+        "text": "jonny buckland"
+      },
+      {
+        "entity": "playlist_owner",
+        "startPos": 22,
+        "endPos": 23,
+        "text": "my"
+      },
+      {
+        "entity": "playlist",
+        "startPos": 34,
+        "endPos": 44,
+        "text": "weekly buzz"
+      }
+    ]
+  },
+  {
+    "text": "Rate this chronicle a 4",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_select",
+        "startPos": 5,
+        "endPos": 8,
+        "text": "this"
+      },
+      {
+        "entity": "object_part_of_series_type",
+        "startPos": 10,
+        "endPos": 18,
+        "text": "chronicle"
+      },
+      {
+        "entity": "rating_value",
+        "startPos": 22,
+        "endPos": 22,
+        "text": "4"
+      }
+    ]
+  },
+  {
+    "text": "Show me the video game The Stillest Hour",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 12,
+        "endPos": 21,
+        "text": "video game"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 23,
+        "endPos": 39,
+        "text": "The Stillest Hour"
+      }
+    ]
+  },
+  {
+    "text": "I want to see the trailer for Australian Economic History Review",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 18,
+        "endPos": 24,
+        "text": "trailer"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 30,
+        "endPos": 63,
+        "text": "Australian Economic History Review"
+      }
+    ]
+  },
+  {
+    "text": "Please get me the Welcome to the Rileys game .",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_name",
+        "startPos": 18,
+        "endPos": 38,
+        "text": "Welcome to the Rileys"
+      },
+      {
+        "entity": "object_type",
+        "startPos": 40,
+        "endPos": 43,
+        "text": "game"
+      }
+    ]
+  },
+  {
+    "text": "I'm looking for the show Sex and Candy",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 20,
+        "endPos": 23,
+        "text": "show"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 25,
+        "endPos": 37,
+        "text": "Sex and Candy"
+      }
+    ]
+  },
+  {
+    "text": "show creative album Heredity",
+    "intents": [
+      "None"
+    ],
+    "entities": [
+      {
+        "entity": "object_type",
+        "startPos": 14,
+        "endPos": 18,
+        "text": "album"
+      },
+      {
+        "entity": "object_name",
+        "startPos": 20,
+        "endPos": 27,
+        "text": "Heredity"
+      }
+    ]
+  }
+]

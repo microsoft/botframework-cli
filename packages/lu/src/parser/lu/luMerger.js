@@ -144,7 +144,7 @@ const resolveRefs = function(refTree, srcId) {
             if (result.utterances !== undefined) {
                 result.utterances.forEach(utt => {
                     if (luObj.uttHash[utt] === undefined) {
-                        luObj.utterances.push(new hClasses.uttereances(utt, ref.uttObj.intent));
+                        luObj.utterances.push(new hClasses.utterances(utt, ref.uttObj.intent));
                         luObj.uttHash[utt] = '';
                     }
                 })
@@ -380,12 +380,7 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
         let parsedContent = await parseLuFile(luOb, log, luis_culture)
         parsedFiles.push(luOb.id)
 
-        // Fix for BF-CLI #620
-        // We do not perform validation here. for parseFile V1 API route, 
-        //  the recommendation is to call validate() after parse.
-        if (haveLUISContent(parsedContent.LUISJsonStructure)) {
-            allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, luOb.id, luOb.includeInCollate))
-        }
+        allParsedLUISContent.push(parserObject.create(parsedContent.LUISJsonStructure, undefined, undefined, luOb.id, luOb.includeInCollate))
 
         allParsedQnAContent.push(parserObject.create(undefined, parsedContent.qnaJsonStructure, undefined, luOb.id, luOb.includeInCollate))
         allParsedAlterationsContent.push(parserObject.create(undefined, undefined, parsedContent.qnaAlterations, luOb.id, luOb.includeInCollate))
@@ -397,6 +392,8 @@ const buildLuJsonObject = async function(luObjArray, log, luis_culture, luSearch
             continue
         }
 
+        // Set includeInCollate in addtionalFilesToParse to be false if current parsedContent's includeInCollate is false
+        parsedContent.additionalFilesToParse.forEach(addtionFileToParse => addtionFileToParse.includeInCollate = luOb.includeInCollate ? addtionFileToParse.includeInCollate : luOb.includeInCollate)
         let foundLuFiles = await luSearchFn(luOb.id, parsedContent.additionalFilesToParse)    
         for( let i = 0; i < foundLuFiles.length; i++){ 
             if (parsedFiles.includes(foundLuFiles[i].id)) {
@@ -495,21 +492,6 @@ const updateParsedFiles = function(allParsedLUISContent, allParsedQnAContent, al
         if(matchInAlterations) matchInAlterations.includeInCollate = true;
     }
 } 
-
-const haveLUISContent = function(blob) {
-    if(!blob) return false;
-    return ((blob[LUISObjNameEnum.INTENT].length > 0) ||
-    (blob[LUISObjNameEnum.ENTITIES].length > 0) || 
-    (blob[LUISObjNameEnum.CLOSEDLISTS].length > 0) ||
-    (blob[LUISObjNameEnum.PATTERNANYENTITY].length > 0) ||
-    (blob.patterns.length > 0) ||
-    (blob[LUISObjNameEnum.UTTERANCE].length > 0) ||
-    (blob.prebuiltEntities.length > 0) ||
-    (blob[LUISObjNameEnum.REGEX].length > 0) ||
-    (blob.model_features && blob.model_features.length > 0) ||
-    (blob.phraselists && blob.phraselists.length > 0) ||
-    (blob.composites.length > 0));
-}
 
 const isNewEntity = function(luisModel, entityName){
     let simpleEntityInMaster = luisModel.entities.find(item => item.name == entityName);

@@ -77,9 +77,18 @@ const helpers = {
         let linkValue = linkValueList[0].replace('(', '').replace(')', '');
         if (linkValue === '') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}"`));
         // reference can either be #<Intent-Name> or #? or /*#? or /**#? or #*utterance* or #<Intent-Name>*patterns*
-        let splitRegExp = new RegExp(/^(?<fileName>.*?)(?<segment>#|\*+)(?<path>.*?)$/gim);
+        let splitRegExp = new RegExp(/^(.*?)(#|\*+)(.*?)$/gim);
         let splitReference = splitRegExp.exec(linkValue);
-        if (!splitReference) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        if (!splitReference) {
+            throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        } else {
+            splitReference.groups = {
+                fileName: splitReference[1],
+                segment: splitReference[2],
+                path: splitReference[3]
+            }
+        }
+
         if (splitReference.groups.fileName && srcId && luSearchFn) {
             let luObjects = await luSearchFn(srcId, [{filePath: splitReference.groups.fileName, includeInCollate: false}])
             if (luObjects && luObjects.length > 0) splitReference.groups.fileName = luObjects[0].id
@@ -103,9 +112,18 @@ const helpers = {
         let linkValue = linkValueList[0].replace('(', '').replace(')', '');
         if (linkValue === '') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}"`));
         // reference can either be #<Intent-Name> or #? or /*#? or /**#? or #*utterance* or #<Intent-Name>*patterns*
-        let splitRegExp = new RegExp(/^(?<fileName>.*?)(?<segment>#|\*+)(?<path>.*?)$/gim);
+        let splitRegExp = new RegExp(/^(.*?)(#|\*+)(.*?)$/gim);
         let splitReference = splitRegExp.exec(linkValue);
-        if (!splitReference) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        if (!splitReference) {
+            throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        } else {
+            splitReference.groups = {
+                fileName: splitReference[1],
+                segment: splitReference[2],
+                path: splitReference[3]
+            }
+        }
+
         if (splitReference.groups.segment.includes('*')) {
             if (splitReference.groups.path === '') {
                 throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
@@ -169,7 +187,7 @@ const helpers = {
         if (this.isUtteranceLinkRef(utterance)) return false;
 
         // patterns must have at least one [optional] and or one (group | text)
-        let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
+        let detectPatternRegex = /(\[.*(?<!\\)\])|(\(.*?(\|.*?)+(?<!\\)\))/gi;
         return detectPatternRegex.test(utterance);
     },
     hashCode : function(s) {
@@ -543,11 +561,24 @@ const addIsRequiredProperty = function(item, phraseListInFinal = []) {
     (item.features || []).forEach(feature => {
         if (feature.isRequired === undefined)
             feature.isRequired = false;
-        if (feature.modelName !== undefined && phraseListInFinal.includes(feature.modelName))
-        {
+
+        if (feature.modelName !== undefined
+            && phraseListInFinal.includes(feature.modelName)
+            && !item.features.find(fea => fea.featureName == feature.modelName)) {
             feature.featureName = feature.modelName;
             delete feature.modelName;
-        }    
+        }
+
+        if (feature.featureName && feature.featureName.endsWith('*')) {
+            feature.featureName = feature.featureName.slice(0, feature.featureName.length - 1);
+            feature.isRequired = true;
+        }
+
+        if (feature.modelName && feature.modelName.endsWith('*')) {
+            feature.modelName = feature.modelName.slice(0, feature.modelName.length - 1);
+            feature.isRequired = true;
+        }
+
         delete feature.featureType;
         delete feature.modelType;
     });

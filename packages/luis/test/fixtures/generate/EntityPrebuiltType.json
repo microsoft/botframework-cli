@@ -1,0 +1,54 @@
+{
+    "intents": [],
+    "entities": [
+      {
+        "name": "MLTimeFrame",
+        "roles": []
+      },
+      {
+        "name": "Hotel",
+        "roles": [],
+        "children": [
+          {
+            "name": "HotelTimeFrame",
+            "children": [],
+            "features": [
+              {
+                "modelName": "MLTimeFrame",
+                "isRequired": false
+              }
+            ]
+          },
+          {
+            "name": "TotalAmount",
+            "children": [],
+            "features": [
+              {
+                "modelName": "money",
+                "isRequired": true
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "composites": [],
+    "closedLists": [],
+    "regex_entities": [],
+    "regex_features": [],
+    "utterances": [],
+    "patterns": [],
+    "patternAnyEntities": [],
+    "prebuiltEntities": [
+      {
+        "name": "money",
+        "roles": []
+      }
+    ],
+    "luis_schema_version": "7.0.0",
+    "versionId": "0.1",
+    "name": "",
+    "desc": "",
+    "culture": "en-us",
+    "phraselists": []
+  }

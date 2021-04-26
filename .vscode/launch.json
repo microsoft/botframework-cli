@@ -8,11 +8,38 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/cli/bin/run",
       "outputCapture": "std",
-      "outFiles": ["${workspaceFolder}/packages/luis/lib/**"],
+      "outFiles": [
+        "${workspaceFolder}/packages/luis/lib/**"
+      ],
       "args": [
         "luis:build",
         "--luConfig",
         "${env:TEMP}/sandwich.out/luconfig.json"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "bf Orchestrator CLI",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/packages/orchestrator/lib/**"
+      ],
+      "args": [
+        "orchestrator:create",
+        "--in",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/CognitiveModels",
+        "--out",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/generated",
+        "--model",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model",
+        "--entityModel",
+        "D:/src/BotBuilder-Samples/experimental/orchestrator/csharp_dotnetcore/01.dispatch-bot/model/entity",
+        "--hierarchical"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "cwd": "${workspaceFolder}"
@@ -31,12 +58,14 @@
         "999999",
         "--colors",
         "-g",
-        "dialog:merge.*"
+        "dialog:merge.*missing schema.*"
       ],
       "cwd": "${workspaceFolder}/packages/dialog",
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
-      "outFiles": ["./package/dialog/lib/**"]
+      "outFiles": [
+        "./package/dialog/lib/**"
+      ]
     },
     {
       "type": "node",
@@ -57,7 +86,9 @@
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
-      "outFiles": ["./package/dialog/lib/**"]
+      "outFiles": [
+        "./package/dialog/lib/**"
+      ]
     },
     {
       "type": "node",
@@ -78,7 +109,9 @@
         ".*"
       ],
       "internalConsoleOptions": "openOnSessionStart",
-      "outFiles": ["./lib/**"]
+      "outFiles": [
+        "./lib/**"
+      ]
     },
     {
       "type": "node",
@@ -87,10 +120,19 @@
       "preLaunchTask": "${defaultBuildTask}",
       "cwd": "${workspaceFolder}/packages/lu",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "test", "--", "--timeout", "999999", "--colors"],
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--timeout",
+        "999999",
+        "--colors"
+      ],
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
-      "outFiles": ["./packages/lu/lib/**"]
+      "outFiles": [
+        "./packages/lu/lib/**"
+      ]
     },
     {
       "type": "node",
@@ -111,7 +153,29 @@
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
-      "outFiles": ["./packages/lu/lib/**"]
+      "outFiles": [
+        "./packages/lu/lib/**"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Dialog merge root-package schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
+      "args": [
+        "dialog:merge",
+        "npm/node_modules/root-package/package.json",
+        "-o",
+        "oracles/root-package",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/packages/dialog/test/commands/dialog/"
     },
     {
       "type": "node",
@@ -120,7 +184,9 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
       "args": [
         "dialog:merge",
         "libraries/**/*.schema",
@@ -135,11 +201,33 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "Composer schema",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/dialog/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
+      "args": [
+        "dialog:merge",
+        "**/*.csproj",
+        "-o",
+        "${env:TEMP}/sdk.schema",
+        "--verbose"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}/../BotFramework-Composer/runtime/dotnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "BotBuilder project",
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
       "args": [
         "dialog:merge",
         "tests/Microsoft.Bot.Builder.Dialogs.Declarative.Tests/*.csproj",
@@ -157,7 +245,9 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
       "args": [
         "dialog:merge",
         "*.csproj",
@@ -175,8 +265,14 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
-      "args": ["dialog:verify", "tests/**/*.dialog", "--verbose"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
+      "args": [
+        "dialog:verify",
+        "tests/**/*.dialog",
+        "--verbose"
+      ],
       "internalConsoleOptions": "openOnSessionStart",
       "cwd": "${workspaceFolder}/../botbuilder-dotnet"
     },
@@ -187,7 +283,9 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
       "args": [
         "dialog:merge",
         "libraries/**/*.schema",
@@ -206,12 +304,14 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/dialog/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/dialog/lib/**"],
+      "outFiles": [
+        "./packages/dialog/lib/**"
+      ],
       "args": [
         "dialog:merge",
-        "runbot.csproj",
+        "RunBot.csproj",
         "-o",
-        "runbot.schema",
+        "RunBot.schema",
         "--verbose"
       ],
       "internalConsoleOptions": "openOnSessionStart",
@@ -246,7 +346,10 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/luis/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "outFiles": [
+        "./packages/luis/lib/**",
+        "./packages/lu/lib/**"
+      ],
       "args": [
         "luis:build",
         "--luConfig",
@@ -264,7 +367,10 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/luis/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "outFiles": [
+        "./packages/luis/lib/**",
+        "./packages/lu/lib/**"
+      ],
       "args": [
         "luis:convert",
         "--in",
@@ -285,7 +391,10 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/luis/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/luis/lib/**", "./packages/lu/lib/**"],
+      "outFiles": [
+        "./packages/luis/lib/**",
+        "./packages/lu/lib/**"
+      ],
       "args": [
         "luis:convert",
         "--in",
@@ -306,7 +415,10 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/lu/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/lu/lib/**", "./pacakges/luis/lib/**"],
+      "outFiles": [
+        "./packages/lu/lib/**",
+        "./pacakges/luis/lib/**"
+      ],
       "args": [
         "luis:build",
         "--in",
@@ -327,7 +439,9 @@
       "preLaunchTask": "${defaultBuildTask}",
       "program": "${workspaceFolder}/packages/lg/bin/run",
       "outputCapture": "std",
-      "outFiles": ["./packages/lg/lib/**"],
+      "outFiles": [
+        "./packages/lg/lib/**"
+      ],
       "args": [
         "lg:expand",
         "--in",

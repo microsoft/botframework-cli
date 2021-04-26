@@ -9,6 +9,7 @@ This package is intended for Microsoft use only and should be consumed through @
 # Commands
 <!-- commands -->
 * [`bf config`](#bf-config)
+* [`bf config:remove`](#bf-configremove)
 * [`bf config:set`](#bf-configset)
 * [`bf config:set:luis`](#bf-configsetluis)
 * [`bf config:set:qnamaker`](#bf-configsetqnamaker)
@@ -31,6 +32,21 @@ OPTIONS
 ```
 
 _See code: [src/commands/config/index.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/index.ts)_
+
+## `bf config:remove`
+
+Removes the specified key from the config file
+
+```
+USAGE
+  $ bf config:remove
+
+OPTIONS
+  -h, --help     config:remove help
+  -k, --key=key  (required) Name of the key to remove
+```
+
+_See code: [src/commands/config/remove.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/config/src/commands/config/remove.ts)_
 
 ## `bf config:set`
 
@@ -59,6 +75,7 @@ USAGE
 OPTIONS
   -h, --help                         show CLI help
   --appId=appId                      LUIS application Id
+  --armToken=armToken                User`s ARM token used to validate azure accounts information)
   --authoringKey=authoringKey        LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).
   --endpoint=endpoint                LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com
   --subscriptionKey=subscriptionKey  LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)

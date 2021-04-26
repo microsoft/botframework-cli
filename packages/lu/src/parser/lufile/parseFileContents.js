@@ -27,6 +27,7 @@ const luisEntityTypeMap = require('./../utils/enums/luisEntityTypeNameMap');
 const qnaContext = require('../qna/qnamaker/qnaContext');
 const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const LUResource = require('./luResource');
+const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
@@ -128,9 +129,6 @@ const parseFileContentsModule = {
             // parse entity section
             parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
 
-            // parse entity section
-            parseAndHandleEntitySection(parsedContent, resource, false, undefined, config);
-
             // validate simple intent section
             parseAndHandleSimpleIntentSection(parsedContent, resource, config)
 
@@ -139,11 +137,11 @@ const parseFileContentsModule = {
             }
 
         } catch(e) {
-            if (e instanceof exception) {
+            if (e instanceof exception && e.diagnostics) {
                 errors.push(...e.diagnostics)
             } else {
                 errors.push(BuildDiagnostic({
-                    message: e.message
+                    message: e.message || e.text
                 }))
             }
         }
@@ -482,9 +480,10 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
  * @param {String} featureType
  * @param {Object} range
  */
-const addFeatures = function(tgtItem, feature, featureType, range, featureProperties) {
+const addFeatures = function(tgtItem, feature, featureType, range, featureProperties, featureIsPhraseList = false) {
     // target item cannot have the same name as the feature name
-    if (tgtItem.name === feature) {
+    // the only exception case is intent and entity can have same name with phraseList feature
+    if (tgtItem.name === feature && !featureIsPhraseList) {
         // Item must be defined before being added as a feature.
         let errorMsg = `Source and target cannot be the same for usesFeature. e.g. x usesFeature x  is invalid. "${tgtItem.name}" usesFeature "${feature}" is invalid.`;
         let error = BuildDiagnostic({
@@ -493,11 +492,12 @@ const addFeatures = function(tgtItem, feature, featureType, range, featureProper
         })
         throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
-    let featureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature || item.featureName == feature);
+    let featureToModelAlreadyDefined = (tgtItem.features || []).find(item => item.featureName == feature);
+    let modelToFeatureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature);
     switch (featureType) {
         case featureTypeEnum.featureToModel: {
             if (tgtItem.features) {
-                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.featureToModel(feature, featureProperties));
+                if (!featureToModelAlreadyDefined) tgtItem.features.push(new helperClass.featureToModel(feature, featureProperties));
             } else {
                 tgtItem.features = new Array(new helperClass.featureToModel(feature, featureProperties));
             }
@@ -505,7 +505,9 @@ const addFeatures = function(tgtItem, feature, featureType, range, featureProper
         }
         case featureTypeEnum.modelToFeature: {
             if (tgtItem.features) {
-                if (!featureAlreadyDefined) tgtItem.features.push(new helperClass.modelToFeature(feature, featureProperties));
+                if (!modelToFeatureAlreadyDefined){
+                    tgtItem.features.push(new helperClass.modelToFeature(feature, featureProperties));
+                } 
             } else {
                 tgtItem.features = new Array(new helperClass.modelToFeature(feature, featureProperties));
             }
@@ -546,14 +548,31 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
             if (intentExists !== undefined) {
                 // verify the list of features requested have all been defined.
                 let featuresList = section.Features.split(/[,;]/g).map(item => item.trim().replace(/^[\'\"]|[\'\"]$/g, ""));
+                let featuresVisited = new Set();
                 (featuresList || []).forEach(feature => {
-                    let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
+                    // usually phraseList has higher priority when searching the existing entities as phraseList is more likely to be used as feature
+                    // but when a ml entity and a phraseList have same name, this assumption will cause a problem in situation that
+                    // users actually want to specify the ml entity as feature rather than phraseList
+                    // currently we can not distinguish them in lu file, as for @ intent A usesFeature B, B can be a ml entity or a phraseList with same name
+                    // the lu format for usesFeatures defintion need to be updated if we want to resolve this confusion completely
+                    let entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => (item.name == feature || item.name == `${feature}(interchangeable)`) && item.type == EntityTypeEnum.PHRASELIST);
+                    // if phraseList is not matched to the feature, search other non phraseList entities
+                    // or this intent use multiple features with same name, e.g., @ intent A usesFeatures B, B.
+                    // and current loop is processiong the second feature B
+                    // this is allowed in luis portal, you can add ml entity and phraseList features of same name to an intent                    
+                    // the exported intent useFeatures will have two features with same name listed, just like above sample @ intent A usesFeatures B, B
+                    if (!entityExists || featuresVisited.has(feature)) {
+                        entityExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature && item.type !== EntityTypeEnum.PHRASELIST);
+                    }
+
+                    if (!featuresVisited.has(feature)) featuresVisited.add(feature);
+
                     let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     if (entityExists) {
                         if (entityExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(section.Type, section.Name, entityExists.type, feature, section.Range);
-                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.Range, featureProperties.phraseListFeature);
+                            addFeatures(intentExists, feature, featureTypeEnum.featureToModel, section.Range, featureProperties.phraseListFeature, true);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
@@ -591,9 +610,26 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
                 // Find the source entity from the collection and get its type
                 let srcEntityInFlatList = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == section.Name);
                 let entityType = srcEntityInFlatList ? srcEntityInFlatList.type : undefined;
+                let featuresVisited = new Set();
                 (featuresList || []).forEach(feature => {
                     feature = feature.replace(/[\'\"]/g, "");
-                    let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature || item.name == `${feature}(interchangeable)`);
+                    // usually phraseList has higher priority when searching the existing entities as phraseList is more likely to be used as feature to a entity
+                    // but when a ml entity and a phraseList have same name, this assumption will cause a problem in situation that
+                    // users actually want to specify the ml entity as feature rather than phraseList
+                    // currently we can not distinguish them in lu file, as for @ ml A usesFeature B, B can be another ml entity or a phraseList with same name
+                    // the lu format for usesFeatures defintion need to be updated if we want to resolve this confusion completely
+                    let featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => (item.name == feature || item.name == `${feature}(interchangeable)`) && item.type == EntityTypeEnum.PHRASELIST);
+                    // if phraseList is not matched to the feature, search other non phraseList entities
+                    // or this intent use multiple features with same name, e.g., @ intent A usesFeatures B, B.
+                    // and current loop is processiong the second feature B
+                    // this is allowed in luis portal, you can add ml entity and phraseList features of same name to an intent                    
+                    // the exported intent useFeatures will have two features with same name listed, just like above sample @ intent A usesFeatures B, B
+                    if (!featureExists || featuresVisited.has(feature)) {
+                        featureExists = (parsedContent.LUISJsonStructure.flatListOfEntityAndRoles || []).find(item => item.name == feature && item.type !== EntityTypeEnum.PHRASELIST);
+                    }
+
+                    if (!featuresVisited.has(feature)) featuresVisited.add(feature);
+
                     let featureIntentExists = (parsedContent.LUISJsonStructure.intents || []).find(item => item.name == feature);
                     // find the entity based on its type.
                     let srcEntity = (parsedContent.LUISJsonStructure[luisEntityTypeMap[entityType]] || []).find(item => item.name == section.Name);
@@ -601,7 +637,7 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
                         if (featureExists.type === EntityTypeEnum.PHRASELIST) {
                             // de-dupe and add features to intent.
                             validateFeatureAssignment(entityType, section.Name, featureExists.type, feature, section.Range);
-                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.Range, featureProperties.phraseListFeature);
+                            addFeatures(srcEntity, feature, featureTypeEnum.featureToModel, section.Range, featureProperties.phraseListFeature, true);
                             // set enabledForAllModels on this phrase list
                             let plEnity = parsedContent.LUISJsonStructure.model_features.find(item => item.name == feature);
                             if (plEnity.enabledForAllModels === undefined) plEnity.enabledForAllModels = false;
@@ -638,14 +674,15 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
         let srcName = itemOfType.name;
         let copySrc, copyValue;
         if (itemOfType.features) {
-            (itemOfType.features || []).forEach(feature => {
-                if (feature.modelName) feature = feature.modelName;
-                if (feature.featureName) feature = feature.featureName;
+            (itemOfType.features || []).forEach(featureObj => {
+                let feature = featureObj.modelName ? featureObj.modelName : featureObj.featureName;
+                let type = featureObj.modelType ? featureObj.modelType : featureObj.featureType;
+
                 // find any items where this feature is the target
-                let featureDependencyEx = dependencyList.filter(item => srcName == (item.value ? item.value.slice(-1)[0] : undefined));
+                let featureDependencyEx = dependencyList.filter(item => srcName == (item.value ? item.value.slice(-1)[0].feature : undefined));
                 (featureDependencyEx || []).forEach(item => {
                     item.key = `${item.key.split('::')[0]}::${feature}`;
-                    item.value.push(feature);
+                    item.value.push({feature, type});
                 })
                 // find any items where this feature is the source
                 featureDependencyEx = dependencyList.find(item => feature == (item.value ? item.value.slice(0)[0] : undefined));
@@ -656,7 +693,7 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
                 let dependencyExists = dependencyList.find(item => item.key == `${srcName}::${feature}`);
                 if (!dependencyExists) {
                     let lKey = copySrc ? `${srcName}::${copySrc}` : `${srcName}::${feature}`;
-                    let lValue = [srcName, feature];
+                    let lValue = [srcName, {feature, type}];
                     if (copyValue) copyValue.forEach(item => lValue.push(item));
                     dependencyList.push({
                         key : lKey,
@@ -664,11 +701,15 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
                     })
                 } else {
                     dependencyExists.key = `${dependencyExists.key.split('::')[0]}::${feature}`;
-                    dependencyExists.value.push(feature);
+                    dependencyExists.value.push({feature, type});
                 }
-                let circularItemFound = dependencyList.find(item => item.value && item.value.slice(0)[0] == item.value.slice(-1)[0]);
-                if (circularItemFound) {
-                    const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.join(' -> ')}`;
+
+                let circularItemFound = dependencyList.find(item => item.value
+                    && item.value.slice(0)[0] == item.value.slice(-1)[0].feature
+                    && item.value.slice(-1)[0].type !== featureProperties.phraseListFeature);
+
+                    if (circularItemFound) {
+                    const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.map(v => v.feature ? v.feature : v).join(' -> ')}`;
                     const error = BuildDiagnostic({
                         message: errorMsg
                     });
@@ -884,6 +925,16 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
         let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
         for (const intent of intents) {
             let intentName = intent.Name;
+            if (InvalidCharsInIntentOrEntityName.some(x => intentName.includes(x))) {
+                let errorMsg = `Invalid intent line, intent name ${intentName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: intent.Range.Start.Line
+                })
+    
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            }
+
             // insert only if the intent is not already present.
             addItemIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.INTENT, intentName);
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
@@ -913,6 +964,22 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                     // examine and add these to filestoparse list.
                     parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
                 }
+               
+                (utteranceAndEntities.entities || []).forEach(entity => {
+                    let errors = []
+                    if (InvalidCharsInIntentOrEntityName.some(x => entity.entity.includes(x))) {
+                        let errorMsg = `Invalid utterance line, entity name ${entity.entity} in this utterance cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                        let error = BuildDiagnostic({
+                            message: errorMsg,
+                            range: utteranceAndEntities.range
+                        });
+                        errors.push(error);
+                    }
+
+                    if (errors.length > 0) {
+                        throw (new exception(retCode.errorCode.INVALID_LINE, errors.map(error => error.toString()).join('\n'), errors));
+                    }
+                })
 
                 if (utteranceAndEntities.entities.length > 0) {
                     let entitiesFound = utteranceAndEntities.entities;
@@ -937,7 +1004,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                         }
 
-                        let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.includes(item.entity));
+                        let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.map(prebuiltEntity => prebuiltEntity.toLowerCase()).includes(item.entity.toLowerCase()));
                         prebuiltEntities.forEach(prebuiltEntity => {
                             if (parsedContent.LUISJsonStructure.prebuiltEntities.findIndex(e => e.name === prebuiltEntity.entity) < 0) {
                                 let errorMsg = `Pattern "${utteranceAndEntities.contextText}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
@@ -1112,7 +1179,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         if (hashTable[uttHash]) {
                             utteranceObject = hashTable[uttHash];
                         } else {
-                            utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            utteranceObject = new helperClass.utterances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                             hashTable[uttHash] = utteranceObject;
                         }
@@ -1190,7 +1257,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         }
                     } else {
                         if(!hashTable[uttHash]) {
-                            let utteranceObject = new helperClass.uttereances(utterance, intentName, []);
+                            let utteranceObject = new helperClass.utterances(utterance.replace(/\\[\[\]\(\)]/gi, match => match.slice(1)), intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
                             hashTable[uttHash] = utteranceObject;
                         }
@@ -1223,7 +1290,7 @@ const getEntityType = function(entityName, entities) {
     let entityFound = (entities || []).find(item => item.Name == entityName || item.Name == `${entityName}(interchangeable)`);
     if (entityFound && entityFound.Type !== undefined) return entityFound.Type
     // see if this one of the prebuilt type
-    if (builtInTypes.consolidatedList.includes(entityName)) return EntityTypeEnum.PREBUILT
+    if (builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityName.toLowerCase())) return EntityTypeEnum.PREBUILT
     return undefined;
 };
 
@@ -1318,6 +1385,15 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                     throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 };
 
+                if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+                    let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                    let error = BuildDiagnostic({
+                        message: errorMsg,
+                        line: entity.Range.Start.Line
+                    })
+                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                }
+
                 if (entityType === entityName) {
                     let errorMsg = `Entity name "${entityName}" cannot be the same as entity type "${entityType}"`;
                     let error = BuildDiagnostic({
@@ -1350,11 +1426,11 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                     case EntityTypeEnum.COMPOSITE:
                         let candidateChildren = [];
                         if (entity.CompositeDefinition) {
-                            entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                            entity.CompositeDefinition.replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => candidateChildren.push(item));
                         }
                         if (entity.ListBody) {
                             entity.ListBody.forEach(line => {
-                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).forEach(item => candidateChildren.push(item));
+                                line.trim().substr(1).trim().replace(/[\[\]]/g, '').split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => candidateChildren.push(item));
                             })
                         }
                         handleComposite(parsedContent, entityName,`[${candidateChildren.join(',')}]`, entityRoles, entity.Range, false, entity.Type !== undefined, config);
@@ -1415,7 +1491,7 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
     entityLines.forEach(child => {
         currentParentEntity = undefined;
         defLine++;
-        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>[^\s]+) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
+        let captureGroups = /^((?<leadingSpaces>[ ]*)|(?<leadingTabs>[\t]*))-\s*@\s*(?<instanceOf>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+)) (?<entityName>(?:'[^']+')|(?:"[^"]+")|(?:[^ '"=]+))(?: uses?[fF]eatures? (?<features>[^=]+))?\s*=?\s*$/g;
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
             let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
@@ -1426,8 +1502,8 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
             throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
-        let childEntityType = groupsFound.groups.instanceOf.trim();
-        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()) : undefined;
+        let childEntityType = groupsFound.groups.instanceOf.trim().replace(/^['"]/g, '').replace(/['"]$/g, '');
+        let childFeatures = groupsFound.groups.features ? groupsFound.groups.features.trim().split(/[,;]/g).map(item => item.trim()).filter(s => s) : undefined;
 
         // Get current tab level
         let tabLevel = Math.ceil(groupsFound.groups.leadingSpaces !== undefined ? groupsFound.groups.leadingSpaces.length / SPACEASTABS : 0) || (groupsFound.groups.leadingTabs !== undefined ? groupsFound.groups.leadingTabs.length : 0);
@@ -1600,6 +1676,16 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
       });
       throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
+
+    // phraselist name can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]
+    if (!/[a-zA-Z0-9@#_,.,^\\\[\]]+$/.test(entityName.toLowerCase().includes('interchangeable') ? entityName.split(/\(.*\)/g)[0] : entityName)) {
+        const error = BuildDiagnostic({
+            message: `Invalid phraselist line, phraselist name ${entityName} can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]`,
+            line: range.Start.Line
+        });
+        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+    };
+
     let isPLEnabledForAllModels = undefined;
     let isPLEnabled = undefined;
     if (entityRoles.length !== 0) {
@@ -1642,7 +1728,7 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
     // add this to phraseList if it doesnt exist
     let pLValues = [];
     for (const phraseListValues of valuesList) {
-        phraseListValues.split(/[,;]/g).map(item => item.trim()).forEach(item => pLValues.push(item));
+        phraseListValues.split(/[,;]/g).map(item => item.trim()).filter(s => s).forEach(item => pLValues.push(item));
     }
 
     let pLEntityExists = parsedContent.LUISJsonStructure.model_features.find(item => item.name == entityName);
@@ -1700,7 +1786,7 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
         throw (err);
     }
     // verify if the requested entityType is available in the requested locale
-    if (!builtInTypes.consolidatedList.includes(entityType)) {
+    if (!builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) {
         let errorMsg = `Unknown PREBUILT entity '${entityType}'. Available pre-built types are ${builtInTypes.consolidatedList.join(',')}`;
         let error = BuildDiagnostic({
             message: errorMsg,
@@ -1862,7 +1948,7 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                 addNV = true;
             }
         } else {
-            line.split(/[,;]/g).forEach(item => {
+            line.split(/[,;]/g).filter(s => s.trim()).forEach(item => {
                 item = item.trim();
                 if (!nvExists || !nvExists.list) {
                     let errorMsg = `Closed list ${entityName} has synonyms list "${line}" without a normalized value.`;
@@ -1906,6 +1992,16 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
         for (const entity of entities) {
             let entityName = entity.Name;
             let entityType = entity.Type;
+
+            if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
+                let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    line: entity.Range.Start.Line
+                })
+                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            }
+
             let parsedRoleAndType = helpers.getRolesAndType(entityType);
             let entityRoles = parsedRoleAndType.roles;
             entityType = parsedRoleAndType.entityType;
@@ -1920,7 +2016,7 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
 
             // add this entity to appropriate place
             // is this a builtin type?
-            if (builtInTypes.consolidatedList.includes(entityType)) {
+            if (builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) {
                 handlePrebuiltEntity(parsedContent, entityName, entityType, entityRoles, locale, log, entity.Range, config);
             } else if (entityType.toLowerCase() === 'simple') {
                 // add this to entities if it doesnt exist

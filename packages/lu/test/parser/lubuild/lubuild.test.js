@@ -72,6 +72,7 @@ describe('builder: getActiveVersionIds function return version id sucessfully wi
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -80,6 +81,7 @@ describe('builder: getActiveVersionIds function return version id sucessfully wi
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -88,6 +90,7 @@ describe('builder: getActiveVersionIds function return version id sucessfully wi
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -134,6 +137,7 @@ describe('builder: getActiveVersionIds function return version id failed with ma
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -142,6 +146,7 @@ describe('builder: getActiveVersionIds function return version id failed with ma
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -150,6 +155,7 @@ describe('builder: getActiveVersionIds function return version id failed with ma
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -158,6 +164,7 @@ describe('builder: getActiveVersionIds function return version id failed with ma
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -199,6 +206,7 @@ describe('builder: getActiveVersionIds function return version id failed for non
       .get(uri => uri.includes('apps'))
       .reply(429, {
         error: {
+          code: '429',
           message: 'Rate limit is exceeded'
         }
       })
@@ -207,6 +215,7 @@ describe('builder: getActiveVersionIds function return version id failed for non
       .get(uri => uri.includes('apps'))
       .reply(401, {
         error: {
+          code: '401',
           message: 'You do not have access'
         }
       })

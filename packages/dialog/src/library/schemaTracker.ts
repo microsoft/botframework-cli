@@ -5,20 +5,14 @@
 
 import Ajv = require('ajv')
 import parser from '@apidevtools/json-schema-ref-parser'
-
-let getUri: any = require('get-uri')
+import http from './getJSON'
 
 // Get JSON from a URI.
 async function getJSON(uri: string): Promise<any> {
     if (uri.indexOf(':') < 2) {
         uri = `file:///${uri}`
     }
-    let stream = await getUri(uri)
-    let data = ''
-    for await (let chunk of stream) {
-        data += chunk.toString()
-    }
-    return JSON.parse(data)
+    return http(uri)
 }
 
 export class SchemaTracker {

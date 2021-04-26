@@ -14,13 +14,13 @@ export default class LuisApplicationAssignazureaccount extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    appId: flags.string({description: '(required) LUIS application Id (defaults to config:set:luis --appId {APPLICATION_ID})'}),
     endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:set:luis --subscriptionKey {SUBSCRIPTION_KEY})'}),
     azureSubscriptionId: flags.string({description: 'Azure Subscription Id', required: true}),
     resourceGroup: flags.string({description: 'Resource Group', required: true}),
     accountName: flags.string({description: 'Account name', required: true}),
-    armToken: flags.string({description: 'The bearer authorization header to use; containing the user`s ARM token used to validate azure accounts information', required: true}),
+    armToken: flags.string({description: '(required) User`s ARM token used to validate azure accounts information (default: config:set:luis --armToken {ARM_TOKEN})'}),
     json: flags.boolean({description: 'Display output as JSON'})
   }
 
@@ -33,15 +33,16 @@ export default class LuisApplicationAssignazureaccount extends Command {
       appId,
       endpoint,
       subscriptionKey,
+      armToken
     } = await utils.processInputs(flags, flagLabels, configDir)
 
-    const requiredProps = {appId, endpoint, subscriptionKey}
+    const requiredProps = {appId, endpoint, subscriptionKey, armToken}
     utils.validateRequiredProps(requiredProps)
 
     try {
       const messageData = await Application.assignAzureAccount(
         {appId, endpoint, subscriptionKey},
-        flags.armToken,
+        armToken,
         flags.azureSubscriptionId,
         flags.resourceGroup,
         flags.accountName
@@ -55,7 +56,7 @@ export default class LuisApplicationAssignazureaccount extends Command {
       this.log(output)
 
     } catch (err) {
-      throw new CLIError(`Failed to assign accout: ${err}`)
+      throw new CLIError(`Failed to assign account: ${err}`)
     }
   }
 }

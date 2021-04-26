@@ -174,4 +174,15 @@ describe('luis:generate:cs', () => {
     .it('Generates class based on V6 with entity instanceOf referencing a closedList', async () => {
       await compareSourceFiles('../../../fixtures/generate/V6AnyEntityAsInstanceOf.cs', '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')
     })
+  
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/EntityPrebuiltType.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/EntityPrebuiltType.cs')}`])
+    .it('Generates class based on V6 with a composite entity with a prebuilt child', async () => {
+      await compareSourceFiles('../../../fixtures/generate/EntityPrebuiltType.cs', '../../../fixtures/generate/results/EntityPrebuiltType.cs')
+    })
 })

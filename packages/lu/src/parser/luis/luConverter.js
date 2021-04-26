@@ -1,6 +1,8 @@
 const NEWLINE = require('os').EOL;
 const helperClasses = require('./../lufile/classes/hclasses')
 const EntityTypeEnum = require('./../utils/enums/luisEntityTypes');
+const EscapeCharsInUtterance = require('./../utils/enums/escapechars').EscapeCharsInUtterance;
+const helpers = require('./../utils/helpers');
 
 /**
  * Parses a Luis object into Lu Content
@@ -89,7 +91,7 @@ const parseUtterancesToLu = function(utterances, luisJSON){
         if(luisJSON.test === true && utterance.predictedResult !== undefined){
             fileContent += parsePredictedResultToLu(utterance, luisJSON)
         }
-        if(utterance.entities.length >= 0) {
+        if(utterance.entities.length > 0) {
             // update utterance for each entity
             let text = utterance.text;
             // flatten entities
@@ -99,10 +101,26 @@ const parseUtterancesToLu = function(utterances, luisJSON){
             // remove all children
             sortedEntitiesList.forEach(entity => delete entity.children);
             let tokenizedText = text.split('');
+            tokenizedText.forEach(function (token, index) {
+                tokenizedText[index] = EscapeCharsInUtterance.includes(token) ? `\\${token}` : token; 
+            });
             // handle cases where we have both child as well as cases where more than one entity can have the same start position
             // if there are multiple entities in the same start position, then order them by composite, nDepth, regular entity
             getEntitiesByPositionList(sortedEntitiesList, tokenizedText);
             updatedText = tokenizedText.join('');
+        } else {
+            // will not add escape char for pattern utterances since brackets are strictly used in pattern
+            // so there are no exceptions that need to be handled in pattern
+            if (utterance.isPattern) {
+                updatedText = utterance.text;
+            } else {
+                updatedText = utterance.text.replace(/[\[\]\(\)]/gi, match => `\\${match}`);
+                let tokenizedText = updatedText.split('');
+                tokenizedText.forEach(function (token, index) {
+                    tokenizedText[index] = EscapeCharsInUtterance.includes(token) ? `\\${token}` : token;
+                });
+                updatedText = tokenizedText.join('');
+            }
         }
 
         // remove duplicated whitespaces between words inside utterance to make sure they are aligned with the luis portal
@@ -138,7 +156,16 @@ const updateTokenizedTextByEntity = function(tokenizedText, entity) {
     } else {
         tokenizedText[parseInt(entity.startPos)] = `{@${entity.entity}=${tokenizedText[parseInt(entity.startPos)]}`;    
     }
-    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] + '}';
+
+    // check blackslash before entity definition
+    // blackslash before { or } will be reconized to escape { or }
+    // to avoid such escape, add another blackslash before blackslash
+    if (parseInt(entity.startPos) > 0 && tokenizedText[parseInt(entity.startPos) - 1] === '\\') {
+        tokenizedText[parseInt(entity.startPos) - 1] += '\\'
+    }
+
+    tokenizedText[parseInt(entity.endPos)] = tokenizedText[parseInt(entity.endPos)] === '\\' ? 
+        tokenizedText[parseInt(entity.endPos)] + '\\}' : tokenizedText[parseInt(entity.endPos)] + '}';
 }
 
 const parsePredictedResultToLu =  function(utterance, luisJSON){
@@ -208,7 +235,7 @@ const parseEntitiesToLu =  function(luisJson){
                 }
                 fileContent += NEWLINE + NEWLINE;
             }
-            fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
+            fileContent += `@ ml ${writeEntityName(entity.name)}`;
             fileContent += addRolesAndFeatures(entity);
             fileContent += NEWLINE + NEWLINE;
         } else {
@@ -391,7 +418,7 @@ const addAppMetaData = function(LUISJSON) {
 const handleNDepthEntity = function(entity) {
     let fileContent = '';
     const BASE_TAB_STOP = 1;
-    fileContent += `@ ${getEntityType(entity.features)} ${writeEntityName(entity.name)}`;
+    fileContent += `@ ml ${writeEntityName(entity.name)}`;
     fileContent += addRolesAndFeatures(entity);
     fileContent += NEWLINE;
     fileContent += addNDepthChildDefinitions(entity.children, BASE_TAB_STOP, fileContent) + NEWLINE + NEWLINE
@@ -408,7 +435,7 @@ const addNDepthChildDefinitions = function(childCollection, tabStop, fileContent
     (childCollection || []).forEach(child => {
         myFileContent += "".padStart(tabStop * 4, ' ');
         myFileContent += `- @ ${getEntityType(child.features)} ${writeEntityName(child.name)}`;
-        myFileContent += addRolesAndFeatures(child);
+        myFileContent += addRolesAndFeatures(child, true);
         myFileContent += NEWLINE;
         if (child.children && child.children.length !== 0) {
             myFileContent += addNDepthChildDefinitions(child.children, tabStop + 1, myFileContent);
@@ -420,7 +447,7 @@ const getEntityType = function(features) {
     // find constraint
     let constraint = (features || []).find(feature => feature.isRequired == true);
     if (constraint !== undefined) {
-        return constraint.modelName;
+        return writeEntityName(constraint.modelName);
     } else {
         return EntityTypeEnum.ML;
     }
@@ -428,9 +455,10 @@ const getEntityType = function(features) {
 /**
  * Helper to construt role and features list for an entity
  * @param {Object} entity 
+ * @param {boolean} isInNDepth
  * @returns {String} file content to include.
  */
-const addRolesAndFeatures = function(entity) {
+const addRolesAndFeatures = function(entity, isInNDepth = false) {
     let roleAndFeatureContent = ''
     if (entity.roles && entity.roles.length > 0) {
         roleAndFeatureContent += ` ${entity.roles.length > 1 ? `hasRoles` : `hasRole`} `;
@@ -448,8 +476,11 @@ const addRolesAndFeatures = function(entity) {
         if (item.featureName) featuresList.push(item.featureName);
         if (item.modelName) {
             if (item.isRequired !== undefined) {
-                if (item.isRequired !== true) 
+                if (item.isRequired !== true) {
                     featuresList.push(item.modelName);
+                } else if (!isInNDepth) {
+                    featuresList.push(item.modelName + '*');
+                }           
             } else {
                 featuresList.push(item.modelName);
             }
@@ -481,9 +512,9 @@ const updateUtterancesList = function (srcCollection, tgtCollection, attribute) 
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
             return;
         }
-        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute])) {
+        if(!matchInTarget.utterances.find(item => item.text == srcItem[attribute] && ((item.isPattern && attribute !== 'text') || (!item.isPattern && attribute === 'text')))) {
             addUtteranceToCollection(attribute, srcItem, matchInTarget);
-            return;
+            return; 
         }
     });
 }
@@ -498,7 +529,9 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
     if(attribute === 'text') {
         matchInTarget.utterances.push(srcItem); 
     } else {
-        matchInTarget.utterances.push(new helperClasses.uttereances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]));
+        let utteranceFromPattern = new helperClasses.utterances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]);
+        utteranceFromPattern.isPattern = true;
+        matchInTarget.utterances.push(utteranceFromPattern);
     }
 }
 

@@ -50,7 +50,7 @@ $ToTime:simple
 
 > # PREBUILT Entity definitions
 
-$PREBUILT:ordinal
+@ PREBUILT ordinalV2
 
 $PREBUILT:personName Roles=Female, Male
 

@@ -402,6 +402,13 @@ describe('luis:convert', () => {
       let parsedObjects = await parseJsonFiles('./../../../results/root41.json', './../../fixtures/verified/merge_intents_disabled.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
     })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/intent_name_with_special_chars.json')}`, '--out', './results/root36.lu',])
+    .it('luis:convert lu file with special chars in intent name', async () => {
+      expect(await compareLuFiles('./../../../results/root36.lu', './../../fixtures/verified/intent_name_with_special_chars.lu')).to.be.true
+    })
 })   
 
 
@@ -453,6 +460,13 @@ describe('luis:convert sort option enabled', () => {
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/all.json')}`, '--out', './results/root50.lu', '--sort'])
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
     expect(await compareLuFiles('./../../../results/root50.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
+  })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing_member.json')}`, '--out', './results/root51.lu', '--sort'])
+  .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model with missing members', async () => {
+    expect(await compareLuFiles('./../../../results/root51.lu', './../../fixtures/verified/luis_sorted_missing_member.lu')).to.be.true
   })
 })
 

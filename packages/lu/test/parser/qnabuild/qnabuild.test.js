@@ -8,7 +8,7 @@ const qnaObject = require('../../../src/parser/lu/qna')
 const qnaOptions = require('../../../src/parser/lu/qnaOptions')
 const txtfile = require('../../../src/parser/lufile/read-text-file');
 
-const rootDir = path.join(__dirname, './../../fixtures/testcases/import-resolver/qna-import-resolver')
+const rootDir = path.join(__dirname, './../../fixtures/testcases/')
 
 describe('builder: importUrlOrFileReference function return lu content from file sucessfully', () => {
   before(function () {
@@ -439,7 +439,7 @@ describe('builder: loadContents function can resolve import files with customize
 
     const builder = new Builder(() => { })
     const result = await builder.loadContents(
-      [`${path.join(rootDir, "common.en-us.qna")}`], {
+      [`${path.join(rootDir, "import-resolver/qna-import-resolver/common.en-us.qna")}`], {
         culture: 'en-us',
         importResolver: importResolver
       })
@@ -447,6 +447,26 @@ describe('builder: loadContents function can resolve import files with customize
     assert.equal(result.length, 1)
     assert.isTrue(result[0].content.includes(
       `!# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? help${NEWLINE}- could you help${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}help answer${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? welcome${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}welcome here${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? cancel${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}cancel the task${NEWLINE}\`\`\`${NEWLINE}${NEWLINE}> !# @qna.pair.source = custom editorial${NEWLINE}${NEWLINE}# ? stop${NEWLINE}${NEWLINE}\`\`\`markdown${NEWLINE}stop that${NEWLINE}\`\`\``))
+  })
+})
+
+describe('builder: loadContents function can handle locale successfully', () => {
+  it('should load supported locale sucessfully', async () => {
+    const builder = new Builder(() => { })
+    const result = await builder.loadContents([`${path.join(rootDir, "locale-test.hr-hr.qna")}`], {})
+
+    assert.equal(result.length, 1)
+    assert.equal(result[0].language, 'hr-hr')
+  })
+
+  it('should throw exception for unsupported locale', async () => {
+    const builder = new Builder(() => { })
+    try {
+      await builder.loadContents([`${path.join(rootDir, "locale-test.ab-ab.qna")}`], {})
+      assert.fail('Exception is not thrown.')
+    } catch (error) {
+      assert.equal(error.text, 'Culture is not set or unsupported by qnamaker service.')
+    }
   })
 })
 

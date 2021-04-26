@@ -1,24 +1,6 @@
 {
   "intents": [
     {
-      "name": "Greeting"
-    },
-    {
-      "name": "Help"
-    },
-    {
-      "name": "AskForUserName"
-    },
-    {
-      "name": "CreateAlarm"
-    },
-    {
-      "name": "DeleteAlarm"
-    },
-    {
-      "name": "CommunicationPreference"
-    },
-    {
       "name": "Greeting",
       "features": [
         {
@@ -91,7 +73,13 @@
   "entities": [
     {
       "name": "userName",
-      "roles": []
+      "roles": [],
+      "features": [
+        {
+          "featureName": "ChocolateType",
+          "isRequired": false
+        }
+      ]
     },
     {
       "name": "foodType",
