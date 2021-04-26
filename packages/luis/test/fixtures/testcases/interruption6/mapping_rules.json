@@ -1,8 +1,8 @@
 {
-    "./main/Main.lu": {
+    "Main": {
         "rootDialog": true,
         "triggers": {
-            "dia1_trigger": "./Dia1/dia1.lu"
+            "dia1_trigger": "dia1"
         }
     }
 }

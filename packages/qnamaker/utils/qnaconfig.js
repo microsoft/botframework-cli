@@ -3,7 +3,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const chalk = require('chalk')
 const Operations = require('./api/operations');
-const Delay = require('await-delay');
+const Delay = require('delay');
 const {cli} = require('cli-ux')
 
 const config = {
@@ -56,9 +56,9 @@ const config = {
             });
             
             if (opResult.error)
-                throw new Error(JSON.stringify(opResult.error, null, 4));
+                throw new Error(JSON.stringify(opResult.data.error, null, 4));
 
-            result = await opResult.json();
+            result = opResult.data;
             cli.action.start(result.operationState)
 
             if (result.operationState === 'Failed'){

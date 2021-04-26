@@ -41,13 +41,25 @@ module.exports = async function qnamaker(config, serviceManifest, args, requestB
     }
     // Create the target service and kick off the request.
     const service = new api[identifier]();
-    const response = await service[operation.name](args, (requestBodyDataModel || requestBody));
-    //console.log(' requestBodyDataModel '+requestBodyDataModel +' entityType '+operation.entityType+' requestBody '+ requestBody)
-    const text = await response.text();
+
     try {
-        return JSON.parse(text);
+      const response = await service[operation.name](args, (requestBodyDataModel || requestBody));
+      return response.data;
     }
-    catch (e) {
-        return text;
+    catch (error) {
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            return error.response.data;
+
+          } else if (error.request) {
+            // The request was made but no response was received
+            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+            // http.ClientRequest in node.js
+            return error.request;
+          } else {
+            // Something happened in setting up the request that triggered an Error
+            return error.message;
+          }
     }
 };

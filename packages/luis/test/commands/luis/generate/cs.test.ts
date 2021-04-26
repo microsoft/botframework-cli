@@ -114,6 +114,7 @@ describe('luis:generate:cs', () => {
       `${path.join(__dirname, '../../../fixtures/generate/invalid.json')}`,
       '--out',
       `${path.join(__dirname, '../../../fixtures/generate/results/invalid.cs')}`])
+    .exit(1)
     .it('Throws expected error if invalid JSON', async ctx => {
       expect(ctx.stderr).to.include('Invalid LUIS JSON file content.')
     })
@@ -172,5 +173,16 @@ describe('luis:generate:cs', () => {
       `${path.join(__dirname, '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')}`])
     .it('Generates class based on V6 with entity instanceOf referencing a closedList', async () => {
       await compareSourceFiles('../../../fixtures/generate/V6AnyEntityAsInstanceOf.cs', '../../../fixtures/generate/results/V6AnyEntityAsInstanceOf.cs')
+    })
+  
+  test
+    .stdout()
+    .command(['luis:generate:cs',
+      '--in',
+      `${path.join(__dirname, '../../../fixtures/generate/EntityPrebuiltType.json')}`,
+      '--out',
+      `${path.join(__dirname, '../../../fixtures/generate/results/EntityPrebuiltType.cs')}`])
+    .it('Generates class based on V6 with a composite entity with a prebuilt child', async () => {
+      await compareSourceFiles('../../../fixtures/generate/EntityPrebuiltType.cs', '../../../fixtures/generate/results/EntityPrebuiltType.cs')
     })
 })

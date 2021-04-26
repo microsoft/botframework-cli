@@ -1,0 +1,61 @@
+{
+  "intents": [
+    {
+      "name": "None"
+    },
+    {
+      "name": "test"
+    }
+  ],
+  "entities": [],
+  "composites": [],
+  "closedLists": [],
+  "regex_entities": [],
+  "regex_features": [],
+  "utterances": [
+    {
+      "text": "who (was|is|will be) {employeelistentity}['s] manager [([in]|[on]){datetimev2}?]",
+      "intent": "test",
+      "entities": []
+    },
+    {
+      "text": "Text spacing issues [mas 1.14.12] (wcag 2.1) 10",
+      "intent": "test",
+      "entities": []
+    },
+    {
+      "text": "who will be the champion of this {eventName}?",
+      "intent": "test",
+      "entities": []
+    }
+  ],
+  "patterns": [
+    {
+      "pattern": "who (was|is|will be) the champion of that game?",
+      "intent": "test"
+    },
+    {
+      "pattern": "who \\(is\\) the champion of this {eventName}?",
+      "intent": "test"
+    },
+    {
+      "pattern": "who is the best one [in] this game",
+      "intent": "test"
+    }
+  ],
+  "patternAnyEntities": [
+    {
+      "name": "eventName",
+      "explicitList": [],
+      "roles": []
+    }
+  ],
+  "prebuiltEntities": [],
+  "luis_schema_version": "7.0.0",
+  "versionId": "0.1",
+  "name": "abcdefg",
+  "desc": "",
+  "culture": "en-us",
+  "tokenizerVersion": "1.0.0",
+  "phraselists": []
+}

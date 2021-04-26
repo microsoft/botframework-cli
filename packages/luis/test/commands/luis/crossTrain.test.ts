@@ -15,6 +15,7 @@ describe('luis:cross-train tests for cli parameters', () => {
     .stdout()
     .stderr()
     .command(['luis:cross-train'])
+    .exit(1)
     .it('displays an error if --in is not provided', ctx => {
       expect(ctx.stderr).to.contain('Missing input. Please specify a folder with --in flag')
     })
@@ -23,8 +24,9 @@ describe('luis:cross-train tests for cli parameters', () => {
     .stdout()
     .stderr()
     .command(['luis:cross-train', '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption')}`])
+    .exit(1)
     .it('displays an error if config is not provided', ctx => {
-      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
+      expect(ctx.stderr).to.contain('Missing cross train config. Please provide config file path by --config')
     })
 })
 
@@ -89,22 +91,6 @@ describe('luis:cross-train tests for lu and qna contents', () => {
   test
     .stdout()
     .command(['luis:cross-train',
-      '--in', './test/fixtures/testcases/interruption4',
-      '--intentName', '_Interruption',
-      '--out', './interruptionGen',
-      '--rootDialog', './test/fixtures/testcases/interruption4/main/main.dialog',
-      '--force'])
-    .it('luis:cross training can get expected result when automatically detecting config based on rootdialog and file system', async () => {
-      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption4/main.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption4/dia1.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia2.lu', './../../fixtures/verified/interruption4/dia2.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia3.lu', './../../fixtures/verified/interruption4/dia3.lu')).to.be.true
-      expect(await compareLuFiles('./../../../interruptionGen/dia4.lu', './../../fixtures/verified/interruption4/dia4.lu')).to.be.true
-    })
-  
-  test
-    .stdout()
-    .command(['luis:cross-train',
       '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
       '--intentName', '_Interruption',
       '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
@@ -127,5 +113,51 @@ describe('luis:cross-train tests for lu and qna contents', () => {
     '--log'])
     .it('displays a warning if log is set true', ctx => {
       expect(ctx.stdout).to.contain('[WARN] line 1:0 - line 1:15: no utterances found for intent definition: "# hotelLocation"')
+    })
+
+  test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
+      '--intentName', '_Interruption',
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
+      '--out', './interruptionGen',
+      '--force',
+      '--intra-dialog',
+      '--no-inner-dialog'])
+    .it('luis:cross training only do inner dialog', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption6/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption6/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption6/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption6/dia1.qna')).to.be.true
+    })
+
+  test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/interruption5')}`,
+      '--intentName', '_Interruption',
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/interruption5/mapping_rules.json')}`,
+      '--out', './interruptionGen',
+      '--force',
+      '--inner-dialog',
+      '--no-intra-dialog'])
+    .it('luis:cross training only do intra dialog', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/main.lu', './../../fixtures/verified/interruption7/main.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/main.qna', './../../fixtures/verified/interruption7/main.qna')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.lu', './../../fixtures/verified/interruption7/dia1.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/dia1.qna', './../../fixtures/verified/interruption7/dia1.qna')).to.be.true
+    })
+
+    test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/application')}`,
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/application/cross-train.config')}`,
+      '--out', './interruptionGen',
+      '--force'])
+    .it('luis:cross training should able to import files out of current directory', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/application.lu', './../../fixtures/verified/interruption8/application.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/application.qna', './../../fixtures/verified/interruption8/application.qna')).to.be.true
     })
 })

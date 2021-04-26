@@ -7,16 +7,16 @@
 
 > # Intent definitions
 
-## dia1_trigger
+# dia1_trigger
 - book a hotel for me
 
 
-## dia2_trigger
+# dia2_trigger
 - book a flight for me
 - book a train ticket for me
 
 
-## greeting
+# greeting
 - hi
 - hello
 

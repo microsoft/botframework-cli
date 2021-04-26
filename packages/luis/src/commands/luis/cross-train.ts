@@ -8,25 +8,26 @@ const fs = require('fs-extra')
 const path = require('path')
 const crossTrain = require('@microsoft/bf-lu/lib/parser/cross-train/cross-train')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
+const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExtTypeEnum
 
 export default class LuisCrossTrain extends Command {
   static description = 'Lu and Qna cross train tool'
 
   static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'Luis:cross-train help'}),
+    help: flags.help({char: 'h', description: 'Luis:cross-train command help'}),
     in: flags.string({char: 'i', description: 'Source lu and qna files folder'}),
     out: flags.string({char: 'o', description: 'Output folder name. If not specified, the cross trained files will be written to cross-trained folder under folder of current command'}),
     config: flags.string({description: 'Path to config file of mapping rules'}),
     intentName: flags.string({description: 'Interruption intent name', default: '_Interruption'}),
-    rootDialog: flags.string({description: 'RootDialog file path. If --config not specified, cross-trian will automatically construct the config from file system based on root dialog file'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    log: flags.boolean({description: 'Write out log messages to console', default: false})
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
+    'inner-dialog': flags.boolean({description: 'Only do inner dialog cross train', default: true, allowNo: true}),
+    'intra-dialog': flags.boolean({description: 'Only do intra dialog cross train', default: true, allowNo: true})
   }
 
   async run() {
     try {
       const {flags} = this.parse(LuisCrossTrain)
-
       if (!flags.in) {
         throw new CLIError('Missing input. Please specify a folder with --in flag')
       }
@@ -35,21 +36,24 @@ export default class LuisCrossTrain extends Command {
 
       if (flags.config && flags.config !== '') {
         flags.config = path.resolve(flags.config)
-      } else if (flags.rootDialog && flags.rootDialog !== '') {
-        flags.rootDialog = path.resolve(flags.rootDialog)
-        flags.config = await crossTrain.generateConfig(flags.in, flags.rootDialog)
       } else {
-        throw new CLIError('Missing cross train config. Please provide config by --config or automatically construct config with --rootDialog.')
+        throw new CLIError('Missing cross train config. Please provide config file path by --config.')
       }
 
-      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log)
+      let trainingOpt = {}
+      trainingOpt = {
+        inner: flags['inner-dialog'],
+        intra: flags['intra-dialog']
+      }
+
+      const trainedResult = await crossTrain.train(flags.in, flags.intentName, flags.config, flags.log, trainingOpt)
 
       if (flags.out === undefined) {
         flags.out = path.join(process.cwd(), 'cross-trained')
       }
 
-      await this.writeFiles(trainedResult.luResult, flags.out, flags.force)
-      await this.writeFiles(trainedResult.qnaResult, flags.out, flags.force)
+      await this.writeFiles(trainedResult.luResult, flags.out, flags.force, fileExtEnum.LUFile)
+      await this.writeFiles(trainedResult.qnaResult, flags.out, flags.force, fileExtEnum.QnAFile)
     } catch (err) {
       if (err instanceof exception) {
         throw new CLIError(err.text)
@@ -58,7 +62,7 @@ export default class LuisCrossTrain extends Command {
     }
   }
 
-  async writeFiles(fileIdToLuResourceMap: any, out: string, force: boolean) {
+  async writeFiles(fileIdToLuResourceMap: any, out: string, force: boolean, fileExt: any) {
     if (fileIdToLuResourceMap) {
       let newFolder
       if (out) {
@@ -78,9 +82,9 @@ export default class LuisCrossTrain extends Command {
           if (newFolder) {
             const fileName = path.basename(fileId)
             const newFileId = path.join(newFolder, fileName)
-            validatedPath = utils.validatePath(newFileId, '', force)
+            validatedPath = utils.validatePath(newFileId + fileExt, '', force)
           } else {
-            validatedPath = utils.validatePath(fileId, '', force)
+            validatedPath = utils.validatePath(fileId + fileExt, '', force)
           }
 
           await fs.writeFile(validatedPath, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')

@@ -14,6 +14,14 @@ describe('luis:application:assignazureaccount', () => {
   });
 
   test
+  .stderr()
+  .command(['luis:application:assignazureaccount', '--endpoint', 'https://westus.api.cognitive.microsoft.com', '--subscriptionKey', uuidv1(), '--azureSubscriptionId', uuidv1(), '--resourceGroup', 'adfhrkg', '--accountName', 'sfgsgdszg', '--appId', uuidv1()])
+  .exit(1)
+  .it('Errors if arm token not passed', ctx => {
+    expect(ctx.stderr).to.contain(`Required input property 'armToken' missing. Please pass it in as a flag or set it in the config file.`)
+  })
+
+  test
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .post(uri => uri.includes('apps'))
   .reply(200, {'code': 'Success'})

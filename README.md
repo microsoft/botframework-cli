@@ -3,7 +3,7 @@
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
 # BF Command Line Interface
-[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=master)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=master)
+[![Build Status](https://fuselabs.visualstudio.com/SDK_Public/_apis/build/status/microsoft.botframework-cli?branchName=main)](https://fuselabs.visualstudio.com/SDK_Public/_build/latest?definitionId=713&branchName=main)
 
 The new BF Command Line Interface (CLI) tool replaces the collection of standalone tools used to manage Bot Framework bots and related services. We have ported most tools and are in process of porting the rest. The new BF CLI aggregates the collection of cross-platform tools into one cohesive and consistent interface.
 
@@ -11,41 +11,44 @@ The old tools will be deprecated in subsequent releases. All new investments, bu
 
 ## Installation
 
-BF is based on the Node.js platform and the [OClif](https://github.com/oclif/oclif) framework where it inherits its command line parsing style, and plugin architecture platform. 
+BF is based on the Node.js platform and the [OClif](https://github.com/oclif/oclif) framework where it inherits its command line parsing style, and plugin architecture platform.
 
 You must download the following prerequisites:
 
-* [Node.js](https://nodejs.org/) version 10.14.1 or higher
+* [Node.js](https://nodejs.org/) version 12
 
-Install the tool using the following command: 
+Install the tool using the following command:
 
 ~~~
 $ npm i -g @microsoft/botframework-cli
 $ bf
 ~~~
 
+## Troubleshooting
+
+For installation failures in some Linux platforms, try one of the following workarounds:
+- Upgrade npm to version 7.9
+- Install without the '-g' option and use [npx](https://www.npmjs.com/package/npx)
+
+~~~
+$ npm i @microsoft/botframework-cli
+$ npx bf
+~~~
+
 ## Available Commands
+
 The following commands are currently available:
-* [Chatdown][1] 
+* [Chatdown][1]
 * [Config][2]
 * [Dialog][3]
 * [Luis][4]
 * [QnAMaker][5]
 
-<!--
-Preview commands (Install running [bf plugins](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins#microsoftbf-cli-plugins))
-* [Dialog](https://github.com/microsoft/botframework-cli/tree/master/packages/dialog)
--->
-
-#### Future Commands
-The following commands will be ported in upcoming releases:
-* Dispatch
-
-See [Porting Map](https://github.com/microsoft/botframework-cli/blob/master/PortingMap.md) for a mapping reference between old and new tools
+See [Porting Map](https://github.com/microsoft/botframework-cli/blob/main/PortingMap.md) for a mapping reference between old and new tools
 
 ## Overview
 
-The  Bot Framework Command Line Interface (BF CLI) cross-platform tool is used to manage Bot Framework bots and related services. It is part of the [Microsoft Bot Framework](https://github.com/Microsoft/botframework), a comprehensive framework for building enterprise-grade conversational AI experiences.  In particular, BF CLI provides fundamental functionality when used in conjunction with Continuous Integration, and Continuous Deployment (CI/CD) pipelines. 
+The  Bot Framework Command Line Interface (BF CLI) cross-platform tool is used to manage Bot Framework bots and related services. It is part of the [Microsoft Bot Framework](https://github.com/Microsoft/botframework), a comprehensive framework for building enterprise-grade conversational AI experiences.  In particular, BF CLI provides fundamental functionality when used in conjunction with Continuous Integration, and Continuous Deployment (CI/CD) pipelines.
 
 As you build your bot, you may also need to integrate AI services like [LUIS.ai](http://luis.ai) for language understanding, [QnAMaker.ai](http://qnamaker.ai) for your bot to respond to simple questions in a Q&A format, and more. The _[bf luis](./packages/cli#bf-luis)_ command is used to convert, and translate language definition _.lu_ files or generate corresponding source (C# or JavaScript) code. Then, use the [Luis Tool](https://github.com/microsoft/botbuilder-tools/tree/master/packages/LUIS)  to deploy the local files, train, test, and publish them as Language Understanding models within the LUIS service. If used to define QnAMaker question/answer Knowledgebase, use the _[bf qnamaker](./packages/cli#bf-qnamaker)_ command to create and manage QnAMaker assets both locally, and on the QnAMaker service. Please refer to the[ _lu_ library documentation](./packages/lu)  for extended discussion on how to work with .lu file formats. _Note: You may be familiar with the Luis command if you used the legacy [LuDown](https://github.com/microsoft/botbuilder-tools/tree/master/packages/Ludown) and [LuisGen](https://github.com/microsoft/botbuilder-tools/tree/master/packages/LUISGen) tools._
 
@@ -53,13 +56,13 @@ As your bot grows in sophistication, use [Dispatch](https://github.com/Microsoft
 
 To test and refine your bot, you can use the new [V4 Bot Framework Emulator](https://github.com/Microsoft/BotFramework-Emulator/releases). The Bot Framework Emulator is a cross-platform [Electron](https://electronjs.org/) application that enables you to test and debug your bots on local machine or in the cloud.
 
-Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/cli#bf-chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator. 
+Also, during early designs stages you may want to create mockup of conversations between the user and the bot for the specific scenarios your bot will support. Use [bf chatdown](./packages/cli#bf-chatdown) command to author conversation mockup .chat files and convert them into rich transcripts and view the conversations in the the Emulator.
 
-Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), you can create, download, publish, configure channels with the [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/). It is a plugin that extends the functionality of Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to manage your Azure Bot Service assets.
+Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), you can create, download, publish, configure channels with the [Azure Bot Service](https://azure.microsoft.com/en-us/services/bot-service/). It is a plugin that extends the functionality of [Azure CLI](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli?view=azure-cli-latest) to manage your Azure Bot Service assets.
 
 
 ### See Also
-* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/master/packages/cli)
+* [Detailed Usage Information](https://github.com/microsoft/botframework-cli/tree/main/packages/cli)
 * [Bot Framework Homepage](https://dev.botframework.com/)
 * [Azure Bot Service](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-overview-introduction?view=azure-bot-service-4.0)
 * [LUIS](https://docs.microsoft.com/en-us/azure/cognitive-services/luis/index)
@@ -67,7 +70,7 @@ Lastly, with the [Azure CLI Bot extension](./AzureCli.md) (_az bot_ command), yo
 * [Bot Design Guidelines](https://docs.microsoft.com/en-us/azure/bot-service/bot-service-design-principles)
 
 ## Issues and Feature Requests
-Please file issues and feature requests [here](https://github.com/microsoft/botframework-cli/issues). 
+Please file issues and feature requests [here](https://github.com/microsoft/botframework-cli/issues).
 
 Also, see current [known issues](https://github.com/microsoft/botframework-cli/labels/known-issues).
 

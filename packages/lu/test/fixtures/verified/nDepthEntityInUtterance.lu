@@ -7,7 +7,7 @@
 
 > # Intent definitions
 
-## None
+# None
 - {@nDepth=i have {@nDepth_child1=17 years old}}
 - {@nDepth=i have {@nDepth_child1=18 years old}}
 - {@nDepth=i have {@nDepth_child1=19 years old}}

@@ -94,6 +94,7 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid-entity-definition.lu')}`])
+    .exit(1)
     .it('luis:convert writes out an error when invalid entity definition is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("Invalid entity line, did you miss entity type after $\n")
     })
@@ -108,6 +109,7 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/utterance-without-hyphen.lu')}`])
+    .exit(1)
     .it('luis:convert writes out an error when utterance without hyphen is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:16: Invalid intent body line, did you miss '-' at line begin")
       expect(ctx.stderr).to.contain("[ERROR] line 6:0 - line 6:16: Invalid intent body line, did you miss '-' at line begin")
@@ -116,6 +118,7 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/list-entity-body-without-hyphen.lu')}`])
+    .exit(1)
     .it('luis:convert writes out an error when list entity body without hyphen is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("[ERROR] line 5:0 - line 5:2: Invalid list entity line, did you miss '-' at line begin")
       expect(ctx.stderr).to.contain("[ERROR] line 8:0 - line 8:2: Invalid list entity line, did you miss '-' at line begin")
@@ -124,6 +127,7 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-question-line-without-hyphen.lu')}`])
+    .exit(1)
     .it('luis:convert writes out an error when list qna question line without hyphen is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("[ERROR] line 2:0 - line 2:10: Invalid QnA question line, did you miss '-' at line begin")
     })
@@ -131,6 +135,7 @@ describe('luis:convert', () => {
     test
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/qna-filter-line-without-hyphen.lu')}`])
+    .exit(1)
     .it('luis:convert writes out an error when list qna filter line without hyphen is found', async (ctx: any) => {
       expect(ctx.stderr).to.contain("[ERROR] line 6:0 - line 6:16: Invalid QnA filter line, did you miss '-' at line begin")
     })
@@ -304,6 +309,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_2.lu')}`])
+    .exit(1)
     .it('luis:convert Invalid entity inherits information is skipped (prebuilt 2)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
@@ -313,6 +319,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_1.lu')}`])
+    .exit(1)
     .it('luis:convert Invalid intent inherits information is skipped (prebuilt 1)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
@@ -322,6 +329,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_3.lu')}`, '--log'])
+    .exit(1)
     .it('luis:convert Invalid entity inherits information is skipped (prebuilt 3)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @entity.inherits2 = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
@@ -331,6 +339,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_prebuilt_4.lu')}`, '--log'])
+    .exit(1)
     .it('luis:convert Invalid intent inherits information is skipped (prebuilt 4)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @intent.inherits2 = name : Web.WebSearch"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
@@ -340,6 +349,7 @@ describe('luis:convert', () => {
     .stdout()
     .stderr()
     .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/invalid_model.lu')}`, '--log'])
+    .exit(1)
     .it('luis:convert Invalid intent inherits information is skipped (invalid model)', async (ctx: any) => {
       expect(ctx.stdout).to.contain(`Skipping "> !# @app = test"`)
       expect(ctx.stderr).to.contain('No LU or Luis content parsed!')
@@ -391,6 +401,13 @@ describe('luis:convert', () => {
     .it('luis:convert section enabled lu file', async () => {
       let parsedObjects = await parseJsonFiles('./../../../results/root41.json', './../../fixtures/verified/merge_intents_disabled.json')
       expect(parsedObjects[0]).to.deep.equal(parsedObjects[1])
+    })
+
+    test
+    .stdout()
+    .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/intent_name_with_special_chars.json')}`, '--out', './results/root36.lu',])
+    .it('luis:convert lu file with special chars in intent name', async () => {
+      expect(await compareLuFiles('./../../../results/root36.lu', './../../fixtures/verified/intent_name_with_special_chars.lu')).to.be.true
     })
 })   
 
@@ -444,12 +461,20 @@ describe('luis:convert sort option enabled', () => {
   .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model', async () => {
     expect(await compareLuFiles('./../../../results/root50.lu', './../../fixtures/verified/luis_sorted.lu')).to.be.true
   })
+
+  test
+  .stdout()
+  .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/missing_member.json')}`, '--out', './results/root51.lu', '--sort'])
+  .it('luis:convert With -r/ --sort option, correctly sorts a LUIS model with missing members', async () => {
+    expect(await compareLuFiles('./../../../results/root51.lu', './../../fixtures/verified/luis_sorted_missing_member.lu')).to.be.true
+  })
 })
 
 describe('luis:convert file creation', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/testcases/newEntity1.json')}`, '--out', './newfolder/newEntity.lu'])
+  .exit(1)
   .it('luis:convert throws error if path to write doesnt exist', async (ctx: any) => {
     expect(ctx.stderr).to.contain('Path not found:')
   })
@@ -459,6 +484,7 @@ describe('luis:convert empty file handling', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.lu')}`])
+  .exit(1)
   .it('luis:convert errors out on empty lu file', async (ctx: any) => {
     expect(ctx.stderr).to.contain('[ERROR] Cannot parse empty')
   })
@@ -466,6 +492,7 @@ describe('luis:convert empty file handling', () => {
   test
   .stderr()
   .command(['luis:convert', '--in', `${path.join(__dirname, './../../fixtures/empty.json')}`])
+  .exit(1)
   .it('luis:convert errors out on empty json file', async (ctx: any) => {
     expect(ctx.stderr).to.contain('Sorry, error parsing content as Luis JSON\n')
   })

@@ -17,6 +17,7 @@ const  generatedFolderPath = './../../fixtures/generated'
 const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
 const translatekey = '11111111111111111111111111111111'
+const subsregion = 'japaneast'
 
 describe('lg:translate to fr', async () => {
   const response = require('./../../fixtures/testcase/translate-fr-1.json')
@@ -48,6 +49,8 @@ describe('lg:translate to fr', async () => {
     .command(['lg:translate',
       '--translatekey',
       translatekey,
+      '--region',
+      subsregion,
       '--in',
       path.join(__dirname, testcaseFolderPath, inputFileName),
       '--tgtlang',
@@ -90,6 +93,8 @@ describe('lg:translate to zh-cn', async () => {
   .command(['lg:translate',
     '--translatekey',
     translatekey,
+    '--region',
+    subsregion,
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--tgtlang',
@@ -131,6 +136,8 @@ describe('lg:translate to zh-cn with comments', async () => {
   .command(['lg:translate',
     '--translatekey',
     translatekey,
+    '--region',
+    subsregion,
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--tgtlang',
@@ -173,6 +180,8 @@ describe('lg:translate to zh-cn with translate_link_text', async () => {
   .command(['lg:translate',
     '--translatekey',
     translatekey,
+    '--region',
+    subsregion,
     '--in',
     path.join(__dirname, testcaseFolderPath, inputFileName),
     '--tgtlang',

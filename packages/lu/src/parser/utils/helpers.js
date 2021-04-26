@@ -77,13 +77,53 @@ const helpers = {
         let linkValue = linkValueList[0].replace('(', '').replace(')', '');
         if (linkValue === '') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}"`));
         // reference can either be #<Intent-Name> or #? or /*#? or /**#? or #*utterance* or #<Intent-Name>*patterns*
-        let splitRegExp = new RegExp(/^(?<fileName>.*?)(?<segment>#|\*+)(?<path>.*?)$/gim);
+        let splitRegExp = new RegExp(/^(.*?)(#|\*+)(.*?)$/gim);
         let splitReference = splitRegExp.exec(linkValue);
-        if (!splitReference) throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        if (!splitReference) {
+            throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        } else {
+            splitReference.groups = {
+                fileName: splitReference[1],
+                segment: splitReference[2],
+                path: splitReference[3]
+            }
+        }
+
         if (splitReference.groups.fileName && srcId && luSearchFn) {
             let luObjects = await luSearchFn(srcId, [{filePath: splitReference.groups.fileName, includeInCollate: false}])
             if (luObjects && luObjects.length > 0) splitReference.groups.fileName = luObjects[0].id
         }
+        if (splitReference.groups.segment.includes('*')) {
+            if (splitReference.groups.path === '') {
+                throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
+            }
+            splitReference.groups.fileName += '*';
+        }
+        return splitReference.groups;
+    },
+    /**
+     * Helper function to parse link URIs in utterances
+     * @param {String} utterance
+     * @returns {Object} Object that contains luFile and ref. ref can be Intent-Name or ? or * or **
+     * @throws {exception} Throws on errors. exception object includes errCode and text. 
+     */
+    parseLinkURISync: function (utterance) {
+        let linkValueList = utterance.trim().match(new RegExp(/\(.*?\)/g));
+        let linkValue = linkValueList[0].replace('(', '').replace(')', '');
+        if (linkValue === '') throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}"`));
+        // reference can either be #<Intent-Name> or #? or /*#? or /**#? or #*utterance* or #<Intent-Name>*patterns*
+        let splitRegExp = new RegExp(/^(.*?)(#|\*+)(.*?)$/gim);
+        let splitReference = splitRegExp.exec(linkValue);
+        if (!splitReference) {
+            throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n Reference needs a qualifier - either a #Intent-Name or #? or *#? or **#? or #*utterances* etc.`));
+        } else {
+            splitReference.groups = {
+                fileName: splitReference[1],
+                segment: splitReference[2],
+                path: splitReference[3]
+            }
+        }
+
         if (splitReference.groups.segment.includes('*')) {
             if (splitReference.groups.path === '') {
                 throw (new exception(retCode.errorCode.INVALID_LU_FILE_REF, `[ERROR]: Invalid LU File Ref: "${utterance}".\n '*' and '**' can only be used with QnA qualitifier. e.g. *#? and **#?`));
@@ -131,9 +171,9 @@ const helpers = {
     isUtteranceLinkRef: function (utterance) {
         utterance = utterance || '';
         // Ensure only links are detected and passed on to be parsed.
-        // Valid link: [bar](xyz)
+        // Valid link: [bar](xyz), [bar][2]
         // Not a link: [bar](xyz|123), [bar[tar]](xyz), abc [foo](bar)
-        let linkDetectRegex = /^\[[^\[]+\]\([^|]+\)$/gi;
+        let linkDetectRegex = /^\[[^\[]+\](\([^|]+\)|\[[^\[]+\])$/gi;
         return linkDetectRegex.test(utterance);
     },
     /**
@@ -147,7 +187,7 @@ const helpers = {
         if (this.isUtteranceLinkRef(utterance)) return false;
 
         // patterns must have at least one [optional] and or one (group | text)
-        let detectPatternRegex = /(\[.*?\])|(\(.*?(\|.*?)+\))/gi;
+        let detectPatternRegex = /(\[.*(?<!\\)\])|(\(.*?(\|.*?)+(?<!\\)\))/gi;
         return detectPatternRegex.test(utterance);
     },
     hashCode : function(s) {
@@ -239,7 +279,11 @@ const updateToV7 = function(finalLUISJSON) {
                 }
             });
         });
-        (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity));
+        let phraseListsNamesInFinal = [];
+        (finalLUISJSON.phraselists || []).forEach((item) => {
+            if (!phraseListsNamesInFinal.includes(item.name)) phraseListsNamesInFinal.push(item.name);
+        });
+        (finalLUISJSON.entities || []).forEach(entity => transformAllEntityConstraintsToFeatures(entity, phraseListsNamesInFinal));
         (finalLUISJSON.intents || []).forEach(intent => addIsRequiredProperty(intent));
         // do we have nDepthEntities?
         let nDepthEntityExists = (finalLUISJSON.entities || []).find(x => x.children !== undefined && Array.isArray(x.children) && x.children.length !== 0);
@@ -489,8 +533,8 @@ const objectSortByStartPos = function (objectArray) {
     return ObjectByStartPos
 }
 
-const transformAllEntityConstraintsToFeatures = function(entity) {
-    addIsRequiredProperty(entity);
+const transformAllEntityConstraintsToFeatures = function(entity, phraseListsInFinal) {
+    addIsRequiredProperty(entity, phraseListsInFinal);
     if (entity.hasOwnProperty("instanceOf") && entity.instanceOf !== null) {
         if (entity.hasOwnProperty("features") && Array.isArray(entity.features)) {
             let featureFound = (entity.features || []).find(i => i.modelName == entity.instanceOf);
@@ -513,10 +557,28 @@ const transformAllEntityConstraintsToFeatures = function(entity) {
     entity.children.forEach(c => transformAllEntityConstraintsToFeatures(c));
 };
 
-const addIsRequiredProperty = function(item) {
+const addIsRequiredProperty = function(item, phraseListInFinal = []) {
     (item.features || []).forEach(feature => {
         if (feature.isRequired === undefined)
             feature.isRequired = false;
+
+        if (feature.modelName !== undefined
+            && phraseListInFinal.includes(feature.modelName)
+            && !item.features.find(fea => fea.featureName == feature.modelName)) {
+            feature.featureName = feature.modelName;
+            delete feature.modelName;
+        }
+
+        if (feature.featureName && feature.featureName.endsWith('*')) {
+            feature.featureName = feature.featureName.slice(0, feature.featureName.length - 1);
+            feature.isRequired = true;
+        }
+
+        if (feature.modelName && feature.modelName.endsWith('*')) {
+            feature.modelName = feature.modelName.slice(0, feature.modelName.length - 1);
+            feature.isRequired = true;
+        }
+
         delete feature.featureType;
         delete feature.modelType;
     });

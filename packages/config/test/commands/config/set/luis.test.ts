@@ -14,6 +14,7 @@ describe('config:set:luis', () => {
     test
     .stdout()
     .command(['config:set:luis', '--help'])
+    .exit(1)
     .it('should print the help contents when --help is passed as an argument', ctx => {
         expect(ctx.stdout).to.contain('Stores default LUIS application values in global config.')
     })
@@ -34,6 +35,16 @@ describe('config:set:luis', () => {
         let config = await fs.readJSON(getConfigFile())
         expect(config.luis__appId).to.contain('9999')
         expect(ctx.stdout).to.contain('appId set to 9999')
+    })
+
+    test
+    .stdout()
+    .stderr()
+    .command(['config:set:luis', '--armToken', '9999'])
+    .it('displays an message indication arm token saved successfully', async ctx => {
+        let config = await fs.readJSON(getConfigFile())
+        expect(config.luis__armToken).to.contain('9999')
+        expect(ctx.stdout).to.contain('armToken set to 9999')
     })
     
 })

@@ -22,6 +22,8 @@ const LUOptions = require('./../lu/luOptions')
 const Content = require('./../lu/lu')
 const recognizerType = require('./../utils/enums/recognizertypes')
 
+const maxVersionCount = 100
+
 export class Builder {
   private readonly handler: (input: string) => any
 
@@ -29,24 +31,19 @@ export class Builder {
     this.handler = handler
   }
 
-  async loadContents(
-    files: string[],
-    culture: string,
-    suffix: string,
-    region: string,
-    schema?: string,
-    importResolver?: object) {
-    let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
-    let settings: any
-    let recognizers = new Map<string, Recognizer>()
+  async loadContents(files: string[], options: any = {}) {
+    let culture = options.culture || "en-us"
+    let importResolver = options.importResolver
+    let log = options.log || false
+
+    // lu contents that will be returned
     let luContents: Array<any> = []
-    let crosstrainedRecognizers = new Map<string, CrossTrainedRecognizer>()
 
     for (const file of files) {
       let fileCulture: string
       let fileName: string
 
-      let cultureFromPath = fileHelper.getCultureFromPath(file)
+      let cultureFromPath = fileHelper.getLuisCultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))
@@ -54,22 +51,6 @@ export class Builder {
       } else {
         fileCulture = culture
         fileName = path.basename(file, path.extname(file))
-      }
-
-      const fileFolder = path.dirname(file)
-      const crossTrainedFileName = fileName + '.lu.qna.dialog'
-      const crossTrainedRecognizerPath = path.join(fileFolder, crossTrainedFileName)
-      if (!crosstrainedRecognizers.has(fileName)) {
-        let crosstrainedRecognizerContent = []
-        let crosstrainedRecognizerSchema = schema
-        if (fs.existsSync(crossTrainedRecognizerPath)) {
-          let crosstrainedRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(crossTrainedRecognizerPath))
-          crosstrainedRecognizerContent = crosstrainedRecognizerObject.recognizers
-          crosstrainedRecognizerSchema = crosstrainedRecognizerSchema || crosstrainedRecognizerObject.$schema
-          this.handler(`${crossTrainedRecognizerPath} loaded\n`)
-        }
-
-        crosstrainedRecognizers.set(fileName, new CrossTrainedRecognizer(crossTrainedRecognizerPath, crosstrainedRecognizerContent, crosstrainedRecognizerSchema as string))
       }
 
       let fileContent = ''
@@ -80,10 +61,14 @@ export class Builder {
 
       // filter empty lu files
       luFiles = luFiles.filter((file: any) => file.content !== '')
-      if (luFiles.length <= 0) continue
+      if (luFiles.length <= 0) {
+        const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
+        luContents.push(content)
+        continue
+      }
 
       try {
-        result = await LuisBuilderVerbose.build(luFiles, true, fileCulture, importResolver)
+        result = await LuisBuilderVerbose.build(luFiles, log, fileCulture, importResolver)
         luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } catch (err) {
@@ -95,47 +80,8 @@ export class Builder {
         throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, err.text))
       }
 
-      const multiRecognizerPath = path.join(fileFolder, `${fileName}.lu.dialog`)
-      if (!multiRecognizers.has(fileName)) {
-        let multiRecognizerContent = {}
-        let multiRecognizerSchema = schema
-        if (fs.existsSync(multiRecognizerPath)) {
-          let multiRecognizerObject = JSON.parse(await fileHelper.getContentFromFile(multiRecognizerPath))
-          multiRecognizerContent = multiRecognizerObject.recognizers
-          multiRecognizerSchema = multiRecognizerSchema || multiRecognizerObject.$schema
-          this.handler(`${multiRecognizerPath} loaded\n`)
-        }
-
-        multiRecognizers.set(fileName, new MultiLanguageRecognizer(multiRecognizerPath, multiRecognizerContent, multiRecognizerSchema as string))
-      }
-
-      if (settings === undefined) {
-        const settingsPath = path.join(fileFolder, `luis.settings.${suffix}.${region}.json`)
-        let settingsContent = {}
-        if (fs.existsSync(settingsPath)) {
-          settingsContent = JSON.parse(await fileHelper.getContentFromFile(settingsPath)).luis
-          this.handler(`${settingsPath} loaded\n`)
-        }
-
-        settings = new Settings(settingsPath, settingsContent)
-      }
-
       const content = new Content(fileContent, new LUOptions(fileName, true, fileCulture, file))
       luContents.push(content)
-
-      const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
-      let existingDialogObj: any
-      if (fs.existsSync(dialogFile)) {
-        existingDialogObj = JSON.parse(await fileHelper.getContentFromFile(dialogFile))
-        this.handler(`${dialogFile} loaded\n`)
-      }
-
-      if (existingDialogObj && schema) {
-        existingDialogObj.$schema = schema
-      }
-
-      let recognizer = Recognizer.load(content.path, content.name, dialogFile, settings, existingDialogObj, schema)
-      recognizers.set(content.name, recognizer)
     }
 
     // validate if there are duplicated files with same name and locale
@@ -148,143 +94,209 @@ export class Builder {
       throw(new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Files with same name and locale are found.'))
     }
 
-    return {luContents, recognizers, multiRecognizers, settings, crosstrainedRecognizers}
+    return luContents
+  }
+
+  async generateDialogs(luContents: any[], options: any = {}) {
+    let fallbackLocale = options.fallbackLocale || 'en-us'
+    let dialog = options.dialog || recognizerType.MULTILANGUAGE
+    let schema = options.schema
+
+    let assets: any[] = []
+
+    let multiRecognizers = new Map<string, MultiLanguageRecognizer>()
+    let recognizers = new Map<string, Recognizer>()
+    let crosstrainedRecognizers = new Map<string, CrossTrainedRecognizer>()
+
+    // concurrently handle applications
+    await Promise.all(luContents.map(async content => {
+      const fileFolder = path.dirname(content.path)
+
+      // init crosstrainedRecognizer asset even for empty content
+      if (!crosstrainedRecognizers.has(content.id)) {
+        const crossTrainedRecognizerPath = path.join(fileFolder, content.id + '.lu.qna.dialog')
+        crosstrainedRecognizers.set(content.id, new CrossTrainedRecognizer(crossTrainedRecognizerPath, [], schema))
+      }
+
+      // content is not empty
+      if (!fileHelper.isFileSectionEmpty(content)) {
+        // update crosstrainedRecognizer if not empty
+        let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
+        if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
+          crosstrainedRecognizer.recognizers.push(content.id + '.lu')
+        }
+
+        // init recognizer asset
+        const dialogFile = path.join(fileFolder, `${content.name}.dialog`)
+        let recognizer = new Recognizer(content.path, content.name, dialogFile, schema)
+        recognizers.set(content.name, recognizer)
+
+        // get culture from content or default to content.language
+        let luisObj = await LuisBuilder.fromLUAsync([content])
+        luisObj.culture = luisObj.culture && luisObj.culture !== '' && luisObj.culture !== 'en-us' ? luisObj.culture : content.language as string
+
+        // init or update multiLanguageRecognizer asset
+        if (!multiRecognizers.has(content.id)) {
+          const multiRecognizerPath = path.join(fileFolder, `${content.id}.lu.dialog`)
+          multiRecognizers.set(content.id, new MultiLanguageRecognizer(multiRecognizerPath, {}, schema))
+        }
+
+        let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
+        multiRecognizer.recognizers[luisObj.culture] = path.basename(recognizer.getDialogPath(), '.dialog')
+        if (luisObj.culture.toLowerCase() === fallbackLocale.toLowerCase()) {
+          multiRecognizer.recognizers[''] = path.basename(recognizer.getDialogPath(), '.dialog')
+        }
+      }   
+    }))
+
+    // write dialog assets
+    assets.push(...Array.from(recognizers.values()))
+    assets.push(...Array.from(multiRecognizers.values()))
+
+    if (dialog === recognizerType.CROSSTRAINED) {
+      assets.push(...Array.from(crosstrainedRecognizers.values()))
+    }
+
+    return this.generateDeclarativeAssets(assets)
   }
 
   async build(
     luContents: any[],
-    recognizers: Map<string, Recognizer>,
     authoringKey: string,
-    endpoint: string,
     botName: string,
-    suffix: string,
-    fallbackLocale: string,
-    deleteOldVersion: boolean,
-    isStaging: boolean,
-    multiRecognizers?: Map<string, MultiLanguageRecognizer>,
-    settings?: Settings,
-    crosstrainedRecognizers?: Map<string, CrossTrainedRecognizer>,
-    dialogType?: string,
-    luisAPITPS?: number,
-    timeBucketOfRequests?: number,
-    retryCount?: number,
-    retryDuration?: number) {
+    options: any = {}) {
+    // set luis api call endpoint
+    let endpoint = options.endpoint || "https://westus.api.cognitive.microsoft.com"
+    
+    // set suffix default to development
+    let suffix = options.suffix || 'development'
+
+    // set region default to westus
+    let region = options.region || 'westus'
+    
+    // set kept version count which means how many versions would be kept in luis service
+    let keptVersionCount = options.keptVersionCount && options.keptVersionCount > 0 && options.keptVersionCount <= maxVersionCount ? options.keptVersionCount : maxVersionCount
+    
+    // set if publish this application to staging or production slot
+    // default to production
+    let isStaging = options.isStaging || false
+
+    // set schema
+    let schema = options.schema
+
     // luis api TPS which means 5 concurrent transactions to luis api in 1 second
     // can set to other value if switched to a higher TPS(transaction per second) key
-    let luisApiTps = luisAPITPS || 5
+    let luisAPITPS = options.luisAPITPS || 5
 
     // set luis call delay duration to 1100 millisecond because 1000 can hit corner case of rate limit
-    let timeBucket = timeBucketOfRequests || 1100
+    let timeBucketOfRequests = options.timeBucketOfRequests || 1100
 
     // set retry count for rate limit luis API failure
-    let countForRetry = retryCount || 1
+    let retryCount = options.retryCount || 1
 
     // set retry duration for rate limit luis API failure
-    let durationForRetry = retryDuration || 1000
+    let retryDuration = options.retryDuration || 1000
 
-    //default returned recognizer values
-    let recognizerValues: Recognizer[] = []
+    // set direct version publish flag
+    // default to false
+    let directVersionPublish = options.directVersionPublish || false
 
-    let multiRecognizerValues: MultiLanguageRecognizer[] = []
+    // set train mode
+    let trainMode = options.trainMode
 
-    let settingsValue: any
+    // settings assets like app id and version returned from luis api call
+    let settingsAssets: any[] = []
 
-    let crosstrainedRecognizerValues: CrossTrainedRecognizer[] = []
+    // deep clone luContents
+    let clonedLuContents = [...luContents]
 
     // filter if all lu contents are emtty
-    let isAllLuEmpty = fileHelper.isAllFilesSectionEmpty(luContents)
+    const filesSectionEmptyStatus = fileHelper.filesSectionEmptyStatus(clonedLuContents)
+    let isAllLuEmpty = [...filesSectionEmptyStatus.values()].every((isEmpty) => isEmpty)
 
-    if (!isAllLuEmpty) {
-      const luBuildCore = new LuBuildCore(authoringKey, endpoint, countForRetry, durationForRetry)
-      const apps = await luBuildCore.getApplicationList()
+    try {
+      if (!isAllLuEmpty) {
+        const luBuildCore = new LuBuildCore(authoringKey, endpoint, retryCount, retryDuration)
+        const apps = await luBuildCore.getApplicationList()
 
-      // here we do a while loop to make full use of luis tps capacity
-      while (luContents.length > 0) {
-        // get a number(set by luisApiTps) of contents for each loop
-        const subLuContents = luContents.splice(0, luisApiTps)
+        let settings: any
 
-        // concurrently handle applications
-        await Promise.all(subLuContents.map(async content => {
-          // init current application object from lu content
-          let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
+        // here we do a while loop to make full use of luis tps capacity
+        while (clonedLuContents.length > 0) {
+          // get a number(set by luisApiTps) of contents for each loop
+          const subLuContents = clonedLuContents.splice(0, luisAPITPS)
 
-          // get recognizer
-          let recognizer = recognizers.get(content.name) as Recognizer
+          // concurrently handle applications
+          await Promise.all(subLuContents.map(async content => {
+            if (!filesSectionEmptyStatus.get(content.path)) {
+              // init current application object from lu content
+              let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
 
-          // find if there is a matched name with current app under current authoring key
-          if (!recognizer.getAppId()) {
-            for (let app of apps) {
-              if (app.name === currentApp.name) {
-                recognizer.setAppId(app.id)
-                break
+              // init recognizer asset
+              const dialogFile = path.join(path.dirname(content.path), `${content.name}.dialog`)
+              let recognizer = new Recognizer(content.path, content.name, dialogFile, schema)
+
+              // found existing app endpoints
+              let appEndpoints
+              // find if there is a matched name with current app under current authoring key
+              if (!recognizer.getAppId()) {
+                for (let app of apps) {
+                  if (app.name.toLowerCase() === currentApp.name.toLowerCase()) {
+                    recognizer.setAppId(app.id)
+                    appEndpoints = app.endpoints
+                    break
+                  }
+                }
+              }
+
+              let needTrainAndPublish = false
+
+              // compare models to update the model if a match found
+              // otherwise create a new application
+              if (recognizer.getAppId() && recognizer.getAppId() !== '') {
+                // To see if need update the model
+                needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests, keptVersionCount) || this.forcePublish(appEndpoints, recognizer.versionId, directVersionPublish, isStaging)
+              } else {
+                // create a new application
+                needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
+              }
+
+              if (needTrainAndPublish) {
+                // train and publish application
+                await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, directVersionPublish, trainMode)
+              }
+
+              // init settings asset
+              if (settings === undefined) {
+                const settingsPath = path.join(path.dirname(content.path), `luis.settings.${suffix}.${region}.json`)
+                settings = new Settings(settingsPath, {})
+              }
+
+              // update settings asset
+              settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
+                "appId": recognizer.getAppId(),
+                "version": recognizer.versionId
               }
             }
-          }
+          }))
+        }
 
-          let needTrainAndPublish = false
-
-          // compare models to update the model if a match found
-          // otherwise create a new application
-          if (recognizer.getAppId() && recognizer.getAppId() !== '') {
-            // To see if need update the model
-            needTrainAndPublish = await this.updateApplication(currentApp, luBuildCore, recognizer, timeBucket, deleteOldVersion)
-          } else {
-            // create a new application
-            needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucket)
-          }
-
-          if (needTrainAndPublish) {
-            // train and publish application
-            await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucket, isStaging)
-          }
-
-          // update multiLanguageRecognizer asset
-          if (multiRecognizers && multiRecognizers.has(content.id)) {
-            let multiRecognizer = multiRecognizers.get(content.id) as MultiLanguageRecognizer
-            multiRecognizer.recognizers[currentApp.culture] = path.basename(recognizer.getDialogPath(), '.dialog')
-            if (currentApp.culture.toLowerCase() === fallbackLocale.toLowerCase()) {
-              multiRecognizer.recognizers[''] = path.basename(recognizer.getDialogPath(), '.dialog')
-            }
-          }
-
-          if (crosstrainedRecognizers && crosstrainedRecognizers.has(content.id)) {
-            let crosstrainedRecognizer = crosstrainedRecognizers.get(content.id) as CrossTrainedRecognizer
-            if (!crosstrainedRecognizer.recognizers.includes(content.id + '.lu')) {
-              crosstrainedRecognizer.recognizers.push(content.id + '.lu')
-            }
-          }
-
-          // update settings asset
-          if (settings) {
-            settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = recognizer.getAppId()
-          }
-        }))
+        // write dialog assets
+        settingsAssets.push(settings)
       }
-
-      // write dialog assets
-      if (recognizers) {
-        recognizerValues = Array.from(recognizers.values())
-      }
-
-      if (multiRecognizers) {
-        multiRecognizerValues = Array.from(multiRecognizers.values())
-      }
-
-      if (settings) {
-        settingsValue = settings as Settings
-      }
+    } catch (error) {
+      throw(new exception(retCode.errorCode.LUIS_BUILD_FAILED, `Luis build failed: ${error.message ?? error.text}`))
     }
 
-    if (dialogType === recognizerType.CROSSTRAINED && crosstrainedRecognizers) {
-      crosstrainedRecognizerValues = Array.from(crosstrainedRecognizers.values())
-    }
+    const settingsContent = this.generateDeclarativeAssets(settingsAssets)
 
-    const dialogContents = this.generateDeclarativeAssets(recognizerValues, multiRecognizerValues, settingsValue, crosstrainedRecognizerValues)
-
-    return dialogContents
+    return settingsContent
   }
 
-  async writeDialogAssets(contents: any[], force: boolean, out: string, luconfig: string) {
+  async writeDialogAssets(contents: any[], options: any = {}, directVersionPublish?: boolean) {
+    let force = options.force || false
+    let out = options.out
+    let luConfig = options.luConfig
     let writeDone = false
 
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
@@ -292,14 +304,15 @@ export class Builder {
 
     if (settingsContents && settingsContents.length > 0) {
       let outPath
-      if (luconfig) {
-        outPath = path.join(path.resolve(path.dirname(luconfig)), settingsContents[0].id)
+      if (luConfig) {
+        outPath = path.join(path.resolve(path.dirname(luConfig)), settingsContents[0].id)
       } else if (out) {
         outPath = path.join(path.resolve(out), settingsContents[0].id)
       } else {
         outPath = path.resolve(settingsContents[0].id)
       }
-      writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
+
+      writeContents.push(this.mergeSettingsContent(outPath, settingsContents, directVersionPublish))
     }
 
     for (const content of writeContents) {
@@ -367,7 +380,7 @@ export class Builder {
     return currentApp
   }
 
-  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, deleteOldVersion: boolean) {
+  async updateApplication(currentApp: any, luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, keptVersionCount: number) {
     await delay(timeBucket)
     const appInfo = await luBuildCore.getApplicationInfo(recognizer.getAppId())
     recognizer.versionId = appInfo.activeVersion || appInfo.endpoints.PRODUCTION.versionId
@@ -387,11 +400,13 @@ export class Builder {
       this.handler(`${recognizer.getLuPath()} creating version=${newVersionId}\n`)
       await delay(timeBucket)
       await luBuildCore.importNewVersion(recognizer.getAppId(), currentApp, options)
-
-      if (deleteOldVersion) {
-        await delay(timeBucket)
-        const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
-        for (const versionObj of versionObjs) {
+      
+      // get all available versions
+      await delay(timeBucket)
+      const versionObjs = await luBuildCore.listApplicationVersions(recognizer.getAppId())
+      if (keptVersionCount < versionObjs.length) {
+        const versionObjsToDelete = versionObjs.reverse().splice(0, versionObjs.length - keptVersionCount)
+        for (const versionObj of versionObjsToDelete) {
           if (versionObj.version !== newVersionId) {
             this.handler(`${recognizer.getLuPath()} deleting old version=${versionObj.version}`)
             await delay(timeBucket)
@@ -417,11 +432,11 @@ export class Builder {
     return true
   }
 
-  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean) {
+  async trainAndPublishApplication(luBuildCore: LuBuildCore, recognizer: Recognizer, timeBucket: number, isStaging: boolean, directVersionPublish: boolean, trainMode: string) {
     // send train application request
     this.handler(`${recognizer.getLuPath()} training version=${recognizer.versionId}\n`)
     await delay(timeBucket)
-    await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId)
+    await luBuildCore.trainApplication(recognizer.getAppId(), recognizer.versionId, trainMode)
     this.handler(`${recognizer.getLuPath()} waiting for training for version=${recognizer.versionId}...\n`)
     let done = true
     do {
@@ -444,42 +459,37 @@ export class Builder {
     // publish applications
     this.handler(`${recognizer.getLuPath()} publishing version=${recognizer.versionId}\n`)
     await delay(timeBucket)
-    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging)
-    this.handler(`${recognizer.getLuPath()} publishing finished for ${isStaging ? 'Staging' : 'Production'} slot\n`)
+    await luBuildCore.publishApplication(recognizer.getAppId(), recognizer.versionId, isStaging, directVersionPublish)
+    this.handler(`${recognizer.getLuPath()} publishing finished for ${directVersionPublish ? 'directVersionPublish mode' : isStaging ? 'Staging slot' : 'Production slot'}\n`)
   }
 
-  generateDeclarativeAssets(recognizers: Array<Recognizer>, multiRecognizers: Array<MultiLanguageRecognizer>, settings: Settings, crosstrainedRecognizers: Array<CrossTrainedRecognizer>)
-    : Array<any> {
+  generateDeclarativeAssets(assets: Array<any>): Array<any> {
     let contents = new Array<any>()
-    for (const recognizer of recognizers) {
-      let content = new Content(recognizer.save(), new LUOptions(path.basename(recognizer.getDialogPath()), true, '', recognizer.getDialogPath()))
+    for (const asset of assets) {
+      let content: any
+      if (asset instanceof Settings) {
+        content = new Content(asset.save(), new LUOptions(path.basename(asset.getSettingsPath()), true, '', asset.getSettingsPath()))
+      } else {
+        content = new Content(asset.save(), new LUOptions(path.basename(asset.getDialogPath()), true, '', asset.getDialogPath()))
+      }
+
       contents.push(content)
-    }
-
-    for (const multiRecognizer of multiRecognizers) {
-      const multiLangContent = new Content(multiRecognizer.save(), new LUOptions(path.basename(multiRecognizer.getDialogPath()), true, '', multiRecognizer.getDialogPath()))
-      contents.push(multiLangContent)
-    }
-
-    if (settings) {
-      const settingsContent = new Content(settings.save(), new LUOptions(path.basename(settings.getSettingsPath()), true, '', settings.getSettingsPath()))
-      contents.push(settingsContent)
-    }
-
-    for (const crosstrainedRecognizer of crosstrainedRecognizers) {
-      const crosstrainedContent = new Content(crosstrainedRecognizer.save(), new LUOptions(path.basename(crosstrainedRecognizer.getDialogPath()), true, '', crosstrainedRecognizer.getDialogPath()))
-      contents.push(crosstrainedContent)
     }
 
     return contents
   }
 
-  mergeSettingsContent(settingsPath: string, contents: any[]) {
+  mergeSettingsContent(settingsPath: string, contents: any[], directVersionPublish?: boolean) {
     let settings = new Settings(settingsPath, {})
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = luisAppsMap[appName]
+        settings.luis[appName] = directVersionPublish ? {
+          "appId": luisAppsMap[appName]["appId"],
+          "version": luisAppsMap[appName]["version"]
+        } : {
+          "appId": luisAppsMap[appName]["appId"]
+        }
       }
     }
 
@@ -499,5 +509,18 @@ export class Builder {
       this.handler(`[WARN]: empty intent(s) ${emptyIntents.map((intent: any) => '# ' + intent.name).join(', ')} are filtered when handling luis application`)
       app.intents = filteredIntents
     }
+  }
+
+  forcePublish(endpoints: any, versionId: string, directVersionPublish: boolean, isStaging: boolean) {
+    let forcePublish = false
+    if (endpoints !== undefined) {
+      if (directVersionPublish && !Object.keys(endpoints).find(version => version.includes(versionId))
+        || !directVersionPublish && (isStaging && (!endpoints.STAGING || endpoints.STAGING.versionId !== versionId)
+          || !isStaging && (!endpoints.PRODUCTION || endpoints.PRODUCTION.versionId !== versionId))) {
+        forcePublish = true
+      }
+    }
+
+    return forcePublish
   }
 }

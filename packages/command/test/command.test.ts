@@ -19,8 +19,13 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .do(output => expect(output.stderr).to.include('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues'))
+  .catch(err => {
+    expect(err.message).to.include('EEXIT: 1')
+    expect(process.exitCode).to.equal(1)
+  })
+  .finally(output => expect(output.stderr).to.equal('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues\nfailure\n'))
   .it('Errors out')
+  
 
   fancy
   .stderr()
@@ -34,7 +39,10 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .do(output => expect(output.stderr).to.equal('failure\n'))
+  .catch(err => {
+    expect(err.message).to.include('EEXIT: 1')
+  })
+  .finally(output => expect(output.stderr).to.equal('failure\n'))
   .it('Exits with error')
 
   fancy
@@ -48,7 +56,10 @@ describe('command', () => {
 
     return Test.run([])
   })
-  .do(output => expect(output.stderr).to.equal('failure\n'))
+  .catch(err => {
+    expect(err.message).to.include('EEXIT: 1')
+  })
+  .finally(output => expect(output.stderr).to.equal('failure\n'))
   .it('Handles OCLIF Errors')
 
   fancy

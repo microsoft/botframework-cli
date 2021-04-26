@@ -16,6 +16,7 @@ pr:
 jobs:
   - job: CLI
     variables:
+      runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
       buildVersion: '4.10.0-preview.$(Build.BuildId)'
       _version: ${{coalesce(variables.version, variables.buildVersion)}}
 
@@ -36,7 +37,7 @@ jobs:
       inputs:
         command: custom
         verbose: false
-        customCommand: 'install --global @microsoft/rush'
+        customCommand: 'install --global @microsoft/rush@5.33.0'
 
     - script: 'rush update'
       displayName: 'rush update'

@@ -18,6 +18,7 @@ describe('luis:test cli parameters test', () => {
   test
   .stdout()
   .command(['luis:test', '--help'])
+  .exit(1)
   .it('should print the help contents when --help is passed as an argument', ctx => {
     expect(ctx.stdout).to.contain('Test a .lu file or LUIS application JSON model against a published LUIS model')
   })
@@ -74,7 +75,7 @@ describe('luis:test cli entity test', () => {
   .nock('https://westus.api.cognitive.microsoft.com', api => api
   .post(uri => uri.includes('apps'))
   .reply(200, {
-    "query":"accept all meetings for christmas party next week.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.948831439},"FindCalendarEntry":{"score":0.0371829346},"None":{"score":0.00728923827},"CreateCalendarEntry":{"score":0.007234955}},"entities":{"Subject":["christmas party"],"FromDate":["next week"],"$instance":{"Subject":[{"type":"Subject","text":"christmas party","startIndex":24,"length":15,"score":0.9657892,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"next week","startIndex":40,"length":9,"score":0.966946542,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
+    "query":"accept all meetings for christmas party next week.","prediction":{"topIntent":"AcceptEventEntry","intents":{"AcceptEventEntry":{"score":0.948831439},"FindCalendarEntry":{"score":0.0371829346},"None":{"score":0.00728923827},"CreateCalendarEntry":{"score":0.007234955}},"entities":{"Subject":["christmas party"],"FromDate":["next week"],"ordinalV2": [{"offset": 1, "relativeTo": "current"}], "$instance":{"Subject":[{"type":"Subject","text":"christmas party","startIndex":24,"length":15,"score":0.9657892,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}],"FromDate":[{"type":"FromDate","text":"next week","startIndex":40,"length":9,"score":0.966946542,"modelTypeId":1,"modelType":"Entity Extractor","recognitionSources":["model"]}]}}}
   })
   )
   .nock('https://westus.api.cognitive.microsoft.com', api => api
@@ -125,7 +126,6 @@ describe('luis:test cli entity test', () => {
     expect(await compareFiles('./../../../results/AllEntity.lu', './../../fixtures/testcases/lutest/output/AllEntity.lu')).to.be.true
   })
 })
-
 
 describe('luis:test cli role test', () => {
   before(async function(){
@@ -220,8 +220,6 @@ describe('luis:test cli Hierarchical entity test', () => {
     expect(await compareFiles('./../../../results/HierarchicalEntity.lu', './../../fixtures/testcases/lutest/output/HierarchicalEntity.lu')).to.be.true
   })
 })
-
-
 
 describe('luis:test normal test', () => {
   before(async function(){

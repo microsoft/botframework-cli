@@ -78,5 +78,51 @@ assert.isTrue(luisObject.validate())
         assert.equal(luisObject.content.includes(`@ intent "test intent" usesFeature bar`), true);
     })
 
-    
+    it('App settings can be merged correctly when importing lu files', async () => {
+        let luFile = `
+        > !# @app.culture = zh-cn
+        > !# @app.settings.NormalizeWordForm = true
+        > !# @app.settings.UseAllTrainingData = true
+        
+        [import greeting](./test/fixtures/testcases/collate/1.lu)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.intents[0].name, 'Greeting');
+        assert.equal(luisObject.culture, 'zh-cn');
+        assert.equal(luisObject.settings.length, 2);
+        assert.equal(luisObject.settings[0].name, 'NormalizeWordForm');
+        assert.equal(luisObject.settings[0].value, true);
+        assert.equal(luisObject.settings[1].name, 'UseAllTrainingData');
+        assert.equal(luisObject.settings[1].value, true);
+    });
+
+    it('Intent import can work correctly when imported lu files also have further imports', async () => {
+        let luFile = `
+        # Test
+        - [MyIntent](./test/fixtures/testcases/root.en-us.lu#MyIntent)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.intents.length, 1);
+        assert.equal(luisObject.intents[0].name, 'Test');
+        assert.equal(luisObject.utterances.length, 2);
+        assert.equal(luisObject.utterances[0].text, 'test 1');
+        assert.equal(luisObject.utterances[1].text, 'test 2');
+    });
+
+    it('Phraselist can merge correctly when defined in different imported lu files', async () => {
+        let luFile = `
+        [Import entity](./test/fixtures/testcases/entities.lu)
+        [Import phraselist](./test/fixtures/testcases/phraselists2.lu)`;
+
+        const luisObject = await LUISBuilder.fromLUAsync(luFile)
+
+        assert.equal(luisObject.entities.length, 1);
+        assert.equal(luisObject.entities[0].name, 'LowercaseAction');
+        assert.equal(luisObject.entities[0].features[0].featureName, 'LowercaseList');
+        assert.equal(luisObject.phraselists.length, 1);
+        assert.equal(luisObject.phraselists[0].name, 'LowercaseList');
+        assert.equal(luisObject.phraselists[0].words, 'all lowercase,down case,downcase,lower case,lower case from,lower cased,lowercase,lowercase from,lowercase letter,lowercase letters,lowercased,lowercases,lowercasing,non capitalized,uncapitalized');
+    });
 });

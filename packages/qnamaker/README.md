@@ -121,42 +121,43 @@ USAGE
   $ bf qnamaker:build
 
 OPTIONS
-  -b, --botName=botName                  (required) Bot name
-  -f, --force                            If --out flag is provided, overwirtes relevant dialog file
-  -h, --help                             show CLI help
+  -b, --botName=botName                  Bot name
+
+  -f, --force                            If --out flag is provided with the path to an existing file, overwrites that
+                                         file
+
+  -h, --help                             qnamaker:build command help
+
   -i, --in=in                            Source .qna file or folder
 
-  -o, --out=out                          Output folder name to write out .dialog files. If not specified, knowledge base
-                                         ids will be output to console
+  -o, --out=out                          Output folder name to write out .dialog and settings files. If not specified,
+                                         knowledge base setting will be output to console
 
-  -s, --subscriptionKey=subscriptionKey  (required) QnA maker subscription key
+  -s, --subscriptionKey=subscriptionKey  QnA maker subscription key
 
   --defaultCulture=defaultCulture        Culture code for the content. Infer from .qna if available. Defaults to en-us
                                          if not set
 
-  --dialog=dialog                        [default: multiLanguage] Dialog recognizer type [multiLanguage|crosstrained]
+  --dialog=dialog                        Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will
+                                         be generated if not specified. Only valid if --out is set
+
+  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale        Locale to be used at the fallback if no locale specific recognizer is found.
                                          Only valid if --out is set
 
-  --log                                  write out log messages to console
+  --log                                  Writes out log messages to console
 
-  --qnaConfig=qnaConfig                  Path to config for qnamaker build which can contain switches for arguments
+  --qnaConfig=qnaConfig                  Path to config for qna build which can contain switches for arguments
 
   --region=region                        [default: westus] Overrides public endpoint
                                          https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/
 
+  --schema=schema                        Defines $schema for generated .dialog files
+
   --suffix=suffix                        Environment name as a suffix identifier to include in qnamaker kb name.
                                          Defaults to current logged in user alias
-                   
-  --endpoint=endpoint                    Qnamaker authoring endpoint for publishing
-  
-  -f, --force                            [default: false] If --out flag is provided with the path to an existing file, overwrites that file
 
-  --log                                  [default: false] Write out log messages to console  
-
-  --schema=schema                        Defines $schema for generated .dialog files
-  
 EXAMPLE
 
        $ bf qnamaker:build --in {INPUT_FILE_OR_FOLDER} --subscriptionKey {SUBSCRIPTION_KEY} --botName {BOT_NAME}
@@ -195,18 +196,18 @@ USAGE
   $ bf qnamaker:cross-train
 
 OPTIONS
-  -h, --help               luis:cross-train help
-  -i, --in=in              source lu and qna files folder
+  -f, --force              If --out flag is provided with the path to an existing file, overwrites that file
+  -h, --help               luis:cross-train command help
+  -i, --in=in              Source lu and qna files folder
 
-  -o, --out=out            output folder name. If not specified, the cross trained files will be written to
+  -o, --out=out            Output folder name. If not specified, the cross trained files will be written to
                            cross-trained folder under folder of current command
 
-  --config=config          path to config file of mapping rules
+  --config=config          Path to config file of mapping rules
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
 
-  --rootDialog=rootDialog  rootDialog file path. If --config not specified,
-                           cross-trian will automatically construct the config from file system based on root dialog file
+  --log                    Writes out log messages to console
 ```
 
 _See code: [src/commands/qnamaker/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/cross-train.ts)_
@@ -404,7 +405,9 @@ USAGE
   $ bf qnamaker:kb:export
 
 OPTIONS
+  -f, --force                        If --out flag is provided with the path to an existing file, overwrites that file.
   -h, --help                         qnamaker:kb:export command help
+  -o, --out=out                      Output file path. If not specified stdout will be used as output.
   --endpoint=endpoint                Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/
   --environment=environment          [default: Prod] Specifies whether environment is Test or Prod.
 
@@ -640,16 +643,29 @@ USAGE
   $ bf qnamaker:translate
 
 OPTIONS
-  -f, --force                  If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help                   qnamaker:translate help
-  -i, --in=in                  Source .qna file(s) or QnA maker application JSON model
-  -o, --out=out                Output folder name. If not specified stdout will be used as output
-  -r, --recurse                Indicates if sub-folders need to be considered to find .qna file(s)
-  --srclang=srclang            Source lang code. Auto detect if missing.
-  --tgtlang=tgtlang            (required) Comma separated list of target languages.
-  --translate_comments         When set, machine translate comments found in .qna file
-  --translate_link_text        When set, machine translate link description in .qna file
-  --translatekey=translatekey  (required) Machine translation endpoint key.
+  -f, --force                                If --out flag is provided with the path to an existing file, overwrites
+                                             that file
+
+  -h, --help                                 qnamaker:translate help
+
+  -i, --in=in                                Source .qna file(s) or QnA maker application JSON model
+
+  -o, --out=out                              Output folder name. If not specified stdout will be used as output
+
+  -r, --recurse                              Indicates if sub-folders need to be considered to find .qna file(s)
+
+  --srclang=srclang                          Source lang code. Auto detect if missing.
+
+  --subscription_region=subscription_region  Required request header if using a Cognitive Services Resource. Optional if
+                                             using a Translator Resource.
+
+  --tgtlang=tgtlang                          (required) Comma separated list of target languages.
+
+  --translate_comments                       When set, machine translate comments found in .qna file
+
+  --translate_link_text                      When set, machine translate link description in .qna file
+
+  --translatekey=translatekey                (required) Machine translation endpoint key.
 ```
 
 _See code: [src/commands/qnamaker/translate.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker/src/commands/qnamaker/translate.ts)_

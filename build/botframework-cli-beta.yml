@@ -24,6 +24,8 @@ variables:
 
 stages:
 - stage: Build
+  variables:
+    runCodesignValidationInjection: false # Disables the unnecessary injected CodeSign Validation step
   jobs:
   - job:
     steps:

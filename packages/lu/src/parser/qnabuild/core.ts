@@ -3,124 +3,111 @@
  * Licensed under the MIT License.
  */
 
-const retCode = require('./../utils/enums/CLI-errors')
-const exception = require('./../utils/exception')
 const {ServiceBase} = require('./serviceBase')
 const NEWLINE = require('os').EOL
+
+const absoluteUrlPattern = /^https?:\/\//i
 
 export class QnaBuildCore {
   private readonly service: any
 
   constructor(subscriptionkey: string, endpoint: string) {
+    // check endpoint is absolute or not
+    if (!absoluteUrlPattern.test(endpoint)) {
+      throw new Error(`Only absolute URLs are supported. "${endpoint}" is not an absolute qnamaker endpoint URL.`)
+    }
+
     this.service = new ServiceBase(endpoint, subscriptionkey)
   }
 
   public async getKBList() {
-    const response = await this.service.createRequest('/knowledgebases', 'GET')
-    const text = await response.text()
-    const kbList = JSON.parse(text)
-    if (kbList.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const kbList = await this.service.httpRequest('/knowledgebases', 'GET')
+    if (kbList?.error) {
+      throw kbList.error
     }
 
     return kbList
   }
 
   public async getKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'GET')
-    const text = await response.text()
-    const kb = JSON.parse(text)
-    if (kb.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const kb = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'GET')
+    if (kb?.error) {
+      throw kb.error
     }
 
     return kb
   }
 
   public async importKB(kbPayload: any) {
-    const response = await this.service.createRequest('/knowledgebases/createasync', 'POST', kbPayload)
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const status = await this.service.httpRequest('/knowledgebases/createasync', 'POST', kbPayload)
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async getOperationStatus(operationId: string) {
-    const response = await this.service.createRequest(`/operations/${operationId}`, 'GET')
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const status = await this.service.httpRequest(`/operations/${operationId}`, 'GET')
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async exportKB(kbId: string, environment: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}/${environment}/qna`, 'GET')
-    const text = await response.text()
-    const kb = JSON.parse(text)
-    if (kb.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const kb = await this.service.httpRequest(`/knowledgebases/${kbId}/${environment}/qna`, 'GET')
+    if (kb?.error) {
+      throw kb.error
     }
 
     return kb
   }
 
   public async updateKB(kbId: string, replaceKb: any) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PATCH', replaceKb)
-    const text = await response.text()
-    const status = JSON.parse(text)
-    if (status.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const status = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'PATCH', replaceKb)
+    if (status?.error) {
+      throw status.error
     }
 
     return status
   }
 
   public async replaceKB(kbId: string, replaceKb: any) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
-    const text = await response.text()
-    if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'PUT', replaceKb)
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async publishKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'POST')
-    const text = await response.text()
-    if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'POST')
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async replaceAlt(altJson: any) {
-    const response = await this.service.createRequest('/alterations', 'PUT', altJson)
-    const text = await response.text()
-    if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const text = await this.service.httpRequest('/alterations', 'PUT', altJson)
+    if (text?.error) {
+      throw text.error
     }
   }
 
   public async getEndpointKeys() {
-    const response = await this.service.createRequest('/endpointkeys', 'GET')
-    const text = await response.text()
-    const endpointKeys = JSON.parse(text)
-    if (endpointKeys.error) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const endpointKeys = await this.service.httpRequest('/endpointkeys', 'GET')
+    if (endpointKeys?.error) {
+      throw endpointKeys.error
     }
 
     return endpointKeys
   }
 
   public async deleteKB(kbId: string) {
-    const response = await this.service.createRequest(`/knowledgebases/${kbId}`, 'DELETE')
-    const text = await response.text()
-    if (text) {
-      throw (new exception(retCode.errorCode.LUIS_API_CALL_FAILED, text))
+    const text = await this.service.httpRequest(`/knowledgebases/${kbId}`, 'DELETE')
+    if (text?.error) {
+      throw text.error
     }
   }
 

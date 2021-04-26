@@ -151,14 +151,36 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             })
     })
 
-    it (`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} descriptors per model`, function(done) {
+    it (`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} model descriptors per model`, function(done) {
         LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithFeatures())))
             .then(res => done(res))
             .catch(err => {
                 assert.equal(err.errCode, retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL);
-                assert(err.text.includes(`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`));
+                assert(err.text.includes(`has ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL + 1} model descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`));
                 done();
             })
+    })
+
+    it (`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} phraselist descriptors per model`, function(done) {
+        
+        LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithFeatures(-1, retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL))))
+            .then(res => done(res))
+            .catch(err => {
+                assert.equal(err.errCode, retCode.errorCode.BOUNDARY_FEATURE_PER_MODEL);
+                assert(err.text.includes(`has ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL + 1} phraselist descriptors (feature). At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} is allowed.`));
+                done();
+            })
+    })
+
+    it (`At most ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} model descriptors and ${retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL} phraselist descriptors per model(total 20)`, function(done) {
+        
+        LuisBuilder.fromLUAsync(new Array(new luObj(getEntityWithFeatures(retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL - 1, retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL - 1))))
+            .then(res => {
+                assert.equal(res.entities.length, retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL + 1);
+                assert.equal(res.entities[10].name, 'testEntity');
+                assert.equal(res.entities[10].features.length, retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL * 2);
+                done()
+            }).catch(err => done(err))
     })
 
     it (`At most ${retCode.boundaryLimits.MAX_NUM_PARENT_ENTITIES} parent nodes in an ML entitiy`, function(done) {
@@ -201,6 +223,16 @@ describe('Validations for LU content (based on LUIS boundaries)', function () {
             })
     })
 
+    it (`At Least one phrase in any phrase list`, function(done) {
+        LuisBuilder.fromLUAsync(new Array(new luObj(getMaxPhraseLists(1, 0), 'stdin', true)))
+            .then(res => done(res))
+            .catch(err => {
+                assert.equal(err.errCode, retCode.errorCode.BOUNDARY_MINMUM_PHRASE_LIMIT);
+                assert(err.text.includes(`0 phrases found in phrase list: PL0. Empty phrase list is not allowed.`));
+                done();
+            })
+    })
+
 })
 
 const getMaxListEntity = function() {
@@ -232,15 +264,23 @@ const getMLEntity = function() {
     }
     return fc;
 }
-const getEntityWithFeatures = function() {
+const getEntityWithFeatures = function(numModelFeatures = retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL, numberPhraselistFeatures = -1) {
     let fc = '';
     let descriptorsList = [];
-    for (var i = 0; i <= retCode.boundaryLimits.MAX_NUM_DESCRIPTORS_PER_MODEL; i++) {
+    for (var i = 0; i <= numModelFeatures; i++) {
         let newEntityName = `entity${i}`;
         descriptorsList.push(newEntityName);
         fc += `
 @ ml ${newEntityName}`;
     }
+
+    for (var i = 0; i <= numberPhraselistFeatures; i++) {
+        descriptorsList.push(`PL${i}`);
+        fc += `
+@ phraselist PL${i} =
+    - phrase,phrase-last`;
+    }
+
     fc += `
 @ ml testEntity usesFeatures ${descriptorsList.join(',')}
 `;

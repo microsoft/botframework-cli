@@ -1,5 +1,0 @@
-{
-    "$schema": "../schemas/app.schema",
-    "$kind": "Recognizer",
-    "req": "val"
-}

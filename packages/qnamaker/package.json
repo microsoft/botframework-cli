@@ -27,6 +27,7 @@
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/qnamaker",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
+    "prepack": "npm run clean && npm run build && npm run doc:readme",
     "posttest": "",
     "build": "tsc -b",
     "clean": "rimraf ./.nyc_output ./lib ./package-lock.json ./tsconfig.tsbuildinfo",
@@ -43,7 +44,8 @@
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@oclif/parser": "~3.8.4",
-    "await-delay": "^1.0.0",
+    "delay": "^5.0.0",
+    "axios": "~0.21.1",
     "camelcase": "^4.1.0",
     "chalk": "2.4.1",
     "cli-table3": "^0.5.1",
@@ -59,7 +61,7 @@
     "readline-sync": "^1.4.9",
     "rimraf": "^2.6.3",
     "semver": "^5.5.1",
-    "tslib": "^1.10.0",
+    "tslib": "^2.0.3",
     "window-size": "^1.1.0",
     "username": "^4.1.0"
   },
@@ -78,9 +80,9 @@
     "mocha": "^6.2.2",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
-    "ts-node": "^8.3.0",
+    "ts-node": "^9.0.0",
     "tslint": "^5.18.0",
     "rimraf": "^2.6.3",
-    "typescript": "^3.5.3"
+    "typescript": "^4.0.3"
   }
 }

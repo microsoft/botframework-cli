@@ -28,6 +28,7 @@ npm config set registry https://registry.npmjs.org/
 <!-- commands -->
 * [`bf plugins`](#bf-plugins)
 * [`bf plugins:install PLUGIN`](#bf-pluginsinstall-plugin)
+* [`bf plugins:link PLUGIN`](#bf-pluginslink-plugin)
 * [`bf plugins:list`](#bf-pluginslist)
 * [`bf plugins:uninstall [PLUGIN]`](#bf-pluginsuninstall-plugin)
 
@@ -73,6 +74,29 @@ ALIASES
 ```
 
 _See code: [src/commands/plugins/install.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/install.ts)_
+
+## `bf plugins:link PLUGIN`
+
+Links a plugin into the BF CLI for development
+
+```
+USAGE
+  $ bf plugins:link PLUGIN
+
+ARGUMENTS
+  PATH  [default: .] path to plugin
+
+OPTIONS
+  -h, --help     show CLI help
+  -v, --verbose
+
+DESCRIPTION
+  Installation of a linked plugin will override a user-installed or core plugin.
+  e.g. If you have a user-installed or core plugin that has a 'hello' command, installing a linked plugin with a 'hello' 
+  command will override the user-installed or core plugin implementation. This is useful for development work.
+```
+
+_See code: [src/commands/plugins/link.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/plugins/src/commands/plugins/link.ts)_
 
 ## `bf plugins:list`
 

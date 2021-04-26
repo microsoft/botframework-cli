@@ -1,0 +1,9 @@
+generator.lg:greeting references:
+generator.lg:welcome references:
+    generator.lg: greeting
+generator.lg:cancel references:
+generator.lg:teminate references:
+stop.lg:stop references:
+    generator.lg: cancel, teminate
+    stop.lg: abort
+stop.lg:abort references:

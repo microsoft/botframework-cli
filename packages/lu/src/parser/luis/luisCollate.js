@@ -16,7 +16,7 @@ const retCode = require('../utils/enums/CLI-errors')
  * @returns {Luis} new Luis instance
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-const build =  async function(luArray, verbose, luis_culture, luSearchFn) {
+const build = async function (luArray, verbose, luis_culture, luSearchFn) {
     let mergedContent = await mergeLuFiles(luArray, verbose, luis_culture, luSearchFn)
     let parsedLUISList = mergedContent.LUISContent.filter(item => item.includeInCollate)
     if (parsedLUISList.length === 0) return new Luis()
@@ -33,12 +33,12 @@ const build =  async function(luArray, verbose, luis_culture, luSearchFn) {
  * @param {Luis} luisObject Luis instances to collate with
  * @throws {exception} Throws on errors. exception object includes errCode and text. 
  */
-const collate = function(luisList) {
+const collate = function (luisList) {
     if (luisList.length === 0) return
     let luisObject = new Luis(luisList[0])
     let hashTable = {};
     initializeHash(luisObject, hashTable)
-    for(let i = 1; i < luisList.length; i++) {
+    for (let i = 1; i < luisList.length; i++) {
         let blob = luisList[i]
         mergeResults(blob, luisObject, LUISObjNameEnum.INTENT);
         mergeResults(blob, luisObject, LUISObjNameEnum.ENTITIES);
@@ -60,11 +60,11 @@ const collate = function(luisList) {
 }
 
 module.exports = {
-    collate, 
+    collate,
     build
 }
 
-const cleanupEntities = function(luisObject) {
+const cleanupEntities = function (luisObject) {
     let consolidatedList = [];
     luisObject.composites.forEach(item => consolidatedList.push(item));
     luisObject.closedLists.forEach(item => consolidatedList.push(item));
@@ -74,11 +74,12 @@ const cleanupEntities = function(luisObject) {
     luisObject.entities.forEach((item, idx) => {
         if (consolidatedList.find(e => e.name == item.name) !== undefined) idxToRemove.push(idx);
     })
-    idxToRemove.sort((a, b) => a-b).forEach(idx => luisObject.entities.splice(idx, 1))
+    idxToRemove.sort((a, b) => a - b).forEach(idx => luisObject.entities.splice(idx, 1))
+    delete luisObject.onAmbiguousLabels;
 }
 
 const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
-    if (blob[type] === undefined || blob[type].length === 0) { 
+    if (blob[type] === undefined || blob[type].length === 0) {
         return
     }
     blob[type].forEach(function (blobItem) {
@@ -94,14 +95,14 @@ const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
                 type !== LUISObjNameEnum.PATTERNS &&
                 type !== LUISObjNameEnum.UTTERANCE &&
                 item.name === blobItem.name) {
-                    // merge roles
-                    (blobItem.roles || []).forEach(blobRole => {
-                        if (item.roles && 
-                            !item.roles.includes(blobRole)) {
-                                item.roles.push(blobRole);
-                            }
-                    });
-            }            
+                // merge roles
+                (blobItem.roles || []).forEach(blobRole => {
+                    if (item.roles &&
+                        !item.roles.includes(blobRole)) {
+                        item.roles.push(blobRole);
+                    }
+                });
+            }
         }
     });
 }
@@ -125,17 +126,17 @@ const mergeNDepthEntities = function (blob, finalCollection) {
             })
             // de-dupe and merge children
             if (item.children !== undefined && Array.isArray(item.children) && item.children.length !== 0) {
+                if (itemExistsInFinal && itemExistsInFinal.children === undefined) {
+                    itemExistsInFinal.children = []
+                    itemExistsInFinal.explicitlyAdded = item.explicitlyAdded;
+                }
                 recursivelyMergeChildrenAndFeatures(item.children, itemExistsInFinal.children)
             }
         }
     })
 }
 
-const recursivelyMergeChildrenAndFeatures = function(srcChildren, tgtChildren) {
-    if (tgtChildren === undefined || !Array.isArray(tgtChildren) || tgtChildren.length === 0) {
-        tgtChildren = srcChildren;
-        return;
-    }
+const recursivelyMergeChildrenAndFeatures = function (srcChildren, tgtChildren) {
     (srcChildren || []).forEach(item => {
         // find child in tgt
         let itemExistsInFinal = (tgtChildren || []).find(x => x.name == item.name);
@@ -156,8 +157,8 @@ const recursivelyMergeChildrenAndFeatures = function(srcChildren, tgtChildren) {
                 }
                 item.features.forEach(f => {
                     let featureInFinal = (itemExistsInFinal.features || []).find(itFea => {
-                        return ((itFea.featureName !== undefined && itFea.featureName == f.featureName) || 
-                                (itFea.modelName !== undefined && itFea.modelName == f.modelName))
+                        return ((itFea.featureName !== undefined && itFea.featureName == f.featureName) ||
+                            (itFea.modelName !== undefined && itFea.modelName == f.modelName))
                     });
                     if (featureInFinal === undefined) {
                         itemExistsInFinal.features.push(f);
@@ -171,6 +172,9 @@ const recursivelyMergeChildrenAndFeatures = function(srcChildren, tgtChildren) {
             }
             // de-dupe and merge children
             if (item.children !== undefined && Array.isArray(item.children) && item.children.length !== 0) {
+                if (itemExistsInFinal && itemExistsInFinal.children === undefined) {
+                    itemExistsInFinal.children = []
+                }
                 recursivelyMergeChildrenAndFeatures(item.children, itemExistsInFinal.children)
             }
         }
@@ -185,7 +189,7 @@ const recursivelyMergeChildrenAndFeatures = function(srcChildren, tgtChildren) {
  * @returns {void} Nothing
  */
 const mergeResults = function (blob, finalCollection, type) {
-    if (blob[type] === undefined || blob[type].length === 0) { 
+    if (blob[type] === undefined || blob[type].length === 0) {
         return
     }
     blob[type].forEach(function (blobItem) {
@@ -199,24 +203,41 @@ const mergeResults = function (blob, finalCollection, type) {
             if (deepEqual(finalCollection[type][fIndex], blobItem)) {
                 itemExists = true;
                 break;
-            } 
+            }
+
+            if ((type === LUISObjNameEnum.INTENT || type === LUISObjNameEnum.ENTITIES) && finalCollection[type][fIndex].name === blobItem.name) {
+                itemExists = true;
+                (blobItem.features || []).forEach(blobFeature => {
+                    if (finalCollection[type][fIndex].features === undefined) {
+                        finalCollection[type][fIndex].features = [];
+                    }
+                    if (!finalCollection[type][fIndex].features.find(
+                        (feature) =>
+                          (feature.modelName && feature.modelName === blobFeature.modelName) ||
+                          (feature.featureName && feature.featureName === blobFeature.featureName))) {
+                      finalCollection[type][fIndex].features.push(blobFeature);
+                    }
+                });
+
+                if (type === LUISObjNameEnum.INTENT) break;
+            }
 
             // if item name matches, merge roles if available for everything other than intent
-            if (type === LUISObjNameEnum.INTENT || 
-                type === LUISObjNameEnum.PATTERNS || 
+            if (type === LUISObjNameEnum.INTENT ||
+                type === LUISObjNameEnum.PATTERNS ||
                 type === LUISObjNameEnum.UTTERANCE ||
                 finalCollection[type][fIndex].name !== blobItem.name) {
-                    continue;
+                continue;
             }
-    
+
             itemExists = true;
             (blobItem.roles || []).forEach(blobRole => {
-                if (finalCollection[type][fIndex].roles && 
+                if (finalCollection[type][fIndex].roles &&
                     !finalCollection[type][fIndex].roles.includes(blobRole)) {
-                        finalCollection[type][fIndex].roles.push(blobRole);
+                    finalCollection[type][fIndex].roles.push(blobRole);
                 }
             });
-       
+
         }
         if (!itemExists) {
             finalCollection[type].push(blobItem);
@@ -266,7 +287,7 @@ const mergeResults_closedlists = function (blob, finalCollection, type) {
     });
 }
 
-const buildRegex = function(blob, FinalLUISJSON){
+const buildRegex = function (blob, FinalLUISJSON) {
     // do we have regex entities here?
     if (blob.regex_entities === undefined || blob.regex_entities.length === 0) {
         return
@@ -292,7 +313,7 @@ const buildRegex = function(blob, FinalLUISJSON){
     })
 }
 
-const buildPrebuiltEntities = function(blob, FinalLUISJSON){
+const buildPrebuiltEntities = function (blob, FinalLUISJSON) {
     // do we have prebuiltEntities here?
     if (blob.prebuiltEntities === undefined || blob.prebuiltEntities.length === 0) {
         return
@@ -317,7 +338,7 @@ const buildPrebuiltEntities = function(blob, FinalLUISJSON){
     });
 }
 
-const buildModelFeatures = function(blob, FinalLUISJSON){
+const buildModelFeatures = function (blob, FinalLUISJSON) {
     // Find what scope to use in blob
     let blobScope = blob.model_features || blob.phraselists || [];
     if (blobScope.length === 0) return;
@@ -334,15 +355,18 @@ const buildModelFeatures = function(blob, FinalLUISJSON){
                 // error.
                 throw (new exception(retCode.errorCode.INVALID_INPUT, '[ERROR]: Phrase list : "' + modelFeature.name + '" has conflicting definitions. One marked interchangeable and another not interchangeable'));
             } else {
+                let words = modelFeatureInMaster[0].words.split(',').map(word => word.trim()).filter(word => word !== '');
                 modelFeature.words.split(',').forEach(function (word) {
-                    if (!modelFeatureInMaster[0].words.includes(word)) modelFeatureInMaster[0].words += "," + word;
-                })
+                    if (!words.find(w => w === word.trim())) words.push(word.trim());
+                });
+
+                modelFeatureInMaster[0].words = words.join(',');
             }
         }
     });
 }
 
-const buildComposites = function(blob, FinalLUISJSON){
+const buildComposites = function (blob, FinalLUISJSON) {
     if (blob.composites === undefined) return;
     // do we have composites? collate them correctly
     (blob.composites || []).forEach(composite => {
@@ -366,7 +390,7 @@ const buildComposites = function(blob, FinalLUISJSON){
     });
 }
 
-const buildPatternAny = function(blob, FinalLUISJSON){
+const buildPatternAny = function (blob, FinalLUISJSON) {
     if (blob.patternAnyEntities === undefined) return;
     // do we have pattern.any entities here? 
     (blob.patternAnyEntities || []).forEach(patternAny => {
@@ -384,7 +408,7 @@ const buildPatternAny = function(blob, FinalLUISJSON){
         let listEntityInMaster = FinalLUISJSON.closedLists.find(item => item.name == patternAny.name);
         let regexEntityInMaster = FinalLUISJSON.regex_entities.find(item => item.name == patternAny.name);
         let prebuiltInMaster = FinalLUISJSON.prebuiltEntities.find(item => item.name == patternAny.name);
-        if (!simpleEntityInMaster && 
+        if (!simpleEntityInMaster &&
             !compositeInMaster &&
             !listEntityInMaster &&
             !regexEntityInMaster &&
@@ -392,7 +416,7 @@ const buildPatternAny = function(blob, FinalLUISJSON){
             if (patternAnyInMaster) {
                 (patternAny.roles || []).forEach(role => !patternAnyInMaster.roles.includes(role) ? patternAnyInMaster.roles.push(role) : undefined);
             } else {
-                    FinalLUISJSON.patternAnyEntities.push(patternAny);
+                FinalLUISJSON.patternAnyEntities.push(patternAny);
             }
         } else {
             // remove the pattern.any from master if another entity type has this name.
@@ -403,10 +427,10 @@ const buildPatternAny = function(blob, FinalLUISJSON){
     })
 }
 
-const initializeHash = function(LuisJSON, hashTable = undefined) {
+const initializeHash = function (LuisJSON, hashTable = undefined) {
     for (let prop in LuisJSON) {
         if (hashTable !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
             (LuisJSON[prop] || []).forEach(item => hashTable[helpers.hashCode(JSON.stringify(item))] = item)
         }
-    }   
+    }
 }

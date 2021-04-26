@@ -6,9 +6,12 @@ const urlPath = '/luis/authoring/v3.0-preview/apps'
 export default {
   async train(
     param: EndpointParameters,
-    versionId: string) {
+    versionId: string,
+    mode: string) {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/train`
-
+    if (mode) {
+      url += `?mode=${mode}`
+    }
     return http.post(url, param.subscriptionKey, {})
   },
 

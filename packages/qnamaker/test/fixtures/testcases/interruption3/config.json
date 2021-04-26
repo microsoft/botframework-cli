@@ -1,12 +1,12 @@
 {
-    "./main/main.lu": {
+    "main": {
         "rootDialog": true,
         "triggers": {
             "dia1_trigger": [
-                "./dia1/dia1.lu",
-                "./dia2/dia2.lu"
+                "dia1",
+                "dia2"
             ],
-            "dia2_trigger": "./dia3/dia3.lu"
+            "dia2_trigger": "dia3"
         }
     }
 }

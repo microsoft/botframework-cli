@@ -12,9 +12,9 @@ export function sortQnA(qnaInstance: any) {
 
 export function sortAlterations(alterationsInstance: any) {
   alterationsInstance.wordAlterations.forEach((word: any) => {
-    word.alterations.sort(sortComparers.compareFn);
+    word.alterations.sort(sortComparers.compareFn)
   })
-  alterationsInstance.wordAlterations.sort(sortComparers.compareAltName);
+  alterationsInstance.wordAlterations.sort(sortComparers.compareAltName)
 }
 
 const sortComparers = {

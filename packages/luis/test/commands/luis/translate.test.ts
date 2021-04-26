@@ -19,17 +19,25 @@ describe('luis:translate lu file', async () => {
   })
 
   before(function(){
-    nock('https://api.cognitive.microsofttranslator.com')
+    nock('https://api.cognitive.microsofttranslator.com', {
+      reqheaders: {
+        'Ocp-Apim-Subscription-Region': () => true,
+      },
+    })
     .post(/.*/)
     .reply(200, response)
 
-    nock('https://api.cognitive.microsofttranslator.com')
+    nock('https://api.cognitive.microsofttranslator.com', {
+      reqheaders: {
+        'Ocp-Apim-Subscription-Region': () => true,
+      },
+    })
     .post(/.*/)
     .reply(200, response2)
   })
 
   test
-    .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/file.lu')}`, '--tgtlang', 'fr', '--out', './'])
+    .command(['luis:translate', '--translatekey','xxxxxxx', '--in', `${path.join(__dirname, './../../fixtures/file.lu')}`, '--tgtlang', 'fr', '--out', './', '--subscription_region', 'westus2'])
     .it('', async () => {
         await compareLuFiles('./../../../fr/file.lu', './../../fixtures/fr/file.lu')
     })
@@ -100,7 +108,7 @@ xdescribe('luis:translate References can be skipped from being translated', asyn
 })
 
 describe('luis:translate Intents and utterances are translated correctly', async () => {
-  const response = require('./../../fixtures/translation/serviceresponses/intentsAndutterances.json')
+  const response = require('./../../fixtures/translation/serviceresponses/intentsAndUtterances.json')
   after(async function(){
     await fs.remove(path.join(__dirname, './../../../fr/'))
   })

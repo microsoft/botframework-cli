@@ -41,8 +41,8 @@ const buildVersion6 = function(luisApp) {
     try {
         result.intents = processIntents(luisApp.intents);
         result.closedLists = extractEntities(luisApp.closedLists);
-        [result.entities, result.composites] = extractEntitiesV6(luisApp.entities, result.closedLists);
         result.prebuiltEntities = extractEntities(luisApp.prebuiltEntities, true);
+        [result.entities, result.composites] = extractEntitiesV6(luisApp.entities, result.closedLists, result.prebuiltEntities);
         result.regex_entities = extractEntities(luisApp.regex_entities);
         result.patternAnyEntities = extractEntities(luisApp.patternAnyEntities);
     } catch (err) {
@@ -99,13 +99,15 @@ const extractEntities = function(entities, builtIn = false) {
     return result;
 }
 
-const extractEntitiesV6 = function(entities, closedLists) {
+const extractEntitiesV6 = function(entities, closedLists, prebuiltEntitiesList) {
     // This method provides a simplified topological sort to
     // solve potential instanceOf dependecies in the v6 entities
 
     const simpleEntitiesResult = [];
     const compositeEntitiesResult = [];
     const simpleEntitiesWithType = {};
+
+    const prebuiltEntitiesSet = new Set(prebuiltEntitiesList)
 
     // Add 'closedList' entities as valid types for instanceOf
     closedLists.forEach(listEntity => {
@@ -142,6 +144,14 @@ const extractEntitiesV6 = function(entities, closedLists) {
                 // this algorithm will solve instanceOf dependencies.
                 const last_type = simpleEntitiesWithType[entity.instanceOf] || entity.instanceOf;
                 simpleEntitiesWithType[entity.name] = last_type;
+            }
+            // is simple with potential prebuilt
+            if (entity.features !== undefined && Array.isArray(entity.features) && entity.features.length >= 0) {
+                const prebuiltType = entity.features.find(element => element.isRequired && prebuiltEntitiesSet.has(element.modelName))
+                if (prebuiltType !== undefined) {
+                    // marking the entity type for processSimpleEntity check
+                    entity.instanceOf = prebuiltType
+                }
             }
         } else {
             throw CLIError("Malformed JSON: entity.children should be an array");

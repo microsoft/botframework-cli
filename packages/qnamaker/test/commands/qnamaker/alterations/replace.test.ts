@@ -26,6 +26,7 @@ describe('qnamaker:alterations:replace', () => {
   test
     .stderr()
     .command(['qnamaker:alterations:replace'])
+    .exit(1)
     .it('runs qnamaker:alterations:replace', ctx => {
       expect(ctx.stderr).to.contain('No input. Please set file path with --in or pipe required data to the command')
     })

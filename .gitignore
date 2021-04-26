@@ -81,3 +81,12 @@ packages/dialog/tsconfig.tsbuildinfo
 
 # BuildInfo
 tsconfig.tsbuildinfo
+
+# download NLR model file folder
+model_dte_roberta_for_test_command
+**/*.blu
+**/*.json
+**/model/**/
+**/**assessment**.html
+**/**assessment**.txt
+

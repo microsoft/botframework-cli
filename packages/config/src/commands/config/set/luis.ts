@@ -18,6 +18,7 @@ export default class ConfigSetLuis extends Command {
     appId: flags.string({description: 'LUIS application Id'}),
     authoringKey: flags.string({description: 'LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).'}),
     subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    armToken: flags.string({description: 'User`s ARM token used to validate azure accounts information)'}),
     versionId: flags.string({description: 'LUIS version Id'}),
     endpoint: flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
   }

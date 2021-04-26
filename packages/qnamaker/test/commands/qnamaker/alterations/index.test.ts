@@ -4,6 +4,7 @@ describe('qnamaker:alterations:index', () => {
   test
     .stdout()
     .command(['qnamaker:alterations'])
+    .exit(1)
     .it('runs', ctx => {
       expect(ctx.stdout).to.contain('')
     })

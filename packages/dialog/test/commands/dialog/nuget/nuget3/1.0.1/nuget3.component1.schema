@@ -1,0 +1,4 @@
+{
+    "title": "Nuget3 schema",
+    "$ref": "../../../schemas/packageBase.json"
+}

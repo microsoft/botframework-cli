@@ -10,7 +10,7 @@
 
 > # Intent definitions
 
-## CancelOrder
+# CancelOrder
 - cancel
 - cancel it i dont want it anymore
 - cancel it please
@@ -25,7 +25,7 @@
 
 @ intent CancelOrder usesFeature GreetingDescriptor
 
-## Confirmation
+# Confirmation
 - awesome
 - confirm
 - confirming
@@ -45,7 +45,7 @@
 
 @ intent Confirmation usesFeature GreetingDescriptor
 
-## Delivery
+# Delivery
 - {@Address={@Building Number=17}, {@Street=orouba street}, {@District=nasr city}, {@City=cairo}}
 - address is {@Address={@Building Number=675}, {@Street=gamal abd el nasser street}, {@City=giza}}
 - deliver it at {@Address={@Building Number=13}, {@Street=giza square}}
@@ -55,7 +55,7 @@
 
 @ intent Delivery usesFeature GreetingDescriptor
 
-## Greetings
+# Greetings
 - hello
 - hey
 - hey again
@@ -68,7 +68,7 @@
 
 @ intent Greetings usesFeature GreetingDescriptor
 
-## ModifyOrder
+# ModifyOrder
 - {@Order={@FullPizzaWithModifiers=a cheese pizza {@Size=medium} {@ToppingModifiers={@Modifier=with some} {@Topping=pineapple} and {@Topping=chicken}}}}
 - {@Order=add {@FullPizzaWithModifiers={@Quantity=5} {@Size=party size} {@PizzaType=marinera pizzas}} and i will pick them up at 6pm}
 - can i get {@Order={@FullPizzaWithModifiers={@Quantity=3} {@PizzaType=pepperoni pizzas}} and {@FullPizzaWithModifiers=a {@PizzaType=four cheese pizza}} {@SideOrder=with {@SideProduct=a large house salad} and {@SideProduct=a large fries}}}
@@ -166,7 +166,7 @@
 
 @ intent ModifyOrder usesFeatures ToppingDescriptor,SizeDescriptor,QuantityDescriptor,ModifierDescriptor,ScopeDescriptor,CrustDescriptor,GreetingDescriptor
 
-## None
+# None
 - deliver it at {@Address}
 - my address is {@Address}
 - address is {@Address}

@@ -8,11 +8,12 @@
 
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
-import {TemplateParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import {TemplatesParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 import * as readlineSync from 'readline-sync'
+import * as lodash from 'lodash'
 
 export default class ExpandCommand extends Command {
   static description = 'Expand one or all templates in .lg file(s). Expand an inline expression.'
@@ -179,7 +180,7 @@ export default class ExpandCommand extends Command {
 
     const newContent = `#${this.TempTemplateName} \r\n - ${inlineStr}`
 
-    return TemplateParser.parseTextWithRef(newContent, lgFile)
+    return TemplatesParser.parseTextWithRef(newContent, lgFile)
   }
 
   private generateExpandedTemplatesFile(expandedTemplates: Map<string, string[]>): string {
@@ -187,7 +188,11 @@ export default class ExpandCommand extends Command {
     for (const template of expandedTemplates) {
       result += '# ' + template[0] + '\n'
       if (Array.isArray(template[1])) {
-        for (const templateStr of template[1]) {
+        for (let templateStr of template[1]) {
+          if (typeof templateStr !== 'string') {
+            templateStr = JSON.stringify(templateStr)
+          }
+
           if (templateStr.includes('\n')) {
             // multiline
             result += '-```\n' + templateStr.trim() + '\n```\n'
@@ -230,8 +235,9 @@ export default class ExpandCommand extends Command {
 
     if (expectedVariables !== undefined) {
       for (const variable of expectedVariables) {
-        if (variablesObj !== undefined && variablesObj[variable] !== undefined) {
-          result.set(variable, variablesObj[variable])
+        const evalPathResult = lodash.get(variablesObj, variable)
+        if (variablesObj !== undefined && evalPathResult !== undefined) {
+          result.set(variable, evalPathResult)
         } else if (userInputValues !== undefined && userInputValues.has(variable)) {
           result.set(variable, userInputValues.get(variable))
         } else {
@@ -247,7 +253,7 @@ export default class ExpandCommand extends Command {
     const result: any = {}
     if (variablesValue !== undefined) {
       for (const variable of variablesValue) {
-        result[variable[0]] = variable[1]
+        lodash.set(result, variable[0], variable[1])
       }
     }
 

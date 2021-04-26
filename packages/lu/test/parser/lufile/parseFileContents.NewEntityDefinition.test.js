@@ -716,18 +716,36 @@ describe('V2 Entity definitions using @ notation', function () {
                 .then(res => done(res))
                 .catch(err => done())
         });
+
+        it('Phrase list definition with semicolon at the end of words is handled correctly', function(done) {
+            let luFile = `
+                @phraselist xyz
+                    - x, y, z,
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.model_features.length, 1);
+                    assert.equal(res.LUISJsonStructure.model_features[0].name, 'xyz');
+                    assert.equal(res.LUISJsonStructure.model_features[0].words, 'x,y,z');
+                    done();
+                })
+                .catch(err => done(err))
+        });
     });
 
     describe('Prebuilt entity types', function(done) {
         it('Basic prebuilt entity definition works', function(done){
             let luFile = `
                 @prebuilt number
+                @prebuilt phoneNumber
             `;
 
             parseFile.parseFile(luFile)
                 .then(res => {
-                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 1);
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities.length, 2);
                     assert.equal(res.LUISJsonStructure.prebuiltEntities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.prebuiltEntities[1].name, 'phoneNumber');
                     done();
                 })
                 .catch(err => done(err))
@@ -927,6 +945,25 @@ describe('V2 Entity definitions using @ notation', function () {
                 .catch(err => done(err))
         });
 
+        it('Basic list child definition with semicolon at the end is handled correctly', function(done) {
+            let luFile = `
+                @composite name hasRoles r1, r2 = 
+                    - child1;child2;
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.composites.length, 1);
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'name');
+                    assert.equal(res.LUISJsonStructure.composites[0].roles.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].roles, ['r1', 'r2']);
+                    assert.equal(res.LUISJsonStructure.composites[0].children.length, 2);
+                    assert.deepEqual(res.LUISJsonStructure.composites[0].children, ['child1', 'child2']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
+
         it('Definition can be split up in various ways', function(done) {
             let luFile = `
                 @composite name
@@ -1097,6 +1134,29 @@ describe('V2 Entity definitions using @ notation', function () {
                 })
                 .catch(err => done(err))
         })
+
+        it('Synonymous definition with semicolon at the end is handled correctly', function(done){
+            let luFile = `
+                @list x1 = 
+                    - a1:
+                        - one;two;
+                    - a2:
+                        -three;four;
+            `;
+
+            parseFile.parseFile(luFile)
+                .then(res => {
+                    assert.equal(res.LUISJsonStructure.closedLists.length, 1);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'x1');
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists.length, 2);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[0].canonicalForm, 'a1');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[0].list, ['one', 'two']);
+                    assert.equal(res.LUISJsonStructure.closedLists[0].subLists[1].canonicalForm, 'a2');
+                    assert.deepEqual(res.LUISJsonStructure.closedLists[0].subLists[1].list, ['three', 'four']);
+                    done();
+                })
+                .catch(err => done(err))
+        });
     });
 
     describe('Pattern.Any entity definition', function(){
