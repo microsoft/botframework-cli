@@ -250,7 +250,6 @@ export class Builder {
               }
 
               let needTrainAndPublish = false
-              console.log('builder directVersionPublish', directVersionPublish)
 
               // compare models to update the model if a match found
               // otherwise create a new application
@@ -261,7 +260,7 @@ export class Builder {
                 // create a new application
                 needTrainAndPublish = await this.createApplication(currentApp, luBuildCore, recognizer, timeBucketOfRequests)
               }
-              console.log('builder needTrainAndPublish', needTrainAndPublish)
+
               if (needTrainAndPublish) {
                 // train and publish application
                 await this.trainAndPublishApplication(luBuildCore, recognizer, timeBucketOfRequests, isStaging, directVersionPublish, trainMode)
@@ -303,7 +302,7 @@ export class Builder {
     let writeContents = contents.filter(c => c.id.endsWith('.dialog'))
     let settingsContents = contents.filter(c => c.id.endsWith('.json'))
 
-    if (settingsContents && settingsContents.length > 0 && directVersionPublish) {
+    if (settingsContents && settingsContents.length > 0) {
       let outPath
       if (luConfig) {
         outPath = path.join(path.resolve(path.dirname(luConfig)), settingsContents[0].id)
@@ -312,7 +311,8 @@ export class Builder {
       } else {
         outPath = path.resolve(settingsContents[0].id)
       }
-      writeContents.push(this.mergeSettingsContent(outPath, settingsContents))
+
+      writeContents.push(this.mergeSettingsContent(outPath, settingsContents, directVersionPublish))
     }
 
     for (const content of writeContents) {
@@ -332,7 +332,7 @@ export class Builder {
         content.content = JSON.stringify(existingCTRecognizerObject, null, 4)
       }
 
-      if ((force || !fs.existsSync(outFilePath)) && directVersionPublish) {
+      if ((force || !fs.existsSync(outFilePath))) {
         if (!fs.existsSync(path.dirname(outFilePath))) {
           fs.mkdirSync(path.dirname(outFilePath))
         }
@@ -479,14 +479,16 @@ export class Builder {
     return contents
   }
 
-  mergeSettingsContent(settingsPath: string, contents: any[]) {
+  mergeSettingsContent(settingsPath: string, contents: any[], directVersionPublish?: boolean) {
     let settings = new Settings(settingsPath, {})
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = {
+        settings.luis[appName] = directVersionPublish ? {
           "appId": luisAppsMap[appName]["appId"],
           "version": luisAppsMap[appName]["version"]
+        } : {
+          "appId": luisAppsMap[appName]["appId"]
         }
       }
     }
