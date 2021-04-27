@@ -23,7 +23,7 @@ export default class LuisCrossTrain extends Command {
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     'inner-dialog': flags.boolean({description: 'Only do inner dialog cross train', default: true, allowNo: true}),
     'intra-dialog': flags.boolean({description: 'Only do intra dialog cross train', default: true, allowNo: true}),
-    exclude: flags.string({description: 'Excludes folders under the input directory, seperated by ",". If not specified, all luis and qna files will be included in the cross-train'})
+    exclude: flags.string({description: 'Excludes folders under the input directory, separated by ",". If not specified, all luis and qna files will be included in the cross-train'})
   }
 
   async run() {
