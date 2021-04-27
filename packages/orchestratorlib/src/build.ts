@@ -283,7 +283,7 @@ export class OrchestratorBuild {
     const luObjects: any[] = [];
     for (const file of (luConfig.models || [])) {
       const content: string = OrchestratorHelper.readFile(file);
-      if (content && content.length > 0) {
+      if (content) {
         const luObject: any = {
           content: content,
           id: path.basename(file, '.lu'),

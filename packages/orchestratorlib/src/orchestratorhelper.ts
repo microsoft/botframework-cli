@@ -1122,7 +1122,7 @@ export class OrchestratorHelper {
     (idsToFind || []).forEach((ask: any)  => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
-      if (fileContent && fileContent.length > 0) {
+      if (fileContent) {
         retPayload.push({
           content: fileContent,
           options: {
@@ -1150,7 +1150,7 @@ export class OrchestratorHelper {
       const ext: string = path.extname(inputPath);
       if (ext === '.lu') {
         const content: string = OrchestratorHelper.readFile(inputPath);
-        if (content && content.length > 0) {
+        if (content) {
           retPayload.push({
             content: content,
             id: path.basename(inputPath, '.lu'),
