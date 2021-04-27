@@ -7,21 +7,11 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 require('fast-text-encoding');
 
-import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
-import {Label} from '@microsoft/bf-dispatcher';
-import {LabelStructureUtility} from '@microsoft/bf-dispatcher';
-import {LabelType} from '@microsoft/bf-dispatcher';
-import {ScoreEntity} from '@microsoft/bf-dispatcher';
-import {ScoreIntent} from '@microsoft/bf-dispatcher';
-// import {Span} from '@microsoft/bf-dispatcher';
-
+import {ITextUtteranceLabelMapDataStructure, Label, LabelStructureUtility, LabelType, ScoreEntity, ScoreIntent} from '@microsoft/bf-dispatcher';
 import {LabelResolver} from './labelresolver';
 import {UtilityLabelResolver} from './utilitylabelresolver';
-
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
-
-import {OrchestratorBuild} from '.';
-
+import {OrchestratorBuild, OrchestratorSettings} from '.';
 import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -63,7 +53,11 @@ export class OrchestratorHelper {
   }
 
   public static readFile(filePath: string): string {
-    return ReadText.readSync(filePath);
+    try {
+      return ReadText.readSync(filePath);
+    } catch {
+      return '';
+    }
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
@@ -264,7 +258,6 @@ export class OrchestratorHelper {
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
     const ext: string = path.extname(filePath);
-
     if (ext !== '.lu' &&
         ext !== '.json' &&
         ext !== '.qna' &&
@@ -295,6 +288,9 @@ export class OrchestratorHelper {
           utteranceLabelDuplicateMap);
         break;
       case '.json':
+        if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
+          return;
+        }
         if (OrchestratorHelper.getIntentsEntitiesUtterances(
           fs.readJsonSync(filePath),
           routingName,
@@ -395,6 +391,9 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
+    if (!luContent || luContent.length === 0) {
+      return;
+    }
     const luObject: any = {
       content: luContent,
       id: luFile,
@@ -1123,9 +1122,6 @@ export class OrchestratorHelper {
     (idsToFind || []).forEach((ask: any)  => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
-      if (!processedFiles.includes(resourceToFind)) {
-        processedFiles.push(resourceToFind);
-      }
       if (fileContent) {
         retPayload.push({
           content: fileContent,
@@ -1133,6 +1129,9 @@ export class OrchestratorHelper {
             id: ask.filePath,
           },
         });
+        if (!processedFiles.includes(resourceToFind)) {
+          processedFiles.push(resourceToFind);
+        }
       } else {
         throw new Error(`Content not found for ${resourceToFind}.`);
       }
@@ -1150,10 +1149,13 @@ export class OrchestratorHelper {
     } else {
       const ext: string = path.extname(inputPath);
       if (ext === '.lu') {
-        retPayload.push({
-          content: OrchestratorHelper.readFile(inputPath),
-          id: path.basename(inputPath, '.lu'),
-        });
+        const content: string = OrchestratorHelper.readFile(inputPath);
+        if (content) {
+          retPayload.push({
+            content: content,
+            id: path.basename(inputPath, '.lu'),
+          });
+        }
       }
     }
   }
@@ -1204,7 +1206,7 @@ export class OrchestratorHelper {
         Utility.debuggingLog(`Multi language recognizer file written to ${multiRecoFileName}`);
       }
 
-      bluPaths[baseName] = snapshotFile;
+      bluPaths[baseName] = snapshotFile.replace(/\\/g, '/');
     }
   }
 
