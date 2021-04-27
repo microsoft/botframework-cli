@@ -352,7 +352,7 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(retPayload !== null);
     assert.ok(retPayload.outputs !== null);
     assert.ok(retPayload.outputs.length === 5);
-    assert.ok(retPayload.settings.orchestrator.modelFolder === baseModelPath);
+    assert.ok(retPayload.settings.orchestrator.modelFolder === baseModelPath.replace(/\\/g, '/'));
 
     const payLoadOutputs: any[] = retPayload.outputs;
     const snapshots: Map<string, Uint8Array> = new Map<string, Uint8Array>();
@@ -384,6 +384,9 @@ describe('OrchestratorBuildTests', function () {
     assert.ok(Utility.exists('./test/fixtures/output/RootDialog.blu'));
     assert.ok(Utility.exists('./test/fixtures/output/RootDialog.en-us.lu.dialog'));
     assert.ok(Utility.exists('./test/fixtures/output/RootDialog.lu.dialog'));
+
+    const snapshotSettings: any = retPayload.settings.orchestrator.snapshots;
+    assert.ok(snapshotSettings.RootDialog === 'test/fixtures/output/RootDialog.blu');
   });
 
   it('Test.0008 - runAsync changing files', async function () {

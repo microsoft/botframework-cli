@@ -40,7 +40,7 @@
     "@types/node-fetch": "~2.5.5",
     "node-fetch": "~2.6.0",
     "tslib": "^2.0.3",
-    "orchestrator-core": "4.13.0",
+    "orchestrator-core": "4.13.1",
     "@types/fs-extra": "~8.1.0",
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
