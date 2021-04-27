@@ -25,9 +25,9 @@ export default class LuisBuild extends Command {
 
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'luis:build command help'}),
-    in: flags.string({char: 'i', description: 'Lu file or folder'}),
-    authoringKey: flags.string({description: 'LUIS authoring key'}),
-    botName: flags.string({description: 'Bot name'}),
+    in: flags.string({char: 'i', description: '(required) Lu file or folder'}),
+    authoringKey: flags.string({description: '(required) LUIS authoring key. Refered to as subscriptionKey in other cli commands.'}),
+    botName: flags.string({description: '(required) Bot name'}),
     region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
     out: flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, application setting will be output to console'}),
     defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
@@ -38,7 +38,7 @@ export default class LuisBuild extends Command {
     luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
     deleteOldVersion: flags.boolean({description: 'Deletes old version of LUIS application after building new one.'}),
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
-    endpoint: flags.string({description: 'Luis authoring endpoint for publishing'}),
+    endpoint: flags.string({description: '(required) Luis authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
     isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
     directVersionPublish: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
