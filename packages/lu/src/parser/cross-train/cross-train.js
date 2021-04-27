@@ -4,7 +4,8 @@
  */
 
 const path = require('path')
-const file = require('../../utils/filehelper')
+const fs = require('fs-extra')
+const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
 
@@ -18,28 +19,63 @@ module.exports = {
    * @param {inner: boolean, intra: boolean} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose, trainingOpt) {
-    // Get all related file content.
-    const luContents = await file.getFilesContent(input, fileExtEnum.LUFile)
-    const qnaContents = await file.getFilesContent(input, fileExtEnum.QnAFile)
-    const configContent = await file.getConfigContent(config)
+  train: async function (input, intentName, config, verbose, trainingOpt, exclude) {
+    // get excluded foleders
+    let excludedFolders = undefined
+    if (exclude) {
+      excludedFolders = exclude.split(',').map(e => e.trim())
+    }
 
-    let importResolver = async function (_, idsToFind) {
+    // Get all related file content.
+    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile, excludedFolders)
+    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile, excludedFolders)
+    const configContent = await filehelper.getConfigContent(config)
+    const defaultLocale = 'en-us'
+
+    let importResolver = async function (id, idsToFind) {
       let importedContents = []
+      const idWithoutExt = path.basename(id, path.extname(id))
+      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
-            importedContents.push(...await file.getFilesContent(file.filePath, fileExtEnum.QnAFile))
+            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
           }
         } else {
           const fileName = path.basename(file.filePath)
+          const updateImportedContents = async function(typedContents, fileExt) {
+            let found = []
+            // import resolver should be capable to find implicit import files with locale, for example '[import](b.lu)' is defined in a.en-us.lu, the resolver should find b.en-us.lu
+            const foundWithLocale = typedContents.filter(content => content.id === `${path.basename(fileName, fileExt)}.${locale}`)
+            if (foundWithLocale.length > 0) {
+              found = foundWithLocale
+            } else {
+              //if no locale specified file is found, just to check whether there is file without locale matched
+              found =  typedContents.filter(content => content.id === path.basename(fileName, fileExt))
+            }
+
+            if(found.length > 0) {
+              importedContents.push(...found)
+            } else {
+              const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
+              for (const matchFile of matchedLuisFiles) {
+                const sourceFileDir = path.dirname(matchFile.fullPath)
+                const targetPath = path.resolve(sourceFileDir, file.filePath)
+                if (fs.existsSync(targetPath)) {
+                  const importContent = await filehelper.getFilesContent(targetPath, fileExt)
+                  importedContents.push(...importContent)
+                }
+              }
+            }
+          }
+
           if (fileName.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...luContents.filter(luContent => luContent.id === path.basename(fileName, fileExtEnum.LUFile)))
+            await updateImportedContents(luContents, fileExtEnum.LUFile)
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
-            importedContents.push(...qnaContents.filter(qnaContent => qnaContent.id === path.basename(fileName, fileExtEnum.QnAFile)))
+            await updateImportedContents(qnaContents, fileExtEnum.QnAFile)
           }
         }
       }
