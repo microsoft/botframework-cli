@@ -14,7 +14,7 @@ export default class LuisApplicationCreate extends Command {
 
   static examples = [`
     $ bf luis:application:create --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture {CULTURE}
-    --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
+    --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID}
   `]
 
   static flags: flags.Input<any> = {
