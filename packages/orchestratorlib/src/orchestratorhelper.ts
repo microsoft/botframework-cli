@@ -16,8 +16,8 @@ import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 const ReadText: any = require('read-text-file');
-const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
+const luisBuildNoValidate: any = require('@microsoft/bf-lu/lib/parser/luis/luisCollate').build;
 const processedFiles: string[] = [];
 
 export class OrchestratorHelper {
@@ -229,7 +229,7 @@ export class OrchestratorHelper {
   }
 
   public static async getEntitiesInLu(luObject: any): Promise<any> {
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    const luisObject: any = await luisBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);
   }
 
@@ -268,7 +268,7 @@ export class OrchestratorHelper {
       throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
 
-    Utility.writeStringToConsoleStdout(`Processing ${filePath}...`);
+    Utility.writeStringToConsoleStdout(`Processing ${filePath}...\n`);
     try {
       switch (ext) {
       case '.lu':
@@ -326,7 +326,8 @@ export class OrchestratorHelper {
         break;
       }
     } catch (error) {
-      throw new Error(`Failed to parse ${filePath}`);
+      Utility.debuggingLog(`Failed to parse ${filePath}, error=${UtilityDispatcher.jsonStringify(error)}`);
+      throw error;
     }
   }
 
@@ -398,7 +399,7 @@ export class OrchestratorHelper {
       content: luContent,
       id: luFile,
     };
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    const luisObject: any = await luisBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
     if (Utility.toPrintDetailedDebuggingLogToConsole) {
       UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
     }
@@ -414,7 +415,7 @@ export class OrchestratorHelper {
         throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
   }
@@ -512,7 +513,7 @@ export class OrchestratorHelper {
           }
         }
       } catch (error) {
-        Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', error=${error}`);
+        Utility.debuggingLog(`WARNING processing lineIndex=${lineIndex}, line='${line}', error=${UtilityDispatcher.jsonStringify(error)}`);
         numberLinesIgnored++;
         if ((numberLinesIgnored % Utility.NumberOfInstancesPerProgressDisplayBatch) === 0) {
           // eslint-disable-next-line no-console
@@ -665,7 +666,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
     return false;
@@ -747,7 +748,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
     return false;
@@ -792,7 +793,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentsEntitiesUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
     return false;
@@ -846,7 +847,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getExampleArrayIntentsEntitiesUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getExampleArrayIntentsEntitiesUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
     return false;
@@ -884,7 +885,7 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getJsonIntentEntityScoresUtterances(), error=${error}`);
+      Utility.debuggingLog(`EXCEPTION calling getJsonIntentEntityScoresUtterances(), error=${UtilityDispatcher.jsonStringify(error)}`);
       throw error;
     }
     return false;
@@ -929,7 +930,7 @@ export class OrchestratorHelper {
         utteranceLabelsMap.set(utterance, existingLabels);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtterance(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtterance(), error='${UtilityDispatcher.jsonStringify(error)}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
       throw error;
     }
   }
@@ -962,7 +963,7 @@ export class OrchestratorHelper {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${UtilityDispatcher.jsonStringify(error)}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }
@@ -995,7 +996,7 @@ export class OrchestratorHelper {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityEntry, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${UtilityDispatcher.jsonStringify(error)}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }
@@ -1012,7 +1013,7 @@ export class OrchestratorHelper {
       labels.add(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${UtilityDispatcher.jsonStringify(error)}', newLabel='${newLabel}', labels='${labels}'`);
       throw error;
     }
     return false;
@@ -1047,7 +1048,7 @@ export class OrchestratorHelper {
         utteranceLabelsMap[utterance] = [label];
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObjectDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObjectDictionary(), error='${UtilityDispatcher.jsonStringify(error)}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
       throw error;
     }
   }
@@ -1077,7 +1078,7 @@ export class OrchestratorHelper {
         Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
       }
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObjectDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObjectDictionary(), error='${UtilityDispatcher.jsonStringify(error)}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
     }
   }
@@ -1093,7 +1094,7 @@ export class OrchestratorHelper {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${UtilityDispatcher.jsonStringify(error)}', newLabel='${newLabel}', labels='${labels}'`);
       throw error;
     }
     return false;
@@ -1110,7 +1111,7 @@ export class OrchestratorHelper {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelArray(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
+      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelArray(), error='${UtilityDispatcher.jsonStringify(error)}', newLabel='${newLabel}', labels='${labels}'`);
       throw error;
     }
     return false;
