@@ -171,22 +171,35 @@ export async function detectLuContent(stdin: string, input: string) {
   return false
 }
 
-export async function getFilesContent(input: string, extType: string) {
+export async function getFilesContent(input: string, extType: string, ignoredFolders?: string[]) {
   let fileStat = await fs.stat(input)
   if (fileStat.isFile()) {
     const filePath = path.resolve(input)
     const content = await getContentFromFile(input)
-    return [{id: path.basename(filePath, extType), content}]
+    return [{id: path.basename(filePath, extType), content, fullPath: filePath}]
   }
 
   if (!fileStat.isDirectory()) {
     throw (new exception(retCode.errorCode.INVALID_INPUT_FILE, 'Sorry, ' + input + ' is not a folder or does not exist'))
   }
-  const paths = await globby([`**/*${extType}`], {cwd: input, dot: true})
+
+  const allPaths = (await globby([`**/*${extType}` ], {cwd: input, dot: true}))
+  let paths: string[] = []
+  if (ignoredFolders) {
+    for (const path of allPaths) {
+      const isIgnored = ignoredFolders.filter(e => path.startsWith(e)).length > 0
+      if (!isIgnored) {
+        paths.push(path)
+      }
+    }
+  } else {
+    paths = allPaths
+  }
+  
   return Promise.all(paths.map(async (item: string) => {
     const itemPath = path.resolve(path.join(input, item))
     const content = await getContentFromFile(itemPath)
-    return {id: path.basename(itemPath, extType), content}
+    return {id: path.basename(itemPath, extType), content, fullPath: itemPath}
   }))
 }
 
