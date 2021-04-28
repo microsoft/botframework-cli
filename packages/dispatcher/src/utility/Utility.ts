@@ -2457,7 +2457,7 @@ export class Utility {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: '${Utility.jsonStringify(message)}'` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2472,7 +2472,7 @@ export class Utility {
             `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
             `, argument0:${Utility.jsonStringify(objectArgument0)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2489,7 +2489,7 @@ export class Utility {
             `, argument0:${Utility.jsonStringify(objectArgument0)}` +
             `, argument1:${Utility.jsonStringify(objectArgument1)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2508,7 +2508,7 @@ export class Utility {
             `, argument1:${Utility.jsonStringify(objectArgument1)}` +
             `, argument2:${Utility.jsonStringify(objectArgument2)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2530,7 +2530,7 @@ export class Utility {
             `, argument2:${Utility.jsonStringify(objectArgument2)}` +
             `, argument3:${Utility.jsonStringify(objectArgument3)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2546,7 +2546,7 @@ export class Utility {
             `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
             `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2565,7 +2565,7 @@ export class Utility {
             `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
             `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2587,7 +2587,7 @@ export class Utility {
             `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
             `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
@@ -2613,7 +2613,7 @@ export class Utility {
             `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
             `, ${objectArgumentName3}=${Utility.jsonStringify(objectArgument3)}` +
             `, CAUSE: '${Utility.jsonStringify(cause)}'`;
-        const error: Error = new ErrorWithCause(logMessage, cause);
+        const error: ErrorWithCause = new ErrorWithCause(logMessage, cause);
         const stackTrace: string = error.stack as string;
         Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
