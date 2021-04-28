@@ -14,6 +14,8 @@ import { ITextIntentSequenceLabelObjectByPosition} from "../data/ITextIntentSequ
 
 import { Label } from "../label_structure/Label";
 
+import { ErrorWithCause } from "./ErrorWithCause";
+
 import { DictionaryMapUtility } from "../data_structure/DictionaryMapUtility";
 
 import { StructValueCount } from "../label_structure/StructValueCount";
@@ -2449,12 +2451,182 @@ export class Utility {
         return logMessage;
     }
 
+    public static debuggingThrowWithCause(
+        message: any,
+        cause: Error|ErrorWithCause): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: '${Utility.jsonStringify(message)}'` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow1WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow2WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingThrow3WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2:${Utility.jsonStringify(objectArgument2)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingThrow4WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, argument0:${Utility.jsonStringify(objectArgument0)}` +
+            `, argument1:${Utility.jsonStringify(objectArgument1)}` +
+            `, argument2:${Utility.jsonStringify(objectArgument2)}` +
+            `, argument3:${Utility.jsonStringify(objectArgument3)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow1WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgumentName0: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow2WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    public static debuggingNamedThrow3WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+    // eslint-disable-next-line max-params
+    public static debuggingNamedThrow4WithCause(
+        message: any,
+        cause: Error|ErrorWithCause,
+        objectArgument0: any,
+        objectArgument1: any,
+        objectArgument2: any,
+        objectArgument3: any,
+        objectArgumentName0: string = "",
+        objectArgumentName1: string = "",
+        objectArgumentName2: string = "",
+        objectArgumentName3: string = ""): void {
+        const dateTimeString: string = (new Date()).toISOString();
+        const logMessage: string =
+            `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}` +
+            `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}` +
+            `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}` +
+            `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}` +
+            `, ${objectArgumentName3}=${Utility.jsonStringify(objectArgument3)}` +
+            `, CAUSE: '${Utility.jsonStringify(cause)}'`;
+        const error: Error = new ErrorWithCause(logMessage, cause);
+        const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
+        Utility.debuggingLog(stackTrace);
+        throw error;
+    }
+
     public static debuggingThrow(
         message: any): void {
         const dateTimeString: string = (new Date()).toISOString();
         const logMessage: string = `[${dateTimeString}] ERROR-MESSAGE: ${Utility.jsonStringify(message)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2467,6 +2639,7 @@ export class Utility {
             `, argument0:${Utility.jsonStringify(objectArgument0)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2481,6 +2654,7 @@ export class Utility {
             `, argument1:${Utility.jsonStringify(objectArgument1)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2497,6 +2671,7 @@ export class Utility {
             `, argument2:${Utility.jsonStringify(objectArgument2)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2516,6 +2691,7 @@ export class Utility {
             `, argument3:${Utility.jsonStringify(objectArgument3)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2529,6 +2705,7 @@ export class Utility {
             `, ${objectArgumentName0}=${Utility.jsonStringify(objectArgument0)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2545,6 +2722,7 @@ export class Utility {
             `, ${objectArgumentName1}=${Utility.jsonStringify(objectArgument1)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2564,6 +2742,7 @@ export class Utility {
             `, ${objectArgumentName2}=${Utility.jsonStringify(objectArgument2)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
@@ -2587,6 +2766,7 @@ export class Utility {
             `, ${objectArgumentName3}=${Utility.jsonStringify(objectArgument3)}`;
         const error: Error = new Error(logMessage);
         const stackTrace: string = error.stack as string;
+        Utility.debuggingLog(logMessage);
         Utility.debuggingLog(stackTrace);
         throw error;
     }
