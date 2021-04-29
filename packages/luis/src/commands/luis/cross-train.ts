@@ -88,7 +88,7 @@ export default class LuisCrossTrain extends Command {
             validatedPath = utils.validatePath(fileId + fileExt, '', force)
           }
 
-          const composerSourceFileRegex = new RegExp(`[\\w-]+\\.source\\.([\\w-]+\\.)?${fileExt.substring(1)}`);
+          const composerSourceFileRegex = new RegExp(`[\\w-]+\\.source\\.([\\w-]+\\.)?${fileExt.substring(1)}`)
           if (!composerSourceFileRegex.test(validatedPath)) {
             await fs.writeFile(validatedPath, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
           }
