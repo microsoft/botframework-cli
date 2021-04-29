@@ -88,7 +88,10 @@ export default class LuisCrossTrain extends Command {
             validatedPath = utils.validatePath(fileId + fileExt, '', force)
           }
 
-          await fs.writeFile(validatedPath, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
+          const composerSourceFileRegex = new RegExp(`[\\w-]+\\.source\\.([\\w-]+\\.)?${fileExt.substring(1)}`);
+          if (!composerSourceFileRegex.test(validatedPath)) {
+            await fs.writeFile(validatedPath, fileIdToLuResourceMap.get(fileId).Content, 'utf-8')
+          }
         } catch (err) {
           throw new CLIError(`Unable to write to file ${fileId}. Error: ${err.message}`)
         }

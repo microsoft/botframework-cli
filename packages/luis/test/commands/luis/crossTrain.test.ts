@@ -173,5 +173,6 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(await compareLuFiles('./../../../interruptionGen/ChitchatDialog.en-us.lu', './../../fixtures/verified/interruption9/ChitchatDialog.en-us.lu')).to.be.true
       expect(await compareLuFiles('./../../../interruptionGen/ChitchatDialog.en-us.qna', './../../fixtures/verified/interruption9/ChitchatDialog.en-us.qna')).to.be.true
       expect(fs.existsSync('./../../../interruptionGen/extra.en-us.lu')).to.be.false
+      expect(fs.existsSync('./../../../interruptionGen/chitchat_professional.source.en-us.qna')).to.be.false
     })
 })
