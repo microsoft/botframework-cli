@@ -9,6 +9,8 @@ import {Utility} from './utility';
 const unzip: any = require('unzip-stream');
 const fetch: any = require('node-fetch');
 
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 export class OrchestratorBaseModel {
   public static NlrVersionsSchema: string = '0.2';
 
@@ -42,7 +44,9 @@ export class OrchestratorBaseModel {
       const modelUrl: string = 'https://aka.ms/' + basemodelId;
       await OrchestratorBaseModel.getModelAsync(baseModelPath, modelUrl, onProgress, onFinish);
     } catch (error) {
-      throw error;
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to get model ${baseModelPath}, basemodelId=${basemodelId}, modelType=${modelType}, lang=${lang}`,
+        error);
     }
   }
 
@@ -90,10 +94,14 @@ export class OrchestratorBaseModel {
         });
         Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): leaving');
       } catch (error) {
-        Utility.debuggingThrow(`FAILED to unzip ${modelZipPath}, modelUrl=${modelUrl}, baseModelPath=${baseModelPath}, error=${error}`);
+        UtilityDispatcher.debuggingThrowWithCause(
+          `FAILED to unzip ${modelZipPath}, modelUrl=${modelUrl}, baseModelPath=${baseModelPath}`,
+          error);
       }
     } catch (error) {
-      throw error;
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to get model, modelUrl=${modelUrl}, baseModelPath=${baseModelPath}`,
+        error);
     }
   }
 

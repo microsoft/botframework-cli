@@ -63,8 +63,9 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
-                        throw error;
+                        Utility.debuggingThrowWithCause(
+                            `Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`,
+                            error);
                     }
                 }
             }
@@ -114,8 +115,9 @@ export class DictionaryMapUtility {
                             utteranceLabelSet.add(DictionaryMapUtility.UnknownLabel);
                         }
                     } catch (error) {
-                        Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
-                        throw error;
+                        Utility.debuggingThrowWithCause(
+                            `Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`,
+                            error);
                     }
                 }
             }

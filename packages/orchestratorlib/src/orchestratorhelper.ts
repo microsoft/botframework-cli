@@ -326,7 +326,9 @@ export class OrchestratorHelper {
         break;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause(`Failed to parse ${filePath}`, error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to parse ${filePath}`,
+        error);
     }
   }
 
@@ -414,7 +416,9 @@ export class OrchestratorHelper {
         throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getIntentsEntitiesUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getIntentsEntitiesUtterances()',
+        error);
     }
   }
 
@@ -516,7 +520,9 @@ export class OrchestratorHelper {
           // eslint-disable-next-line no-console
           Utility.debuggingLog(`processed numberLinesIgnored=${numberLinesIgnored}`);
         }
-        UtilityDispatcher.debuggingThrowWithCause(`ERROR processing lineIndex=${lineIndex}, line='${line}'`, error);
+        UtilityDispatcher.debuggingThrowWithCause(
+          `ERROR processing lineIndex=${lineIndex}, line='${line}'`,
+          error);
       }
     });
     Utility.debuggingLog(`processed #lines=${lines.length}`);
@@ -663,7 +669,9 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getIntentsEntitiesUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getIntentsEntitiesUtterances()',
+        error);
     }
     return false;
   }
@@ -744,7 +752,9 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getJsonIntentsEntitiesUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getJsonIntentsEntitiesUtterances()',
+        error);
     }
     return false;
   }
@@ -788,7 +798,9 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getJsonIntentsEntitiesUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getJsonIntentsEntitiesUtterances()',
+        error);
     }
     return false;
   }
@@ -841,7 +853,9 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getExampleArrayIntentsEntitiesUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getExampleArrayIntentsEntitiesUtterances()',
+        error);
     }
     return false;
   }
@@ -878,7 +892,9 @@ export class OrchestratorHelper {
         return true;
       }
     } catch (error) {
-      UtilityDispatcher.debuggingThrowWithCause('EXCEPTION calling getJsonIntentEntityScoresUtterances()', error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        'EXCEPTION calling getJsonIntentEntityScoresUtterances()',
+        error);
     }
     return false;
   }
@@ -991,7 +1007,7 @@ export class OrchestratorHelper {
       }
     } catch (error) {
       UtilityDispatcher.debuggingThrowWithCause(
-        `EXCEPTION calling addNewEntityLabelUtterance()', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`,
+        `EXCEPTION calling addNewEntityLabelUtterance(), entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`,
         error);
     }
   }

@@ -100,6 +100,7 @@ export default class OrchestratorQuery extends Command {
         }
       }
       Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
+      Utility.resetExternalLoggingObject(this);
       Utility.debuggingLog(`OrchestratorQuery.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorQuery.run(): query=${query}`);
@@ -125,9 +126,8 @@ export default class OrchestratorQuery extends Command {
         fullEmbeddings,
         limit);
     } catch (error) {
-      Utility.debuggingLog(`OrchestratorQuery.run(): error=${error}`);
-      // eslint-disable-next-line no-console
-      console.log(`OrchestratorQuery.run(): error=${error}`);
+      Utility.debuggingLog(
+        `OrchestratorQuery.run(), EXCEPTION=${Utility.jsonStringify(error)}`);
       throw (new CLIError(error));
     }
   }

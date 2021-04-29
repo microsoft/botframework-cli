@@ -215,7 +215,9 @@ export class LabelResolver {
       batchResults = labelResolver.addBatch(batchUint8Array, '', addBatchOption);
       UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): finished calling labelResolver.addBatch()', batchResults, 'batchResults');
     } catch (error) {
-      UtilityDispatcher.debuggingNamedThrow1('LabelResolver.addBatch(): Failed adding error:', error, 'error');
+      UtilityDispatcher.debuggingThrowWithCause(
+        'LabelResolver.addBatch(): FAILED TO ADD',
+        error);
     }
     // -----------------------------------------------------------------------
     Utility.debuggingLog('LEAVING LabelResolver.addBatch()');
@@ -556,7 +558,9 @@ export class LabelResolver {
               Utility.debuggingLog(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }`);
             }
           } catch (error) {
-            Utility.debuggingThrow(`LabelResolver.addExample()-Intent: Failed adding { label: ${label}, text: ${utterance} }\n${error}`);
+            UtilityDispatcher.debuggingThrowWithCause(
+              `LabelResolver.addExample()-Intent: FAILED adding { label: ${label}, text: ${utterance} }`,
+              error);
           }
         }
       }
@@ -604,7 +608,9 @@ export class LabelResolver {
               Utility.debuggingLog(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`);
             }
           } catch (error) {
-            Utility.debuggingThrow(`LabelResolver.addExample()-Entity: Failed adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }\n${error}`);
+            UtilityDispatcher.debuggingThrowWithCause(
+              `LabelResolver.addExample()-Intent: FAILED adding { label: ${label}, text: ${utterance}, offset: ${spanOffset}, length: ${spanLength} }`,
+              error);
           }
         }
       }

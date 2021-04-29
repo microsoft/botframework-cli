@@ -25,6 +25,7 @@ export default class OrchestratorBaseModelGet extends Command {
     const output: string = flags.out || path.join(cwd, 'model');
     let basemodelId: any = flags.versionId || '';
     Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
+    Utility.resetExternalLoggingObject(this);
 
     try {
       if (!OrchestratorHelper.exists(output)) {

@@ -12,6 +12,8 @@ import {} from 'mocha';
 
 import {OrchestratorAssess} from '../src/assess';
 
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
@@ -37,27 +39,42 @@ describe('Test Suite - the "assess" command', () => {
       try {
         Utility.deleteFile(assessmentSetIntentSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output intent-summary file="${assessmentSetIntentSummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output intent-summary file="${assessmentSetIntentSummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output intent-labels file="${assessmentSetIntentLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output intent-labels file="${assessmentSetIntentLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetEntitySummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output entity-summary file="${assessmentSetEntitySummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output entity-summary file="${assessmentSetEntitySummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetEntityLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output entity-labels file="${assessmentSetEntityLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output entity-labels file="${assessmentSetEntityLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         fs.rmdirSync(outputPath);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output folder, error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorAssess.runAsync(), FAILED deleting output folder ${outputPath}`,
+          error,
+          true);
       }
     }
     Utility.debuggingLog('THE END - Test.0000 OrchestratorAssess.runAsync()');
@@ -84,27 +101,42 @@ describe('Test Suite - the "assess" command', () => {
       try {
         Utility.deleteFile(assessmentSetIntentSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output intent-summary file="${assessmentSetIntentSummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output intent-summary file="${assessmentSetIntentSummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output intent-labels file="${assessmentSetIntentLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output intent-labels file="${assessmentSetIntentLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetEntitySummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output entity-summary file="${assessmentSetEntitySummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output entity-summary file="${assessmentSetEntitySummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(assessmentSetEntityLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output entity-labels file="${assessmentSetEntityLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output entity-labels file="${assessmentSetEntityLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         fs.rmdirSync(outputPath);
       } catch (error) {
-        Utility.debuggingLog(`Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output folder, error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0001 OrchestratorAssess.runAsync(), FAILED deleting output folder ${outputPath}`,
+          error,
+          true);
       }
     }
     Utility.debuggingLog('THE END - Test.0001 OrchestratorAssess.runAsync()');

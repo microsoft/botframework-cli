@@ -12,6 +12,8 @@ import * as fs from 'fs';
 
 import {OrchestratorEvaluate} from '../src/evaluate';
 
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
@@ -54,57 +56,90 @@ describe('Test Suite - the "evaluate" command', () => {
       try {
         Utility.deleteFile(snapshotSetIntentScoresOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output score file="${snapshotSetIntentScoresOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output score file="${snapshotSetIntentScoresOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetIntentGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output ground-truth json file="${snapshotSetIntentGroundTruthJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output ground-truth json file="${snapshotSetIntentGroundTruthJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetIntentPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output prediction json file="${snapshotSetIntentPredictionJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output prediction json file="${snapshotSetIntentPredictionJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetIntentSummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output summary file="${snapshotSetIntentSummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output summary file="${snapshotSetIntentSummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output labels file="${snapshotSetIntentLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output labels file="${snapshotSetIntentLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetEntityScoresOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output score file="${snapshotSetEntityScoresOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output score file="${snapshotSetEntityScoresOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetEntityGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output ground-truth json file="${snapshotSetEntityGroundTruthJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output ground-truth json file="${snapshotSetEntityGroundTruthJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetEntityPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output prediction json file="${snapshotSetEntityPredictionJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output prediction json file="${snapshotSetEntityPredictionJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetEntitySummaryHtmlOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output summary file="${snapshotSetEntitySummaryHtmlOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output summary file="${snapshotSetEntitySummaryHtmlOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(snapshotSetEntityLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output labels file="${snapshotSetEntityLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output labels file="${snapshotSetEntityLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         fs.rmdirSync(outputPath);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output folder=${outputPath}, error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorEvaluate.runAsync(), FAILED deleting output folder=${outputPath}`,
+          error,
+          true);
       }
     }
     Utility.debuggingLog('THE END - Test.0000 OrchestratorEvaluate.runAsync()');

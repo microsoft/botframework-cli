@@ -4976,8 +4976,9 @@ export class Utility {
               }
             }
           } catch (error) {
-            Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
-            throw error;
+            UtilityDispatcher.debuggingThrowWithCause(
+              `Utility.processUnknownSpuriousLabelsInUtteranceLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`,
+              error);
           }
         }
       }
@@ -5120,8 +5121,9 @@ export class Utility {
               }
             }
           } catch (error) {
-            Utility.debuggingLog(`Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
-            throw error;
+            UtilityDispatcher.debuggingThrowWithCause(
+              `Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap(), utteranceKey=${utteranceKey}, utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`,
+              error);
           }
         }
       }
@@ -5267,8 +5269,12 @@ export class Utility {
               }
             }
           } catch (error) {
-            // ---- NOTE-PLACEHOLDER ---- Utility.debuggingLog(`Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceEntityLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceEntityLabelsMap)}`);
-            throw error;
+            UtilityDispatcher.debuggingThrowWithCause(
+              `Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}`,
+              error);
+            // ---- NOTE-TODO-PLACE-HOLDER ---- UtilityDispatcher.debuggingThrowWithCause(
+            // ---- NOTE-TODO-PLACE-HOLDER ----   `Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMapUsingLabelSet(), utteranceKey=${utteranceKey}, utteranceEntityLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceEntityLabelsMap)}`,
+            // ---- NOTE-TODO-PLACE-HOLDER ----   error);
           }
         }
       }
@@ -5411,8 +5417,12 @@ export class Utility {
               }
             }
           } catch (error) {
-            // ---- NOTE-PLACEHOLDER ---- Utility.debuggingLog(`Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMap(), utteranceKey=${utteranceKey}, utteranceEntityLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceEntityLabelsMap)}`);
-            throw error;
+            UtilityDispatcher.debuggingThrowWithCause(
+              `Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMap(), utteranceKey=${utteranceKey}`,
+              error);
+            // ---- NOTE-TODO-PLACE-HOLDER ---- UtilityDispatcher.debuggingThrowWithCause(
+            // ---- NOTE-TODO-PLACE-HOLDER ----   `Utility.processUnknownSpuriousEntityLabelsInUtteranceEntityLabelsMap(), utteranceKey=${utteranceKey}, utteranceEntityLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceEntityLabelsMap)}`,
+            // ---- NOTE-TODO-PLACE-HOLDER ----   error);
           }
         }
       }
@@ -5519,8 +5529,9 @@ export class Utility {
     try {
       return Utility.dumpFile(outputFilename, `${outputContent}${recordDelimiter}`, encoding);
     } catch (error) {
-      Utility.debuggingThrow(
-        `storeTsvFile() cannout create an output file: ${outputFilename}, EXCEPTION=${error}`);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `storeTsvFile() cannout create an output file: ${outputFilename}`,
+        error);
       return '';
     }
   }
@@ -6410,8 +6421,9 @@ export class Utility {
       labels.add(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
-      throw error;
+      UtilityDispatcher.debuggingThrowWithCause(
+        `EXCEPTION calling addUniqueLabel(), newLabel='${newLabel}', labels='${labels}'`,
+        error);
     }
     return false;
   }
@@ -6426,8 +6438,9 @@ export class Utility {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
-      throw error;
+      UtilityDispatcher.debuggingThrowWithCause(
+        `EXCEPTION calling addUniqueLabelToArray(), newLabel=${newLabel}, labels=${labels}`,
+        error);
     }
     return false;
   }
@@ -6442,8 +6455,9 @@ export class Utility {
       labels.push(newLabel);
       return true;
     } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelArray(), error=${error}, newLabel=${newLabel}, labels=${labels}`);
-      throw error;
+      UtilityDispatcher.debuggingThrowWithCause(
+        `EXCEPTION calling addUniqueEntityLabelArray(), newLabel=${newLabel}, labels=${labels}`,
+        error);
     }
     return false;
   }
@@ -6532,8 +6546,9 @@ export class Utility {
       const fileContent: string = fs.readFileSync(filename, encoding);
       return fileContent;
     } catch (error) {
-      Utility.debuggingThrow(
-        `Utility.loadFile(): filename=${filename}, exception=${error}`);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `Utility.loadFile() FAILED to read a file: filename=${filename}`,
+        error);
     }
     return '';
   }
@@ -6549,8 +6564,9 @@ export class Utility {
       fs.mkdirSync(path.dirname(resolvedFilename), {recursive: true});
       fs.writeFileSync(resolvedFilename, content, options);
     } catch (error) {
-      // ---- NOTE ---- An error occurred
-      Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, resolvedFilename=${resolvedFilename}, exception=${error}`);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to dump a file: filename=${filename}, resolvedFilename=${resolvedFilename}`,
+        error);
       return '';
     }
     return resolvedFilename;
@@ -6592,8 +6608,9 @@ export class Utility {
       }
       fs.unlinkSync(entryname);
     } catch (error) {
-      // ---- NOTE ---- An error occurred
-      Utility.debuggingThrow(`FAILED to unlink a entry: entryname=${entryname}, error=${error}`);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to unlink a entry: entryname=${entryname}`,
+        error);
       return '';
     }
     return entryname;
@@ -6608,8 +6625,9 @@ export class Utility {
     try {
       fs.renameSync(entryname, entrynameNew);
     } catch (error) {
-      // ---- NOTE ---- An error occurred
-      Utility.debuggingThrow(`FAILED to rename a entry system entry: entryname=${entrynameNew}, entryname=${entrynameNew}, error=${error}`);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to rename a entry system entry: entryname=${entrynameNew}, entryname=${entrynameNew}`,
+        error);
       return '';
     }
     return entryname;
@@ -6795,6 +6813,10 @@ export class Utility {
     Utility.toObfuscateLabelTextInReportUtility = flag;
     UtilityDispatcher.resetFlagToObfuscateLabelTextInReportUtility(flag);
     UtilityLabelResolver.resetFlagToObfuscateLabelTextInReportUtilityLabelResolver(flag);
+  }
+
+  public static resetExternalLoggingObject(externalLoggingObject: any) {
+    UtilityDispatcher.resetExternalLoggingObject(externalLoggingObject);
   }
 
   public static debuggingLog(

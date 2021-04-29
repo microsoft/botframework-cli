@@ -42,6 +42,7 @@ export default class OrchestratorCreate extends Command {
     let refresh: boolean = flags.refresh;
 
     Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
+    Utility.resetExternalLoggingObject(this);
 
     try {
       OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);

@@ -14,6 +14,8 @@ import {Label} from '@microsoft/bf-dispatcher';
 import {LabelType} from '@microsoft/bf-dispatcher';
 import {Span} from '@microsoft/bf-dispatcher';
 
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 export class OrchestratorBuild {
   public static Orchestrator: any;
 
@@ -78,7 +80,9 @@ export class OrchestratorBuild {
       };
       return {outputs: buildOutputs, settings: settings};
     } catch (error) {
-      throw new Error(error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to get model ${baseModelPath}, baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`,
+        error);
     }
   }
 

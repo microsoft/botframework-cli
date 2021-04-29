@@ -54,7 +54,8 @@ export default class OrchestratorBuild extends Command {
       if (process.env.fullEmbeddings) {
         fullEmbeddings = true;
       }
-      Utility.toPrintDebuggingLogToConsole = flags.debug;
+      Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
+      Utility.resetExternalLoggingObject(this);
       OrchestratorSettings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
         OrchestratorSettings.ModelPath,
