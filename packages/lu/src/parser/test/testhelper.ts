@@ -89,7 +89,7 @@ function compareEntity(predictedEntities: any[], utterance: any) {
   let pass = true
   for (const entity of utterance.entities) {
     if (!predictedEntities.find((x: any) =>
-      (entity.role !== undefined && entity.role === x.role || entity.role === undefined && entity.entity === x.entity)
+      ((entity.role !== undefined && entity.role === x.role) || (entity.role === undefined && entity.entity === x.entity))
       && entity.startPos === x.startPos
       && entity.endPos === x.endPos)) {
       pass = false
@@ -105,7 +105,7 @@ function ParseEntitiyResult(entities: any, result: any) {
     if (name === '$instance') {
       for (const entityType of Object.keys(entities.$instance)) {
         for (const entity of entities.$instance[entityType]) {
-          if (entity.modelTypeId === 1 || entity.modelTypeId === 4 || (entity.role !== undefined && entity.role !== '')) {
+          if (entity.modelTypeId || entity.role) {
             let newEntity: any = new Object()
             newEntity.entity = entityType
             newEntity.startPos = entity.startIndex
