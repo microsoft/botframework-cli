@@ -105,7 +105,7 @@ function ParseEntitiyResult(entities: any, result: any) {
     if (name === '$instance') {
       for (const entityType of Object.keys(entities.$instance)) {
         for (const entity of entities.$instance[entityType]) {
-          if (entity.modelTypeId || entity.role) {
+          if (entity.modelTypeId === 1 || entity.modelTypeId === 4 || entity.modelTypeId === 10 || entity.role) {
             let newEntity: any = new Object()
             newEntity.entity = entityType
             newEntity.startPos = entity.startIndex
