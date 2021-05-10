@@ -78,3 +78,11 @@ steps:
     #SourceFolder: # Optional
     Contents: './common/temp' 
     #RemoveSourceFolder: # Optional
+
+# Delete pnpm lock yaml
+- task: DeleteFiles@1
+  inputs:
+    #SourceFolder: # Optional
+    Contents: './common/config/rush/pnpm-lock.yaml' 
+    #RemoveSourceFolder: # Optional
+
