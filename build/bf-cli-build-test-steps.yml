@@ -71,3 +71,10 @@ steps:
   displayName: 'Dir workspace except node_modules'
   continueOnError: true
   condition: succeededOrFailed()
+
+# Delete pnpm files
+- task: DeleteFiles@1
+  inputs:
+    #SourceFolder: # Optional
+    Contents: './common/temp' 
+    #RemoveSourceFolder: # Optional
