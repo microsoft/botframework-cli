@@ -8,6 +8,8 @@ const fs = require('fs-extra')
 const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
+const LuisBuilder = require('./../luis/luisCollate')
+const luConverter = require('./../luis/luConverter')
 
 module.exports = {
   /**
@@ -38,9 +40,15 @@ module.exports = {
       const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
+
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            if (!file.intent) {
+              importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            } else {
+              content = (await filehelper.getFileContent(file.filePath, fileExtEnum.LUFile))[0]
+              const luObj = await LuisBuilder.build([content], false, 'en-us', importResolver) 
+            }
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
             importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
           }
@@ -58,7 +66,15 @@ module.exports = {
             }
 
             if(found.length > 0) {
-              importedContents.push(...found)
+              if (!file.intent) {
+                importedContents.push(...found)
+              } else {
+                const luObj = await LuisBuilder.build(found, false, 'en-us', importResolver) 
+                const matchedUtterence = luObj.utterances.find(e => e.intent = file.intent)
+                const fileContent = `# ${file.intent}\r\n${luConverter.parseUtterancesToLu([matchedUtterence], luObj)}`
+                found[0].content = fileContent
+                importedContents.push(found[0])
+              }
             } else {
               const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
               for (const matchFile of matchedLuisFiles) {

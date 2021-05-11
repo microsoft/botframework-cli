@@ -550,4 +550,4 @@ const objectSortByStartPos = function (objectArray) {
     return ObjectByStartPos;
 }
 
-module.exports = luisToLuContent
+module.exports = {luisToLuContent, parseUtterancesToLu}

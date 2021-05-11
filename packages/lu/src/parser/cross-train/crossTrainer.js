@@ -511,7 +511,7 @@ const qnaAddMetaData = function (qnaResource, fileName) {
 const parseAndValidateContent = async function (objectArray, verbose, importResolver, fileExt) {
   let fileIdToResourceMap = new Map()
   let allEmpty = true
-  for (const object of objectArray) {    
+  for (const object of objectArray) {
     let fileContent = object.content
     let objectId = object.id
     if (object.content && object.content !== '') {
