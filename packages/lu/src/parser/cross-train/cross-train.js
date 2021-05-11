@@ -9,7 +9,7 @@ const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
 const LuisBuilder = require('./../luis/luisCollate')
-const luConverter = require('./../luis/luConverter')
+const parseUtterancesToLu = require('./../luis/luConverter').parseUtterancesToLu
 
 module.exports = {
   /**
@@ -71,7 +71,7 @@ module.exports = {
               } else {
                 const luObj = await LuisBuilder.build(found, false, 'en-us', importResolver) 
                 const matchedUtterence = luObj.utterances.find(e => e.intent = file.intent)
-                const fileContent = `# ${file.intent}\r\n${luConverter.parseUtterancesToLu([matchedUtterence], luObj)}`
+                const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
                 found[0].content = fileContent
                 importedContents.push(found[0])
               }
