@@ -12,7 +12,6 @@ import * as fs from 'fs-extra';
 import {OrchestratorSettings} from '../src/settings';
 
 import {Utility} from '../src/utility';
-import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorSettingsTests', () => {
   const SettingsDir: string = './test/fixtures/';
@@ -44,10 +43,15 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
+    assert.ok(!OrchestratorSettings.DataSources);
+  });
 
-    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
-    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.path}`);
-
+  it('init settings with no settings file + data source', () => {
+    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir, false, true);
+    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
+    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
+    assert.ok(OrchestratorSettings.EntityModelPath === '');
+    assert.ok(OrchestratorSettings.DataSources);
     assert.ok(OrchestratorSettings.DataSources.path === DataSourcesPath);
     assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
     assert.ok(OrchestratorSettings.DataSources.hierarchical === false);

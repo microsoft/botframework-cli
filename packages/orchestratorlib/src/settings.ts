@@ -204,23 +204,7 @@ export class OrchestratorSettings {
         dataSources: OrchestratorSettings.DataSources,
       };
 
-      OrchestratorSettings.writeToFile(
-        OrchestratorSettings.SettingsPath,
-        JSON.stringify(
-          settings,
-          (key: string, value: any) => {
-            if (value && typeof value === 'object' && !Array.isArray(value)) {
-              const replacement: any = {};
-              for (const k in value) {
-                if (Object.hasOwnProperty.call(value, k)) {
-                  replacement[k && k.charAt(0).toLowerCase() + k.substring(1)] = value[k];              
-                }
-              }
-              return replacement;
-            }
-            return value;
-          },
-          2));
+      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, OrchestratorHelper.jsonStringify(settings));
     } catch (error) {
       throw new Error(error);
     }
