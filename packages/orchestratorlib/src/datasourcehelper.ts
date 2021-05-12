@@ -128,7 +128,9 @@ export class DataSourceHelper {
         }
         input.FilePath = path.join(filePath, input.RoutingName + '.lu');
       } else if (input.Type === 'qna') {
-        input.RoutingName = Utility.isEmptyString(input.RoutingName) ? `q_${input.Id}` : `q_${input.RoutingName}`;
+        if (!input.RoutingName.startsWith('q_')) {
+          input.RoutingName = Utility.isEmptyString(input.RoutingName) ? `q_${input.Id}` : `q_${input.RoutingName}`;
+        }
         input.FilePath = path.join(filePath, input.RoutingName + '.qna');
       } else {
         throw new Error(`Invalid content for type ${input.Type}`);
