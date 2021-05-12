@@ -72,8 +72,9 @@ module.exports = {
                 const luObj = await LuisBuilder.build(found, false, 'en-us', importResolver) 
                 const matchedUtterence = luObj.utterances.find(e => e.intent = file.intent)
                 const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
-                found[0].content = fileContent
-                importedContents.push(found[0])
+                let cloned = { ... found[0] };
+                cloned.content = fileContent
+                importedContents.push(cloned)
               }
             } else {
               const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
