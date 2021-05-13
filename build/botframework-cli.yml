@@ -107,6 +107,20 @@ jobs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/drop'
         ArtifactName: drop
 
+    # Delete pnpm files
+    - task: DeleteFiles@1
+      inputs:
+        #SourceFolder: # Optional
+        Contents: './common/temp' 
+        #RemoveSourceFolder: # Optional
+
+    # Delete pnpm lock yaml
+    - task: DeleteFiles@1
+      inputs:
+        #SourceFolder: # Optional
+        Contents: './common/config/rush/pnpm-lock.yaml' 
+        #RemoveSourceFolder: # Optional       
+
     - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
       displayName: 'Component Detection'
 

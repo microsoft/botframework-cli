@@ -19,14 +19,23 @@ module.exports = {
    * @param {inner: boolean, intra: boolean} trainingOpt trainingOpt indicates whether you want to control do the inner or intra dialog training seperately
    * @returns {luResult: any, qnaResult: any} trainedResult of luResult and qnaResult or undefined if no results.
    */
-  train: async function (input, intentName, config, verbose, trainingOpt) {
+  train: async function (input, intentName, config, verbose, trainingOpt, exclude) {
+    // get excluded foleders
+    let excludedFolders = undefined
+    if (exclude) {
+      excludedFolders = exclude.split(',').map(e => e.trim())
+    }
+
     // Get all related file content.
-    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile)
-    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile)
+    const luContents = await filehelper.getFilesContent(input, fileExtEnum.LUFile, excludedFolders)
+    const qnaContents = await filehelper.getFilesContent(input, fileExtEnum.QnAFile, excludedFolders)
     const configContent = await filehelper.getConfigContent(config)
+    const defaultLocale = 'en-us'
 
     let importResolver = async function (id, idsToFind) {
       let importedContents = []
+      const idWithoutExt = path.basename(id, path.extname(id))
+      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
         if (path.isAbsolute(file.filePath)) {
@@ -38,7 +47,16 @@ module.exports = {
         } else {
           const fileName = path.basename(file.filePath)
           const updateImportedContents = async function(typedContents, fileExt) {
-            const found = typedContents.filter(content => content.id === path.basename(fileName, fileExt))
+            let found = []
+            // import resolver should be capable to find implicit import files with locale, for example '[import](b.lu)' is defined in a.en-us.lu, the resolver should find b.en-us.lu
+            const foundWithLocale = typedContents.filter(content => content.id === `${path.basename(fileName, fileExt)}.${locale}`)
+            if (foundWithLocale.length > 0) {
+              found = foundWithLocale
+            } else {
+              //if no locale specified file is found, just to check whether there is file without locale matched
+              found =  typedContents.filter(content => content.id === path.basename(fileName, fileExt))
+            }
+
             if(found.length > 0) {
               importedContents.push(...found)
             } else {
@@ -57,7 +75,7 @@ module.exports = {
           if (fileName.endsWith(fileExtEnum.LUFile)) {
             await updateImportedContents(luContents, fileExtEnum.LUFile)
           } else if (fileName.endsWith(fileExtEnum.QnAFile)) {
-            await updateImportedContents(qnaContents, fileExtEnum.LUFile)
+            await updateImportedContents(qnaContents, fileExtEnum.QnAFile)
           }
         }
       }
