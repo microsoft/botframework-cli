@@ -157,7 +157,8 @@ export class OrchestratorSettings {
     baseModelPath: string,
     entityBaseModelPath: string,
     snapshotPath: string,
-    hierarchical: boolean = false)  {
+    hierarchical: boolean = false,
+    hasDataSources: boolean = false)  {
     settingsDir = path.resolve(settingsDir);
     const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName);
     OrchestratorSettings.SettingsPath = settingsFile;
@@ -171,8 +172,13 @@ export class OrchestratorSettings {
       let settings: any;
       if (settingsFileExists) {
         settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
+        if (settings.dataSources && settings.dataSources.inputs) {
+          hasDataSources = true;
+        }
       }
-      OrchestratorSettings.ensureDataSources(hierarchical, settings, settingsDir);
+      if (hasDataSources) {
+        OrchestratorSettings.ensureDataSources(hierarchical, settings, settingsDir);
+      }
       OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
       OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
       entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
@@ -198,7 +204,7 @@ export class OrchestratorSettings {
         dataSources: OrchestratorSettings.DataSources,
       };
 
-      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, Utility.jsonStringify(settings, null, 2));
+      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, OrchestratorHelper.jsonStringify(settings));
     } catch (error) {
       throw new Error(error);
     }
