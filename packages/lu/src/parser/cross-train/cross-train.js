@@ -46,8 +46,13 @@ module.exports = {
             if (!file.intent) {
               importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
             } else {
-              content = (await filehelper.getFileContent(file.filePath, fileExtEnum.LUFile))[0]
-              const luObj = await LuisBuilder.build([content], false, 'en-us', importResolver) 
+              importFile = (await filehelper.getFileContent(file.filePath, fileExtEnum.LUFile))[0]
+              const luObj = await LuisBuilder.build([importFile.content], false, undefined, importResolver)
+              const matchedUtterence = luObj.utterances.find(e => e.intent === file.intent)
+              const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
+              let cloned = { ...importFile };
+              cloned.content = fileContent
+              importedContents.push(cloned)
             }
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
             importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
@@ -69,8 +74,8 @@ module.exports = {
               if (!file.intent) {
                 importedContents.push(...found)
               } else {
-                const luObj = await LuisBuilder.build(found, false, 'en-us', importResolver) 
-                const matchedUtterence = luObj.utterances.find(e => e.intent = file.intent)
+                const luObj = await LuisBuilder.build(found, false, undefined, importResolver) 
+                const matchedUtterence = luObj.utterances.find(e => e.intent === file.intent)
                 const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
                 let cloned = { ... found[0] };
                 cloned.content = fileContent
