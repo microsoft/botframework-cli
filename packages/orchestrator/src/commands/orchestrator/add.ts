@@ -61,7 +61,7 @@ export default class OrchestratorAdd extends Command {
         if (type === 'luis' && Utility.isEmptyString(endpoint)) {
           throw new CLIError('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
         }
-        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true);
+        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true, true);
         const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
         await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
 

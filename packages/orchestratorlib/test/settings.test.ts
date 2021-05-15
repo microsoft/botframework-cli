@@ -9,10 +9,9 @@ import assert = require('assert');
 import * as path from 'path';
 import * as fs from 'fs-extra';
 
-import {OrchestratorSettings} from '../src/settings';
+import {OrchestratorDataSource, OrchestratorSettings} from '../src/settings';
 
 import {Utility} from '../src/utility';
-import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorSettingsTests', () => {
   const SettingsDir: string = './test/fixtures/';
@@ -44,10 +43,15 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
     assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
     assert.ok(OrchestratorSettings.EntityModelPath === '');
+    assert.ok(!OrchestratorSettings.DataSources);
+  });
 
-    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
-    Utility.debuggingLog(`OrchestratorSettings.DataSources.Path=${OrchestratorSettings.DataSources.path}`);
-
+  it('init settings with no settings file + data source', () => {
+    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir, false, true);
+    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
+    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
+    assert.ok(OrchestratorSettings.EntityModelPath === '');
+    assert.ok(OrchestratorSettings.DataSources);
     assert.ok(OrchestratorSettings.DataSources.path === DataSourcesPath);
     assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
     assert.ok(OrchestratorSettings.DataSources.hierarchical === false);
@@ -114,6 +118,27 @@ describe('OrchestratorSettingsTests', () => {
     assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
     assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'luis');
     assert.ok(OrchestratorSettings.DataSources.hierarchical);
+
+    const dataSource: OrchestratorDataSource = new OrchestratorDataSource(
+      'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e',
+      'LUISKEY',
+      'version',
+      'https://westus.api.cognitive.microsoft.com',
+      'luis',
+      'l_HomeAutomation',
+      OrchestratorSettings.DataSources.path);
+
+    OrchestratorSettings.addUpdateDataSource(dataSource);
+    OrchestratorSettings.persist();
+    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
+    assert.ok(OrchestratorSettings.DataSources.hierarchical);
+    assert.ok(OrchestratorSettings.DataSources.inputs.length === 3);
+    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
+    assert.ok(OrchestratorSettings.DataSources.inputs[0].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
+    assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'luis');
+    assert.ok(OrchestratorSettings.DataSources.inputs[1].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
+    assert.ok(OrchestratorSettings.DataSources.inputs[2].Type === 'luis');
+    assert.ok(OrchestratorSettings.DataSources.inputs[2].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
   });
 
   it('init settings with settings file', () => {
