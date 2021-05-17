@@ -3,7 +3,10 @@
  * Licensed under the MIT License.
  */
 
-const fetch: any = require('node-fetch');
+import {httpsProxy} from './utility';
+const axios: any = require('axios');
+axios.interceptors.request.use(httpsProxy);
+
 const LuisUrlPath: string = '/luis/authoring/v3.0-preview/apps';
 const DefaultQnaMakerEndpoint: string = 'https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/';
 const DefaultLuisVersion: any = '0.1';
@@ -21,8 +24,8 @@ export class LuisQnaHelper {
     const options: any = {
       headers: {'Ocp-Apim-Subscription-Key': subscriptionKey},
     };
-    const response: any = await fetch(url, options);
-    return response.text();
+    const response: any = await axios.get(url, options);
+    return response.data;
   }
 
   public static async getQnaFromKb(kbId: string, subscriptionKey: string, endpoint: string = DefaultQnaMakerEndpoint): Promise<string> {
@@ -37,8 +40,8 @@ export class LuisQnaHelper {
     const options: any = {
       headers: {'Ocp-Apim-Subscription-Key': subscriptionKey},
     };
-    const response: any = await fetch(url, options);
-    return response.text();
+    const response: any = await axios.get(url, options);
+    return response.data;
   }
 
   public static getLuisAppNameFromLu(content: string): string {

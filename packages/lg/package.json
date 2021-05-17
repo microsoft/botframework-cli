@@ -17,7 +17,8 @@
     "tslib": "^2.0.3",
     "read-text-file": "^1.1.0",
     "readline-sync": "^1.4.10",
-    "node-fetch": "^2.1.2"
+    "axios":"~0.21.1",
+    "https-proxy-agent": "^5.0.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.22.2",

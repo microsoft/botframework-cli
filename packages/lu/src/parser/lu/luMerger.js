@@ -16,7 +16,9 @@ const parserObject = require('./../lufile/classes/parserObject');
 const txtfile = require('./../lufile/read-text-file');
 const BuildDiagnostic = require('./../lufile/diagnostic').BuildDiagnostic;
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
-const fetch = require('node-fetch');
+const axios = require('axios');
+const httpsProxy = require('../utils/httpsProxy')
+axios.interceptors.request.use(httpsProxy)
 
 module.exports = {
     /**
@@ -455,7 +457,7 @@ const resolveLuUriContent = async function(srcId, toResolve, luObjects) {
     if (uri !== undefined) {
         let response;
         try {
-            response = await fetch(uri, { method: 'GET' });
+            response = await axios.get(uri);
         } catch (err) {
             // throw, invalid URI
             let errorMsg = `URI: "${uri}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
@@ -465,7 +467,7 @@ const resolveLuUriContent = async function(srcId, toResolve, luObjects) {
     
             throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
         }
-        var res = await response.buffer();
+        var res = await response.data;
         var encodedRes = helpers.fixBuffer(res);
         luObjects.push(new luObject(encodedRes, new luOptions(toResolve.filePath, toResolve.includeInCollate)));
     }
