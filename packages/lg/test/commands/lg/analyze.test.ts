@@ -39,7 +39,6 @@ describe('lg:analyze lg file', async () => {
   })
 
   test
-  .only()
   .command(['lg:analyze',
     '--in',
     path.join(__dirname, testcaseFolderPath, 'analyze/external.lg'),
