@@ -47,6 +47,7 @@ OPTIONS
   -i, --in=in    (required) LG File or folder that contains .lg file(s)
   -o, --out=out  Output file or folder name. If not specified stdout will be used as output
   -r, --recurse  Consider sub-folders to find .lg file(s)
+  -e, --external-functions Pass a list of external functions and add them to Expression functions, seprated by ",". for example, "function1,function2,function3"
 ```
 
 _See code: [src/commands/lg/analyze.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
