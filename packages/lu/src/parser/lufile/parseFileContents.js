@@ -17,7 +17,7 @@ const helperClass = require('./classes/hclasses');
 const deepEqual = require('deep-equal');
 const exception = require('./../utils/exception');
 const qnaAlterations = require('./../qna/alterations/alterations');
-const fetch = require('node-fetch');
+const axios = require('axios');
 const qnaFile = require('./../qna/qnamaker/qnaFiles');
 const fileToParse = require('./classes/filesToParse');
 const luParser = require('./luParser');
@@ -28,6 +28,8 @@ const qnaContext = require('../qna/qnamaker/qnaContext');
 const qnaPrompt = require('../qna/qnamaker/qnaPrompt');
 const LUResource = require('./luResource');
 const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
+const httpsProxy = require('../utils/httpsProxy')
+axios.interceptors.request.use(httpsProxy)
 
 const plAllowedTypes = ["composite", "ml"];
 const featureTypeEnum = {
@@ -761,7 +763,10 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
                 let options = { method: 'HEAD' };
                 let response;
                 try {
-                    response = await fetch(linkValue, options);
+                    response = await axios({
+                        method: 'HEAD',
+                        url: linkValue
+                      });
                 } catch (err) {
                     // throw, invalid URI
                     let errorMsg = `URI: "${linkValue}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
@@ -773,7 +778,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
                     throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
-                if (!response.ok) {
+                if (response.status !== 200) {
                     let errorMsg = `URI: "${linkValue}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
                     let error = BuildDiagnostic({
                         message: errorMsg,
@@ -783,7 +788,7 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
                     throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
                 }
 
-                let contentType = response.headers.get('content-type');
+                let contentType = response.headers['content-type'];
                 if (!contentType.includes('text/html')) {
                     if (parseUrl.pathname.toLowerCase().endsWith('.lu') || parseUrl.pathname.toLowerCase().endsWith('.qna')) {
                         parsedContent.additionalFilesToParse.push(new fileToParse(linkValue));

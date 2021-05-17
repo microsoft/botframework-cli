@@ -7,25 +7,8 @@ const { insertParametersFromObject } = require('../insertParametersFromObject');
 const deriveParamsFromPath = require('../deriveParamsFromPath');
 const packageJSON = require('./../../package');
 const axios = require('axios');
-const nodeFetch = require('node-fetch');
-
-global.fetch = function (...args) {
-    // No Proxy
-    if (!process.env.HTTPS_PROXY) {
-        return nodeFetch(...args);
-    }
-    const [urlOrRequest, requestInit = {}, ...rest] = args;
-    // URL is first param attach the proxy
-    // to the RequestInit
-    const HttpsProxyAgent = require('https-proxy-agent');
-    const agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
-    if (typeof urlOrRequest === 'string') {
-        requestInit.agent = agent;
-    } else {
-        urlOrRequest.agent = agent;
-    }
-    return nodeFetch(urlOrRequest, requestInit, ...rest);
-};
+const httpsProxy = require('../httpsProxy');
+axios.interceptors.request.use(httpsProxy)
 
 /**
  * Base class for all services
