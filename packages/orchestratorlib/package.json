@@ -37,8 +37,8 @@
   "dependencies": {
     "@microsoft/bf-lu": "1.0.0",
     "@microsoft/bf-dispatcher": "1.0.0",
-    "@types/node-fetch": "~2.5.5",
-    "node-fetch": "~2.6.0",
+    "axios":"~0.21.1",
+    "https-proxy-agent": "^5.0.0",
     "tslib": "^2.0.3",
     "orchestrator-core": "4.13.1",
     "@types/fs-extra": "~8.1.0",
