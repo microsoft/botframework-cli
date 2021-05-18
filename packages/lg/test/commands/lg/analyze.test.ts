@@ -16,9 +16,9 @@ const  verifiedFolderPath = './../../fixtures/verified'
 const  generatedFolder = path.join(__dirname, generatedFolderPath)
 
 describe('lg:analyze lg file', async () => {
-  // after(async function () {
-  //   await fs.remove(generatedFolder)
-  // })
+  after(async function () {
+    await fs.remove(generatedFolder)
+  })
 
   before(async function () {
     await fs.remove(generatedFolder)
