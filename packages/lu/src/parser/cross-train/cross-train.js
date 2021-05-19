@@ -37,22 +37,32 @@ module.exports = {
     let importResolver = async function (id, idsToFind) {
       let importedContents = []
       const idWithoutExt = path.basename(id, path.extname(id))
-      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
+      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale
+      const intentFilteringHandler = async (filePathOrFound, intent, isAbsolutePath) => {
+        let luObj = {}
+        let importFile = {}
+        if (isAbsolutePath) {
+          importFile = (await filehelper.getFileContent(filePathOrFound, fileExtEnum.LUFile))[0]
+          luObj = await LuisBuilder.build([importFile.content], false, undefined, importResolver)
+        } else {
+          luObj = await LuisBuilder.build(filePathOrFound, false, undefined, importResolver) 
+        }
+
+        const matchedUtterence = luObj.utterances.find(e => e.intent === intent)
+        const fileContent = `# ${intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
+        let cloned = {...(isAbsolutePath ? importFile : filePathOrFound[0])}
+        cloned.content = fileContent
+        importedContents.push(cloned)
+      }
+
       for (let idx = 0; idx < idsToFind.length; idx++) {
         let file = idsToFind[idx]
-
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
             if (!file.intent) {
               importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
             } else {
-              importFile = (await filehelper.getFileContent(file.filePath, fileExtEnum.LUFile))[0]
-              const luObj = await LuisBuilder.build([importFile.content], false, undefined, importResolver)
-              const matchedUtterence = luObj.utterances.find(e => e.intent === file.intent)
-              const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
-              let cloned = { ...importFile };
-              cloned.content = fileContent
-              importedContents.push(cloned)
+              await intentFilteringHandler(file.filePath, file.intent, true)
             }
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
             importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
@@ -74,12 +84,7 @@ module.exports = {
               if (!file.intent) {
                 importedContents.push(...found)
               } else {
-                const luObj = await LuisBuilder.build(found, false, undefined, importResolver) 
-                const matchedUtterence = luObj.utterances.find(e => e.intent === file.intent)
-                const fileContent = `# ${file.intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
-                let cloned = { ... found[0] };
-                cloned.content = fileContent
-                importedContents.push(cloned)
+                await intentFilteringHandler(found, file.intent, false)
               }
             } else {
               const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
