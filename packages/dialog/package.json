@@ -58,7 +58,7 @@
     "semver": "^7.3.4",
     "tslib": "^2.0.3",
     "xml2js": "^0.4.19",
-    "json-ptr": "~1.3.0",
+    "json-ptr": "~2.1.0",
     "json-schema-merge-allof": "~0.7.0",
     "@snyk/nuget-semver": "~1.3.0"
   },
