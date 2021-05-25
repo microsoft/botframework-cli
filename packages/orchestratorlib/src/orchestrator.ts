@@ -5,6 +5,7 @@
 import {OrchestratorAdd} from './add';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
+import {OrchestratorDataSource, OrchestratorSettings} from './settings';
 import {OrchestratorEvaluate} from './evaluate';
 import {OrchestratorBaseModel} from './basemodel';
 import {OrchestratorPredict} from './predict';
@@ -230,5 +231,9 @@ export class Orchestrator {
       labelResolvers.set(key, LabelResolver.createLabelResolver(value));
     }
     return labelResolvers;
+  }
+
+  public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
+    return OrchestratorSettings.DataSources.remove(dataSource);
   }
 }

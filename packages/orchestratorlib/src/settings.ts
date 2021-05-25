@@ -109,6 +109,35 @@ export class OrchestratorDataSourceSettings {
 
     return false;
   }
+
+  public remove(input: OrchestratorDataSource): boolean {
+    let i: number;
+    for (i = 0; i < this.inputs.length; i++) {
+      const existingSource: OrchestratorDataSource = this.inputs[i];
+      if (existingSource.Type !== input.Type) {
+        continue;
+      }
+
+      switch (input.Type) {
+      case 'luis':
+      case 'qna':
+        if (input.Id === existingSource.Id) {
+          this.inputs.splice(i, 1);
+          return true;
+        }
+        break;
+      case 'file':
+        if (input.FilePath === existingSource.FilePath) {
+          this.inputs.splice(i, 1);
+          return true;
+        }
+        break;
+      default:
+        throw new Error('Invalid input type');
+      }
+    }
+    return false;
+  }
 }
 
 export class OrchestratorSettings {
