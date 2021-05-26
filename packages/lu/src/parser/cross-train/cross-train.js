@@ -40,13 +40,13 @@ module.exports = {
       const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale
       const intentFilteringHandler = async (filePathOrFound, intent, isAbsolutePath) => {
         let luObj = {}
-        let importFile = {}
+        let content = filePathOrFound
         if (isAbsolutePath) {
           importFile = (await filehelper.getFileContent(filePathOrFound, fileExtEnum.LUFile))[0]
-          luObj = await LuisBuilder.build([importFile.content], false, undefined, importResolver)
-        } else {
-          luObj = await LuisBuilder.build(filePathOrFound, false, undefined, importResolver) 
-        }
+          content = [importFile.content]
+        } 
+
+        luObj = await LuisBuilder.build(content, false, undefined, importResolver)
 
         const matchedUtterence = luObj.utterances.find(e => e.intent === intent)
         const fileContent = `# ${intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
