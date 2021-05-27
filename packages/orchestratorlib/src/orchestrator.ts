@@ -2,6 +2,7 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+import {DataSourceHelper} from './datasourcehelper';
 import {OrchestratorAdd} from './add';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
@@ -231,6 +232,10 @@ export class Orchestrator {
       labelResolvers.set(key, LabelResolver.createLabelResolver(value));
     }
     return labelResolvers;
+  }
+
+  public static async addDataSource(dataSource: OrchestratorDataSource): Promise<void> {
+    await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
   }
 
   public static removeDataSource(dataSource: OrchestratorDataSource): boolean {

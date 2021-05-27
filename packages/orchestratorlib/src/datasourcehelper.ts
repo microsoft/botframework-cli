@@ -9,6 +9,7 @@ import {LuisQnaHelper} from './luisqnahelper';
 import {Utility} from './utility';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {OrchestratorSettings, OrchestratorDataSource, OrchestratorDataSourceSettings} from './settings';
+import { Result } from '@microsoft/bf-dispatcher';
 
 export class DataSourceHelper {
   public static convertDispatchInputs(dispatchJson: any, dataSourceSettings: OrchestratorDataSourceSettings)  {
@@ -89,6 +90,9 @@ export class DataSourceHelper {
     let content: string = '';
     switch (input.Type) {
     case 'luis':
+      if (Utility.isEmptyString(input.Endpoint)) {
+        throw new Error('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
+      }
       content = await DataSourceHelper.getLuFileFromLuisApp(input);
       if (content.length === 0) {
         throw new Error(`LUIS app id ${input.Id} - subscriptionKey ${input.Key} not found`);
@@ -101,6 +105,9 @@ export class DataSourceHelper {
       }
       break;
     case 'file':
+      if (Utility.isEmptyString(input.RoutingName)) {
+        throw new Error('routingName parameter is required');
+      }
       DataSourceHelper.ensureFileInDataSourceFolder(input, dataSourcePath);
       break;
     default:
