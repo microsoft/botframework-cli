@@ -9,7 +9,7 @@ const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
 const LuisBuilder = require('./../luis/luisCollate')
-const parseUtterancesToLu = require('./../luis/luConverter').parseUtterancesToLu
+const {parseUtterancesToLu} = require('./../luis/luConverter')
 
 module.exports = {
   /**
@@ -39,24 +39,22 @@ module.exports = {
       const idWithoutExt = path.basename(id, path.extname(id))
       const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale
       const intentFilteringHandler = async (filePathOrFound, intent, isAbsolutePath) => {
-        let luObj = {}
         let content = filePathOrFound
         if (isAbsolutePath) {
           importFile = (await filehelper.getFileContent(filePathOrFound, fileExtEnum.LUFile))[0]
-          content = [importFile.content]
+          content = importFile ? [importFile.content] : ''
         } 
 
-        luObj = await LuisBuilder.build(content, false, undefined, importResolver)
+        const luObj = await LuisBuilder.build(content, false, undefined, importResolver)
 
         const matchedUtterence = luObj.utterances.find(e => e.intent === intent)
         const fileContent = `# ${intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
-        let cloned = {...(isAbsolutePath ? importFile : filePathOrFound[0])}
+        const cloned = {...(isAbsolutePath ? importFile : filePathOrFound[0])}
         cloned.content = fileContent
         importedContents.push(cloned)
       }
 
-      for (let idx = 0; idx < idsToFind.length; idx++) {
-        let file = idsToFind[idx]
+      for (const file of idsToFind) {
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
             if (!file.intent) {
