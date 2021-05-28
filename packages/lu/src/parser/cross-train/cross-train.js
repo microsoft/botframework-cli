@@ -49,7 +49,8 @@ module.exports = {
 
         const matchedUtterence = luObj.utterances.find(e => e.intent === intent)
         const fileContent = `# ${intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
-        const cloned = {...(isAbsolutePath ? importFile : filePathOrFound[0])}
+        const foundItem = isAbsolutePath ? importFile : filePathOrFound[0]
+        const cloned = JSON.parse(JSON.stringify(foundItem))
         cloned.content = fileContent
         importedContents.push(cloned)
       }
