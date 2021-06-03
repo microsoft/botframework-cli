@@ -1,0 +1,5 @@
+# ExternalIntentShouldBeIncluded
+- Intent which should be included
+
+# ExternalIntentShouldNotBeIncluded
+- Intent which should NOT be included

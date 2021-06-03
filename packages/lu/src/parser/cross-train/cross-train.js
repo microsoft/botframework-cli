@@ -8,6 +8,8 @@ const fs = require('fs-extra')
 const filehelper = require('../../utils/filehelper')
 const fileExtEnum = require('../utils/helpers').FileExtTypeEnum
 const crossTrainer = require('./crossTrainer')
+const LuisBuilder = require('./../luis/luisCollate')
+const {parseUtterancesToLu} = require('./../luis/luConverter')
 
 module.exports = {
   /**
@@ -35,12 +37,32 @@ module.exports = {
     let importResolver = async function (id, idsToFind) {
       let importedContents = []
       const idWithoutExt = path.basename(id, path.extname(id))
-      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale;
-      for (let idx = 0; idx < idsToFind.length; idx++) {
-        let file = idsToFind[idx]
+      const locale = /\w\.\w/.test(idWithoutExt) ? idWithoutExt.split('.').pop() : defaultLocale
+      const intentFilteringHandler = async (filePathOrFound, intent, isAbsolutePath) => {
+        let content = filePathOrFound
+        if (isAbsolutePath) {
+          importFile = (await filehelper.getFileContent(filePathOrFound, fileExtEnum.LUFile))[0]
+          content = importFile ? [importFile.content] : ''
+        } 
+
+        const luObj = await LuisBuilder.build(content, false, undefined, importResolver)
+
+        const matchedUtterence = luObj.utterances.find(e => e.intent === intent)
+        const fileContent = `# ${intent}\r\n${parseUtterancesToLu([matchedUtterence], luObj)}`
+        const foundItem = isAbsolutePath ? importFile : filePathOrFound[0]
+        const cloned = JSON.parse(JSON.stringify(foundItem))
+        cloned.content = fileContent
+        importedContents.push(cloned)
+      }
+
+      for (const file of idsToFind) {
         if (path.isAbsolute(file.filePath)) {
           if (file.filePath.endsWith(fileExtEnum.LUFile)) {
-            importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            if (!file.intent) {
+              importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.LUFile))
+            } else {
+              await intentFilteringHandler(file.filePath, file.intent, true)
+            }
           } else if (file.filePath.endsWith(fileExtEnum.QnAFile)) {
             importedContents.push(...await filehelper.getFilesContent(file.filePath, fileExtEnum.QnAFile))
           }
@@ -58,7 +80,11 @@ module.exports = {
             }
 
             if(found.length > 0) {
-              importedContents.push(...found)
+              if (!file.intent) {
+                importedContents.push(...found)
+              } else {
+                await intentFilteringHandler(found, file.intent, false)
+              }
             } else {
               const matchedLuisFiles = typedContents.filter(content => path.basename(content.fullPath) === id)
               for (const matchFile of matchedLuisFiles) {

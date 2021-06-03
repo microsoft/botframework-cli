@@ -50,7 +50,7 @@ dependencies:
   glob: 7.1.6
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
-  json-ptr: 1.3.1
+  json-ptr: 2.1.2
   json-schema-merge-allof: 0.7.0
   latest-version: 4.0.0
   md5: 2.2.1
@@ -4045,10 +4045,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
-  /json-ptr/1.3.1:
+  /json-ptr/2.1.2:
+    dependencies:
+      tslib: 2.2.0
     dev: false
     resolution:
-      integrity: sha512-RoTHczqQoT2UsJINUvyMEHAHxGDq6c4/xXHwA29iArQMGIv6pFqLsOJMeagtnY78vsp5k/+9JcvmKKLsbuDRBQ==
+      integrity: sha512-MR8zOcNNUtSXjbAkZVAxSsvnY6kVtDIT/DlWBu5u6prj/vcDtbUSpLwSQmVCBSx/YzVePJWpFnTkTKe57CpoxQ==
   /json-schema-compare/0.2.2:
     dependencies:
       lodash: 4.17.15
@@ -6645,6 +6647,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
+  /tslib/2.2.0:
+    dev: false
+    resolution:
+      integrity: sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
   /tslint-consistent-codestyle/1.16.0_tslint@5.20.1+typescript@3.9.9:
     dependencies:
       '@fimbul/bifrost': 0.21.0_tslint@5.20.1+typescript@3.9.9
@@ -7502,7 +7508,7 @@ packages:
       get-uri: 3.0.2
       globby: 11.0.0
       https-proxy-agent: 5.0.0
-      json-ptr: 1.3.1
+      json-ptr: 2.1.2
       json-schema-merge-allof: 0.7.0
       json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
@@ -7524,7 +7530,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-VUbk561/wF49zLsJSg8Xc/ukLVvUtZweojy/jfuZRIDwisc5JbMv+rdGKm7qVbfDWQlfp0EXV1TilLKtcXwSTQ==
+      integrity: sha512-RfhWGWCG7ii8Jxj/nixlw86SqcI+xq1/obXCTM6Z5kOnG0in+DUqhUrw89FXOaH2y5KaCSSCh0Rgy6IByDrtMQ==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -7892,7 +7898,7 @@ specifiers:
   glob: ^7.1.3
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
-  json-ptr: ~1.3.0
+  json-ptr: ~2.1.0
   json-schema-merge-allof: ~0.7.0
   latest-version: ^4.0.0
   md5: ^2.2.1
