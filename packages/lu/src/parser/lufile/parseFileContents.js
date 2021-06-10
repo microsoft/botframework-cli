@@ -967,7 +967,7 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                     }
                     let parsedLinkUriInUtterance = helpers.parseLinkURISync(utterance);
                     // examine and add these to filestoparse list.
-                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false));
+                    parsedContent.additionalFilesToParse.push(new fileToParse(parsedLinkUriInUtterance.fileName, false, parsedLinkUriInUtterance.path));
                 }
                
                 (utteranceAndEntities.entities || []).forEach(entity => {

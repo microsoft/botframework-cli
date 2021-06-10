@@ -9,10 +9,14 @@ class FileToParse {
     /**
      * @property {Boolean} includeInCollate
      */
-    constructor(filePath, includeInCollate) {
+    /**
+     * @property {string} intent
+     */
+    constructor(filePath, includeInCollate, intent = '') {
         this.filePath = filePath?filePath:'';
         if(includeInCollate === undefined) this.includeInCollate = true;
         else this.includeInCollate = includeInCollate;
+        this.intent = intent
     }
 }
 

@@ -551,3 +551,4 @@ const objectSortByStartPos = function (objectArray) {
 }
 
 module.exports = luisToLuContent
+module.exports.parseUtterancesToLu = parseUtterancesToLu
