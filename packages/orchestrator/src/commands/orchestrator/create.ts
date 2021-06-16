@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorDataSourceSettings, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
+import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules';
@@ -44,7 +44,8 @@ export default class OrchestratorCreate extends Command {
     Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
 
     try {
-      OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
+      const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
+      settings.init(cwd, baseModelPath, entityBaseModelPath, output, flags.hierarchical);
 
       let fullEmbeddings: boolean = false;
       if (process.env.fullEmbeddings) {
@@ -55,45 +56,45 @@ export default class OrchestratorCreate extends Command {
 
       if (DataSourceHelper.isDispatchInput(input)) {
         const dispatchJson: any = JSON.parse(OrchestratorHelper.readFile(input));
-        DataSourceHelper.convertDispatchInputs(dispatchJson, OrchestratorSettings.DataSources);
+        DataSourceHelper.convertDispatchInputs(dispatchJson, settings.DataSources);
         refresh = true;
       }
 
-      const hasDataSources: boolean = OrchestratorSettings.DataSources && OrchestratorSettings.DataSources.inputs.length > 0;
+      const hasDataSources: boolean = settings.DataSources && settings.DataSources.inputs.length > 0;
       if (hasDataSources) {
-        input = OrchestratorSettings.DataSources.path;
+        input = settings.DataSources.path;
         hierarchical = true;
       }
 
       if (refresh) {
-        await this.refreshLuisQnAInputs(OrchestratorSettings.DataSources);
+        await this.refreshLuisQnAInputs(settings);
       }
 
       const snapshotFilePath: string = await Orchestrator.createAsync(
-        OrchestratorSettings.ModelPath,
+        settings.ModelPath,
         input,
-        OrchestratorSettings.SnapshotPath,
-        OrchestratorSettings.EntityModelPath,
+        settings.SnapshotPath,
+        settings.EntityModelPath,
         hierarchical,
         fullEmbeddings);
 
-      OrchestratorSettings.SnapshotPath = snapshotFilePath;
-      OrchestratorSettings.persist();
+      settings.SnapshotPath = snapshotFilePath;
+      settings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }
   }
 
-  private async refreshLuisQnAInputs(dataSources: OrchestratorDataSourceSettings): Promise<void> {
-    if (!dataSources) {
+  private async refreshLuisQnAInputs(settings: OrchestratorSettings): Promise<void> {
+    if (!settings || !settings.DataSources) {
       throw new CLIError('No data sources previously defined');
     }
-    for (const dataSource of dataSources.inputs) {
+    for (const dataSource of settings.DataSources.inputs) {
       if (dataSource.Type !== 'file') {
         this.log(`Refreshing ${dataSource.Type} data - id ${dataSource.Id}...`);
       }
       // eslint-disable-next-line no-await-in-loop
-      await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path, false);
+      await DataSourceHelper.ensureDataSourceAsync(dataSource, settings.DataSources.path, false);
     }
   }
 }

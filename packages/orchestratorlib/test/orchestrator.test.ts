@@ -43,19 +43,21 @@ describe('OrchestratorTests', () => {
     sinon.restore();
   });
   it('addDataSource - file', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const dataSource: OrchestratorDataSource =
       new OrchestratorDataSource('', '', '', '', 'file', 'Weather', WeatherInputFile);
     await Orchestrator.addDataSource(dataSource);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 1);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'file');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].FilePath === WeatherInputFile);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].RoutingName === 'Weather');
+    assert.ok(settings.DataSources.inputs.length === 1);
+    assert.ok(settings.DataSources.inputs[0].Type === 'file');
+    assert.ok(settings.DataSources.inputs[0].FilePath === WeatherInputFile);
+    assert.ok(settings.DataSources.inputs[0].RoutingName === 'Weather');
     assert.ok(Utility.exists(path.join(DataSourcesPath, 'Weather.lu')));
   });
 
   it('addDataSource - fileMissingRoutingName', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const dataSource: OrchestratorDataSource =
       new OrchestratorDataSource('', '', '', '', 'file', '', WeatherInputFile);
     try {
@@ -65,19 +67,21 @@ describe('OrchestratorTests', () => {
     }
   });
   it('addDataSource - luis', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const dataSource: OrchestratorDataSource =
       new OrchestratorDataSource(
         'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e', '', '', 'https://westus.api.cognitive.microsoft.com/', 'luis', '', '');
     await Orchestrator.addDataSource(dataSource);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 1);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].RoutingName === 'l_Weather');
+    assert.ok(settings.DataSources.inputs.length === 1);
+    assert.ok(settings.DataSources.inputs[0].Type === 'luis');
+    assert.ok(settings.DataSources.inputs[0].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
+    assert.ok(settings.DataSources.inputs[0].RoutingName === 'l_Weather');
     assert.ok(Utility.exists(path.join(DataSourcesPath, 'l_Weather.lu')));
   });
   it('addDataSource - luisMissingEndpoint', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const dataSource: OrchestratorDataSource =
       new OrchestratorDataSource(
         'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e', '', '', '', 'luis', '', '');
@@ -88,19 +92,21 @@ describe('OrchestratorTests', () => {
     }
   });
   it('addDataSource - qna', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const dataSource: OrchestratorDataSource =
       new OrchestratorDataSource(
         '25251465-84f4-4104-8e5f-cbe0c74f3644', '', '', '', 'qna', 'q_QnA', '');
     await Orchestrator.addDataSource(dataSource);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 1);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Id === '25251465-84f4-4104-8e5f-cbe0c74f3644');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].RoutingName === 'q_QnA');
+    assert.ok(settings.DataSources.inputs.length === 1);
+    assert.ok(settings.DataSources.inputs[0].Type === 'qna');
+    assert.ok(settings.DataSources.inputs[0].Id === '25251465-84f4-4104-8e5f-cbe0c74f3644');
+    assert.ok(settings.DataSources.inputs[0].RoutingName === 'q_QnA');
     assert.ok(Utility.exists(path.join(DataSourcesPath, 'q_QnA.qna')));
   });
   it('addDataSource - multiple', async () => {
-    OrchestratorSettings.init(SettingsDir, '', '', OutputDir, true, true);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, '', '', OutputDir, true, true);
     const luisDataSource: OrchestratorDataSource =
       new OrchestratorDataSource(
         'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e', '', '', 'https://westus.api.cognitive.microsoft.com/', 'luis', '', '');
@@ -111,14 +117,14 @@ describe('OrchestratorTests', () => {
         '25251465-84f4-4104-8e5f-cbe0c74f3644', '', '', '', 'qna', 'q_QnA', '');
     await Orchestrator.addDataSource(qnaDataSource);
 
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 2);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
+    assert.ok(settings.DataSources.inputs.length === 2);
+    assert.ok(settings.DataSources.inputs[0].Type === 'luis');
+    assert.ok(settings.DataSources.inputs[0].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
     assert.ok(Utility.exists(path.join(DataSourcesPath, 'l_Weather.lu')));
 
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'qna');
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].Id === '25251465-84f4-4104-8e5f-cbe0c74f3644');
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].RoutingName === 'q_QnA');
+    assert.ok(settings.DataSources.inputs[1].Type === 'qna');
+    assert.ok(settings.DataSources.inputs[1].Id === '25251465-84f4-4104-8e5f-cbe0c74f3644');
+    assert.ok(settings.DataSources.inputs[1].RoutingName === 'q_QnA');
     assert.ok(Utility.exists(path.join(DataSourcesPath, 'q_QnA.qna')));
   });
 });

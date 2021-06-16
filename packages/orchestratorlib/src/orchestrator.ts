@@ -235,10 +235,10 @@ export class Orchestrator {
   }
 
   public static async addDataSource(dataSource: OrchestratorDataSource): Promise<void> {
-    await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
+    await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.getCurrent().DataSources.path);
   }
 
   public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
-    return OrchestratorSettings.DataSources.remove(dataSource);
+    return OrchestratorSettings.getCurrent().DataSources.remove(dataSource);
   }
 }

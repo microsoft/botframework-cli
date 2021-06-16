@@ -57,8 +57,9 @@ export default class OrchestratorAdd extends Command {
         fullEmbeddings = true;
       }
 
+      const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
       if (type.length > 0) {
-        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true, true);
+        settings.init(cwd, baseModelPath, entityBaseModelPath, output, true, true);
         const dataSource: OrchestratorDataSource =
           new OrchestratorDataSource(id, key, version, endpoint, type, routingName, inputPath);
         await Orchestrator.addDataSource(dataSource);
@@ -69,11 +70,11 @@ export default class OrchestratorAdd extends Command {
           this.log(`Added ${dataSource.Type} source with id ${dataSource.Id}`);
         }
       } else {
-        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output);
-        const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(OrchestratorSettings.SnapshotPath));
+        settings.init(cwd, baseModelPath, entityBaseModelPath, output);
+        const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(settings.SnapshotPath));
         const inputs: any = OrchestratorHelper.getLuInputs(inputPath);
         await Orchestrator.addAsync(
-          OrchestratorSettings.ModelPath,
+          settings.ModelPath,
           snapshot,
           inputs,
           isDialog,
@@ -81,7 +82,7 @@ export default class OrchestratorAdd extends Command {
           fullEmbeddings);
       }
 
-      OrchestratorSettings.persist();
+      settings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }

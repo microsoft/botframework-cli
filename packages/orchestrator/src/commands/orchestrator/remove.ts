@@ -37,7 +37,8 @@ export default class OrchestratorRemove extends Command {
     }
 
     try {
-      OrchestratorSettings.init(cwd, '', '', '', true, true);
+      const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
+      settings.init(cwd, '', '', '', true, true);
       const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, '', '', '', type, '', filePath);
       if (Orchestrator.removeDataSource(dataSource)) {
         if (dataSource.Type === 'file') {
@@ -49,7 +50,7 @@ export default class OrchestratorRemove extends Command {
         this.log('Data source not found');
       }
 
-      OrchestratorSettings.persist();
+      settings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }

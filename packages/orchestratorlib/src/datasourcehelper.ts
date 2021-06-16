@@ -114,8 +114,9 @@ export class DataSourceHelper {
       throw new Error('Invalid input type');
     }
 
-    if (updateSettings && !OrchestratorSettings.hasDataSource(input)) {
-      OrchestratorSettings.addUpdateDataSource(input);
+    const currentSettings: OrchestratorSettings = OrchestratorSettings.getCurrent();
+    if (updateSettings && !currentSettings.hasDataSource(input)) {
+      currentSettings.addUpdateDataSource(input);
     }
 
     if (content.length > 0) {

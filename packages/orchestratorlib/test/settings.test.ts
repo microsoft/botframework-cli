@@ -10,78 +10,95 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 
 import {OrchestratorDataSource, OrchestratorSettings} from '../src/settings';
-
 import {Utility} from '../src/utility';
 
 describe('OrchestratorSettingsTests', () => {
-  const SettingsDir: string = './test/fixtures/';
+  const SettingsDir: string = path.resolve('./test/fixtures/settings');
   const BaseModelDir: string = path.resolve('./test/fixtures/model');
-
-  const BaseModelDirJson: string = '.\\\\test\\\\fixtures\\\\model';
-  const SettingsFile: string = path.resolve(path.join(SettingsDir, 'orchestratorsettings.json'));
-  const SettingsDirJson: string = '.\\\\test\\\\fixtures';
-  const DataSourcesPath: string = path.resolve(path.join(SettingsDir, 'dataSources'));
+  const SnapshotDir: string = path.resolve('./test/fixtures/output');
+  const DataSourcesDir: string = path.join(SettingsDir, 'dataSources');
+  const DataDir: string = path.resolve('./test/fixtures/dataSources');
 
   beforeEach(() => {
     if (!Utility.exists(BaseModelDir)) {
       fs.mkdirSync(BaseModelDir);
     }
-
-    if (Utility.exists(SettingsFile)) {
-      Utility.deleteFile(SettingsFile);
+    if (!Utility.exists(SettingsDir)) {
+      fs.mkdirSync(SettingsDir);
     }
   });
 
   afterEach(() => {
+    if (Utility.exists(SettingsDir)) {
+      Utility.deleteFolderRecursive(SettingsDir);
+    }
+    if (Utility.exists(DataSourcesDir)) {
+      Utility.deleteFolderRecursive(DataSourcesDir);
+    }
+  });
+
+  after(() => {
     if (Utility.exists(BaseModelDir)) {
-      fs.rmdirSync(BaseModelDir);
+      Utility.deleteFolderRecursive(BaseModelDir);
     }
   });
 
   it('init settings with no settings file', () => {
-    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
-    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
-    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath === '');
-    assert.ok(!OrchestratorSettings.DataSources);
+    const settingsFile: string = 'orchestratorsettings1.json';
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir, true, false, settingsFile);
+    settings.persist();
+    assert.ok(settings.SettingsPath ===  path.join(SettingsDir, settingsFile));
+    assert.ok(settings.ModelPath === BaseModelDir);
+    assert.ok(settings.EntityModelPath === '');
+    assert.ok(settings.DataSources.inputs.length === 0);
+    assert.ok(settings.DataSources.path === '');
+    assert.ok(!Utility.exists(DataSourcesDir));
   });
 
   it('init settings with no settings file + data source', () => {
-    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir, false, true);
-    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
-    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath === '');
-    assert.ok(OrchestratorSettings.DataSources);
-    assert.ok(OrchestratorSettings.DataSources.path === DataSourcesPath);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.hierarchical === false);
+    const settingsFile: string = 'orchestratorsettings2.json';
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir, false, true, settingsFile);
+    assert.ok(settings.SettingsPath ===  path.join(SettingsDir, settingsFile));
+    assert.ok(settings.ModelPath === BaseModelDir);
+    assert.ok(settings.EntityModelPath === '');
+    assert.ok(settings.DataSources);
+    assert.ok(settings.DataSources.path === DataSourcesDir);
+    assert.ok(settings.DataSources.inputs.length === 0);
+    assert.ok(settings.DataSources.hierarchical === false);
+    assert.ok(settings.DataSources.path);
+    assert.ok(Utility.exists(DataSourcesDir));
   });
 
   it('init settings with no data sources', () => {
     const settingsJson: string = `{
-      "modelPath": "${BaseModelDirJson}",
-      "snapshotPath": "${SettingsDirJson}",
+      "modelPath": "${BaseModelDir.replace(/\\/g, '/')}",
+      "snapshotPath": "${SnapshotDir.replace(/\\/g, '/')}",
       "dataSources": {
         "hierarchical": true,
         "inputs": [],
-        "path": "${SettingsDirJson}\\\\dataSources"
+        "path": ""
       }
     }`;
 
-    fs.writeFileSync(path.join(SettingsDir, 'orchestratorsettings.json'), settingsJson);
-    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
-    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
-    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath === '');
-    // assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.hierarchical);
+    const settingsFile: string = 'orchestratorsettings3.json';
+    fs.writeFileSync(path.join(SettingsDir, settingsFile), settingsJson);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir, false, false, settingsFile);
+    assert.ok(settings.SettingsPath ===  path.join(SettingsDir, settingsFile));
+    assert.ok(settings.ModelPath === BaseModelDir);
+    assert.ok(settings.EntityModelPath === '');
+    assert.ok(settings.DataSources.path === '');
+    assert.ok(settings.DataSources.inputs.length === 0);
+    assert.ok(!settings.DataSources.hierarchical);
+    assert.ok(!Utility.exists(DataSourcesDir));
   });
 
   it('init settings with data sources', () => {
     const settingsJson: string = `{
-      "modelPath": "${BaseModelDirJson}",
-      "snapshotPath": "${SettingsDirJson}",
+      "modelPath": "${BaseModelDir.replace(/\\/g, '/')}",
+      "snapshotPath": "${SnapshotDir.replace(/\\/g, '/')}",
       "dataSources": {
         "hierarchical": true,
         "inputs": [
@@ -92,7 +109,7 @@ describe('OrchestratorSettingsTests', () => {
             "key": "QNAKEY",
             "endpoint": "",
             "routingName": "q_ChitChat",
-            "filePath": "${SettingsDirJson}\\\\datasources\\\\q_ChitChat.qna"
+            "filePath": "${path.resolve(DataDir, 'q_ChitChat.qna').replace(/\\/g, '/')}"
           },
           {
             "type": "luis",
@@ -101,23 +118,26 @@ describe('OrchestratorSettingsTests', () => {
             "key": "LUISKEY",
             "endpoint": "https://westus.api.cognitive.microsoft.com",
             "routingName": "l_Weather",
-            "filePath": "${SettingsDirJson}\\\\datasources\\\\l_Weather.lu"
+            "filePath": "${path.resolve(DataDir, 'l_Weather.lu').replace(/\\/g, '/')}"
           }
         ],
-        "path": "${SettingsDirJson}\\\\dataSources"
+        "path": "${DataSourcesDir.replace(/\\/g, '/')}"
       }
     }`;
 
-    fs.writeFileSync(path.join(SettingsDir, 'orchestratorsettings.json'), settingsJson);
-    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
-    assert.ok(OrchestratorSettings.SettingsPath === SettingsFile);
-    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath === '');
-    // assert.ok(OrchestratorSettings.DataSources.Path.replace(/[\\\/]+/gm, '') === DataSourcesPath.replace(/[\\\/]+/gm, ''));
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 2);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.hierarchical);
+    const settingsFile: string = 'orchestratorsettings4.json';
+    fs.writeFileSync(path.join(SettingsDir, settingsFile), settingsJson);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir, true, true, settingsFile);
+    assert.ok(settings.SettingsPath === path.join(SettingsDir, settingsFile));
+    assert.ok(settings.ModelPath === BaseModelDir);
+    assert.ok(settings.EntityModelPath === '');
+    assert.ok(settings.DataSources.path === DataSourcesDir);
+    assert.ok(settings.DataSources.inputs.length === 2);
+    assert.ok(settings.DataSources.inputs[0].Type === 'qna');
+    assert.ok(settings.DataSources.inputs[1].Type === 'luis');
+    assert.ok(settings.DataSources.hierarchical);
+    assert.ok(Utility.exists(DataSourcesDir));
 
     const dataSource: OrchestratorDataSource = new OrchestratorDataSource(
       'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e',
@@ -126,27 +146,34 @@ describe('OrchestratorSettingsTests', () => {
       'https://westus.api.cognitive.microsoft.com',
       'luis',
       'l_HomeAutomation',
-      OrchestratorSettings.DataSources.path);
+      settings.DataSources.path);
 
-    OrchestratorSettings.addUpdateDataSource(dataSource);
-    OrchestratorSettings.persist();
-    OrchestratorSettings.init(SettingsDir, BaseModelDir, '', SettingsDir);
-    assert.ok(OrchestratorSettings.DataSources.hierarchical);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 3);
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Type === 'qna');
-    assert.ok(OrchestratorSettings.DataSources.inputs[0].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.inputs[1].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
-    assert.ok(OrchestratorSettings.DataSources.inputs[2].Type === 'luis');
-    assert.ok(OrchestratorSettings.DataSources.inputs[2].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
+    settings.addUpdateDataSource(dataSource);
+    settings.persist();
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir);
+    assert.ok(settings.DataSources.hierarchical);
+    assert.ok(settings.DataSources.inputs.length === 3);
+    assert.ok(settings.DataSources.inputs[0].Type === 'qna');
+    assert.ok(settings.DataSources.inputs[0].Id === '213a48d3-855d-4083-af6d-339c03d497dd');
+    assert.ok(settings.DataSources.inputs[1].Type === 'luis');
+    assert.ok(settings.DataSources.inputs[1].Id === 'd06d7acf-a9ec-43e0-94c6-3b37ee313a21');
+    assert.ok(settings.DataSources.inputs[2].Type === 'luis');
+    assert.ok(settings.DataSources.inputs[2].Id === 'a5ee4d79-28e0-4757-a9f8-45ab64ee1f7e');
   });
 
   it('init settings with settings file', () => {
-    OrchestratorSettings.init('./test/fixtures/settings', BaseModelDir, '', SettingsDir);
-    assert.ok(OrchestratorSettings.SettingsPath.indexOf('settings') > 0);
-    assert.ok(OrchestratorSettings.ModelPath === BaseModelDir);
-    assert.ok(OrchestratorSettings.EntityModelPath.indexOf('bert_example_ner_multilingual') > 0);
-    assert.ok(OrchestratorSettings.DataSources.inputs.length === 0);
-    assert.ok(OrchestratorSettings.DataSources.hierarchical === false);
+    const settings: OrchestratorSettings = new OrchestratorSettings();
+    const settingsFileName: string = 'orchestratorsettings5.json';
+    const settingsFilePath: string = path.resolve(SettingsDir, settingsFileName);
+
+    settings.init(SettingsDir, BaseModelDir, '', '', false, false, settingsFileName);
+    settings.persist();
+
+    settings.init(SettingsDir, '', '', '', false, false, settingsFileName);
+    assert.ok(settings.SettingsPath === settingsFilePath);
+    assert.ok(settings.ModelPath === BaseModelDir);
+    assert.ok(!settings.EntityModelPath);
+    assert.ok(settings.DataSources.inputs.length === 0);
+    assert.ok(settings.DataSources.hierarchical === false);
   });
 });
