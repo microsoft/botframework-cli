@@ -130,6 +130,7 @@ describe('OrchestratorSettingsTests', () => {
     const settings: OrchestratorSettings = new OrchestratorSettings();
     settings.init(SettingsDir, BaseModelDir, '', SettingsDir, true, true, settingsFile);
     assert.ok(settings.SettingsPath === path.join(SettingsDir, settingsFile));
+    
     assert.ok(settings.ModelPath === BaseModelDir);
     assert.ok(settings.EntityModelPath === '');
     assert.ok(settings.DataSources.path === DataSourcesDir);
@@ -150,7 +151,7 @@ describe('OrchestratorSettingsTests', () => {
 
     settings.addUpdateDataSource(dataSource);
     settings.persist();
-    settings.init(SettingsDir, BaseModelDir, '', SettingsDir);
+    settings.init(SettingsDir, BaseModelDir, '', SettingsDir, true, true, settingsFile);
     assert.ok(settings.DataSources.hierarchical);
     assert.ok(settings.DataSources.inputs.length === 3);
     assert.ok(settings.DataSources.inputs[0].Type === 'qna');
