@@ -130,7 +130,6 @@ describe('OrchestratorSettingsTests', () => {
     const settings: OrchestratorSettings = new OrchestratorSettings();
     settings.init(SettingsDir, BaseModelDir, '', SettingsDir, true, true, settingsFile);
     assert.ok(settings.SettingsPath === path.join(SettingsDir, settingsFile));
-    
     assert.ok(settings.ModelPath === BaseModelDir);
     assert.ok(settings.EntityModelPath === '');
     assert.ok(settings.DataSources.path === DataSourcesDir);

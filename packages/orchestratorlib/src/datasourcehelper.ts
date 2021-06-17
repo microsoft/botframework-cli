@@ -9,7 +9,6 @@ import {LuisQnaHelper} from './luisqnahelper';
 import {Utility} from './utility';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {OrchestratorSettings, OrchestratorDataSource, OrchestratorDataSourceSettings} from './settings';
-import { Result } from '@microsoft/bf-dispatcher';
 
 export class DataSourceHelper {
   public static convertDispatchInputs(dispatchJson: any, dataSourceSettings: OrchestratorDataSourceSettings)  {
@@ -120,7 +119,7 @@ export class DataSourceHelper {
     }
 
     if (content.length > 0) {
-      let filePath: string = input.FilePath;
+      let filePath: string = dataSourcePath;
       if (!OrchestratorHelper.isDirectory(filePath)) {
         filePath = path.dirname(filePath);
       }
