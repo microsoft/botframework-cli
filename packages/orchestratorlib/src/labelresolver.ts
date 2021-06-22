@@ -200,6 +200,10 @@ export class LabelResolver {
     if (UtilityDispatcher.toPrintDetailedDebuggingLogToConsole) {
       UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): batchJsonified', batchJsonified, 'batchJsonified');
     }
+    if (UtilityDispatcher.toPrintDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingLogObjectDirectToFile(batchJsonified, 'DebuggingLogObject_LabelResolver_addBatch_batchJsonified_direct.json');
+      UtilityDispatcher.debuggingLogObjectToFile(batchJsonified, 'DebuggingLogObject_LabelResolver_addBatch_batchJsonified.json');
+    }
     // -----------------------------------------------------------------------
     UtilityDispatcher.debuggingNamedLog1('LabelResolver.addBatch(): ready to call TextEncoder().encode()', batchJsonified.length, 'batchJsonified.length');
     const batchUint8Array: Uint8Array =

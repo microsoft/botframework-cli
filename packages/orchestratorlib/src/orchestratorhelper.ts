@@ -419,8 +419,12 @@ export class OrchestratorHelper {
       id: luFile,
     };
     const luisObject: any = await luisBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
-    if (Utility.toPrintDetailedDebuggingLogToConsole) {
+    if (Utility.toPrintDebuggingLogToConsole) {
       UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
+    }
+    if (Utility.toPrintDebuggingLogToConsole) {
+      UtilityDispatcher.debuggingLogObjectDirectToFile(UtilityDispatcher.jsonStringify(luisObject), 'DebuggingLogObject_OrchestratorHelper_parseLuContent_luisObject_direct.json');
+      UtilityDispatcher.debuggingLogObjectToFile(UtilityDispatcher.jsonStringify(luisObject), 'DebuggingLogObject_OrchestratorHelper_parseLuContent_luisObject.json');
     }
     try {
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(

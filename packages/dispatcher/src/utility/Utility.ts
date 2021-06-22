@@ -2304,6 +2304,25 @@ export class Utility {
         Utility.externalLoggingObject = externalLoggingObject;
     }
 
+    public static debuggingLogObjectDirectToFile(
+        message: any,
+        logFile: string): any {
+        if (Utility.toPrintDebuggingLogToConsole) {
+            Utility.dumpFile(logFile, message);
+        }
+        return message;
+    }
+    public static debuggingLogObjectToFile(
+        message: any,
+        logFile: string): string {
+        const logMessageBasic: string =
+            Utility.jsonStringify(message);
+        if (Utility.toPrintDebuggingLogToConsole) {
+            Utility.dumpFile(logFile, logMessageBasic);
+        }
+        return logMessageBasic;
+    }
+
     public static debuggingLogRaw(
         message: any): string {
         if (Utility.toPrintDebuggingLogToConsole) {
