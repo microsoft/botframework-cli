@@ -6,8 +6,11 @@
 import * as fs from 'fs-extra';
 import * as path from 'path';
 import {Utility} from './utility';
+import {httpsProxy} from './utility';
 const unzip: any = require('unzip-stream');
-const fetch: any = require('node-fetch');
+import axios, {AxiosResponse} from 'axios';
+import {Stream} from 'stream';
+axios.interceptors.request.use(httpsProxy);
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -63,16 +66,11 @@ export class OrchestratorBaseModel {
       const modelZipPath: string = path.join(baseModelPath, fileName);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  fileName=${fileName}`);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  modelZipPath=${modelZipPath}`);
-      const response: any = await fetch(modelUrl);
-      Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling  await response.arrayBuffer()');
-      const arrayBuffer: ArrayBuffer = await response.arrayBuffer();
-      const uint8Array: Uint8Array = new Uint8Array(arrayBuffer);
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  await response.arrayBuffer(), arrayBuffer.byteLength=${arrayBuffer.byteLength}`);
-      Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  await response.arrayBuffer(), uint8Array.byteLength=${uint8Array.byteLength}`);
-      fs.writeFileSync(modelZipPath, uint8Array);
+      await this.downloadModel(modelUrl, modelZipPath);
       if (onProgress) {
         onProgress('OrchestratorBaseModel.getModelAsync(): model downloaded...');
       }
+
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished downloading model file: ${modelUrl} to ${modelZipPath}`);
       try {
         await new Promise((resolve: any) => {
@@ -106,8 +104,24 @@ export class OrchestratorBaseModel {
   }
 
   public static async getVersionsAsync(schemaVersion: string = OrchestratorBaseModel.NlrVersionsSchema): Promise<object> {
-    const response: any = await fetch(`https://aka.ms/nlrversions_${schemaVersion}`);
-    return response.json();
+    const response: any = await axios.get(`https://aka.ms/nlrversions_${schemaVersion}`);
+    return response.data;
+  }
+
+  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<(resolve: any) => void> {
+    const response: AxiosResponse<Stream> = await axios({
+      method: 'GET',
+      url: modelUrl,
+      responseType: 'stream',
+    });
+    Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling download zipped model files');
+    response.data.pipe(fs.createWriteStream(modelZipPath));
+
+    return new Promise((resolve: any) => {
+      response.data.on('end', () => {
+        resolve();
+      });
+    });
   }
 
   public static async listAsync(all: boolean = false): Promise<object> {

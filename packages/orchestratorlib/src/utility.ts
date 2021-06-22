@@ -5,6 +5,8 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import {Url, parse} from 'url';
+import httpsProxyAgent from 'https-proxy-agent';
 
 import {IConfusionMatrixMeanMetrics} from '@microsoft/bf-dispatcher';
 import {IConfusionMatrixMeanDerivedMetrics} from '@microsoft/bf-dispatcher';
@@ -50,6 +52,7 @@ import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-temp
 import {UtilityLabelResolver} from './utilitylabelresolver';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+import {AxiosRequestConfig} from 'axios';
 
 export class Utility {
   public static toPrintDebuggingLogToConsole: boolean = false;
@@ -6873,4 +6876,32 @@ export class Utility {
       fs.rmdirSync(inputPath);
     }
   }
+}
+
+export function httpsProxy(config: AxiosRequestConfig) {
+  const parsed: Url = parse(config.url || '');
+  const protocol: string | undefined = parsed.protocol;
+  if (protocol !== 'https:') {
+    return config;
+  }
+
+  const envProxy: string | undefined = process.env.HTTPS_PROXY || process.env.https_proxy;
+  if (envProxy) {
+    const parsed: Url = parse(envProxy);
+    const proxyOpt: Record<string, string | undefined> =
+    {
+      hostname: parsed.hostname,
+      port: parsed.port,
+    };
+
+    if (parsed.auth) {
+      proxyOpt.auth = parsed.auth;
+    }
+
+    config.httpsAgent = httpsProxyAgent(proxyOpt);
+    // Disable direct proxy
+    config.proxy = false;
+  }
+
+  return config;
 }
