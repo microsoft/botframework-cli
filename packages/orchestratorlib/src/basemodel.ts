@@ -140,7 +140,7 @@ export class OrchestratorBaseModel {
   }
 
   public static defaultHandler(status: string): void {
-    console.log(status);
+    Utility.debuggingLog(status);
   }
 
   public static async defaultHandlerAsync(status: string): Promise<void> {
