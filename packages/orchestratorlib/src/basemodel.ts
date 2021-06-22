@@ -62,7 +62,7 @@ export class OrchestratorBaseModel {
       const modelZipPath: string = path.join(baseModelPath, fileName);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  fileName=${fileName}`);
       Utility.debuggingLog(`OrchestratorBaseModel.getModelAsync(): finished calling  modelZipPath=${modelZipPath}`);
-      await this.downloadModel(modelUrl, modelZipPath);
+      await this.downloadModel(modelUrl, modelZipPath, onProgress);
       if (onProgress) {
         onProgress('OrchestratorBaseModel.getModelAsync(): model downloaded...');
       }
@@ -100,13 +100,21 @@ export class OrchestratorBaseModel {
     return response.data;
   }
 
-  public static async downloadModel(modelUrl: string, modelZipPath: string): Promise<(resolve: any) => void> {
+  public static async downloadModel(modelUrl: string, modelZipPath: string, onProgress: any = OrchestratorBaseModel.defaultHandler): Promise<(resolve: any) => void> {
     const response: AxiosResponse<Stream> = await axios({
       method: 'GET',
       url: modelUrl,
       responseType: 'stream',
     });
+    const totalLength: number = response.headers['content-length'];
+    onProgress(`Starting to download ${totalLength} bytes`);
+    let totalCompleted: number = 0;
     Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling download zipped model files');
+    response.data.on('data', (chunk: any) => {
+      totalCompleted += chunk.length;
+      const totalCompletedPct: number = totalCompleted / totalLength * 100;
+      onProgress(`Downloaded ${totalCompletedPct} %`, totalCompletedPct);
+    });
     response.data.pipe(fs.createWriteStream(modelZipPath));
 
     return new Promise((resolve: any) => {
@@ -132,7 +140,7 @@ export class OrchestratorBaseModel {
   }
 
   public static defaultHandler(status: string): void {
-    Utility.debuggingLog(status);
+    console.log(status);
   }
 
   public static async defaultHandlerAsync(status: string): Promise<void> {
