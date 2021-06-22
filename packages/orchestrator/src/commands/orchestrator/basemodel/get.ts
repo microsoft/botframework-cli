@@ -66,9 +66,14 @@ export default class OrchestratorBaseModelGet extends Command {
           await OrchestratorBaseModel.getAsync(
             modelInfo.modelFolder,
             modelInfo.versionId,
-            (message: any) => {
+            (message: any, pct: number) => {
               if (flags.verbose) {
-                this.log(message);
+                if (message) {
+                  this.log(message);
+                }
+                if (pct) {
+                  this.log(`Downloaded ${pct}%...`);
+                }
               }
             },
             (message: any) => {

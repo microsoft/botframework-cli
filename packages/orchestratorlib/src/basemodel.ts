@@ -107,13 +107,17 @@ export class OrchestratorBaseModel {
       responseType: 'stream',
     });
     const totalLength: number = response.headers['content-length'];
-    onProgress(`Starting to download ${totalLength} bytes`);
+    onProgress(`Total to download: ${totalLength} bytes...`);
     let totalCompleted: number = 0;
+    let totalCompletedPct: number = 0;
     Utility.debuggingLog('OrchestratorBaseModel.getModelAsync(): calling download zipped model files');
     response.data.on('data', (chunk: any) => {
       totalCompleted += chunk.length;
-      const totalCompletedPct: number = totalCompleted / totalLength * 100;
-      onProgress(`Downloaded ${totalCompletedPct} %`, totalCompletedPct);
+      const newPct: number = Math.round(totalCompleted / totalLength * 100);
+      if (newPct > totalCompletedPct) {
+        totalCompletedPct = newPct;
+        onProgress('', totalCompletedPct);
+      }
     });
     response.data.pipe(fs.createWriteStream(modelZipPath));
 
