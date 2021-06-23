@@ -40,7 +40,7 @@
     "axios":"~0.21.1",
     "https-proxy-agent": "^5.0.0",
     "tslib": "^2.0.3",
-    "@microsoft/orchestrator-core": "latest",
+    "@microsoft/orchestrator-core": "4.14.0-preview",
     "@types/fs-extra": "~8.1.0",
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
