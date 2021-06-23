@@ -14,7 +14,7 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
-const oc: any = require('orchestrator-core');
+const oc: any = require('@microsoft/orchestrator-core');
 
 export class LabelResolver {
   public static Orchestrator: any;
