@@ -67,10 +67,10 @@ export default class OrchestratorBaseModelGet extends Command {
             modelInfo.modelFolder,
             modelInfo.versionId,
             (message: any, pct: number) => {
+              if (message) {
+                this.log(message);
+              }
               if (flags.verbose) {
-                if (message) {
-                  this.log(message);
-                }
                 if (pct) {
                   this.log(`Downloaded ${pct}%...`);
                 }
