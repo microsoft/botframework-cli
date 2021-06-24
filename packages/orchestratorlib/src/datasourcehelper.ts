@@ -145,7 +145,7 @@ export class DataSourceHelper {
     }
   }
 
-  public static removeDataSource(dataSource: OrchestratorDataSource) : boolean {
+  public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
     const existingSource: OrchestratorDataSource = OrchestratorSettings.getCurrent().DataSources.remove(dataSource);
     if (existingSource && Utility.exists(existingSource.FilePath)) {
       Utility.deleteFile(existingSource.FilePath);
