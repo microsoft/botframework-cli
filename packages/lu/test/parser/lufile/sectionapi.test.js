@@ -30,6 +30,16 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[1].utterance, 'hello');
     });
 
+    it('new Entity name should not use reserved keywords', () => {
+        let fileContent = 
+        `@ ml age
+         @ prebuilt number`;
+
+        luresource = luparser.parse(fileContent);
+        assert.equal(luresource.Sections[0].Errors.length, 1);
+        assert.equal(luresource.Sections[0].Errors[0].Message, 'The model name age is reserved.');
+    });
+
     it('add simpleIntentSection test', () => {
         let newFileConent = 
         `# CheckEmail
