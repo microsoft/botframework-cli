@@ -9,10 +9,7 @@ import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {Utility} from './utility';
 
-import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
-import {Label} from '@microsoft/bf-dispatcher';
-import {LabelType} from '@microsoft/bf-dispatcher';
-import {Span} from '@microsoft/bf-dispatcher';
+import {ITextUtteranceLabelMapDataStructure, Label, LabelType, Span} from '@microsoft/bf-dispatcher';
 
 export class OrchestratorBuild {
   public static Orchestrator: any;
@@ -154,14 +151,13 @@ export class OrchestratorBuild {
     return luIntentsEntitiesUtterances;
   }
 
-  // Synchronize an active LabelResolver instance with with an LU file.
-  static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
+  // Synchronize an active LabelResolver instance with ITextUtteranceLabelMapDataStructure.
+  static async syncLabelResolverEx(labelResolver: LabelResolver, target: ITextUtteranceLabelMapDataStructure) {
     const subject: ITextUtteranceLabelMapDataStructure = OrchestratorBuild.getExamplesLR(labelResolver);
-    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceLabelsMap.size=${subject.utteranceLabelsMap.size}`);
-    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
-    const target: ITextUtteranceLabelMapDataStructure = await OrchestratorBuild.getExamplesLU(luContent);
-    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceLabelsMap.size=${target.utteranceLabelsMap.size}`);
-    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), target.utteranceEntityLabelsMap.size=${target.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), subject.utteranceLabelsMap.size=${subject.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), target.utteranceLabelsMap.size=${target.utteranceLabelsMap.size}`);
+    Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), target.utteranceEntityLabelsMap.size=${target.utteranceEntityLabelsMap.size}`);
     // ---- NOTE ---- delete example intent label if it is not in target.
     subject.utteranceLabelsMap.forEach((labels: Set<string>, utterance: string) => {
       if (target.utteranceLabelsMap.has(utterance)) {
@@ -277,6 +273,12 @@ export class OrchestratorBuild {
         labelResolver);
       }
     });
+  }
+
+  // Synchronize an active LabelResolver instance with an LU file.
+  static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
+    const target: ITextUtteranceLabelMapDataStructure = await OrchestratorBuild.getExamplesLU(luContent);
+    OrchestratorBuild.syncLabelResolverEx(labelResolver, target);
   }
 
   private static async processLuConfig(luConfig: any, labelResolvers: Map<string, LabelResolver>, fullEmbeddings: boolean = false): Promise<any[]> {
