@@ -9,6 +9,19 @@ const SectionOperator = require('./../../../src/parser/lufile/sectionOperator');
 const LUSectionTypes = require('./../../../src/parser/utils/enums/lusectiontypes');
 const NEWLINE = require('os').EOL;
 
+describe('luParser parse test', () => {
+    let luresource = undefined;
+    it('new Entity name should not use reserved keywords', () => {
+        let fileContent = 
+        `@ ml age
+        @ prebuilt number`;
+
+        luresource = luparser.parse(fileContent);
+        assert.equal(luresource.Sections[0].Errors.length, 1);
+        assert.equal(luresource.Sections[0].Errors[0].Message, 'The model name age is reserved.');
+    })
+});
+
 describe('Section CRUD tests for intent', () => {
     let luresource = undefined;
     
@@ -28,16 +41,6 @@ describe('Section CRUD tests for intent', () => {
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap.length, 2);
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[0].utterance, 'hi');
         assert.equal(luresource.Sections[0].UtteranceAndEntitiesMap[1].utterance, 'hello');
-    });
-
-    it('new Entity name should not use reserved keywords', () => {
-        let fileContent = 
-        `@ ml age
-         @ prebuilt number`;
-
-        luresource = luparser.parse(fileContent);
-        assert.equal(luresource.Sections[0].Errors.length, 1);
-        assert.equal(luresource.Sections[0].Errors[0].Message, 'The model name age is reserved.');
     });
 
     it('add simpleIntentSection test', () => {
