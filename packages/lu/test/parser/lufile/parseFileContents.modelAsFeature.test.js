@@ -301,14 +301,14 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ ml number hasRoles r1 usesFeature city 
-                    @ number usesFeature city
+                    @ ml number2 hasRoles r1 usesFeature city 
+                    @ number2 usesFeature city
                 `;
     
                 parseFile.parseFile(luFile) 
                     .then(res => {
                         assert.equal(res.LUISJsonStructure.entities.length, 1);
-                        assert.equal(res.LUISJsonStructure.entities[0].name, 'number');
+                        assert.equal(res.LUISJsonStructure.entities[0].name, 'number2');
                         assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.entities[0].roles.length, 1);
@@ -341,14 +341,14 @@ describe('Model as feature definitions', function () {
                         - portland
                         - PDX
                     
-                    @ ml number hasRoles r1, r2 usesFeatures city, city2 
-                    @ number usesFeature city
+                    @ ml number2 hasRoles r1, r2 usesFeatures city, city2 
+                    @ number2 usesFeature city
                 `;
     
                 parseFile.parseFile(luFile) 
                     .then(res => {
                         assert.equal(res.LUISJsonStructure.entities.length, 1);
-                        assert.equal(res.LUISJsonStructure.entities[0].name, 'number');
+                        assert.equal(res.LUISJsonStructure.entities[0].name, 'number2');
                         assert.equal(res.LUISJsonStructure.entities[0].features.length, 2);
                         assert.equal(res.LUISJsonStructure.entities[0].features[0].featureName, 'city');
                         assert.equal(res.LUISJsonStructure.entities[0].features[1].featureName, 'city2');
