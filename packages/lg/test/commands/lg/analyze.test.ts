@@ -38,6 +38,20 @@ describe('lg:analyze lg file', async () => {
     await TestUtil.compareFiles(path.join(generatedFolderPath, 'analysisResult.txt'), path.join(verifiedFolderPath, 'analysisResult1.txt'))
   })
 
+  test
+  .command(['lg:analyze',
+    '--in',
+    path.join(__dirname, testcaseFolderPath, 'analyze/external.lg'),
+    '--out',
+    generatedFolder,
+    '-r',
+    '-f',
+    '--external-functions',
+    'ReadDatabase'])
+  .it('', async () => {
+    await TestUtil.compareFiles(path.join(generatedFolderPath, 'analysisResult.txt'), path.join(verifiedFolderPath, 'analysisResult3.txt'))
+  })
+
   // lg files folder
   test
   .command(['lg:analyze',
@@ -46,7 +60,9 @@ describe('lg:analyze lg file', async () => {
     '--out',
     generatedFolder,
     '-r',
-    '-f'])
+    '-f',
+    '--external-functions',
+    'ReadDatabase'])
   .it('', async () => {
     await TestUtil.compareFiles(path.join(generatedFolderPath, 'analysisResult.txt'), path.join(verifiedFolderPath, 'analysisResult2.txt'))
   })

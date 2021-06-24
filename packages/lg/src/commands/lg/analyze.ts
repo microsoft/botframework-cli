@@ -9,6 +9,7 @@
 import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
 import {Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
+import {Expression, ExpressionEvaluator} from 'adaptive-expressions'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 
@@ -28,6 +29,7 @@ export default class AnalyzeCommand extends Command {
     recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
     out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
     force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
+    'external-functions': flags.string({char: 'e', helpValue: 'function1,function2', description: 'Pass a list of external functions and add them to Expression functions, seprated by ",". for example, "function1,function2,function3"'}),
     help: flags.help({char: 'h', description: 'lg:analyze help'}),
   }
 
@@ -37,6 +39,13 @@ export default class AnalyzeCommand extends Command {
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
 
     Helper.checkInputAndOutput(lgFilePaths)
+    if (flags['external-functions']) {
+      const functionList = flags['external-functions'].split(',')
+      for (const func of functionList)
+        Expression.functions.add(func, new ExpressionEvaluator(func, () => {
+          return {value: undefined, error: ''}
+        }))
+    }
 
     const allTemplates = []
     for (const filePath of lgFilePaths) {

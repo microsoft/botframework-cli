@@ -3,7 +3,6 @@ dependencies:
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@microsoft/orchestrator-core': 4.14.0-preview
   '@oclif/parser': 3.8.4
   '@rush-temp/bf-chatdown': 'file:projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:projects/bf-cli-command.tgz'
@@ -27,6 +26,7 @@ dependencies:
   '@types/seedrandom': 2.4.28
   '@types/supports-color': 5.3.0
   '@types/xml2js': 0.4.5
+  adaptive-expressions: 4.13.0
   ajv: 6.12.6
   antlr4: 4.8.0
   applicationinsights: 1.7.3
@@ -51,13 +51,14 @@ dependencies:
   glob: 7.1.6
   intercept-stdout: 0.1.2
   is-ci: 2.0.0
-  json-ptr: 2.1.2
+  json-ptr: 1.3.1
   json-schema-merge-allof: 0.7.0
   latest-version: 4.0.0
   md5: 2.2.1
   mime-types: 2.1.26
   minimist: 1.2.0
   nyc: 14.1.1
+  orchestrator-core: 4.13.1
   os: 0.1.1
   pascal-case: 2.0.1
   path: 0.12.7
@@ -318,25 +319,6 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-9dTIfQW8HVCxLku5QrJ/ysS/b2MdYngs9+/oPrOTLvp3TrggdANYVW2h8FGJGDf0J7MYfp44W+c90cVJx+ASuA==
-  /@microsoft/orchestrator-core/4.14.0-preview:
-    cpu:
-      - x64
-      - ia32
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.3
-      bindings: 1.2.1
-      node-addon-api: 3.1.0
-      node-gyp: 8.0.0
-    dev: false
-    engines:
-      node: ^10.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^16.0.0
-    os:
-      - darwin
-      - linux
-      - win32
-    requiresBuild: true
-    resolution:
-      integrity: sha512-kUAbUIkCDdmf5XMjt4VquHXtUDGizk8IXDa2TUt3p4XhdY3oFc+GJYnAdRU8eCPSD0gv2UWcwINGzyzRHi33hg==
   /@microsoft/recognizers-text-data-types-timex-expression/1.1.4:
     dev: false
     engines:
@@ -4064,12 +4046,10 @@ packages:
     dev: false
     resolution:
       integrity: sha512-mrqyZKfX5EhL7hvqcV6WG1yYjnjeuYDzDhhcAAUrq8Po85NBQBJP+ZDUT75qZQ98IkUoBqdkExkukOU7Ts2wrw==
-  /json-ptr/2.1.2:
-    dependencies:
-      tslib: 2.2.0
+  /json-ptr/1.3.1:
     dev: false
     resolution:
-      integrity: sha512-MR8zOcNNUtSXjbAkZVAxSsvnY6kVtDIT/DlWBu5u6prj/vcDtbUSpLwSQmVCBSx/YzVePJWpFnTkTKe57CpoxQ==
+      integrity: sha512-RoTHczqQoT2UsJINUvyMEHAHxGDq6c4/xXHwA29iArQMGIv6pFqLsOJMeagtnY78vsp5k/+9JcvmKKLsbuDRBQ==
   /json-schema-compare/0.2.2:
     dependencies:
       lodash: 4.17.15
@@ -6666,10 +6646,6 @@ packages:
     dev: false
     resolution:
       integrity: sha512-uZtkfKblCEQtZKBF6EBXVZeQNl82yqtDQdv+eck8u7tdPxjLu2/lp5/uPW+um2tpuxINHWy3GhiccY7QgEaVHQ==
-  /tslib/2.2.0:
-    dev: false
-    resolution:
-      integrity: sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w==
   /tslint-consistent-codestyle/1.16.0_tslint@5.20.1+typescript@3.9.9:
     dependencies:
       '@fimbul/bifrost': 0.21.0_tslint@5.20.1+typescript@3.9.9
@@ -7527,7 +7503,7 @@ packages:
       get-uri: 3.0.2
       globby: 11.0.0
       https-proxy-agent: 5.0.0
-      json-ptr: 2.1.2
+      json-ptr: 1.3.1
       json-schema-merge-allof: 0.7.0
       json-schema-ref-parser: 8.0.0
       mocha: 6.2.2
@@ -7549,7 +7525,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-dialog'
     resolution:
-      integrity: sha512-XkL9QQ6vd0mykhM2v51aouyTRqbcGHPo2ACd0Bt6EzRCSkgkGeMmXGo4P2Q6Firs7/PJ3yfAc7thm2FsZqRr3Q==
+      integrity: sha512-Pe+h+iEst6RqFvAkWH/RzlUSuJlXoXI957ACIv2jtNe73ps02BYaynLquChghKVuXnZ2Ul+oceCyXx+D9dFQog==
       tarball: 'file:projects/bf-dialog.tgz'
     version: 0.0.0
   'file:projects/bf-dispatcher.tgz':
@@ -7597,6 +7573,7 @@ packages:
       '@types/node': 10.17.17
       '@types/node-fetch': 2.5.4
       '@types/readline-sync': 1.4.3
+      adaptive-expressions: 4.13.0
       axios: 0.21.1
       botbuilder-lg: 4.13.0
       chai: 4.2.0
@@ -7620,7 +7597,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-lg-cli'
     resolution:
-      integrity: sha512-KWEKswZgHo4xwnSGk5xc8KwnntGTDelyUefa2NHdNZpBpjba1AszTPxIMecDmqoihJ/DE241J558kunoX0KkVQ==
+      integrity: sha512-nB4mVEaIH1mhlRnMti2lkO07o3K1eamKMQIMYxFZVFvutNpks2r6XinubBXjccpgDL0RtEUCLHp99gE7Y76OrQ==
       tarball: 'file:projects/bf-lg-cli.tgz'
     version: 0.0.0
   'file:projects/bf-lu.tgz':
@@ -7747,7 +7724,6 @@ packages:
     version: 0.0.0
   'file:projects/bf-orchestrator.tgz':
     dependencies:
-      '@microsoft/orchestrator-core': 4.14.0-preview
       '@types/chai': 4.2.10
       '@types/fs-extra': 8.1.0
       '@types/mocha': 5.2.7
@@ -7775,7 +7751,7 @@ packages:
     dev: false
     name: '@rush-temp/bf-orchestrator'
     resolution:
-      integrity: sha512-uqMM+M3nbtjLdvRBAQWgkLy2ARBYsxUulc4omuic0N1dD/C+UhMR1VHmMwUYIqq1WkX1qROMFv192SdpcTjYqQ==
+      integrity: sha512-FfRXEjT7ms3miTnssvYjo7SFS8rtgvJdx7gPxrqymv75oGEa+cFyI4r3bgYu9vAOVOCeRblRVG+lUZo63qJc+g==
       tarball: 'file:projects/bf-orchestrator.tgz'
     version: 0.0.0
   'file:projects/bf-qnamaker.tgz':
@@ -7871,7 +7847,6 @@ specifiers:
   '@azure/cognitiveservices-luis-authoring': 4.0.0-preview.1
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
-  '@microsoft/orchestrator-core': 4.14.0-preview
   '@oclif/parser': ~3.8.4
   '@rush-temp/bf-chatdown': 'file:./projects/bf-chatdown.tgz'
   '@rush-temp/bf-cli-command': 'file:./projects/bf-cli-command.tgz'
@@ -7895,6 +7870,7 @@ specifiers:
   '@types/seedrandom': ~2.4.28
   '@types/supports-color': ^5.3.0
   '@types/xml2js': ^0.4.4
+  adaptive-expressions: 4.13.0
   ajv: ^6.12.2
   antlr4: ~4.8.0
   applicationinsights: ^1.0.8
@@ -7919,13 +7895,14 @@ specifiers:
   glob: ^7.1.3
   intercept-stdout: ^0.1.2
   is-ci: 2.0.0
-  json-ptr: ~2.1.0
+  json-ptr: ~1.3.0
   json-schema-merge-allof: ~0.7.0
   latest-version: ^4.0.0
   md5: ^2.2.1
   mime-types: ^2.1.18
   minimist: ^1.2.0
   nyc: ^14.1.1
+  orchestrator-core: 4.13.1
   os: ~0.1.1
   pascal-case: ^2.0.1
   path: ^0.12.7
