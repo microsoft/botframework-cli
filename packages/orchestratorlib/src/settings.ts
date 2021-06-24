@@ -110,7 +110,7 @@ export class OrchestratorDataSourceSettings {
     return false;
   }
 
-  public remove(input: OrchestratorDataSource): boolean {
+  public remove(input: OrchestratorDataSource): OrchestratorDataSource {
     let i: number;
     for (i = 0; i < this.inputs.length; i++) {
       const existingSource: OrchestratorDataSource = this.inputs[i];
@@ -123,20 +123,20 @@ export class OrchestratorDataSourceSettings {
       case 'qna':
         if (input.Id === existingSource.Id) {
           this.inputs.splice(i, 1);
-          return true;
+          return input;
         }
         break;
       case 'file':
         if (input.FilePath === existingSource.FilePath) {
           this.inputs.splice(i, 1);
-          return true;
+          return input;
         }
         break;
       default:
         throw new Error('Invalid input type');
       }
     }
-    return false;
+    return null;
   }
 }
 

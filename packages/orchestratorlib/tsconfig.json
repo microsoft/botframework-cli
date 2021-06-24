@@ -9,6 +9,7 @@
     "module": "commonjs",
     "outDir": "./lib",
     "pretty": true,
+    "strictNullChecks": false,
     "rootDirs": [
       "./src"
     ],

@@ -239,6 +239,6 @@ export class Orchestrator {
   }
 
   public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
-    return OrchestratorSettings.getCurrent().DataSources.remove(dataSource);
+    return DataSourceHelper.removeDataSource(dataSource);
   }
 }

@@ -145,6 +145,15 @@ export class DataSourceHelper {
     }
   }
 
+  public static removeDataSource(dataSource: OrchestratorDataSource) : boolean {
+    const existingSource: OrchestratorDataSource = OrchestratorSettings.getCurrent().DataSources.remove(dataSource);
+    if (existingSource && Utility.exists(existingSource.FilePath)) {
+      Utility.deleteFile(existingSource.FilePath);
+      return true;
+    }
+    return false;
+  }
+
   private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string) {
     if (!Utility.exists(input.FilePath)) {
       throw new Error(`Input file ${input.FilePath} not found`);
@@ -157,6 +166,7 @@ export class DataSourceHelper {
     const destFilePath: string = path.join(dataSourceFolder, path.basename(input.FilePath));
     if (!Utility.exists(destFilePath)) {
       fs.copyFileSync(input.FilePath, destFilePath);
+      input.FilePath = destFilePath;
     }
   }
 }
