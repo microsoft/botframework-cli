@@ -175,4 +175,16 @@ describe('luis:cross-train tests for lu and qna contents', () => {
       expect(fs.existsSync('./../../../interruptionGen/extra.en-us.lu')).to.be.false
       expect(fs.existsSync('./../../../interruptionGen/chitchat_professional.source.en-us.qna')).to.be.false
     })
+
+    test
+    .stdout()
+    .command(['luis:cross-train',
+      '--in', `${path.join(__dirname, './../../fixtures/testcases/filterIntent')}`,
+      '--config', `${path.join(__dirname, './../../fixtures/testcases/filterIntent/cross-train.config')}`,
+      '--out', './interruptionGen',
+      '--force'])
+    .it('luis:cross training should able to import files with locale and ignore files under the directory specified', async () => {
+      expect(await compareLuFiles('./../../../interruptionGen/Application.lu', './../../fixtures/verified/interruption10/Application.lu')).to.be.true
+      expect(await compareLuFiles('./../../../interruptionGen/Application.qna', './../../fixtures/verified/interruption10/Application.qna')).to.be.true
+    })
 })

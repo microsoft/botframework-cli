@@ -1,0 +1,21 @@
+# ? Question In ExternalFile.qna
+
+**Filters:**
+- dialogName=Application
+
+```
+Answer to question in ExternalFile.qna
+```
+
+> Source: cross training. Please do not edit these directly!
+> !# @qna.pair.source = crosstrained
+
+# ? Intent within application.lu
+- Intent which should be included
+
+**Filters:**
+- dialogName=Application
+
+```
+intent=DeferToRecognizer_LUIS_Application
+```
