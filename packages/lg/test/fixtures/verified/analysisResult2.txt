@@ -1,3 +1,8 @@
+external.lg:CallMyName references:
+external.lg:GetToDos references:
+    external.lg: CallMyName
+external.lg:LogWaiting references:
+    external.lg: CallMyName, GetToDos
 generator.lg:greeting references:
 generator.lg:welcome references:
     generator.lg: greeting
