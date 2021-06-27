@@ -1,4 +1,4 @@
-const SimpleIntentSectionContext = require('./generated/LUFileParser').LUFileParser.SimpleIntentSectionContext;
+import SimpleIntentSectionContext from './generated/.js';
 const EntitySection = require('./entitySection');
 const NewEntitySection = require('./newEntitySection');
 const visitor = require('./visitor');

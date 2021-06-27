@@ -1,4 +1,4 @@
-const antlr4 = require('antlr4');
+import antlr4 from 'antlr4';
 const Position = require('./diagnostic').Position;
 const Range = require('./diagnostic').Range;
 const Diagnostic = require('./diagnostic').Diagnostic;

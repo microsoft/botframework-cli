@@ -1,7 +1,8 @@
-const antlr4 = require('antlr4');
-const LUFileLexer = require('./generated/LUFileLexer').LUFileLexer;
-const LUFileParser = require('./generated/LUFileParser').LUFileParser;
-const FileContext = require('./generated/LUFileParser').LUFileParser.FileContext;
+import antlr4 from 'antlr4';
+const { CommonTokenStream, InputStream } = antlr4;
+import LUFileLexer from './generated/LUFileLexer.js';
+import LUFileParser from './generated/LUFileParser.js';
+import FileContext from './generated/LUFileParser.js';
 const LUResource = require('./luResource');
 const NestedIntentSection = require('./nestedIntentSection');
 const SimpleIntentSection = require('./simpleIntentSection');
@@ -198,14 +199,14 @@ class LUParser {
             return undefined;
         }
 
-        const chars = new antlr4.InputStream(text);
+        const chars = new InputStream(text);
         const lexer = new LUFileLexer(chars);
-        const tokens = new antlr4.CommonTokenStream(lexer);
+        const tokens = new CommonTokenStream(lexer);
         const parser = new LUFileParser(tokens);
         let errors = [];
-        const listener = new LUErrorListener(errors)
-        parser.removeErrorListeners();
-        parser.addErrorListener(listener);
+        // const listener = new LUErrorListener(errors)
+        // parser.removeErrorListeners();
+        // parser.addErrorListener(listener);
         parser.buildParseTrees = true;
         const fileContent = parser.file();
 
