@@ -1,370 +1,364 @@
-// Generated from ../LUFileParser.g4 by ANTLR 4.8
+// Generated from LUFileParser.g4 by ANTLR 4.9.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+import antlr4 from 'antlr4';
 
 // This class defines a complete generic visitor for a parse tree produced by LUFileParser.
 
-function LUFileParserVisitor() {
-	antlr4.tree.ParseTreeVisitor.call(this);
-	return this;
+export default class LUFileParserVisitor extends antlr4.tree.ParseTreeVisitor {
+
+	// Visit a parse tree produced by LUFileParser#file.
+	visitFile(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#paragraph.
+	visitParagraph(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newline.
+	visitNewline(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#errorString.
+	visitErrorString(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#nestedIntentSection.
+	visitNestedIntentSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#nestedIntentNameLine.
+	visitNestedIntentNameLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#nestedIntentName.
+	visitNestedIntentName(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#nameIdentifier.
+	visitNameIdentifier(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#nestedIntentBodyDefinition.
+	visitNestedIntentBodyDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#subIntentDefinition.
+	visitSubIntentDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#simpleIntentSection.
+	visitSimpleIntentSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#intentDefinition.
+	visitIntentDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#intentNameLine.
+	visitIntentNameLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#intentName.
+	visitIntentName(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#intentBody.
+	visitIntentBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#normalIntentBody.
+	visitNormalIntentBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#normalIntentString.
+	visitNormalIntentString(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntitySection.
+	visitNewEntitySection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityDefinition.
+	visitNewEntityDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityListbody.
+	visitNewEntityListbody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityLine.
+	visitNewEntityLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newCompositeDefinition.
+	visitNewCompositeDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newRegexDefinition.
+	visitNewRegexDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityType.
+	visitNewEntityType(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityRoles.
+	visitNewEntityRoles(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityUsesFeatures.
+	visitNewEntityUsesFeatures(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
+	visitNewEntityRoleOrFeatures(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityName.
+	visitNewEntityName(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#newEntityNameWithWS.
+	visitNewEntityNameWithWS(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entitySection.
+	visitEntitySection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entityDefinition.
+	visitEntityDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entityLine.
+	visitEntityLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entityName.
+	visitEntityName(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entityType.
+	visitEntityType(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#compositeEntityIdentifier.
+	visitCompositeEntityIdentifier(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#regexEntityIdentifier.
+	visitRegexEntityIdentifier(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#entityListBody.
+	visitEntityListBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#normalItemString.
+	visitNormalItemString(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#importSection.
+	visitImportSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#importDefinition.
+	visitImportDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#referenceSection.
+	visitReferenceSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#referenceDefinition.
+	visitReferenceDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaSection.
+	visitQnaSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaDefinition.
+	visitQnaDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaSourceInfo.
+	visitQnaSourceInfo(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaIdMark.
+	visitQnaIdMark(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaQuestion.
+	visitQnaQuestion(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#questionText.
+	visitQuestionText(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#moreQuestionsBody.
+	visitMoreQuestionsBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#moreQuestion.
+	visitMoreQuestion(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#errorQuestionString.
+	visitErrorQuestionString(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#qnaAnswerBody.
+	visitQnaAnswerBody(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#filterSection.
+	visitFilterSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#promptSection.
+	visitPromptSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#filterLine.
+	visitFilterLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#errorFilterLine.
+	visitErrorFilterLine(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#multiLineAnswer.
+	visitMultiLineAnswer(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#modelInfoSection.
+	visitModelInfoSection(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+	// Visit a parse tree produced by LUFileParser#modelInfoDefinition.
+	visitModelInfoDefinition(ctx) {
+	  return this.visitChildren(ctx);
+	}
+
+
+
 }
-
-LUFileParserVisitor.prototype = Object.create(antlr4.tree.ParseTreeVisitor.prototype);
-LUFileParserVisitor.prototype.constructor = LUFileParserVisitor;
-
-// Visit a parse tree produced by LUFileParser#file.
-LUFileParserVisitor.prototype.visitFile = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#paragraph.
-LUFileParserVisitor.prototype.visitParagraph = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newline.
-LUFileParserVisitor.prototype.visitNewline = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#errorString.
-LUFileParserVisitor.prototype.visitErrorString = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#nestedIntentSection.
-LUFileParserVisitor.prototype.visitNestedIntentSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#nestedIntentNameLine.
-LUFileParserVisitor.prototype.visitNestedIntentNameLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#nestedIntentName.
-LUFileParserVisitor.prototype.visitNestedIntentName = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#nameIdentifier.
-LUFileParserVisitor.prototype.visitNameIdentifier = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#nestedIntentBodyDefinition.
-LUFileParserVisitor.prototype.visitNestedIntentBodyDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#subIntentDefinition.
-LUFileParserVisitor.prototype.visitSubIntentDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#simpleIntentSection.
-LUFileParserVisitor.prototype.visitSimpleIntentSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#intentDefinition.
-LUFileParserVisitor.prototype.visitIntentDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#intentNameLine.
-LUFileParserVisitor.prototype.visitIntentNameLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#intentName.
-LUFileParserVisitor.prototype.visitIntentName = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#intentBody.
-LUFileParserVisitor.prototype.visitIntentBody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#normalIntentBody.
-LUFileParserVisitor.prototype.visitNormalIntentBody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#normalIntentString.
-LUFileParserVisitor.prototype.visitNormalIntentString = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntitySection.
-LUFileParserVisitor.prototype.visitNewEntitySection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityDefinition.
-LUFileParserVisitor.prototype.visitNewEntityDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityListbody.
-LUFileParserVisitor.prototype.visitNewEntityListbody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityLine.
-LUFileParserVisitor.prototype.visitNewEntityLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newCompositeDefinition.
-LUFileParserVisitor.prototype.visitNewCompositeDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newRegexDefinition.
-LUFileParserVisitor.prototype.visitNewRegexDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityType.
-LUFileParserVisitor.prototype.visitNewEntityType = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityRoles.
-LUFileParserVisitor.prototype.visitNewEntityRoles = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityUsesFeatures.
-LUFileParserVisitor.prototype.visitNewEntityUsesFeatures = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityRoleOrFeatures.
-LUFileParserVisitor.prototype.visitNewEntityRoleOrFeatures = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityName.
-LUFileParserVisitor.prototype.visitNewEntityName = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#newEntityNameWithWS.
-LUFileParserVisitor.prototype.visitNewEntityNameWithWS = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entitySection.
-LUFileParserVisitor.prototype.visitEntitySection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entityDefinition.
-LUFileParserVisitor.prototype.visitEntityDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entityLine.
-LUFileParserVisitor.prototype.visitEntityLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entityName.
-LUFileParserVisitor.prototype.visitEntityName = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entityType.
-LUFileParserVisitor.prototype.visitEntityType = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#compositeEntityIdentifier.
-LUFileParserVisitor.prototype.visitCompositeEntityIdentifier = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#regexEntityIdentifier.
-LUFileParserVisitor.prototype.visitRegexEntityIdentifier = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#entityListBody.
-LUFileParserVisitor.prototype.visitEntityListBody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#normalItemString.
-LUFileParserVisitor.prototype.visitNormalItemString = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#importSection.
-LUFileParserVisitor.prototype.visitImportSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#importDefinition.
-LUFileParserVisitor.prototype.visitImportDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#referenceSection.
-LUFileParserVisitor.prototype.visitReferenceSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#referenceDefinition.
-LUFileParserVisitor.prototype.visitReferenceDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaSection.
-LUFileParserVisitor.prototype.visitQnaSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaDefinition.
-LUFileParserVisitor.prototype.visitQnaDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaSourceInfo.
-LUFileParserVisitor.prototype.visitQnaSourceInfo = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaIdMark.
-LUFileParserVisitor.prototype.visitQnaIdMark = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaQuestion.
-LUFileParserVisitor.prototype.visitQnaQuestion = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#questionText.
-LUFileParserVisitor.prototype.visitQuestionText = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#moreQuestionsBody.
-LUFileParserVisitor.prototype.visitMoreQuestionsBody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#moreQuestion.
-LUFileParserVisitor.prototype.visitMoreQuestion = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#errorQuestionString.
-LUFileParserVisitor.prototype.visitErrorQuestionString = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#qnaAnswerBody.
-LUFileParserVisitor.prototype.visitQnaAnswerBody = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#filterSection.
-LUFileParserVisitor.prototype.visitFilterSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#promptSection.
-LUFileParserVisitor.prototype.visitPromptSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#filterLine.
-LUFileParserVisitor.prototype.visitFilterLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#errorFilterLine.
-LUFileParserVisitor.prototype.visitErrorFilterLine = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#multiLineAnswer.
-LUFileParserVisitor.prototype.visitMultiLineAnswer = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#modelInfoSection.
-LUFileParserVisitor.prototype.visitModelInfoSection = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-// Visit a parse tree produced by LUFileParser#modelInfoDefinition.
-LUFileParserVisitor.prototype.visitModelInfoDefinition = function(ctx) {
-  return this.visitChildren(ctx);
-};
-
-
-
-exports.LUFileParserVisitor = LUFileParserVisitor;

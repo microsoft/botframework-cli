@@ -1,14 +1,14 @@
-// Generated from ../LUFileLexer.g4 by ANTLR 4.8
+// Generated from LUFileLexer.g4 by ANTLR 4.9.2
 // jshint ignore: start
-var antlr4 = require('antlr4/index');
+import antlr4 from 'antlr4';
 
 
 
-var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
-    "\u0002)\u02d1\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\u0004",
-    "\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t\u0004\u0004\u0005\t",
-    "\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004\b\t\b\u0004\t\t",
-    "\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004\r\t\r\u0004\u000e",
+const serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786",
+    "\u5964\u0002)\u02d1\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001\b\u0001",
+    "\u0004\u0002\t\u0002\u0004\u0003\t\u0003\u0004\u0004\t\u0004\u0004\u0005",
+    "\t\u0005\u0004\u0006\t\u0006\u0004\u0007\t\u0007\u0004\b\t\b\u0004\t",
+    "\t\t\u0004\n\t\n\u0004\u000b\t\u000b\u0004\f\t\f\u0004\r\t\r\u0004\u000e",
     "\t\u000e\u0004\u000f\t\u000f\u0004\u0010\t\u0010\u0004\u0011\t\u0011",
     "\u0004\u0012\t\u0012\u0004\u0013\t\u0013\u0004\u0014\t\u0014\u0004\u0015",
     "\t\u0015\u0004\u0016\t\u0016\u0004\u0017\t\u0017\u0004\u0018\t\u0018",
@@ -470,24 +470,60 @@ var serializedATN = ["\u0003\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964",
     "\u0003\u0002\t\u0004\u0002\u0006\u0002\u0002\t\t\u0002"].join("");
 
 
-var atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
+const atn = new antlr4.atn.ATNDeserializer().deserialize(serializedATN);
 
-var decisionsToDFA = atn.decisionToState.map( function(ds, index) { return new antlr4.dfa.DFA(ds, index); });
+const decisionsToDFA = atn.decisionToState.map( (ds, index) => new antlr4.dfa.DFA(ds, index) );
 
-function LUFileLexer(input) {
-	antlr4.Lexer.call(this, input);
-    this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
-    return this;
+export default class LUFileLexer extends antlr4.Lexer {
+
+    static grammarFileName = "LUFileLexer.g4";
+    static channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
+	static modeNames = [ "DEFAULT_MODE", "NEW_ENTITY_MODE", "INTENT_NAME_MODE", 
+                      "LIST_BODY_MODE", "ENTITY_MODE", "QNA_MODE" ];
+	static literalNames = [ null, null, null, null, null, null, null, null, 
+                         null, "'$'", "'@'", null, null, null, null, null, 
+                         null, null, "'='", "','", null, null, null, null, 
+                         null, null, null, null, null, null, null, null, 
+                         null, null, null, null, null, "':'" ];
+	static symbolicNames = [ null, "WS", "NEWLINE", "QNA_SOURCE_INFO", "MODEL_INFO", 
+                          "COMMENT", "QNA", "HASH", "DASH", "DOLLAR", "AT", 
+                          "IMPORT", "REFERENCE", "FILTER_MARK", "QNA_ID_MARK", 
+                          "MULTI_LINE_TEXT", "PROMPT_MARK", "INVALID_TOKEN_DEFAULT_MODE", 
+                          "EQUAL", "COMMA", "HAS_ROLES_LABEL", "HAS_FEATURES_LABEL", 
+                          "NEW_ENTITY_TYPE_IDENTIFIER", "PHRASE_LIST_LABEL", 
+                          "NEW_COMPOSITE_ENTITY", "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", 
+                          "NEW_ENTITY_IDENTIFIER_WITH_WS", "NEWLINE_IN_NAME", 
+                          "IDENTIFIER", "ESCAPE_CHARACTER", "EXPRESSION", 
+                          "TEXT", "NEWLINE_IN_ENTITY", "COMPOSITE_ENTITY", 
+                          "REGEX_ENTITY", "ENTITY_TEXT", "COLON_MARK", "NEWLINE_IN_QNA", 
+                          "QNA_TEXT" ];
+	static ruleNames = [ "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", 
+                      "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", 
+                      "U", "V", "W", "X", "Y", "Z", "WHITESPACE", "UTTERANCE_MARK", 
+                      "WS", "NEWLINE", "QNA_SOURCE_INFO", "MODEL_INFO", 
+                      "COMMENT", "QNA", "HASH", "DASH", "DOLLAR", "AT", 
+                      "IMPORT", "REFERENCE", "FILTER_MARK", "QNA_ID_MARK", 
+                      "MULTI_LINE_TEXT", "PROMPT_MARK", "INVALID_TOKEN_DEFAULT_MODE", 
+                      "WS_IN_NEW_ENTITY", "NEWLINE_IN_NEW_ENTITY", "EQUAL", 
+                      "COMMA", "HAS_ROLES_LABEL", "HAS_FEATURES_LABEL", 
+                      "NEW_ENTITY_TYPE_IDENTIFIER", "PHRASE_LIST_LABEL", 
+                      "NEW_COMPOSITE_ENTITY", "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", 
+                      "NEW_ENTITY_IDENTIFIER_WITH_WS", "WS_IN_NAME", "HASH_IN_NAME", 
+                      "NEWLINE_IN_NAME", "IDENTIFIER", "WS_IN_LIST_BODY", 
+                      "NEWLINE_IN_LIST_BODY", "ESCAPE_CHARACTER", "EXPRESSION", 
+                      "TEXT", "WS_IN_ENTITY", "NEWLINE_IN_ENTITY", "COMPOSITE_ENTITY", 
+                      "REGEX_ENTITY", "ENTITY_TEXT", "COLON_MARK", "NEWLINE_IN_QNA", 
+                      "QNA_TEXT" ];
+
+    constructor(input) {
+        super(input)
+        this._interp = new antlr4.atn.LexerATNSimulator(this, atn, decisionsToDFA, new antlr4.PredictionContextCache());
+    }
+
+    get atn() {
+        return atn;
+    }
 }
-
-LUFileLexer.prototype = Object.create(antlr4.Lexer.prototype);
-LUFileLexer.prototype.constructor = LUFileLexer;
-
-Object.defineProperty(LUFileLexer.prototype, "atn", {
-        get : function() {
-                return atn;
-        }
-});
 
 LUFileLexer.EOF = antlr4.Token.EOF;
 LUFileLexer.WS = 1;
@@ -536,61 +572,6 @@ LUFileLexer.LIST_BODY_MODE = 3;
 LUFileLexer.ENTITY_MODE = 4;
 LUFileLexer.QNA_MODE = 5;
 
-LUFileLexer.prototype.channelNames = [ "DEFAULT_TOKEN_CHANNEL", "HIDDEN" ];
-
-LUFileLexer.prototype.modeNames = [ "DEFAULT_MODE", "NEW_ENTITY_MODE", "INTENT_NAME_MODE", 
-                                    "LIST_BODY_MODE", "ENTITY_MODE", "QNA_MODE" ];
-
-LUFileLexer.prototype.literalNames = [ null, null, null, null, null, null, 
-                                       null, null, null, "'$'", "'@'", null, 
-                                       null, null, null, null, null, null, 
-                                       "'='", "','", null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, null, null, null, null, null, 
-                                       null, "':'" ];
-
-LUFileLexer.prototype.symbolicNames = [ null, "WS", "NEWLINE", "QNA_SOURCE_INFO", 
-                                        "MODEL_INFO", "COMMENT", "QNA", 
-                                        "HASH", "DASH", "DOLLAR", "AT", 
-                                        "IMPORT", "REFERENCE", "FILTER_MARK", 
-                                        "QNA_ID_MARK", "MULTI_LINE_TEXT", 
-                                        "PROMPT_MARK", "INVALID_TOKEN_DEFAULT_MODE", 
-                                        "EQUAL", "COMMA", "HAS_ROLES_LABEL", 
-                                        "HAS_FEATURES_LABEL", "NEW_ENTITY_TYPE_IDENTIFIER", 
-                                        "PHRASE_LIST_LABEL", "NEW_COMPOSITE_ENTITY", 
-                                        "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", 
-                                        "NEW_ENTITY_IDENTIFIER_WITH_WS", 
-                                        "NEWLINE_IN_NAME", "IDENTIFIER", 
-                                        "ESCAPE_CHARACTER", "EXPRESSION", 
-                                        "TEXT", "NEWLINE_IN_ENTITY", "COMPOSITE_ENTITY", 
-                                        "REGEX_ENTITY", "ENTITY_TEXT", "COLON_MARK", 
-                                        "NEWLINE_IN_QNA", "QNA_TEXT" ];
-
-LUFileLexer.prototype.ruleNames = [ "A", "B", "C", "D", "E", "F", "G", "H", 
-                                    "I", "J", "K", "L", "M", "N", "O", "P", 
-                                    "Q", "R", "S", "T", "U", "V", "W", "X", 
-                                    "Y", "Z", "WHITESPACE", "UTTERANCE_MARK", 
-                                    "WS", "NEWLINE", "QNA_SOURCE_INFO", 
-                                    "MODEL_INFO", "COMMENT", "QNA", "HASH", 
-                                    "DASH", "DOLLAR", "AT", "IMPORT", "REFERENCE", 
-                                    "FILTER_MARK", "QNA_ID_MARK", "MULTI_LINE_TEXT", 
-                                    "PROMPT_MARK", "INVALID_TOKEN_DEFAULT_MODE", 
-                                    "WS_IN_NEW_ENTITY", "NEWLINE_IN_NEW_ENTITY", 
-                                    "EQUAL", "COMMA", "HAS_ROLES_LABEL", 
-                                    "HAS_FEATURES_LABEL", "NEW_ENTITY_TYPE_IDENTIFIER", 
-                                    "PHRASE_LIST_LABEL", "NEW_COMPOSITE_ENTITY", 
-                                    "NEW_REGEX_ENTITY", "NEW_ENTITY_IDENTIFIER", 
-                                    "NEW_ENTITY_IDENTIFIER_WITH_WS", "WS_IN_NAME", 
-                                    "HASH_IN_NAME", "NEWLINE_IN_NAME", "IDENTIFIER", 
-                                    "WS_IN_LIST_BODY", "NEWLINE_IN_LIST_BODY", 
-                                    "ESCAPE_CHARACTER", "EXPRESSION", "TEXT", 
-                                    "WS_IN_ENTITY", "NEWLINE_IN_ENTITY", 
-                                    "COMPOSITE_ENTITY", "REGEX_ENTITY", 
-                                    "ENTITY_TEXT", "COLON_MARK", "NEWLINE_IN_QNA", 
-                                    "QNA_TEXT" ];
-
-LUFileLexer.prototype.grammarFileName = "LUFileLexer.g4";
 
 
-exports.LUFileLexer = LUFileLexer;
 

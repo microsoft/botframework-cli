@@ -1,4 +1,4 @@
-const ReferenceSectionContext = require('./generated/LUFileParser').LUFileParser.ReferenceSectionContext;
+import ReferenceSectionContext from './generated/LUFileParser.js';
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('../utils/enums/lusectiontypes'); 
 const BaseSection = require('./baseSection');

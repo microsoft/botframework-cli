@@ -6,7 +6,7 @@
   "main": "lib/parser/index.js",
   "browser": "lib/parser/composerindex.js",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14.0.0"
   },
   "files": [
     "/lib",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@types/node-fetch": "~2.5.5",
-    "antlr4": "~4.8.0",
+    "antlr4": "4.9.2",
     "axios": "~0.21.1",
     "https-proxy-agent": "^5.0.0",
     "chalk": "2.4.1",

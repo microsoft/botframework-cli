@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/microsoft/botframework-cli",
   "engines": {
-    "node": ">=8.0.0 <14"
+    "node": ">=14.0.0"
   },
   "files": [
     "/bin",
