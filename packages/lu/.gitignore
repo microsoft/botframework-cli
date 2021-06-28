@@ -8,5 +8,6 @@
 node_modules
 **/.antlr
 **/java_generated
+src/parser/lufile/generated/* linguist-generated=true
 
 results
