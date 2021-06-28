@@ -204,9 +204,9 @@ class LUParser {
         const tokens = new CommonTokenStream(lexer);
         const parser = new LUFileParser(tokens);
         let errors = [];
-        // const listener = new LUErrorListener(errors)
-        // parser.removeErrorListeners();
-        // parser.addErrorListener(listener);
+        const listener = new LUErrorListener(errors)
+        parser.removeErrorListeners();
+        parser.addErrorListener(listener);
         parser.buildParseTrees = true;
         const fileContent = parser.file();
 
