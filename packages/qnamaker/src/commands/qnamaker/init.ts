@@ -68,11 +68,15 @@ export default class QnamakerInit extends Command {
   }
 
   async updateKbId(config: any) {
-    let response = await new Endpointkeys().getEndpointKeys(config)
-    config.endpointKey = response.data.primaryEndpointKey
-
-    response = await new Knowledgebase().getKnowledgebaseDetails(config)
-    let kb = await response.data
-    config.hostname = kb.hostName
+    try {
+      let response = await new Endpointkeys().getEndpointKeys(config)
+      config.endpointKey = response.data.primaryEndpointKey
+  
+      response = await new Knowledgebase().getKnowledgebaseDetails(config)
+      let kb = response.data
+      config.hostname = kb.hostName
+    } catch (error) {
+      this.error(`Update of KB endpoint key and hostname failed: ${error}`)
+    }
   }
 }
