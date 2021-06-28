@@ -152,7 +152,7 @@ export class OrchestratorBuild {
   }
 
   // Synchronize an active LabelResolver instance with ITextUtteranceLabelMapDataStructure.
-  static async syncLabelResolverEx(labelResolver: LabelResolver, target: ITextUtteranceLabelMapDataStructure) {
+  static async syncLabelResolverEx(labelResolver: LabelResolver, target: ITextUtteranceLabelMapDataStructure): Promise<void> {
     const subject: ITextUtteranceLabelMapDataStructure = OrchestratorBuild.getExamplesLR(labelResolver);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), subject.utteranceLabelsMap.size=${subject.utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
@@ -276,7 +276,7 @@ export class OrchestratorBuild {
   }
 
   // Synchronize an active LabelResolver instance with an LU file.
-  static async syncLabelResolver(labelResolver: LabelResolver, luContent: string) {
+  static async syncLabelResolver(labelResolver: LabelResolver, luContent: string): Promise<void> {
     const target: ITextUtteranceLabelMapDataStructure = await OrchestratorBuild.getExamplesLU(luContent);
     OrchestratorBuild.syncLabelResolverEx(labelResolver, target);
   }

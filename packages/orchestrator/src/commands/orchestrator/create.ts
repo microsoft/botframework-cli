@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
+import {DataSourceHelper, Orchestrator, OrchestratorHelper, OrchestratorSettings, OrchestratorDataSourceSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorCreate extends Command {
   static description: string = 'Create orchestrator snapshot (.blu) file from .lu/.qna/.json/.tsv/.dispatch files, which represent bot modules';
@@ -67,7 +67,7 @@ export default class OrchestratorCreate extends Command {
       }
 
       if (refresh) {
-        await this.refreshLuisQnAInputs(settings);
+        await this.refreshLuisQnAInputs(settings.DataSources);
       }
 
       const snapshotFilePath: string = await Orchestrator.createAsync(
@@ -85,16 +85,16 @@ export default class OrchestratorCreate extends Command {
     }
   }
 
-  private async refreshLuisQnAInputs(settings: OrchestratorSettings): Promise<void> {
-    if (!settings || !settings.DataSources) {
+  private async refreshLuisQnAInputs(dataSources: OrchestratorDataSourceSettings): Promise<void> {
+    if (!dataSources) {
       throw new CLIError('No data sources previously defined');
     }
-    for (const dataSource of settings.DataSources.inputs) {
+    for (const dataSource of dataSources.inputs) {
       if (dataSource.Type !== 'file') {
         this.log(`Refreshing ${dataSource.Type} data - id ${dataSource.Id}...`);
       }
       // eslint-disable-next-line no-await-in-loop
-      await DataSourceHelper.ensureDataSourceAsync(dataSource, settings.DataSources.path, false);
+      await DataSourceHelper.ensureDataSourceAsync(dataSource, dataSources.path, false);
     }
   }
 }

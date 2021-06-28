@@ -154,7 +154,7 @@ export class DataSourceHelper {
     return false;
   }
 
-  private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string) {
+  private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string): void {
     if (!Utility.exists(input.FilePath)) {
       throw new Error(`Input file ${input.FilePath} not found`);
     }

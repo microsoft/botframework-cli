@@ -173,7 +173,6 @@ export class OrchestratorSettings {
     if (!OrchestratorSettings.Current) {
       OrchestratorSettings.Current = new OrchestratorSettings();
     }
-
     return  OrchestratorSettings.Current;
   }
 
@@ -206,7 +205,7 @@ export class OrchestratorSettings {
     snapshotPath: string,
     hierarchical: boolean = false,
     hasDataSources: boolean = false,
-    settingsFileName: string = OrchestratorSettings.OrchestratorSettingsFileName)  {
+    settingsFileName: string = OrchestratorSettings.OrchestratorSettingsFileName): void {
     settingsDir = path.resolve(settingsDir);
     const settingsFile: string = path.join(settingsDir, settingsFileName);
     this.SettingsPath = settingsFile;
