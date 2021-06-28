@@ -278,7 +278,7 @@ export class OrchestratorBuild {
   // Synchronize an active LabelResolver instance with an LU file.
   static async syncLabelResolver(labelResolver: LabelResolver, luContent: string): Promise<void> {
     const target: ITextUtteranceLabelMapDataStructure = await OrchestratorBuild.getExamplesLU(luContent);
-    OrchestratorBuild.syncLabelResolverEx(labelResolver, target);
+    return OrchestratorBuild.syncLabelResolverEx(labelResolver, target);
   }
 
   private static async processLuConfig(luConfig: any, labelResolvers: Map<string, LabelResolver>, fullEmbeddings: boolean = false): Promise<any[]> {
