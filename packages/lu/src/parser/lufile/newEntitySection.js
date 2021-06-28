@@ -1,4 +1,4 @@
-const NewEntitySectionContext = require('./generated/LUFileParser').LUFileParser.NewEntitySectionContext;
+import NewEntitySectionContext from './generated/LUFileParser.js';
 const DiagnosticSeverity = require('./diagnostic').DiagnosticSeverity;
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
