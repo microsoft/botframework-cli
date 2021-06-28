@@ -1,4 +1,4 @@
-const NestedIntentSectionContext = require('./generated/LUFileParser').LUFileParser.NestedIntentSectionContext
+import NestedIntentSectionContext from './generated/LUFileParser.js';
 const SimpleIntentSection = require('./simpleIntentSection');
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const NEWLINE = require('os').EOL;
