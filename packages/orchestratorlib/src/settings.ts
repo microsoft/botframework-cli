@@ -110,7 +110,7 @@ export class OrchestratorDataSourceSettings {
     return false;
   }
 
-  public remove(input: OrchestratorDataSource): OrchestratorDataSource {
+  public remove(input: OrchestratorDataSource): OrchestratorDataSource | null {
     let i: number;
     for (i = 0; i < this.inputs.length; i++) {
       const existingSource: OrchestratorDataSource = this.inputs[i];
