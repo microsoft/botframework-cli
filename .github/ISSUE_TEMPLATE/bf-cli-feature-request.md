@@ -2,7 +2,7 @@
 name: BF CLI Feature request
 about: Suggest a feature for the Bot Framework CLI
 title: ''
-labels: ''
+labels: 'needs-triage, feature-request'
 assignees: ''
 
 ---
