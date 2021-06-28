@@ -6,7 +6,7 @@
   "main": "lib/parser/index.js",
   "browser": "lib/parser/composerindex.js",
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=14.0.0"
   },
   "files": [
     "/lib",

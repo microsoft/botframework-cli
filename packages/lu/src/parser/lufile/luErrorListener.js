@@ -4,12 +4,6 @@ const Range = require('./diagnostic').Range;
 const Diagnostic = require('./diagnostic').Diagnostic;
 const AntlrTokens = require('./diagnostic').AntlrTokens;
 
-// let LUErrorListener = function(errors) {
-//     antlr4.error.ErrorListener.call(this);
-//     this.errors = errors;
-//     return this;
-// }
-
 class LUErrorListener extends antlr4.error.ErrorListener {
 
     constructor(errors) {
