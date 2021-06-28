@@ -1,4 +1,4 @@
-const ModelInfoSectionContext = require('./generated/LUFileParser').LUFileParser.ModelInfoSectionContext;
+import ModelInfoSectionContext from './generated/LUFileParser.js';
 const LUSectionTypes = require('./../utils/enums/lusectiontypes'); 
 const BaseSection = require('./baseSection');
 const Range = require('./diagnostic').Range;

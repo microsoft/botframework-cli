@@ -3,7 +3,7 @@
   "rushVersion": "5.19.1",
   "pnpmVersion": "4.14.4",
   "pnpmOptions": {},
-  "nodeSupportedVersionRange": ">=10.13.0 <13.0.0",
+  "nodeSupportedVersionRange": ">=14.0.0",
   "projects": [
     {
       "packageName": "@microsoft/bf-cli-command",
