@@ -1,4 +1,4 @@
-const lp = require('./generated/LUFileParser').LUFileParser;
+import lp from './generated/LUFileParser.js';
 const LUISObjNameEnum = require('./../utils/enums/luisobjenum');
 const InvalidCharsInIntentOrEntityName = require('./../utils/enums/invalidchars').InvalidCharsInIntentOrEntityName;
 const EscapeCharsInUtterance = require('./../utils/enums/escapechars').EscapeCharsInUtterance;

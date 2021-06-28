@@ -1,0 +1,5 @@
+external.lg:CallMyName references:
+external.lg:GetToDos references:
+    external.lg: CallMyName
+external.lg:LogWaiting references:
+    external.lg: CallMyName, GetToDos

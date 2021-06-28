@@ -1,0 +1,8 @@
+#CallMyName(name)
+- hello ${name} ${GetToDos()}
+
+#GetToDos
+- Here is your Todos: ${ReadDatabase()} ${LogWaiting()}
+
+#LogWaiting
+- Is there any thing I can help you with?
