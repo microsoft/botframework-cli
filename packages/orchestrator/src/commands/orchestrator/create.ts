@@ -60,7 +60,7 @@ export default class OrchestratorCreate extends Command {
         refresh = true;
       }
 
-      const hasDataSources: boolean = settings.DataSources && settings.DataSources.inputs.length > 0;
+      const hasDataSources: boolean = settings.DataSources?.inputs?.length > 0 ?? false;
       if (hasDataSources) {
         input = settings.DataSources.path;
         hierarchical = true;
