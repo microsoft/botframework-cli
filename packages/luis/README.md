@@ -121,7 +121,7 @@ EXAMPLE
 
        $ bf luis:application:create --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture 
   {CULTURE}
-       --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
+       --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID}
 ```
 
 _See code: [src/commands/luis/application/create.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/create.ts)_
@@ -338,14 +338,14 @@ USAGE
 OPTIONS
   -f, --force                      If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help                       luis:build command help
-  -i, --in=in                      Lu file or folder
+  -i, --in=in                      (required) Lu file or folder
 
   -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified,
                                    application setting will be output to console
 
-  --authoringKey=authoringKey      LUIS authoring key
+  --authoringKey=authoringKey      (required) LUIS authoring key. Refered to as subscriptionKey in other cli commands.
 
-  --botName=botName                Bot name
+  --botName=botName                (required) Bot name
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
@@ -356,7 +356,7 @@ OPTIONS
 
   --directVersionPublish           Available only in direct version query. Do not publish to staging or production
 
-  --endpoint=endpoint              Luis authoring endpoint for publishing
+  --endpoint=endpoint              (required) Luis authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
@@ -424,6 +424,9 @@ OPTIONS
 
   --config=config          Path to config file of mapping rules
 
+  --exclude=exclude        Excludes folders under the input directory, separated by ",". If not specified, all luis and
+                           qna files will be included in the cross-train
+
   --[no-]inner-dialog      Only do inner dialog cross train
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
@@ -431,8 +434,6 @@ OPTIONS
   --[no-]intra-dialog      Only do intra dialog cross train
 
   --log                    Writes out log messages to console
-
-  --exclude                Excludes given folders under the input directory, for example, --exclude bin,obj,lib, this will ignore the /bin, /obj, /lib folders under the input path
 ```
 
 _See code: [src/commands/luis/cross-train.ts](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_

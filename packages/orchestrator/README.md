@@ -23,6 +23,7 @@ Orchestrator CLI is a replacement of the [Dispatch CLI](https://github.com/micro
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:interactive`](#bf-orchestratorinteractive)
 * [`bf orchestrator:query`](#bf-orchestratorquery)
+* [`bf orchestrator:remove`](#bf-orchestratorremove)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 
 ## `bf orchestrator`
@@ -77,9 +78,9 @@ EXAMPLE
        $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/	
        $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/	
        $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
-       $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingname l_Weather 
+       $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingName l_Weather 
   --endpoint 
-       $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingname q_kb
+       $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingName q_kb
 ```
 
 _See code: [src/commands/orchestrator/add.ts](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/add.ts)_
@@ -231,6 +232,31 @@ EXAMPLE
 ```
 
 _See code: [src/commands/orchestrator/query.ts](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/query.ts)_
+
+## `bf orchestrator:remove`
+
+Remove examples from LUIS app(s), QnaMaker kb(s) or .lu/.qna/.json files from Orchestrator snapshot file.
+
+```
+USAGE
+  $ bf orchestrator:remove
+
+OPTIONS
+  -d, --debug
+  -h, --help       Orchestrator remove command help
+  -i, --in=in      Path to example file (.lu/.qna/.json/.blu).
+  -t, --type=type  Type of input (luis/qna/file).
+  --id=id          LUIS app id or QnAMaker kb id if type = luis/qna.
+
+EXAMPLE
+	
+       $ bf orchestrator:remove 	
+       $ bf orchestrator:remove -t luis --id LUIS_APP_ID 
+       $ bf orchestrator:remove -t qna --id QNA_KB 
+       $ bf orchestrator:remove -t file -i FILE_PATH
+```
+
+_See code: [src/commands/orchestrator/remove.ts](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/remove.ts)_
 
 ## `bf orchestrator:test`
 
