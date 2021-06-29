@@ -486,13 +486,13 @@ export class Builder {
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = directVersionPublish ? {
-          "appId": luisAppsMap[appName]["appId"],
-          "version": luisAppsMap[appName]["version"],
-          "recognizes": luisAppsMap[appName]["recognizes"]
-        } : {
+        settings.luis[appName] = {
           "appId": luisAppsMap[appName]["appId"],
           "recognizes": luisAppsMap[appName]["recognizes"]
+        }
+
+        if (directVersionPublish) {
+          settings.luis[appName]["version" ] = luisAppsMap[appName]["version"]
         }
       }
     }
