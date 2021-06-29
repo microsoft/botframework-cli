@@ -143,8 +143,8 @@ class LUParser {
 
         try {
             let newEntitySections = this.extractNewEntitiesSections(fileContent);
-            const prebuilts = new Set('age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
-                'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime');
+            const prebuilts = new Set(['age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
+                'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime']);
             newEntitySections.forEach(section =>{
                 if (prebuilts.has(section.Name) && section.Type && section.Type !== 'prebuilt') {
                     section.Errors.push(BuildDiagnostic({
