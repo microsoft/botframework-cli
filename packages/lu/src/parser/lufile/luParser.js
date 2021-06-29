@@ -143,10 +143,10 @@ class LUParser {
 
         try {
             let newEntitySections = this.extractNewEntitiesSections(fileContent);
-            const prebuilts = ['age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
-                'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime']
+            const prebuilts = new Set('age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
+                'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime');
             newEntitySections.forEach(section =>{
-                if (prebuilts.includes(section.Name) && section.Type && section.Type !== 'prebuilt') {
+                if (prebuilts.has(section.Name) && section.Type && section.Type !== 'prebuilt') {
                     section.Errors.push(BuildDiagnostic({
                         message: `The model name ${section.Name} is reserved.`
                     }))
