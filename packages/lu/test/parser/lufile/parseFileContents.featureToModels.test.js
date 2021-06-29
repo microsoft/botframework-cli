@@ -97,8 +97,8 @@ describe('Model as feature definitions', function () {
 
         it('list entity can be added as a feature to an intent', function(done) {
             let luFile = `
-                @ intent abc usesFeature number
-                @ list number
+                @ intent abc usesFeature number2
+                @ list number2
                 # abc 
                 - test
             `;
@@ -108,9 +108,9 @@ describe('Model as feature definitions', function () {
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'abc');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
-                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number');
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number2');
                     assert.equal(res.LUISJsonStructure.closedLists.length, 1);
-                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.closedLists[0].name, 'number2');
                     done();
                 })
                 .catch(err => done(err))
@@ -118,8 +118,8 @@ describe('Model as feature definitions', function () {
 
         it('Composite entity can be added as a feature to an intent', function(done) {
             let luFile = `
-                @ intent abc usesFeature number
-                @ composite number
+                @ intent abc usesFeature number2
+                @ composite number2
                 # abc 
                 - test
             `;
@@ -129,9 +129,9 @@ describe('Model as feature definitions', function () {
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'abc');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
-                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number');
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number2');
                     assert.equal(res.LUISJsonStructure.composites.length, 1);
-                    assert.equal(res.LUISJsonStructure.composites[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.composites[0].name, 'number2');
                     done();
                 })
                 .catch(err => done(err))
@@ -139,8 +139,8 @@ describe('Model as feature definitions', function () {
 
         it('Regex entity can be added as a feature to an intent', function(done) {
             let luFile = `
-                @ intent abc usesFeature number
-                @ regex number
+                @ intent abc usesFeature number2
+                @ regex number2
                 # abc 
                 - test
             `;
@@ -150,9 +150,9 @@ describe('Model as feature definitions', function () {
                     assert.equal(res.LUISJsonStructure.intents.length, 1);
                     assert.equal(res.LUISJsonStructure.intents[0].name, 'abc');
                     assert.equal(res.LUISJsonStructure.intents[0].features.length, 1);
-                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number');
+                    assert.equal(res.LUISJsonStructure.intents[0].features[0].modelName, 'number2');
                     assert.equal(res.LUISJsonStructure.regex_entities.length, 1);
-                    assert.equal(res.LUISJsonStructure.regex_entities[0].name, 'number');
+                    assert.equal(res.LUISJsonStructure.regex_entities[0].name, 'number2');
                     done();
                 })
                 .catch(err => done(err))
