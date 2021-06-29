@@ -5,7 +5,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {DataSourceHelper, Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
+import {Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorAdd extends Command {
   static description: string = 'Add examples from .lu/.qna/.json/.blu files, LUIS app(s) and QnaMaker kb(s) to Orchestrator snapshot file.';
@@ -57,13 +57,12 @@ export default class OrchestratorAdd extends Command {
         fullEmbeddings = true;
       }
 
+      const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
       if (type.length > 0) {
-        if (type === 'luis' && Utility.isEmptyString(endpoint)) {
-          throw new CLIError('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
-        }
-        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output, true, true);
-        const dataSource: OrchestratorDataSource = new OrchestratorDataSource(id, key, version, endpoint, type, routingName, OrchestratorSettings.DataSources.path);
-        await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.DataSources.path);
+        settings.init(cwd, baseModelPath, entityBaseModelPath, output, true, true);
+        const dataSource: OrchestratorDataSource =
+          new OrchestratorDataSource(id, key, version, endpoint, type, routingName, inputPath);
+        await Orchestrator.addDataSource(dataSource);
 
         if (dataSource.Type === 'file') {
           this.log(`Added ${dataSource.Type} source  ${dataSource.FilePath}`);
@@ -71,11 +70,11 @@ export default class OrchestratorAdd extends Command {
           this.log(`Added ${dataSource.Type} source with id ${dataSource.Id}`);
         }
       } else {
-        OrchestratorSettings.init(cwd, baseModelPath, entityBaseModelPath, output);
-        const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(OrchestratorSettings.SnapshotPath));
+        settings.init(cwd, baseModelPath, entityBaseModelPath, output);
+        const snapshot: Uint8Array = OrchestratorHelper.getSnapshotFromFile(path.resolve(settings.SnapshotPath));
         const inputs: any = OrchestratorHelper.getLuInputs(inputPath);
         await Orchestrator.addAsync(
-          OrchestratorSettings.ModelPath,
+          settings.ModelPath,
           snapshot,
           inputs,
           isDialog,
@@ -83,7 +82,7 @@ export default class OrchestratorAdd extends Command {
           fullEmbeddings);
       }
 
-      OrchestratorSettings.persist();
+      settings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }
