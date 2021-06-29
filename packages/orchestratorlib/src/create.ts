@@ -11,6 +11,7 @@ import {ITextUtteranceLabelMapDataStructure} from '@microsoft/bf-dispatcher';
 // import {Label} from '@microsoft/bf-dispatcher';
 
 import {LabelResolver} from './labelresolver';
+import {OrchestratorBuild} from '.';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {Utility} from './utility';
@@ -45,42 +46,16 @@ export class OrchestratorCreate {
       entityBaseModelPath = path.resolve(entityBaseModelPath);
     }
     outputPath = path.resolve(outputPath);
-
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createAsync()');
-    if (entityBaseModelPath) {
-      await LabelResolver.createAsync(baseModelPath, entityBaseModelPath);
-    } else {
-      await LabelResolver.createAsync(baseModelPath);
-    }
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createAsync()');
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createWithSnapshotFileAsync()');
+    const labelResolver: LabelResolver = await LabelResolver.createWithSnapshotFileAsync(baseModelPath, outputPath, entityBaseModelPath);
+    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createWithSnapshotFileAsync()');
     UtilityLabelResolver.resetLabelResolverSettingUseCompactEmbeddings(fullEmbeddings);
     const processedUtteranceLabelsMap: ITextUtteranceLabelMapDataStructure =
       await OrchestratorHelper.getUtteranceLabelsMap(inputPathConfiguration, hierarchical);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceLabelsMap.keys()]}`);
     // Utility.debuggingLog(`OrchestratorCreate.runAsync(), processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()=${[...processedUtteranceLabelsMap.utteranceEntityLabelsMap.keys()]}`);
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addBatch()');
-    LabelResolver.addBatch(processedUtteranceLabelsMap);
-    Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addBatch()');
-    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.addExamples()');
-    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- LabelResolver.addExamples(processedUtteranceLabelsMap);
-    // ==== NOTE-FOR-REFERENCE-ALTERNATIVE-LOGIC ---- Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.addExamples()');
-    /** ---- NOTE-FOR-DEBUGGING ----
-     *  const labels: string[] = LabelResolver.getLabels(LabelType.Intent);
-     *  Utility.debuggingLog(`OrchestratorCreate.runAsync(), labels=${Utility.jsonStringify(labels)}`);
-     *  const examples: any = LabelResolver.getExamples();
-     *  const exampleStructureArray: Example[] = Utility.examplesToArray(examples);
-     *  for (const example of exampleStructureArray) {
-     *    const labels: Label[] = example.labels;
-     *    if (labels.length > 1) {
-     *      Utility.debuggingLog(`utterance=${example.text}`);
-     *    } else {
-     *      Utility.debuggingLog('');
-     *    }
-     *    for (const label of labels) {
-     *      Utility.debuggingLog(`label=${label.name}`);
-     *    }
-     *  }
-     */
+
+    OrchestratorBuild.syncLabelResolverEx(labelResolver, processedUtteranceLabelsMap);
     Utility.debuggingLog('OrchestratorCreate.runAsync(), ready to call LabelResolver.createSnapshot()');
     const snapshot: any = LabelResolver.createSnapshot();
     Utility.debuggingLog('OrchestratorCreate.runAsync(), after calling LabelResolver.createSnapshot()');

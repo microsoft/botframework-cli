@@ -109,10 +109,47 @@ export class OrchestratorDataSourceSettings {
 
     return false;
   }
+
+  public remove(input: OrchestratorDataSource): OrchestratorDataSource | null {
+    let i: number;
+    for (i = 0; i < this.inputs.length; i++) {
+      const existingSource: OrchestratorDataSource = this.inputs[i];
+      if (existingSource.Type !== input.Type) {
+        continue;
+      }
+
+      switch (input.Type) {
+      case 'luis':
+      case 'qna':
+        if (input.Id === existingSource.Id) {
+          this.inputs.splice(i, 1);
+          return input;
+        }
+        break;
+      case 'file':
+        if (input.FilePath === existingSource.FilePath) {
+          this.inputs.splice(i, 1);
+          return input;
+        }
+        break;
+      default:
+        throw new Error('Invalid input type');
+      }
+    }
+    return null;
+  }
 }
 
 export class OrchestratorSettings {
   public static OrchestratorSettingsFileName: string = 'orchestratorsettings.json';
+
+  public constructor() {
+    this.ModelPath = '';
+    this.EntityModelPath = '';
+    this.SnapshotPath = '';
+    this.SettingsPath = '';
+    this.DataSources = new OrchestratorDataSourceSettings([], false, '');
+  }
 
   public static hasBaseModelSettings(settingsDir: string) {
     const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName);
@@ -124,23 +161,32 @@ export class OrchestratorSettings {
     return false;
   }
 
-  public static hasDataSource(input: OrchestratorDataSource): boolean {
-    return OrchestratorSettings.DataSources.hasDataSource(input);
+  public hasDataSource(input: OrchestratorDataSource): boolean {
+    return this.DataSources.hasDataSource(input);
   }
 
-  public static addUpdateDataSource(data: OrchestratorDataSource) {
+  public addUpdateDataSource(data: OrchestratorDataSource) {
     this.DataSources.inputs.push(data);
   }
 
-  public static ModelPath: string;
+  public static getCurrent(): OrchestratorSettings {
+    if (!OrchestratorSettings.Current) {
+      OrchestratorSettings.Current = new OrchestratorSettings();
+    }
+    return  OrchestratorSettings.Current;
+  }
 
-  public static EntityModelPath: string;
+  public static Current: OrchestratorSettings;
 
-  public static SnapshotPath: string;
+  public ModelPath: string;
 
-  public static SettingsPath: string;
+  public EntityModelPath: string;
 
-  public static DataSources: OrchestratorDataSourceSettings;
+  public SnapshotPath: string;
+
+  public SettingsPath: string;
+
+  public DataSources: OrchestratorDataSourceSettings;
 
   public static readFile(filePath: string): string {
     return ReadText.readSync(filePath);
@@ -152,59 +198,59 @@ export class OrchestratorSettings {
   }
 
   // eslint-disable-next-line max-params
-  public static init(
+  public init(
     settingsDir: string,
     baseModelPath: string,
     entityBaseModelPath: string,
     snapshotPath: string,
     hierarchical: boolean = false,
-    hasDataSources: boolean = false)  {
+    hasDataSources: boolean = false,
+    settingsFileName: string = OrchestratorSettings.OrchestratorSettingsFileName): void {
     settingsDir = path.resolve(settingsDir);
-    const settingsFile: string = path.join(settingsDir, OrchestratorSettings.OrchestratorSettingsFileName);
-    OrchestratorSettings.SettingsPath = settingsFile;
-    const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile) || OrchestratorHelper.exists(path.join(settingsDir, 'orchestrator.json'));
-
-    OrchestratorSettings.ModelPath = '';
-    OrchestratorSettings.EntityModelPath = '';
-    OrchestratorSettings.SnapshotPath = '';
+    const settingsFile: string = path.join(settingsDir, settingsFileName);
+    this.SettingsPath = settingsFile;
+    const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile);
 
     try {
       let settings: any;
       if (settingsFileExists) {
         settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
-        if (settings.dataSources && settings.dataSources.inputs) {
+        if (settings.dataSources && settings.dataSources.inputs.length > 0) {
           hasDataSources = true;
         }
       }
       if (hasDataSources) {
-        OrchestratorSettings.ensureDataSources(hierarchical, settings, settingsDir);
+        this.ensureDataSources(hierarchical, settings, settingsDir);
       }
-      OrchestratorSettings.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
-      OrchestratorSettings.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
+
+      this.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
+      this.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
       entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
       if (!Utility.isEmptyString(entityBaseModelPath)) {
-        OrchestratorSettings.EntityModelPath = entityBaseModelPath;
+        this.EntityModelPath = entityBaseModelPath;
       }
-    }  catch {}
+    } catch (error) {
+      Utility.debuggingLog(`Failed initializing settings ${error.message}`);
+    }
   }
 
-  public static persist()  {
-    if (OrchestratorSettings.SettingsPath.length === 0) {
+  public persist()  {
+    if (this.SettingsPath.length === 0) {
       throw new Error('settings not initialized.');
     }
     try {
-      const settings: any = (OrchestratorSettings.EntityModelPath) ? {
-        modelPath: OrchestratorSettings.ModelPath,
-        entityModelPath: OrchestratorSettings.EntityModelPath,
-        snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSources: OrchestratorSettings.DataSources,
+      const settings: any = (this.EntityModelPath) ? {
+        modelPath: this.ModelPath,
+        entityModelPath: this.EntityModelPath,
+        snapshotPath: this.SnapshotPath,
+        dataSources: this.DataSources,
       } : {
-        modelPath: OrchestratorSettings.ModelPath,
-        snapshotPath: OrchestratorSettings.SnapshotPath,
-        dataSources: OrchestratorSettings.DataSources,
+        modelPath: this.ModelPath,
+        snapshotPath: this.SnapshotPath,
+        dataSources: this.DataSources,
       };
 
-      OrchestratorSettings.writeToFile(OrchestratorSettings.SettingsPath, OrchestratorHelper.jsonStringify(settings));
+      OrchestratorSettings.writeToFile(this.SettingsPath, OrchestratorHelper.jsonStringify(settings));
     } catch (error) {
       throw new Error(error);
     }
@@ -219,7 +265,7 @@ export class OrchestratorSettings {
         throw new Error('Invalid entity model path');
       }
     } else if (settings && 'entityModelPath' in settings) {
-      entityBaseModelPath = settings.entityModelPath;
+      entityBaseModelPath = path.resolve(settings.entityModelPath);
     }
 
     return entityBaseModelPath;
@@ -236,7 +282,7 @@ export class OrchestratorSettings {
     } else if (!settings || !settings.modelPath || settings.modelPath.length === 0) {
       throw new Error('Missing model path');
     } else {
-      baseModelPath = settings.modelPath;
+      baseModelPath = path.resolve(settings.modelPath);
     }
     return baseModelPath;
   }
@@ -264,7 +310,7 @@ export class OrchestratorSettings {
     return snapshotPath;
   }
 
-  static ensureDataSources(hierarchical: boolean, settings: any, settingsFolder: string) {
+  ensureDataSources(hierarchical: boolean, settings: any, settingsFolder: string) {
     try {
       let inputs: OrchestratorDataSource[] = [];
       let dataSourcePath: string = path.join(settingsFolder, 'dataSources');
@@ -273,7 +319,7 @@ export class OrchestratorSettings {
       }
 
       if (!settings) {
-        OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
+        this.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
         return;
       }
 
@@ -285,9 +331,9 @@ export class OrchestratorSettings {
         hierarchical = dataSourceSettings.hierarchical;
         dataSourcePath = path.resolve(dataSourceSettings.path);
       }
-      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
+      this.DataSources = new OrchestratorDataSourceSettings(inputs, hierarchical, dataSourcePath);
     } catch {
-      OrchestratorSettings.DataSources = new OrchestratorDataSourceSettings([], false, '');
+      this.DataSources = new OrchestratorDataSourceSettings([], false, '');
     }
   }
 }
