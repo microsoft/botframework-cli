@@ -231,6 +231,7 @@ export class Builder {
             if (!filesSectionEmptyStatus.get(content.path)) {
               // init current application object from lu content
               let currentApp = await this.initApplicationFromLuContent(content, botName, suffix)
+              const recognizes = [...currentApp.intents.map((e: {name: string}) => e.name), ...currentApp.entities.map((e: {name: string}) => e.name)];
 
               // init recognizer asset
               const dialogFile = path.join(path.dirname(content.path), `${content.name}.dialog`)
@@ -275,7 +276,8 @@ export class Builder {
               // update settings asset
               settings.luis[content.name.split('.').join('_').replace(/-/g, '_')] = {
                 "appId": recognizer.getAppId(),
-                "version": recognizer.versionId
+                "version": recognizer.versionId,
+                "recognizes": recognizes
               }
             }
           }))
@@ -484,11 +486,13 @@ export class Builder {
     for (const content of contents) {
       const luisAppsMap = JSON.parse(content.content).luis
       for (const appName of Object.keys(luisAppsMap)) {
-        settings.luis[appName] = directVersionPublish ? {
+        settings.luis[appName] = {
           "appId": luisAppsMap[appName]["appId"],
-          "version": luisAppsMap[appName]["version"]
-        } : {
-          "appId": luisAppsMap[appName]["appId"]
+          "recognizes": luisAppsMap[appName]["recognizes"]
+        }
+
+        if (directVersionPublish) {
+          settings.luis[appName]["version" ] = luisAppsMap[appName]["version"]
         }
       }
     }
