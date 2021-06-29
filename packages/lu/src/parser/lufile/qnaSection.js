@@ -1,4 +1,4 @@
-const QnaSectionContext = require('./generated/LUFileParser').LUFileParser.QnaSectionContext;
+import QnaSectionContext from './generated/LUFileParser.js';
 const LUSectionTypes = require('./../utils/enums/lusectiontypes');
 const BuildDiagnostic = require('./diagnostic').BuildDiagnostic;
 const QNA_GENERIC_SOURCE = "custom editorial";

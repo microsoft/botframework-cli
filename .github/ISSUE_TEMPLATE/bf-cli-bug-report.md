@@ -2,7 +2,7 @@
 name: BF CLI Bug Report
 about: Create a bug report for a bug you found in the Bot Framework CLI
 title: ''
-labels: ''
+labels: 'needs-triage, bug'
 assignees: ''
 
 ---
