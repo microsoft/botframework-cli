@@ -45,9 +45,10 @@ export default class OrchestratorBuild extends Command {
       output = path.dirname(output);
     }
 
+    const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
     const luInputs: any[] = OrchestratorHelper.getLuInputs(input);
     const snapshots: Map<string, Uint8Array> = OrchestratorHelper.getSnapshots(output);
-    const labelResolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversAsync(OrchestratorSettings.ModelPath, entityBaseModelPath, snapshots);
+    const labelResolvers: Map<string, LabelResolver> = await Orchestrator.getLabelResolversAsync(settings.ModelPath, entityBaseModelPath, snapshots);
 
     try {
       let fullEmbeddings: boolean = false;
@@ -55,9 +56,10 @@ export default class OrchestratorBuild extends Command {
         fullEmbeddings = true;
       }
       Utility.toPrintDebuggingLogToConsole = flags.debug;
-      OrchestratorSettings.init(cwd, flags.model, output, cwd);
+
+      settings.init(cwd, flags.model, output, cwd);
       const retPayload: any = await Orchestrator.buildAsync(
-        OrchestratorSettings.ModelPath,
+        settings.ModelPath,
         luInputs,
         labelResolvers,
         isDialog,

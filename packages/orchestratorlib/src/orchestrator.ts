@@ -2,9 +2,11 @@
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
  */
+import {DataSourceHelper} from './datasourcehelper';
 import {OrchestratorAdd} from './add';
 import {OrchestratorBuild} from './build';
 import {OrchestratorCreate} from './create';
+import {OrchestratorDataSource, OrchestratorSettings} from './settings';
 import {OrchestratorEvaluate} from './evaluate';
 import {OrchestratorBaseModel} from './basemodel';
 import {OrchestratorPredict} from './predict';
@@ -230,5 +232,13 @@ export class Orchestrator {
       labelResolvers.set(key, LabelResolver.createLabelResolver(value));
     }
     return labelResolvers;
+  }
+
+  public static async addDataSource(dataSource: OrchestratorDataSource): Promise<void> {
+    await DataSourceHelper.ensureDataSourceAsync(dataSource, OrchestratorSettings.getCurrent().DataSources.path);
+  }
+
+  public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
+    return DataSourceHelper.removeDataSource(dataSource);
   }
 }
