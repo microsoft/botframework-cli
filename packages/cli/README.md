@@ -7,7 +7,7 @@ botframework-cli
 [![License](https://img.shields.io/npm/l/@microsoft/botframework-cli)](https://github.com/microsoft/botframework-cli/blob/master/packages/cli/package.json)
 
 # Dependency
-Node v12
+Node v14
 
 
 # Usage
@@ -74,6 +74,7 @@ $ npm install -g @microsoft/botframework-cli
 * [`bf orchestrator:create`](#bf-orchestratorcreate)
 * [`bf orchestrator:interactive`](#bf-orchestratorinteractive)
 * [`bf orchestrator:query`](#bf-orchestratorquery)
+* [`bf orchestrator:remove`](#bf-orchestratorremove)
 * [`bf orchestrator:test`](#bf-orchestratortest)
 * [`bf plugins`](#bf-plugins)
 * [`bf plugins:install PLUGIN`](#bf-pluginsinstall-plugin)
@@ -432,12 +433,20 @@ USAGE
   $ bf lg:analyze
 
 OPTIONS
-  -f, --force    If --out flag is provided with the path to an existing file, overwrites that file
-  -h, --help     lg:analyze help
-  -i, --in=in    (required) LG File or folder that contains .lg file(s)
-  -o, --out=out  Output file or folder name. If not specified stdout will be used as output
-  -r, --recurse  Consider sub-folders to find .lg file(s)
-  -e, --external-functions Pass a list of external functions and add them to Expression functions, seprated by ",". for example, "function1,function2,function3"
+  -e, --external-functions=function1,function2  Pass a list of external functions and add them to Expression functions,
+                                                seprated by ",". for example, "function1,function2,function3"
+
+  -f, --force                                   If --out flag is provided with the path to an existing file, overwrites
+                                                that file
+
+  -h, --help                                    lg:analyze help
+
+  -i, --in=in                                   (required) LG File or folder that contains .lg file(s)
+
+  -o, --out=out                                 Output file or folder name. If not specified stdout will be used as
+                                                output
+
+  -r, --recurse                                 Consider sub-folders to find .lg file(s)
 ```
 
 _See code: [@microsoft/bf-lg-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/lg/src/commands/lg/analyze.ts)_
@@ -582,7 +591,7 @@ EXAMPLE
 
        $ bf luis:application:create --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME} --culture 
   {CULTURE}
-       --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID} --usageScenario {USAGE_SCENARIO}
+       --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID}
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/application/create.ts)_
@@ -799,14 +808,14 @@ USAGE
 OPTIONS
   -f, --force                      If --out flag is provided with the path to an existing file, overwrites that file
   -h, --help                       luis:build command help
-  -i, --in=in                      Lu file or folder
+  -i, --in=in                      (required) Lu file or folder
 
   -o, --out=out                    Output folder name to write out .dialog and settings files. If not specified,
                                    application setting will be output to console
 
-  --authoringKey=authoringKey      LUIS authoring key
+  --authoringKey=authoringKey      (required) LUIS authoring key. Refered to as subscriptionKey in other cli commands.
 
-  --botName=botName                Bot name
+  --botName=botName                (required) Bot name
 
   --defaultCulture=defaultCulture  Culture code for the content. Infer from .lu if available. Defaults to en-us
 
@@ -817,7 +826,7 @@ OPTIONS
 
   --directVersionPublish           Available only in direct version query. Do not publish to staging or production
 
-  --endpoint=endpoint              Luis authoring endpoint for publishing
+  --endpoint=endpoint              (required) Luis authoring endpoint for publishing
 
   --fallbackLocale=fallbackLocale  Locale to be used at the fallback if no locale specific recognizer is found. Only
                                    valid if --out is set
@@ -885,6 +894,9 @@ OPTIONS
 
   --config=config          Path to config file of mapping rules
 
+  --exclude=exclude        Excludes folders under the input directory, separated by ",". If not specified, all luis and
+                           qna files will be included in the cross-train
+
   --[no-]inner-dialog      Only do inner dialog cross train
 
   --intentName=intentName  [default: _Interruption] Interruption intent name
@@ -892,8 +904,6 @@ OPTIONS
   --[no-]intra-dialog      Only do intra dialog cross train
 
   --log                    Writes out log messages to console
-
-  --exclude                Excludes given folders under the input directory, for example, --exclude bin,obj,lib, this will ignore the /bin, /obj, /lib folders under the input path
 ```
 
 _See code: [@microsoft/bf-luis-cli](https://github.com/microsoft/botframework-cli/tree/master/packages/luis/src/commands/luis/cross-train.ts)_
@@ -1325,9 +1335,9 @@ EXAMPLE
        $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/	
        $ bf orchestrator:add --in ./path/to/file/ --snapshot ./path/to/snapshot/ --out ./path/to/output/	
        $ bf orchestrator:add --in ./path/to/file/ --out ./path/to/output/ --model ./path/to/model/directory
-       $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingname l_Weather 
+       $ bf orchestrator:add -t luis --id LUIS_APP_ID --version LUIS_APP_VERSION --key LUIS_KEY --routingName l_Weather 
   --endpoint 
-       $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingname q_kb
+       $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingName q_kb
 ```
 
 _See code: [@microsoft/bf-orchestrator-cli](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/add.ts)_
@@ -1479,6 +1489,31 @@ EXAMPLE
 ```
 
 _See code: [@microsoft/bf-orchestrator-cli](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/query.ts)_
+
+## `bf orchestrator:remove`
+
+Remove examples from LUIS app(s), QnaMaker kb(s) or .lu/.qna/.json files from Orchestrator snapshot file.
+
+```
+USAGE
+  $ bf orchestrator:remove
+
+OPTIONS
+  -d, --debug
+  -h, --help       Orchestrator remove command help
+  -i, --in=in      Path to example file (.lu/.qna/.json/.blu).
+  -t, --type=type  Type of input (luis/qna/file).
+  --id=id          LUIS app id or QnAMaker kb id if type = luis/qna.
+
+EXAMPLE
+	
+       $ bf orchestrator:remove 	
+       $ bf orchestrator:remove -t luis --id LUIS_APP_ID 
+       $ bf orchestrator:remove -t qna --id QNA_KB 
+       $ bf orchestrator:remove -t file -i FILE_PATH
+```
+
+_See code: [@microsoft/bf-orchestrator-cli](https://github.com/microsoft/botframework-cli/src/commands/orchestrator/remove.ts)_
 
 ## `bf orchestrator:test`
 
