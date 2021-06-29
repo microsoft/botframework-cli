@@ -211,25 +211,23 @@ export class OrchestratorSettings {
     this.SettingsPath = settingsFile;
     const settingsFileExists: boolean = OrchestratorHelper.exists(settingsFile);
 
-    try {
-      let settings: any;
-      if (settingsFileExists) {
-        settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
-        if (settings.dataSources && settings.dataSources.inputs.length > 0) {
-          hasDataSources = true;
-        }
+    let settings: any;
+    if (settingsFileExists) {
+      settings = JSON.parse(OrchestratorSettings.readFile(settingsFile));
+      if (settings.dataSources && settings.dataSources.inputs.length > 0) {
+        hasDataSources = true;
       }
-      if (hasDataSources) {
-        this.ensureDataSources(hierarchical, settings, settingsDir);
-      }
+    }
+    if (hasDataSources) {
+      this.ensureDataSources(hierarchical, settings, settingsDir);
+    }
 
-      this.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
-      this.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
-      entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
-      if (!Utility.isEmptyString(entityBaseModelPath)) {
-        this.EntityModelPath = entityBaseModelPath;
-      }
-    } catch {}
+    this.SnapshotPath = OrchestratorSettings.ensureSnapshotPath(snapshotPath, settingsDir, settings);
+    this.ModelPath = OrchestratorSettings.ensureBaseModelPath(baseModelPath, settings);
+    entityBaseModelPath = OrchestratorSettings.ensureEntityBaseModelPath(entityBaseModelPath, settings);
+    if (!Utility.isEmptyString(entityBaseModelPath)) {
+      this.EntityModelPath = entityBaseModelPath;
+    }
   }
 
   public persist()  {

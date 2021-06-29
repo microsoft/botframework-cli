@@ -70,10 +70,8 @@ export default class OrchestratorBaseModelGet extends Command {
               if (message) {
                 this.log(message);
               }
-              if (flags.verbose) {
-                if (pct) {
-                  this.log(`Downloaded ${pct}%...`);
-                }
+              if (flags.verbose && pct) {
+                this.log(`Downloaded ${pct}%...`);
               }
             },
             (message: any) => {

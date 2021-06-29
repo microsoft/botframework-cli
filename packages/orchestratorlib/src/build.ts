@@ -8,8 +8,7 @@ import * as path from 'path';
 import {LabelResolver} from './labelresolver';
 import {OrchestratorHelper} from './orchestratorhelper';
 import {Utility} from './utility';
-
-import {ITextUtteranceLabelMapDataStructure, Label, LabelType, Span} from '@microsoft/bf-dispatcher';
+import {Example, ITextUtteranceLabelMapDataStructure, Label, LabelType, Span} from '@microsoft/bf-dispatcher';
 
 export class OrchestratorBuild {
   public static Orchestrator: any;
@@ -172,15 +171,8 @@ export class OrchestratorBuild {
           }
         }
       } else {
-        LabelResolver.removeExample({
-          text: utterance,
-          labels: [...labels.keys()].map((label: string) => {
-            return {
-              name: label,
-            };
-          }),
-        },
-        labelResolver);
+        const example: any = Example.newIntentExample(utterance, [...labels]).toAlternateObject();
+        LabelResolver.removeExample(example, labelResolver);
       }
     });
     // ---- NOTE ---- insert example intent label if it is not in subject.
@@ -198,15 +190,8 @@ export class OrchestratorBuild {
         }
       } else {
         Utility.debuggingLog(`OrchestratorBuild.syncLabelResolver(), LabelResolver.addExample(), utterance=${utterance}, labels=${[...labels.keys()]}`);
-        LabelResolver.addExample({
-          text: utterance,
-          labels: [...labels.keys()].map((label: string) => {
-            return {
-              name: label,
-            };
-          }),
-        },
-        labelResolver);
+        const example: any = Example.newIntentExample(utterance, [...labels]).toAlternateObject();
+        LabelResolver.addExample(example, labelResolver);
       }
     });
     // ---- NOTE ---- delete example entity label if it is not in target.
