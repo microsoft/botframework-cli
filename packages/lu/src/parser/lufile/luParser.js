@@ -148,7 +148,8 @@ class LUParser {
             newEntitySections.forEach(section =>{
                 if (prebuilts.has(section.Name) && section.Type && section.Type !== 'prebuilt') {
                     section.Errors.push(BuildDiagnostic({
-                        message: `The model name ${section.Name} is reserved.`
+                        message: `The model name ${section.Name} is reserved.`,
+                        range: section.Range
                     }))
                 }
             });
