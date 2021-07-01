@@ -11,7 +11,7 @@ const NEWLINE = require('os').EOL;
 
 describe('luParser parse test', () => {
     let luresource = undefined;
-    it.only('new Entity name should not use reserved keywords', () => {
+    it('new Entity name should not use reserved keywords', () => {
         let fileContent = 
         `@ ml age\n@ prebuilt number`;
 
