@@ -13,12 +13,15 @@ describe('luParser parse test', () => {
     let luresource = undefined;
     it('new Entity name should not use reserved keywords', () => {
         let fileContent = 
-        `@ ml age
-        @ prebuilt number`;
+        `@ ml age\n@ prebuilt number`;
 
         luresource = luparser.parse(fileContent);
         assert.equal(luresource.Sections[0].Errors.length, 1);
         assert.equal(luresource.Sections[0].Errors[0].Message, 'The model name age is reserved.');
+        assert.equal(luresource.Sections[0].Errors[0].Range.Start.Line, 1);
+        assert.equal(luresource.Sections[0].Errors[0].Range.Start.Character, 0);
+        assert.equal(luresource.Sections[0].Errors[0].Range.End.Line, 1);
+        assert.equal(luresource.Sections[0].Errors[0].Range.End.Character, 9);
     })
 });
 
