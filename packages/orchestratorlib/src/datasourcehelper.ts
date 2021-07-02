@@ -89,6 +89,9 @@ export class DataSourceHelper {
     let content: string = '';
     switch (input.Type) {
     case 'luis':
+      if (Utility.isEmptyString(input.Endpoint)) {
+        throw new Error('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
+      }
       content = await DataSourceHelper.getLuFileFromLuisApp(input);
       if (content.length === 0) {
         throw new Error(`LUIS app id ${input.Id} - subscriptionKey ${input.Key} not found`);
@@ -101,18 +104,22 @@ export class DataSourceHelper {
       }
       break;
     case 'file':
+      if (Utility.isEmptyString(input.RoutingName)) {
+        throw new Error('routingName parameter is required');
+      }
       DataSourceHelper.ensureFileInDataSourceFolder(input, dataSourcePath);
       break;
     default:
       throw new Error('Invalid input type');
     }
 
-    if (updateSettings && !OrchestratorSettings.hasDataSource(input)) {
-      OrchestratorSettings.addUpdateDataSource(input);
+    const currentSettings: OrchestratorSettings = OrchestratorSettings.getCurrent();
+    if (updateSettings && !currentSettings.hasDataSource(input)) {
+      currentSettings.addUpdateDataSource(input);
     }
 
     if (content.length > 0) {
-      let filePath: string = input.FilePath;
+      let filePath: string = dataSourcePath;
       if (!OrchestratorHelper.isDirectory(filePath)) {
         filePath = path.dirname(filePath);
       }
@@ -138,7 +145,16 @@ export class DataSourceHelper {
     }
   }
 
-  private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string) {
+  public static removeDataSource(dataSource: OrchestratorDataSource): boolean {
+    const existingSource: OrchestratorDataSource | null = OrchestratorSettings.getCurrent().DataSources.remove(dataSource);
+    if (existingSource && Utility.exists(existingSource.FilePath)) {
+      Utility.deleteFile(existingSource.FilePath);
+      return true;
+    }
+    return false;
+  }
+
+  private static ensureFileInDataSourceFolder(input: OrchestratorDataSource, dataSourceFolder: string): void {
     if (!Utility.exists(input.FilePath)) {
       throw new Error(`Input file ${input.FilePath} not found`);
     }
@@ -150,6 +166,7 @@ export class DataSourceHelper {
     const destFilePath: string = path.join(dataSourceFolder, path.basename(input.FilePath));
     if (!Utility.exists(destFilePath)) {
       fs.copyFileSync(input.FilePath, destFilePath);
+      input.FilePath = destFilePath;
     }
   }
 }

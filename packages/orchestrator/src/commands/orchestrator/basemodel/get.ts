@@ -31,7 +31,9 @@ export default class OrchestratorBaseModelGet extends Command {
       if (!OrchestratorHelper.exists(output)) {
         OrchestratorHelper.mkDir(output);
       }
-      OrchestratorSettings.init(cwd, output, '', '');
+
+      const settings: OrchestratorSettings = OrchestratorSettings.getCurrent();
+      settings.init(cwd, output, '', '');
       const models: any[] = [];
 
       let versions: any;
@@ -65,9 +67,12 @@ export default class OrchestratorBaseModelGet extends Command {
           await OrchestratorBaseModel.getAsync(
             modelInfo.modelFolder,
             modelInfo.versionId,
-            (message: any) => {
-              if (flags.verbose) {
+            (message: any, pct: number) => {
+              if (message) {
                 this.log(message);
+              }
+              if (flags.verbose && pct) {
+                this.log(`Downloaded ${pct}%...`);
               }
             },
             (message: any) => {
@@ -79,7 +84,7 @@ export default class OrchestratorBaseModelGet extends Command {
         })
       );
 
-      OrchestratorSettings.persist();
+      settings.persist();
     } catch (error) {
       throw (new CLIError(error));
     }
