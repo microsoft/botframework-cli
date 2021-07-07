@@ -157,6 +157,11 @@ export class OrchestratorBuild {
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), subject.utteranceEntityLabelsMap.size=${subject.utteranceEntityLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), target.utteranceLabelsMap.size=${target.utteranceLabelsMap.size}`);
     Utility.debuggingLog(`OrchestratorBuild.syncLabelResolverEx(), target.utteranceEntityLabelsMap.size=${target.utteranceEntityLabelsMap.size}`);
+    if (subject.utteranceLabelsMap.size === 0) {
+      Utility.debuggingLog('OrchestratorBuild.syncLabelResolverEx(), ready to call LabelResolver.addBatch()');
+      LabelResolver.addBatch(target);
+      Utility.debuggingLog('OrchestratorBuild.syncLabelResolverEx(), after calling LabelResolver.addBatch()');
+    }
     // ---- NOTE ---- delete example intent label if it is not in target.
     subject.utteranceLabelsMap.forEach((labels: Set<string>, utterance: string) => {
       if (target.utteranceLabelsMap.has(utterance)) {

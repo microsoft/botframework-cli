@@ -1,0 +1,46 @@
+## gaming.invite_player
+- Invite {@gaming.contact_name=Cody} to party
+- {@gaming.contact_name=Bata Bing}
+- Invite {@gaming.contact_name=Carlos} to party
+- Invite {@gaming.contact_name=James pendergast} to the party
+- Invite {@gaming.contact_name=Zach} to party.
+- Invite {@gaming.contact_name=Devin} to the party
+- I'm in there
+- Invite {@gaming.contact_name=master chief} the game
+- Invite {@gaming.contact_name=Gavin robber 922} 2 a party
+- Invite {@gaming.contact_name=Dylan} to the party
+- Invite {@gaming.contact_name=crazy ex Tucker} to {@gaming.game_title=the part}
+- Just asking to join a party
+
+@ intent gaming.invite_player
+
+## gaming.invite_party
+- The first one
+- Invite party.
+
+@ intent gaming.invite_party
+
+## gaming.leave_party
+- Leave party
+
+@ intent gaming.leave_party
+
+## gaming.find_players
+- What is {@gaming.contact_name=blade runner 223} in my friends list?
+
+@ intent gaming.find_players
+
+## gaming.show_friends
+- Who are my Xbox my best friends ?
+- Go to friends list
+
+@ intent gaming.show_friends
+
+## gaming.start_party
+- Join party
+
+@ intent gaming.start_party
+
+@ ml gaming.contact_name
+
+@ ml gaming.game_title
