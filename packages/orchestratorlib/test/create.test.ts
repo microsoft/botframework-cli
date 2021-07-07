@@ -19,6 +19,9 @@ import {UnitTestHelper} from './utility.test';
 
 describe('OrchestratorCreateTests', () => {
   const baseModelPath: string = path.resolve('./resources/model/model_dte_bert_3l');
+  const inputPath: string = './test/fixtures/dispatch';
+  const inputPath2: string = path.resolve('./test/fixtures/newDispatch');
+  const snapshotPath: string = path.join(inputPath, OrchestratorHelper.SnapshotFileName);
 
   beforeEach(async () => {
     Utility.debuggingLog('OrchestratorCreateTests - downloading a base nerual network language model for unit test');
@@ -26,28 +29,68 @@ describe('OrchestratorCreateTests', () => {
       baseModelPath,
       OrchestratorBaseModel.defaultHandler,
       OrchestratorBaseModel.defaultHandler);
-  });
 
-  it('Create Dispatch Snapshot', async function (): Promise<void> {
-    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
-    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
-    const outputPath: string = './test/fixtures/dispatch';
-
-    const snapshotPath: string = path.join(outputPath, OrchestratorHelper.SnapshotFileName);
     if (Utility.exists(snapshotPath)) {
       Utility.deleteFile(snapshotPath);
     }
+  });
+
+  afterEach(async () => {
+    if (Utility.exists(inputPath2)) {
+      Utility.deleteFolderRecursive(inputPath2);
+    }
+  });
+
+  it('Create Dispatch Snapshot - no existing snapshot', async function (): Promise<void> {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+
     await OrchestratorCreate.runAsync(
       baseModelPath,
       '',
-      outputPath,
-      outputPath,
+      inputPath,
+      inputPath,
       true);
 
     assert.ok(Utility.exists(snapshotPath));
     const snapshotContent: string = OrchestratorHelper.readFile(snapshotPath);
     assert.ok(snapshotContent.indexOf('HomeAutomation') > 0);
     assert.ok(snapshotContent.indexOf('Weather') > 0);
+  });
+
+  it('Create Dispatch Snapshot - incremental', async function (): Promise<void> {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+
+    await OrchestratorCreate.runAsync(
+      baseModelPath,
+      '',
+      inputPath,
+      inputPath,
+      true);
+
+    assert.ok(Utility.exists(snapshotPath));
+    const snapshotContent: string = OrchestratorHelper.readFile(snapshotPath);
+    assert.ok(snapshotContent.indexOf('HomeAutomation') > 0);
+    assert.ok(snapshotContent.indexOf('Weather') > 0);
+
+    fs.ensureDirSync(inputPath2);
+    fs.copySync(path.resolve(inputPath), inputPath2);
+    fs.copySync(path.resolve('./test/fixtures/Gaming.lu'), path.join(inputPath2, 'Gaming.lu'));
+
+    await OrchestratorCreate.runAsync(
+      baseModelPath,
+      '',
+      inputPath2,
+      inputPath,
+      true);
+
+    assert.ok(Utility.exists(snapshotPath));
+    const snapshotContent2: string = OrchestratorHelper.readFile(snapshotPath);
+    assert.ok(snapshotContent2.length > snapshotContent.length);
+    assert.ok(snapshotContent2.indexOf('HomeAutomation') > 0);
+    assert.ok(snapshotContent2.indexOf('Weather') > 0);
+    assert.ok(snapshotContent2.indexOf('Gaming') > 0);
   });
 
   it('Create Snapshot - LU file with reference to other LU file', async function (): Promise<void> {
