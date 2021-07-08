@@ -74,6 +74,58 @@ describe('OrchestratorCreateTests', () => {
     assert.ok(snapshotContent.indexOf('HomeAutomation') > 0);
     assert.ok(snapshotContent.indexOf('Weather') > 0);
 
+    // add another lu file to input and make sure new intent is added (snapshot updated incrementally)
+    fs.ensureDirSync(inputPath2);
+    fs.copySync(path.resolve(inputPath), inputPath2);
+    fs.copySync(path.resolve('./test/fixtures/Gaming.lu'), path.join(inputPath2, 'Gaming.lu'));
+
+    await OrchestratorCreate.runAsync(
+      baseModelPath,
+      '',
+      inputPath2,
+      inputPath,
+      true);
+
+    assert.ok(Utility.exists(snapshotPath));
+    const snapshotContent2: string = OrchestratorHelper.readFile(snapshotPath);
+    assert.ok(snapshotContent2.length > snapshotContent.length);
+    assert.ok(snapshotContent2.indexOf('HomeAutomation') > 0);
+    assert.ok(snapshotContent2.indexOf('Weather') > 0);
+    assert.ok(snapshotContent2.indexOf('Gaming') > 0);
+
+    // start clean and make sure file size is the same as previous run (snapshot created via addBatch)
+    Utility.deleteFile(snapshotPath);
+    await OrchestratorCreate.runAsync(
+      baseModelPath,
+      '',
+      inputPath2,
+      inputPath,
+      true);
+
+    assert.ok(Utility.exists(snapshotPath));
+    const snapshotContent3: string = OrchestratorHelper.readFile(snapshotPath);
+    assert.ok(snapshotContent3.length === snapshotContent2.length);
+    assert.ok(snapshotContent2.indexOf('HomeAutomation') > 0);
+    assert.ok(snapshotContent2.indexOf('Weather') > 0);
+    assert.ok(snapshotContent2.indexOf('Gaming') > 0);
+  });
+
+  it('Create Dispatch Snapshot - incremental', async function (): Promise<void> {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+
+    await OrchestratorCreate.runAsync(
+      baseModelPath,
+      '',
+      inputPath,
+      inputPath,
+      true);
+
+    assert.ok(Utility.exists(snapshotPath));
+    const snapshotContent: string = OrchestratorHelper.readFile(snapshotPath);
+    assert.ok(snapshotContent.indexOf('HomeAutomation') > 0);
+    assert.ok(snapshotContent.indexOf('Weather') > 0);
+
     fs.ensureDirSync(inputPath2);
     fs.copySync(path.resolve(inputPath), inputPath2);
     fs.copySync(path.resolve('./test/fixtures/Gaming.lu'), path.join(inputPath2, 'Gaming.lu'));
