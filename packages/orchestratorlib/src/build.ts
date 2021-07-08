@@ -161,6 +161,7 @@ export class OrchestratorBuild {
       Utility.debuggingLog('OrchestratorBuild.syncLabelResolverEx(), ready to call LabelResolver.addBatch()');
       LabelResolver.addBatch(target);
       Utility.debuggingLog('OrchestratorBuild.syncLabelResolverEx(), after calling LabelResolver.addBatch()');
+      return;
     }
     // ---- NOTE ---- delete example intent label if it is not in target.
     subject.utteranceLabelsMap.forEach((labels: Set<string>, utterance: string) => {
