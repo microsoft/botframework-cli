@@ -15,7 +15,7 @@ BF is based on the Node.js platform and the [OClif](https://github.com/oclif/ocl
 
 You must download the following prerequisites:
 
-* [Node.js](https://nodejs.org/) version 12
+* [Node.js](https://nodejs.org/) version 14
 
 Install the tool using the following command:
 
