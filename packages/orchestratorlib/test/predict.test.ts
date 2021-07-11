@@ -11,6 +11,8 @@ import * as fs from 'fs';
 
 import {OrchestratorPredict} from '../src/predict';
 
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
+
 import {Utility} from '../src/utility';
 import {UnitTestHelper} from './utility.test';
 
@@ -66,67 +68,106 @@ describe('Test Suite - the "predict" command', () => {
       try {
         Utility.deleteFile(predictingSetIntentScoreOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output score file="${predictingSetIntentScoreOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output score file="${predictingSetIntentScoreOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetIntentGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output ground-truth json file="${predictingSetIntentGroundTruthJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output ground-truth json file="${predictingSetIntentGroundTruthJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetIntentPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output prediction json file="${predictingSetIntentPredictionJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output prediction json file="${predictingSetIntentPredictionJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetIntentSummaryOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output summary file="${predictingSetIntentSummaryOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output summary file="${predictingSetIntentSummaryOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetIntentLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output labels file="${predictingSetIntentLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output labels file="${predictingSetIntentLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetIntentSnapshotFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetIntentSnapshotFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetIntentSnapshotFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntityScoreOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output score file="${predictingSetEntityScoreOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output score file="${predictingSetEntityScoreOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntityGroundTruthJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output ground-truth json file="${predictingSetEntityGroundTruthJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output ground-truth json file="${predictingSetEntityGroundTruthJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntityPredictionJsonContentOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output prediction json file="${predictingSetEntityPredictionJsonContentOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output prediction json file="${predictingSetEntityPredictionJsonContentOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntitySummaryOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output summary file="${predictingSetEntitySummaryOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output summary file="${predictingSetEntitySummaryOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntityLabelsOutputFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output labels file="${predictingSetEntityLabelsOutputFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output labels file="${predictingSetEntityLabelsOutputFilename}"`,
+          error,
+          true);
       }
       try {
         Utility.deleteFile(predictingSetEntitySnapshotFilename);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetEntitySnapshotFilename}", error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('s' commandlet), FAILED deleting output snapshot file="${predictingSetEntitySnapshotFilename}"`,
+          error,
+          true);
       }
       try {
         fs.rmdirSync(outputPath);
       } catch (error) {
-        Utility.debuggingLog(`Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output folder=${outputPath}, error=${error}`);
+        UtilityDispatcher.debuggingLogWithCause(
+          `Test.0000 OrchestratorPredict ('v' vommandlet), FAILED deleting output folder=${outputPath}`,
+          error,
+          true);
       }
     }
     Utility.debuggingLog('THE END - OrchestratorPredict');

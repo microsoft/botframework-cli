@@ -463,7 +463,9 @@ describe('Test Suite - orchestratorhelper', () => {
       `utteranceEntityLabelScoresMap.size=${utteranceEntityLabelScoresMap.size}`);
   });
 
-  it('Test.0400 OrchestratorHelper.getSnapshotFilePath()', () => {
+  it('Test.0400 OrchestratorHelper.getSnapshotFilePath()', function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const baseOutputDir: string = './test/fixtures/output';
     const baseInputDir: string = './test/fixtures/dispatch/';
 
@@ -508,11 +510,48 @@ describe('Test Suite - orchestratorhelper', () => {
     }
   });
 
-  it('Test.0500 OrchestratorHelper.getUtteranceLabelsMap()', async () => {
+  it('Test.0500 OrchestratorHelper.getUtteranceLabelsMap()', async function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
     const inputFile: string = './test/fixtures/adaptive/RootDialog.lu';
     const result: Map<string, Set<string>> = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
     assert.ok(result.has('Hey'), 'Incorrect result from getUtteranceLabelsMap, missing Hey utterance');
     assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
     assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
+  });
+
+  it('Test.0600 OrchestratorHelper.parseLuContent() should work on large LU content exceeding LUIS limit', async function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultFunctionalTestTimeout());
+    // Arrange
+    const luContent: string[] = [];
+    const numberExamples: number = 18000;
+    let exampleLuLine: string = '# intent';
+    luContent.push(exampleLuLine);
+    for (let indexExample: number = 0; indexExample < numberExamples; indexExample++) {
+      exampleLuLine = `- utterance ${indexExample}`;
+      luContent.push(exampleLuLine);
+    }
+    // Assert
+    assert.equal(luContent.length, numberExamples + 1);
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    // Action
+    // ---- should not fail.
+    await OrchestratorHelper.parseLuContent(
+      'luFileAsKey',
+      luContent.join('\n'),
+      '',
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+    // Assert
+    assert.equal(utteranceLabelsMap.size, numberExamples);
+    assert.equal(utteranceLabelDuplicateMap.size, 0);
+    assert.equal(utteranceEntityLabelsMap.size, 0);
+    assert.equal(utteranceEntityLabelDuplicateMap.size, 0);
   });
 });

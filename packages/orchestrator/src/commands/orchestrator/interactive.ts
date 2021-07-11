@@ -92,6 +92,7 @@ export default class OrchestratorInteractive extends Command {
         }
       }
       Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
+      Utility.resetExternalLoggingObject(this);
       Utility.debuggingLog(`OrchestratorInteractive.run(): this.id=${this.id}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): inputPath=${inputPath}`);
       Utility.debuggingLog(`OrchestratorInteractive.run(): outputPath=${outputPath}`);

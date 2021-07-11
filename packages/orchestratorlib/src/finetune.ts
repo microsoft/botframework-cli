@@ -27,7 +27,9 @@ export class OrchestratorFineTune {
       // eslint-disable-next-line no-console
       console.log('Fine tuning will be available soon.');
     } catch (error) {
-      throw new Error(error);
+      UtilityDispatcher.debuggingThrowWithCause(
+        `FAILED to fine tune model ${baseModelPath}, baseModelPath=${baseModelPath}, entityBaseModelPath=${entityBaseModelPath}`,
+        error);
     }
   }
 }

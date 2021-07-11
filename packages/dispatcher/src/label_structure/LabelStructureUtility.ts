@@ -544,6 +544,10 @@ export class LabelStructureUtility {
                 return true;
             }
         } catch (error) {
+            Utility.debuggingLogWithCause(
+                "LabelStructureUtility.getJsonIntentsEntitiesUtterances()",
+                error,
+                true);
             return false;
         }
         return false;
@@ -580,6 +584,10 @@ export class LabelStructureUtility {
                 return true;
             }
         } catch (error) {
+            Utility.debuggingLogWithCause(
+                "LabelStructureUtility.getJsonIntentEntityScoresUtterances()",
+                error,
+                true);
             return false;
         }
         return false;
@@ -713,8 +721,9 @@ export class LabelStructureUtility {
             labels.add(newLabel);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueLabel(), error='${error}', newLabel='${newLabel}', labels='${labels}'`);
-            throw error;
+            Utility.debuggingThrowWithCause(
+                `EXCEPTION calling addUniqueLabel(), newLabel='${newLabel}', labels='${labels}'`,
+                error);
         }
         return false;
     }
@@ -731,8 +740,9 @@ export class LabelStructureUtility {
             labels.push(newLabel);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
-            throw error;
+            Utility.debuggingThrowWithCause(
+                `EXCEPTION calling addUniqueLabelToArray(), newLabel=${newLabel}, labels=${labels}`,
+                error);
         }
         return false;
     }
@@ -753,8 +763,9 @@ export class LabelStructureUtility {
             labels.push(newLabel);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
-            throw error;
+            Utility.debuggingThrowWithCause(
+                `EXCEPTION calling addUniqueEntityLabelToArray(), newLabel=${newLabel}, labels=${labels}`,
+                error);
         }
         return false;
     }
@@ -1278,6 +1289,10 @@ export class LabelStructureUtility {
                 return true;
             }
         } catch (error) {
+            Utility.debuggingLogWithCause(
+                "LabelStructureUtility.getJsonIntentsEntitiesUtterancesWithWeight()",
+                error,
+                true);
             return false;
         }
         return false;
@@ -1334,6 +1349,10 @@ export class LabelStructureUtility {
                 return true;
             }
         } catch (error) {
+            Utility.debuggingLogWithCause(
+                "LabelStructureUtility.getJsonIntentEntityScoresUtterancesWithWeight()",
+                error,
+                true);
             return false;
         }
         return false;
@@ -1488,8 +1507,9 @@ export class LabelStructureUtility {
             labels.push(new StructTextNumber(newLabel, weight));
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
-            throw error;
+            Utility.debuggingThrowWithCause(
+                `EXCEPTION calling addUniqueLabelToArray(), newLabel=${newLabel}, labels=${labels}`,
+                error);
         }
         return false;
     }
@@ -1508,8 +1528,9 @@ export class LabelStructureUtility {
             labels.push([newLabel, weight]);
             return true;
         } catch (error) {
-            Utility.debuggingLog(`EXCEPTION calling addUniqueEntityLabelToArray(), error='${error}', newLabel=${newLabel}, labels=${labels}`);
-            throw error;
+            Utility.debuggingThrowWithCause(
+                `EXCEPTION calling addUniqueEntityLabelToArray(), newLabel=${newLabel}, labels=${labels}`,
+                error);
         }
         return false;
     }
