@@ -4383,11 +4383,14 @@ export class Utility {
       if (predictionStructureWithScore) {
         const predictedScore: number =
           predictionStructureWithScore.predictionScoreStructureFoundation.labelsPredictedScore;
+        const labelsIndexes: number[] =
+          predictionStructureWithScore.labelsIndexes;
         const scoreArray: number[] =
           predictionStructureWithScore.predictionScoreStructureFoundation.scoreArray;
         const scoreArrayAmbiguous: number[][] = scoreArray.map(
           (x: number, index: number) => [x, index, Math.abs((predictedScore - x) / predictedScore)]).filter(
-          (x: number[]) => ((x[2] < ambiguousClosenessThreshold) && (x[2] >= 0))).map( // ---- NOTE ---- >= for including the top-score one.
+          (x: number[]) => ((x[2] < ambiguousClosenessThreshold) && (x[2] >= 0))).filter( // ---- NOTE ---- >= for including the top-score one.
+          (x: number[]) => (!labelsIndexes.includes(x[1]))).map( // ---- NOTE ---- filter out the groud-truth labels.
           (x: number[]) => [x[1], x[0], x[2]]);
         if (scoreArrayAmbiguous.length > 0) {
           const labelsScoreStructureHtmlTable: string =
