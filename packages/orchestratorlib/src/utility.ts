@@ -4383,12 +4383,20 @@ export class Utility {
       if (predictionStructureWithScore) {
         const predictedScore: number =
           predictionStructureWithScore.predictionScoreStructureFoundation.labelsPredictedScore;
+        const labelsIndexes: number[] =
+          predictionStructureWithScore.labelsIndexes;
         const scoreArray: number[] =
           predictionStructureWithScore.predictionScoreStructureFoundation.scoreArray;
+        UtilityDispatcher.debuggingLog(`generateAmbiguousStatisticsAndHtmlTable<TL>(): predictionStructureWithScore=${UtilityDispatcher.jsonStringify(predictionStructureWithScore)}`);
+        UtilityDispatcher.debuggingLog(`generateAmbiguousStatisticsAndHtmlTable<TL>(): scoreArray=${scoreArray}`);
         const scoreArrayAmbiguous: number[][] = scoreArray.map(
-          (x: number, index: number) => [x, index, Math.abs((predictedScore - x) / predictedScore)]).filter(
-          (x: number[]) => ((x[2] < ambiguousClosenessThreshold) && (x[2] >= 0))).map( // ---- NOTE ---- >= for including the top-score one.
-          (x: number[]) => [x[1], x[0], x[2]]);
+          (score: number, index: number) => [score, index, Math.abs((predictedScore - score) / predictedScore)]).filter(
+          ([, index, closenessToPredictedScore]: number[]) =>
+            ((closenessToPredictedScore < ambiguousClosenessThreshold) && // ---- NOTE ---- closeness smaller than the ambiguous threshold.
+             (closenessToPredictedScore >= 0) && // ---- NOTE ---- >=0 for including the top-score one.
+              (!labelsIndexes.includes(index)))).map( // ---- NOTE ---- filter out the groud-truth labels.
+          ([score, index, closenessToPredictedScore]: number[]) => [index, score, closenessToPredictedScore]);
+        UtilityDispatcher.debuggingLog(`generateAmbiguousStatisticsAndHtmlTable<TL>(): scoreArrayAmbiguous=${UtilityDispatcher.jsonStringify(scoreArrayAmbiguous)}`);
         if (scoreArrayAmbiguous.length > 0) {
           const labelsScoreStructureHtmlTable: string =
             predictionStructureWithScore.predictionScoreStructureFoundation.predictionScoreStructureFoundationDisplay.labelsScoreStructureHtmlTable;

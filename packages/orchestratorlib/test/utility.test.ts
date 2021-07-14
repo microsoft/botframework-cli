@@ -9,13 +9,20 @@ import {} from 'mocha';
 
 // import * as path from 'path';
 
-import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
+import {DictionaryMapUtility, Span} from '@microsoft/bf-dispatcher';
+
+import {Label} from '@microsoft/bf-dispatcher';
+import {LabelType} from '@microsoft/bf-dispatcher';
+import {Result} from '@microsoft/bf-dispatcher';
 
 import {ILabelArrayAndMap} from '@microsoft/bf-dispatcher';
+import {PredictionStructureWithScoreLabelString} from '@microsoft/bf-dispatcher';
+import {PredictionType} from '@microsoft/bf-dispatcher';
 
 import {OrchestratorBaseModel} from '../src/basemodel';
 // import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 // NOTE: "orchestrator_test_3_layer" is an aka.ms alias for the 3 layer model "pretrained.20200924.microsoft.dte.00.03.en.onnx"
 // https://aka.ms/orchestrator_test_3_layer === https://aka.ms/pretrained.20200924.microsoft.dte.00.03.en.onnx
@@ -70,6 +77,47 @@ export class UnitTestHelper {
 }
 
 describe('Test Suite - utility', () => {
+  it('Test.0300 Utility.generateAmbiguousStatisticsAndHtmlTable()', function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    const predictionStructureWithScoreLabelStringArray: PredictionStructureWithScoreLabelString[] = [];
+    const ambiguousClosenessThreshold: number = 0.2;
+    const unknownLabelPredictionThreshold: number = 0;
+    predictionStructureWithScoreLabelStringArray.push(new PredictionStructureWithScoreLabelString(
+      'hello world', // text: string,
+      PredictionType.TruePositive, // labelsPredictedEvaluation: number,
+      ['greeting'], // labels: string[],
+      'greeting', // labelsConcatenated: string,
+      '', // labelsConcatenatedToHtmlTable: string,
+      [0], // labelsIndexes: number[],
+      ['greeting'], // labelsPredicted: string[],
+      'greeting', // labelsPredictedConcatenated: string,
+      '', // labelsPredictedConcatenatedToHtmlTable: string,
+      [0], // labelsPredictedIndexes: number[],
+      0.8, // labelsPredictedScore: number,
+      ['closest-greeting'], // labelsPredictedClosestText: string[],
+      [new Result(new Label(LabelType.Intent, 'greeting', new Span(0, 0)), 0.8, 'closest-greeting'),
+        new Result(new Label(LabelType.Intent, 'None', new Span(0, 0)), 0.79, 'closest-None')], // scoreResultArray: Result[],
+      [0.8, 0.75], // scoreArray: number[],
+      '', // predictedScoreStructureHtmlTable: string,
+      '', // labelsScoreStructureHtmlTable: string
+    ));
+    const scoringAmbiguousResult: {
+      'scoringAmbiguousUtterancesArrays': string[][];
+      'scoringAmbiguousUtterancesArraysHtml': string;
+      'scoringAmbiguousUtteranceSimpleArrays': string[][];
+    } = Utility.generateAmbiguousStatisticsAndHtmlTable<string>(
+      predictionStructureWithScoreLabelStringArray,
+      ambiguousClosenessThreshold,
+      unknownLabelPredictionThreshold);
+    UtilityDispatcher.debuggingLog(`scoringAmbiguousUtterancesArraysHtml.length=${scoringAmbiguousResult.scoringAmbiguousUtterancesArraysHtml.length}`);
+    UtilityDispatcher.debuggingLog(`scoringAmbiguousUtteranceSimpleArrays=${scoringAmbiguousResult.scoringAmbiguousUtteranceSimpleArrays}`);
+    UtilityDispatcher.debuggingLog(`scoringAmbiguousUtterancesArrays=${scoringAmbiguousResult.scoringAmbiguousUtterancesArrays}`);
+    assert.strictEqual(scoringAmbiguousResult.scoringAmbiguousUtterancesArraysHtml.length, 818);
+    assert.strictEqual(scoringAmbiguousResult.scoringAmbiguousUtteranceSimpleArrays.length, 1);
+    assert.strictEqual(scoringAmbiguousResult.scoringAmbiguousUtterancesArrays.length, 1);
+  });
+
   it('Test.0200 Utility.buildStringIdNumberValueDictionaryFromStringArray()', function () {
     Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
