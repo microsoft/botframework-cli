@@ -286,7 +286,7 @@ export class OrchestratorHelper {
       throw new Error(`${filePath} has invalid extension - only lu, qna, json, tsv and dispatch files are supported.`);
     }
 
-    Utility.writeStringToConsoleStdout(`Processing ${filePath}...`);
+    Utility.writeStringLineToConsoleStdout(`Processing ${filePath}...`);
     try {
       switch (ext) {
       case '.lu':
