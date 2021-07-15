@@ -69,6 +69,7 @@ common/temp/**
 
 #package-lock.json
 package-lock.json
+!packages/bfCliTask/src/package-lock.json
 
 #tsconfig.tsbuildinfo
 tsconfig.tsbuildinfo
