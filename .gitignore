@@ -51,6 +51,7 @@ jspm_packages/
 
 # dotenv environment variables file
 .env
+!packages/botDeploymentTask/botDeployment/.env
 
 # next.js build output
 .next
@@ -69,6 +70,7 @@ common/temp/**
 
 #package-lock.json
 package-lock.json
+!packages/botDeploymentTask/botDeployment/package-lock.json
 
 #tsconfig.tsbuildinfo
 tsconfig.tsbuildinfo
