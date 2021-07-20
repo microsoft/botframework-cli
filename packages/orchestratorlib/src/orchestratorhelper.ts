@@ -75,7 +75,7 @@ export class OrchestratorHelper {
     fs.unlinkSync(filePath);
   }
 
-  public static label(name: string, offset: number, length: number): any {
+  public static label(name: string, offset: number, length: number): {entity: string; startPos: number; endPos: number} {
     return {entity: name, startPos: offset, endPos: offset + length - 1};
   }
 
@@ -296,59 +296,65 @@ export class OrchestratorHelper {
     Utility.writeStringLineToConsoleStdout(`Processing ${filePath}...`);
     try {
       switch (ext) {
-      case '.lu':
-        await OrchestratorHelper.parseLuFile(
-          filePath,
-          routingName,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap,
-          utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap);
-        break;
-      case '.qna':
-        await OrchestratorHelper.parseQnaFile(
-          filePath,
-          routingName,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap);
-        break;
-      case '.json':
-        if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
-          return;
-        }
-        if (OrchestratorHelper.getIntentsEntitiesUtterances(
-          fs.readJsonSync(filePath),
-          routingName,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap,
-          utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap)) {
-          return;
-        }
-        if (!OrchestratorHelper.getJsonIntentsEntitiesUtterances(
-          fs.readJsonSync(filePath),
-          routingName,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap,
-          utteranceEntityLabelsMap,
-          utteranceEntityLabelDuplicateMap)) {
-          throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
-        }
-        break;
-      case '.tsv':
-      case '.txt':
-        OrchestratorHelper.parseTsvFile(
-          filePath,
-          routingName,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap);
-        break;
-      case '.blu':
-        OrchestratorHelper.parseTsvBluFile(
-          filePath,
-          utteranceLabelsMap,
-          utteranceLabelDuplicateMap);
-        break;
+        case '.lu':
+          await OrchestratorHelper.parseLuFile(
+            filePath,
+            routingName,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap);
+          break;
+
+        case '.qna':
+          await OrchestratorHelper.parseQnaFile(
+            filePath,
+            routingName,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap);
+          break;
+
+        case '.json':
+          if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
+            return;
+          }
+          if (OrchestratorHelper.getIntentsEntitiesUtterances(
+            fs.readJsonSync(filePath),
+            routingName,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap)) {
+            return;
+          }
+          if (!OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+            fs.readJsonSync(filePath),
+            routingName,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap)) {
+            throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+          }
+          break;
+
+        case '.tsv':
+        case '.txt':
+          OrchestratorHelper.parseTsvFile(
+            filePath,
+            routingName,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap);
+          break;
+
+        case '.blu':
+          OrchestratorHelper.parseTsvBluFile(
+            filePath,
+            utteranceLabelsMap,
+            utteranceLabelDuplicateMap);
+          break;
+
+        default: throw new Error(`Unknown file type ${ext}`);
       }
     } catch (error) {
       throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}`);
@@ -1144,7 +1150,7 @@ export class OrchestratorHelper {
   static findLuFiles(srcId: string, idsToFind: string[]): any[] {
     const baseDir: string = path.dirname(srcId);
     const retPayload: any[] = [];
-    (idsToFind || []).forEach((ask: any) => {
+    idsToFind?.forEach((ask: any) => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
       if (fileContent) {

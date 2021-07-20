@@ -11,7 +11,7 @@ import {OrchestratorHelper} from './orchestratorhelper';
 import {OrchestratorSettings, OrchestratorDataSource, OrchestratorDataSourceSettings} from './settings';
 
 export class DataSourceHelper {
-  public static convertDispatchInputs(dispatchJson: any, dataSourceSettings: OrchestratorDataSourceSettings)  {
+  public static convertDispatchInputs(dispatchJson: any, dataSourceSettings: OrchestratorDataSourceSettings) {
     if (!dispatchJson || !dispatchJson.services || dispatchJson.services.length === 0) {
       throw new Error(`Failed parsing ${dispatchJson}`);
     }
@@ -24,42 +24,42 @@ export class DataSourceHelper {
       let routingName: string;
       let endpoint: string = '';
       switch (service.type) {
-      case 'luis':
-        endpoint = `https://${service.region}.api.cognitive.microsoft.com`;
-        routingName = service.intentName ? service.intentName : `l_${service.name}`;
-        dataSource = new OrchestratorDataSource(
-          service.appId,
-          service.authoringKey,
-          service.version,
-          endpoint,
-          service.type,
-          routingName,
-          dataSourceSettings.path);
-        break;
-      case 'qna':
-        routingName = service.intentName ? service.intentName : `q_${service.name}`;
-        dataSource = new OrchestratorDataSource(
-          service.kbId,
-          service.subscriptionKey,
-          '',
-          endpoint,
-          service.type,
-          routingName,
-          dataSourceSettings.path);
-        break;
-      case 'file':
-        routingName = service.intentName ? service.intentName : service.name;
-        dataSource = new OrchestratorDataSource(
-          '',
-          '',
-          '',
-          '',
-          service.type,
-          routingName,
-          service.path);
-        break;
-      default:
-        throw new Error(`Failed parsing ${dispatchJson}, unsupported type ${service.type}`);
+        case 'luis':
+          endpoint = `https://${service.region}.api.cognitive.microsoft.com`;
+          routingName = service.intentName ? service.intentName : `l_${service.name}`;
+          dataSource = new OrchestratorDataSource(
+            service.appId,
+            service.authoringKey,
+            service.version,
+            endpoint,
+            service.type,
+            routingName,
+            dataSourceSettings.path);
+          break;
+        case 'qna':
+          routingName = service.intentName ? service.intentName : `q_${service.name}`;
+          dataSource = new OrchestratorDataSource(
+            service.kbId,
+            service.subscriptionKey,
+            '',
+            endpoint,
+            service.type,
+            routingName,
+            dataSourceSettings.path);
+          break;
+        case 'file':
+          routingName = service.intentName ? service.intentName : service.name;
+          dataSource = new OrchestratorDataSource(
+            '',
+            '',
+            '',
+            '',
+            service.type,
+            routingName,
+            service.path);
+          break;
+        default:
+          throw new Error(`Failed parsing ${dispatchJson}, unsupported type ${service.type}`);
       }
 
       if (!dataSourceSettings.hasDataSource(dataSource, true)) {
@@ -81,36 +81,36 @@ export class DataSourceHelper {
   }
 
   public static async getLuFileFromLuisApp(input: OrchestratorDataSource): Promise<string> {
-    const lu: string  = await LuisQnaHelper.getLuFromLuisApp(input.Endpoint, input.Id, input.Key, input.Version);
+    const lu: string = await LuisQnaHelper.getLuFromLuisApp(input.Endpoint, input.Id, input.Key, input.Version);
     return lu;
   }
 
   public static async ensureDataSourceAsync(input: OrchestratorDataSource, dataSourcePath: string, updateSettings: boolean = true): Promise<void> {
     let content: string = '';
     switch (input.Type) {
-    case 'luis':
-      if (Utility.isEmptyString(input.Endpoint)) {
-        throw new Error('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
-      }
-      content = await DataSourceHelper.getLuFileFromLuisApp(input);
-      if (content.length === 0) {
-        throw new Error(`LUIS app id ${input.Id} - subscriptionKey ${input.Key} not found`);
-      }
-      break;
-    case 'qna':
-      content = await DataSourceHelper.getQnAFileFromQnaKb(input);
-      if (content.length === 0) {
-        throw new Error(`Qna kb id ${input.Id} - subscriptionKey ${input.Key} not found`);
-      }
-      break;
-    case 'file':
-      if (Utility.isEmptyString(input.RoutingName)) {
-        throw new Error('routingName parameter is required');
-      }
-      DataSourceHelper.ensureFileInDataSourceFolder(input, dataSourcePath);
-      break;
-    default:
-      throw new Error('Invalid input type');
+      case 'luis':
+        if (Utility.isEmptyString(input.Endpoint)) {
+          throw new Error('LUIS endpoint required, ie --endpoint https://westus.api.cognitive.microsoft.com');
+        }
+        content = await DataSourceHelper.getLuFileFromLuisApp(input);
+        if (content.length === 0) {
+          throw new Error(`LUIS app id ${input.Id} - subscriptionKey ${input.Key} not found`);
+        }
+        break;
+      case 'qna':
+        content = await DataSourceHelper.getQnAFileFromQnaKb(input);
+        if (content.length === 0) {
+          throw new Error(`Qna kb id ${input.Id} - subscriptionKey ${input.Key} not found`);
+        }
+        break;
+      case 'file':
+        if (Utility.isEmptyString(input.RoutingName)) {
+          throw new Error('routingName parameter is required');
+        }
+        DataSourceHelper.ensureFileInDataSourceFolder(input, dataSourcePath);
+        break;
+      default:
+        throw new Error('Invalid input type');
     }
 
     const currentSettings: OrchestratorSettings = OrchestratorSettings.getCurrent();

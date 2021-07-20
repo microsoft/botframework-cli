@@ -66,11 +66,12 @@
         "--out",
         "C:/Users/chrim/AppData/Local/Temp/sandwich.out/language-understanding/en-us/sandwich.en-us.blu",
         "--model",
-        "c:/users/chrim/source/repos/samples/basemodel",
+        "c:/tmp/basemodel",
         "--entityModel",
-        "c:/users/chrim/source/repos/samples/basemodel/entity",
+        "c:/tmp/basemodel/entity",
         "--hierarchical",
-        "-d"
+        "-d",
+        "--refresh"
       ],
       "internalConsoleOptions": "openOnSessionStart",
       "cwd": "${workspaceFolder}"

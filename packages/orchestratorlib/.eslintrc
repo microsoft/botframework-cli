@@ -7,6 +7,7 @@
   ],
   "rules": {
     "semi": ["error", "always"],
+    "indent": ["error", 2, {"SwitchCase" : 1}],
     "@typescript-eslint/no-inferrable-types": [
       true
     ],
@@ -20,7 +21,7 @@
         "parameter": true,
         "propertyDeclaration": true,
         "variableDeclaration": true,
-        "variableDeclarationIgnoreFunction": true
+        "variableDeclarationIgnoreFunction": true,
       }
     ]
   }
