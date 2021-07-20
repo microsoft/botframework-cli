@@ -4,20 +4,25 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "bf CLI",
+      "name": "Orchestrator Tests",
       "preLaunchTask": "${defaultBuildTask}",
-      "program": "${workspaceFolder}/packages/cli/bin/run",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "test",
+        "--",
+        "--timeout",
+        "999999",
+        "--colors",
+        "-g",
+        ".*addAsync.*"
+      ],
+      "cwd": "${workspaceFolder}/packages/orchestratorlib",
+      "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "outFiles": [
-        "${workspaceFolder}/packages/luis/lib/**"
-      ],
-      "args": [
-        "luis:build",
-        "--luConfig",
-        "${env:TEMP}/sandwich.out/luconfig.json"
-      ],
-      "internalConsoleOptions": "openOnSessionStart",
-      "cwd": "${workspaceFolder}"
+        "./packages/orchestratorlib/lib/**"
+      ]
     },
     {
       "type": "node",
@@ -47,6 +52,32 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "bf Orchestrator form",
+      "preLaunchTask": "${defaultBuildTask}",
+      "program": "${workspaceFolder}/packages/orchestrator/bin/run",
+      "outputCapture": "std",
+      "outFiles": [
+        "${workspaceFolder}/packages/orchestrator/lib/**"
+      ],
+      "args": [
+        "orchestrator:create",
+        "--in",
+        "C:/Users/chrim/AppData/Local/Temp/sandwich.out/language-understanding/en-us/sandwich.en-us.lu",
+        "--out",
+        "C:/Users/chrim/AppData/Local/Temp/sandwich.out/language-understanding/en-us/sandwich.en-us.blu",
+        "--model",
+        "c:/users/chrim/source/repos/samples/basemodel",
+        "--entityModel",
+        "c:/users/chrim/source/repos/samples/basemodel/entity",
+        "--hierarchical",
+        "-d"
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Dialog Merge Tests",
       "preLaunchTask": "${defaultBuildTask}",
       "runtimeExecutable": "npm",
@@ -64,7 +95,7 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "outFiles": [
-        "./package/dialog/lib/**"
+        "./packages/dialog/lib/**"
       ]
     },
     {
@@ -87,7 +118,7 @@
       "internalConsoleOptions": "openOnSessionStart",
       "outputCapture": "std",
       "outFiles": [
-        "./package/dialog/lib/**"
+        "./packages/dialog/lib/**"
       ]
     },
     {
