@@ -1147,10 +1147,10 @@ export class OrchestratorHelper {
     return false;
   }
 
-  static findLuFiles(srcId: string, idsToFind: string[]): any[] {
+  static findLuFiles(srcId: string, idsToFind: {filePath: string}[]): {content: string; id: string}[] {
     const baseDir: string = path.dirname(srcId);
     const retPayload: any[] = [];
-    idsToFind?.forEach((ask: any) => {
+    idsToFind?.forEach((ask) => {
       const resourceToFind: string = path.isAbsolute(ask.filePath) ? ask.filePath : path.resolve(path.join(baseDir, ask.filePath));
       const fileContent: string = OrchestratorHelper.readFile(resourceToFind);
       if (fileContent) {
