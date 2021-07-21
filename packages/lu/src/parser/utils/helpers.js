@@ -25,7 +25,8 @@ const helpers = {
      */
     FileExtTypeEnum: {
         LUFile : '.lu',
-        QnAFile : '.qna'
+        QnAFile : '.qna',
+        LuDialog: '.lu.dialog'
     },
     /**
      * Helper function to recursively get all .lu files

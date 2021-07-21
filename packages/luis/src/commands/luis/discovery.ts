@@ -26,6 +26,7 @@ export default class LuisDiscovery extends Command {
   static flags: flags.Input<any> = {
     help: flags.help({char: 'h', description: 'luis:discovery command help'}),
     in: flags.string({char: 'i', description: '(required) The of bot dialog files folder'}),
+    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     out: flags.string({char: 'o', description: 'Output folder name to write out .json file of discovered luis models. If not specified, application setting will be output to console'}),
   }
 
@@ -39,15 +40,32 @@ export default class LuisDiscovery extends Command {
       // Flags override userConfig
       let LuisDiscoveryFlags = Object.keys(LuisDiscovery.flags)
 
-      let {inVal, out}
+      let {inVal, log, out}
         = await utils.processInputs(flags, LuisDiscoveryFlags, this.config.configDir)
-
-       console.log(inVal, out) 
 
       flags.stdin = await this.readStdin()
 
       if (!flags.stdin && !inVal && files.length === 0) {
         throw new CLIError('Missing input. Please use stdin or pass a file or folder location with --in flag')
+      }
+
+      if ((inVal && inVal !== '') || files.length > 0) {
+        if (log) this.log('Loading files...\n')
+
+        // get lu files from in.
+        if (inVal && inVal !== '') {
+          const dialogFiles = await file.getLuDialogFiles(inVal, true)
+          files.push(...dialogFiles)
+        }
+
+        // de-dupe the files list
+        files = Array.from(new Set(files))
+        console.log(JSON.stringify(files))
+        for (let i = 0; i < files.length; i++) {
+          let dialogContent = await file.getContentFromFile(files[i])
+          const luDialog = JSON.parse(dialogContent)
+        }
+        
       }
     } catch (error) {
       if (error instanceof exception) {

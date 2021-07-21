@@ -54,6 +54,10 @@ export async function getLuFiles(input: string | undefined, recurse = false, ext
   return filesToParse
 }
 
+export async function getLuDialogFiles(input: string, recurse = false) {
+  return (await getLuFiles(input, recurse, fileExtEnum.LuDialog))
+}
+
 export async function getContentFromFile(file: string) {
   // catch if input file is a folder
   if (fs.lstatSync(file).isDirectory()) {
