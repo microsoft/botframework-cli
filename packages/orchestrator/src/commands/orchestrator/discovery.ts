@@ -9,6 +9,7 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {getContentFromFile} from '../../utils';
 const fs = require('fs-extra');
 const file = require('@microsoft/bf-lu/lib/utils/filehelper');
 
@@ -51,7 +52,7 @@ export default class OrchestratorDiscovery extends Command {
         files = [...new Set(files)];
         const orchestratorsDialogs: {dialog: string; language: string}[] = [];
         for (let i = 0; i < files.length; i++) {
-          const dialogContent = await file.getContentFromFile(files[i]);
+          const dialogContent = await getContentFromFile(files[i]);
           const luDialog = JSON.parse(dialogContent);
           if (luDialog.$kind === OrchestratorDiscovery.orchestratorRecognizer) {
             const dialogName = path.parse(files[i]).base;
