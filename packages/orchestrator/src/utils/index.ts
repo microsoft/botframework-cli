@@ -3,16 +3,12 @@
  * Licensed under the MIT License.
  */
 
-/* eslint-disable complexity */
-/* eslint-disable @typescript-eslint/typedef */
-/* eslint-disable prefer-promise-reject-errors */
-/* eslint-disable no-async-promise-executor */
-
 import * as fs from 'fs';
 import * as path from 'path';
 import * as util from 'util';
 
-const fixBuffer: any = function (fileBuffer) {
+/* eslint-disable complexity */
+const fixBuffer: any = function (fileBuffer: any) {
   if (fileBuffer) {
     // If the data starts with BOM, we know it is UTF
     if (fileBuffer[0] === 0xEF && fileBuffer[1] === 0xBB && fileBuffer[2] === 0xBF) {
@@ -42,9 +38,11 @@ const fixBuffer: any = function (fileBuffer) {
 };
 
 async function readTextFile(file: any): Promise<string> {
+  // eslint-disable-next-line no-async-promise-executor
   return new Promise(async (resolve: any, reject: any) => {
     try {
       if (!fs.existsSync(file)) {
+        /* eslint-disable prefer-promise-reject-errors */
         return reject('ENOENT: no such file or directory, ' + file);
       }
 
@@ -56,6 +54,7 @@ async function readTextFile(file: any): Promise<string> {
         return reject(new Error(error.message));
       }
 
+      /* eslint-disable prefer-promise-reject-errors */
       return reject(`Invalid Input. Sorry, unable to parse file: ${error}`);
     }
   });
@@ -78,4 +77,47 @@ export async function getContentFromFile(file: string) {
   }
 
   return fileContent;
+}
+
+const luDiaolgExt: string = '.lu.dialog';
+const luExt: string = '.lu';
+
+const findLUFiles = function (inputFolder: string, getSubFolders: boolean, extType: string = luExt) {
+  let results: string[] = [];
+  fs.readdirSync(inputFolder).forEach(function (dirContent: string) {
+    dirContent = path.resolve(inputFolder, dirContent);
+    if (getSubFolders && fs.statSync(dirContent).isDirectory()) {
+      results = results.concat(findLUFiles(dirContent, getSubFolders, extType));
+    }
+
+    if (fs.statSync(dirContent).isFile()) {
+      if (dirContent.endsWith(extType)) {
+        results.push(dirContent);
+      }
+    }
+  });
+
+  return results;
+};
+
+async function getLuFiles(input: string, recurse: boolean = false, extType: string | undefined): Promise<Array<any>> {
+  let filesToParse: any[] = [];
+  const stat: any = util.promisify(fs.stat);
+  const fileStat: any = await stat(input);
+  if (fileStat.isFile()) {
+    filesToParse.push(path.resolve(input));
+    return filesToParse;
+  }
+
+  if (!fileStat.isDirectory()) {
+    throw new Error('Sorry, ' + input + ' is not a folder or does not exist');
+  }
+
+  filesToParse = findLUFiles(input, recurse, extType);
+
+  return filesToParse;
+}
+
+export async function getLuDialogFiles(input: string, recurse: boolean = false) {
+  return Promise.resolve(getLuFiles(input, recurse, luDiaolgExt));
 }

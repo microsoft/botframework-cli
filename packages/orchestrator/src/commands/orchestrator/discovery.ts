@@ -1,7 +1,3 @@
-/* eslint-disable max-depth */
-/* eslint-disable no-await-in-loop */
-/* eslint-disable node/no-missing-require */
-/* eslint-disable @typescript-eslint/typedef */
 /*!
  * Copyright (c) Microsoft Corporation. All rights reserved.
  * Licensed under the MIT License.
@@ -9,14 +5,13 @@
 
 import * as path from 'path';
 import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
-import {getContentFromFile} from '../../utils';
-const fs = require('fs-extra');
-const file = require('@microsoft/bf-lu/lib/utils/filehelper');
+import {getContentFromFile, getLuDialogFiles} from '../../utils';
+const fs: any = require('fs-extra');
 
 export default class OrchestratorDiscovery extends Command {
   static description: string = 'OrchestratorDiscovery';
 
-  static orchestratorRecognizer = 'Microsoft.OrchestratorRecognizer'
+  static orchestratorRecognizer: string = 'Microsoft.OrchestratorRecognizer'
 
   static examples: Array<string> = [`	
     $ bf orchestrator:discovery 	
@@ -44,20 +39,22 @@ export default class OrchestratorDiscovery extends Command {
 
         // get lu files from in.
         if (flags.in && flags.in !== '') {
-          const dialogFiles = await file.getLuDialogFiles(flags.in, true);
+          const dialogFiles: string[] = await getLuDialogFiles(flags.in, true);
           files.push(...dialogFiles);
         }
 
         // de-dupe the files list
         files = [...new Set(files)];
         const orchestratorsDialogs: {dialog: string; language: string}[] = [];
-        for (let i = 0; i < files.length; i++) {
-          const dialogContent = await getContentFromFile(files[i]);
-          const luDialog = JSON.parse(dialogContent);
+        for (let i: number = 0; i < files.length; i++) {
+          // eslint-disable-next-line no-await-in-loop
+          const dialogContent: string = await getContentFromFile(files[i]);
+          const luDialog: {$kind: string} = JSON.parse(dialogContent);
           if (luDialog.$kind === OrchestratorDiscovery.orchestratorRecognizer) {
-            const dialogName = path.parse(files[i]).base;
-            const nameWithLocale = dialogName.substr(0, dialogName.length - 10);
-            const nameLocaleSegments = nameWithLocale.split('.');
+            const dialogName: string = path.parse(files[i]).base;
+            const nameWithLocale: string = dialogName.substr(0, dialogName.length - 10);
+            const nameLocaleSegments: string[] = nameWithLocale.split('.');
+            /* eslint-disable max-depth */
             if (nameLocaleSegments.length === 1) {
               orchestratorsDialogs.push({dialog: nameLocaleSegments[0] + '.dialog', language: ''});
             } else if (nameLocaleSegments.length === 2) {
@@ -66,11 +63,11 @@ export default class OrchestratorDiscovery extends Command {
           }
         }
 
-        const result = {Orchestrator: orchestratorsDialogs};
+        const result: {Orchestrator: {dialog: string; language: string}[]} = {Orchestrator: orchestratorsDialogs};
 
         // write dialog assets based on config
         if (flags.out) {
-          const outputFolder = path.resolve(flags.out);
+          const outputFolder: string = path.resolve(flags.out);
           await fs.writeFile(outputFolder, JSON.stringify(result), 'utf-8');
           this.log(`Successfully wrote .json files to ${outputFolder}\n`);
         } else {
