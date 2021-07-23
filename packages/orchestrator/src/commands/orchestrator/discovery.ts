@@ -9,12 +9,12 @@ import {getContentFromFile, getLuDialogFiles} from '../../utils';
 const fs: any = require('fs-extra');
 
 export default class OrchestratorDiscovery extends Command {
-  static description: string = 'OrchestratorDiscovery';
+  static description: string = 'Discover all dialogs using Orchestrator model as the recognizer.';
 
   static orchestratorRecognizer: string = 'Microsoft.OrchestratorRecognizer'
 
   static examples: Array<string> = [`	
-    $ bf orchestrator:discovery 	
+    $ bf orchestrator:discovery --in exampleBot --out orchestratorModels.json --log
     `]
 
   static flags: flags.Input<any> = {
@@ -68,7 +68,8 @@ export default class OrchestratorDiscovery extends Command {
         // write dialog assets based on config
         if (flags.out) {
           const outputFolder: string = path.resolve(flags.out);
-          await fs.writeFile(outputFolder, JSON.stringify(result), 'utf-8');
+          const outputPath: string = path.join(outputFolder, 'OrchestratorModel.json');
+          await fs.writeFile(outputPath, JSON.stringify(result), 'utf-8');
           this.log(`Successfully wrote .json files to ${outputFolder}\n`);
         } else {
           this.log('Dialogs using Luis Recognizers:');

@@ -11,7 +11,7 @@ const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const utils = require('../../utils/index')
 
 export default class LuisDiscovery extends Command {
-  static description = 'Discover all dialogs which use Luis Recognizer'
+  static description = 'Discover all dialogs using Luis model as the recognizer.'
   static luisRecognizer = 'Microsoft.LuisRecognizer'
 
   static examples = [`
@@ -53,14 +53,14 @@ export default class LuisDiscovery extends Command {
 
         // de-dupe the files list
         files = Array.from(new Set(files))
-        const luisDialogs = []
+        const luisDialogs: {dialog: string; language: string}[] = []
         for (const curFile of files) {
           let dialogContent = await file.getContentFromFile(curFile)
           const luDialog = JSON.parse(dialogContent)
           if (luDialog.$kind === LuisDiscovery.luisRecognizer) {
             const dialogName = path.parse(curFile).base
             const nameWithLocale = dialogName.substr(0, dialogName.length - 10)
-            const nameLocaleSegments = nameWithLocale.split('.')
+            const nameLocaleSegments: string[] = nameWithLocale.split('.')
             if (nameLocaleSegments.length === 1) {
               luisDialogs.push({dialog: nameLocaleSegments[0] + '.dialog', language: ''})
             } else if (nameLocaleSegments.length === 2) {
@@ -74,8 +74,10 @@ export default class LuisDiscovery extends Command {
         // write dialog assets based on config
         if (out) {
           const outputFolder = path.resolve(out)
-          await fs.writeFile(outputFolder, JSON.stringify(result), 'utf-8')
-          this.log(`Successfully wrote .json files to ${outputFolder}\n`)
+          const outputPath = path.join(outputFolder, 'LuisModel.json')
+          console.log(outputPath)
+          await fs.writeFile(outputPath, JSON.stringify(result), 'utf-8')
+          this.log(`Successfully wrote LuisModel.json files to ${outputFolder}\n`)
         } else {
           this.log('Dialogs using Luis Recognizers:')
           this.log(JSON.stringify(result, null, 4))
