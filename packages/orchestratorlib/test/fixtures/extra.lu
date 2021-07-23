@@ -1,0 +1,6 @@
+[Weather Skill](./skills/Weather.lu)
+
+@ ml entity
+
+# extra
+- Something {entity=extra}

@@ -133,7 +133,8 @@ export class OrchestratorPredict {
 
   protected currentLabelArrayAndMap: ILabelArrayAndMap = {
     stringArray: [],
-    stringMap: new Map<string, number>()};
+    stringMap: new Map<string, number>(),
+  };
 
   protected currentUtteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
 
@@ -147,34 +148,41 @@ export class OrchestratorPredict {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
-        'labelStatisticsHtml': string;};
+        'labelStatisticsHtml': string;
+      };
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
-        'utteranceStatisticsHtml': string;};
+        'utteranceStatisticsHtml': string;
+      };
       'spuriousLabelStatisticsAndHtmlTable': {
         'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
-        'spuriousLabelStatisticsHtml': string; };
+        'spuriousLabelStatisticsHtml': string;
+      };
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
-      'utteranceLabelDuplicateHtml': string; };
+      'utteranceLabelDuplicateHtml': string;
+    };
     'evaluationReportAnalyses': {
       'evaluationSummary': string;
       'ambiguousAnalysis': {
         'scoringAmbiguousUtterancesArrays': string[][];
         'scoringAmbiguousUtterancesArraysHtml': string;
-        'scoringAmbiguousUtteranceSimpleArrays': string[][];};
+        'scoringAmbiguousUtteranceSimpleArrays': string[][];
+      };
       'misclassifiedAnalysis': {
         'scoringMisclassifiedUtterancesArrays': string[][];
         'scoringMisclassifiedUtterancesArraysHtml': string;
-        'scoringMisclassifiedUtterancesSimpleArrays': string[][];};
+        'scoringMisclassifiedUtterancesSimpleArrays': string[][];
+      };
       'lowConfidenceAnalysis': {
         'scoringLowConfidenceUtterancesArrays': string[][];
         'scoringLowConfidenceUtterancesArraysHtml': string;
-        'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
+        'scoringLowConfidenceUtterancesSimpleArrays': string[][];
+      };
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
         'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
@@ -182,7 +190,9 @@ export class OrchestratorPredict {
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
-        'confusionMatrixAverageDescriptionMetricsHtml': string;};};
+        'confusionMatrixAverageDescriptionMetricsHtml': string;
+      };
+    };
     'predictionStructureWithScoreLabelStringArray': PredictionStructureWithScoreLabelString[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
@@ -197,34 +207,41 @@ export class OrchestratorPredict {
         'labelUtterancesMap': Map<string, Set<string>>;
         'labelUtterancesTotal': number;
         'labelStatistics': string[][];
-        'labelStatisticsHtml': string;};
+        'labelStatisticsHtml': string;
+      };
       'utteranceStatisticsAndHtmlTable': {
         'utteranceStatisticsMap': Map<number, number>;
         'utteranceStatistics': StructTextNumber[];
         'utteranceCount': number;
-        'utteranceStatisticsHtml': string;};
+        'utteranceStatisticsHtml': string;
+      };
       'spuriousLabelStatisticsAndHtmlTable': {
         'spuriousLabelUtterancesMap': StructTextStringSet[];
         'spuriousLabelUtterancesTotal': number;
         'spuriousLabelStatistics': string[][];
-        'spuriousLabelStatisticsHtml': string; };
+        'spuriousLabelStatisticsHtml': string;
+      };
       'utterancesMultiLabelArrays': StructTextText[];
       'utterancesMultiLabelArraysHtml': string;
-      'utteranceLabelDuplicateHtml': string; };
+      'utteranceLabelDuplicateHtml': string;
+    };
     'evaluationReportAnalyses': {
       'evaluationSummary': string;
       'ambiguousAnalysis': {
         'scoringAmbiguousUtterancesArrays': string[][];
         'scoringAmbiguousUtterancesArraysHtml': string;
-        'scoringAmbiguousUtteranceSimpleArrays': string[][];};
+        'scoringAmbiguousUtteranceSimpleArrays': string[][];
+      };
       'misclassifiedAnalysis': {
         'scoringMisclassifiedUtterancesArrays': string[][];
         'scoringMisclassifiedUtterancesArraysHtml': string;
-        'scoringMisclassifiedUtterancesSimpleArrays': string[][];};
+        'scoringMisclassifiedUtterancesSimpleArrays': string[][];
+      };
       'lowConfidenceAnalysis': {
         'scoringLowConfidenceUtterancesArrays': string[][];
         'scoringLowConfidenceUtterancesArraysHtml': string;
-        'scoringLowConfidenceUtterancesSimpleArrays': string[][];};
+        'scoringLowConfidenceUtterancesSimpleArrays': string[][];
+      };
       'confusionMatrixAnalysis': {
         'confusionMatrix': IConfusionMatrix;
         'multiLabelObjectConfusionMatrixExact': MultiLabelObjectConfusionMatrixExact;
@@ -232,7 +249,9 @@ export class OrchestratorPredict {
         'predictingConfusionMatrixOutputLines': string[][];
         'confusionMatrixMetricsHtml': string;
         'confusionMatrixAverageMetricsHtml': string;
-        'confusionMatrixAverageDescriptionMetricsHtml': string;};};
+        'confusionMatrixAverageDescriptionMetricsHtml': string;
+      };
+    };
     'predictionStructureWithScoreLabelObjectArray': PredictionStructureWithScoreLabelObject[];
     'scoreOutputLines': string[][];
     'groundTruthJsonContent': string;
@@ -472,74 +491,74 @@ export class OrchestratorPredict {
         break;
       }
       switch (command) {
-      case 'h': this.commandLetH();
-        break;
-      case 'd': this.commandLetD();
-        break;
-      case 's': this.commandLetS();
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'u': await this.commandLetU(question);
-        break;
-      case 'cu': this.commandLetCU();
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'i': await this.commandLetI(question);
-        break;
-      case 'ci': this.commandLetCI();
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'ni': await this.commandLetNI(question);
-        break;
-      case 'cni': this.commandLetCNI();
-        break;
-      case 'f': this.commandLetF();
-        break;
-      case 'p': this.commandLetP();
-        break;
-      case 'v': this.commandLetV();
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vd': await this.commandLetVD(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'va': await this.commandLetVA(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vm': await this.commandLetVM(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vl': await this.commandLetVL(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vat': await this.commandLetVAT(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vlt': await this.commandLetVLT(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vmt': await this.commandLetVMT(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vut': await this.commandLetVUT(question);
-        break;
-      // eslint-disable-next-line no-await-in-loop
-      case 'vo': await this.commandLetVO(question);
-        break;
-      case 'a': this.commandLetA();
-        break;
-      case 'r': this.commandLetR();
-        break;
-      case 'c': this.commandLetC();
-        break;
-      case 'rl': this.commandLetRL();
-        break;
-      case 'n': this.commandLetN();
-        break;
-      default:
-        console.log(`> Cannot recognize the command you just entered "${command}",`);
-        console.log('> please type "h" for help!');
-        break;
+        case 'h': this.commandLetH();
+          break;
+        case 'd': this.commandLetD();
+          break;
+        case 's': this.commandLetS();
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'u': await this.commandLetU(question);
+          break;
+        case 'cu': this.commandLetCU();
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'i': await this.commandLetI(question);
+          break;
+        case 'ci': this.commandLetCI();
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'ni': await this.commandLetNI(question);
+          break;
+        case 'cni': this.commandLetCNI();
+          break;
+        case 'f': this.commandLetF();
+          break;
+        case 'p': this.commandLetP();
+          break;
+        case 'v': this.commandLetV();
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vd': await this.commandLetVD(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'va': await this.commandLetVA(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vm': await this.commandLetVM(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vl': await this.commandLetVL(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vat': await this.commandLetVAT(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vlt': await this.commandLetVLT(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vmt': await this.commandLetVMT(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vut': await this.commandLetVUT(question);
+          break;
+        // eslint-disable-next-line no-await-in-loop
+        case 'vo': await this.commandLetVO(question);
+          break;
+        case 'a': this.commandLetA();
+          break;
+        case 'r': this.commandLetR();
+          break;
+        case 'c': this.commandLetC();
+          break;
+        case 'rl': this.commandLetRL();
+          break;
+        case 'n': this.commandLetN();
+          break;
+        default:
+          console.log(`> Cannot recognize the command you just entered "${command}",`);
+          console.log('> please type "h" for help!');
+          break;
       }
     }
     // eslint-disable-next-line no-console
@@ -665,7 +684,7 @@ export class OrchestratorPredict {
       (value: Set<string>, key: string) => {
         labelUtteranceCount.set(key, value.size);
       });
-    const labelUtteranceCountDictionary: { [id: string]: number } = DictionaryMapUtility.convertStringKeyGenericValueNativeMapToDictionary(
+    const labelUtteranceCountDictionary: {[id: string]: number} = DictionaryMapUtility.convertStringKeyGenericValueNativeMapToDictionary(
       labelUtteranceCount);
     // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), labelUtteranceCount=${labelUtteranceCount}`);
     // Utility.debuggingLog(`OrchestratorPredict.commandLetS(), [...labelUtteranceCount]=${[...labelUtteranceCount]}`);
@@ -975,13 +994,13 @@ export class OrchestratorPredict {
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const utterancesMultiLabelArrays: StructTextText[] =
-    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.utterancesMultiLabelArrays;
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.utterancesMultiLabelArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -1024,13 +1043,13 @@ export class OrchestratorPredict {
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringAmbiguousUtterancesSimpleArrays: string[][] =
-    this.currentIntentEvaluationOutput.evaluationReportAnalyses.ambiguousAnalysis.scoringAmbiguousUtteranceSimpleArrays;
+      this.currentIntentEvaluationOutput.evaluationReportAnalyses.ambiguousAnalysis.scoringAmbiguousUtteranceSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -1073,13 +1092,13 @@ export class OrchestratorPredict {
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringMisclassifiedUtterancesSimpleArrays: string[][] =
-    this.currentIntentEvaluationOutput.evaluationReportAnalyses.misclassifiedAnalysis.scoringMisclassifiedUtterancesSimpleArrays;
+      this.currentIntentEvaluationOutput.evaluationReportAnalyses.misclassifiedAnalysis.scoringMisclassifiedUtterancesSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {
@@ -1122,13 +1141,13 @@ export class OrchestratorPredict {
       return -1;
     }
     const labelUtterancesTotal: number =
-    this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
+      this.currentIntentEvaluationOutput.evaluationReportLabelUtteranceStatistics.labelStatisticsAndHtmlTable.labelUtterancesTotal;
     if (labelUtterancesTotal <= 0) {
       console.log('ERROR: There is no examples or there is no validation report, please use the "v" command to create one');
       return -2;
     }
     const scoringLowConfidenceUtterancesSimpleArrays: string[][] =
-    this.currentIntentEvaluationOutput.evaluationReportAnalyses.lowConfidenceAnalysis.scoringLowConfidenceUtterancesSimpleArrays;
+      this.currentIntentEvaluationOutput.evaluationReportAnalyses.lowConfidenceAnalysis.scoringLowConfidenceUtterancesSimpleArrays;
     let indexInput: string = entry;
     indexInput = indexInput.trim();
     if (Utility.isEmptyString(indexInput)) {

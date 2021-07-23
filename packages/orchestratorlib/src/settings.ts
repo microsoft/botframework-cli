@@ -85,25 +85,25 @@ export class OrchestratorDataSourceSettings {
       }
 
       switch (input.Type) {
-      case 'luis':
-      case 'qna':
-        if (input.Id === existingSource.Id) {
-          if (updateExisting) {
-            existingSource.update(input);
+        case 'luis':
+        case 'qna':
+          if (input.Id === existingSource.Id) {
+            if (updateExisting) {
+              existingSource.update(input);
+            }
+            return true;
           }
-          return true;
-        }
-        break;
-      case 'file':
-        if (input.FilePath === existingSource.FilePath) {
-          if (updateExisting) {
-            existingSource.update(input);
+          break;
+        case 'file':
+          if (input.FilePath === existingSource.FilePath) {
+            if (updateExisting) {
+              existingSource.update(input);
+            }
+            return true;
           }
-          return true;
-        }
-        break;
-      default:
-        throw new Error('Invalid input type');
+          break;
+        default:
+          throw new Error('Invalid input type');
       }
     }
 
@@ -119,21 +119,21 @@ export class OrchestratorDataSourceSettings {
       }
 
       switch (input.Type) {
-      case 'luis':
-      case 'qna':
-        if (input.Id === existingSource.Id) {
-          this.inputs.splice(i, 1);
-          return input;
-        }
-        break;
-      case 'file':
-        if (input.FilePath === existingSource.FilePath) {
-          this.inputs.splice(i, 1);
-          return input;
-        }
-        break;
-      default:
-        throw new Error('Invalid input type');
+        case 'luis':
+        case 'qna':
+          if (input.Id === existingSource.Id) {
+            this.inputs.splice(i, 1);
+            return input;
+          }
+          break;
+        case 'file':
+          if (input.FilePath === existingSource.FilePath) {
+            this.inputs.splice(i, 1);
+            return input;
+          }
+          break;
+        default:
+          throw new Error('Invalid input type');
       }
     }
     return null;
@@ -173,7 +173,7 @@ export class OrchestratorSettings {
     if (!OrchestratorSettings.Current) {
       OrchestratorSettings.Current = new OrchestratorSettings();
     }
-    return  OrchestratorSettings.Current;
+    return OrchestratorSettings.Current;
   }
 
   public static Current: OrchestratorSettings;
@@ -234,7 +234,7 @@ export class OrchestratorSettings {
     }
   }
 
-  public persist()  {
+  public persist() {
     if (this.SettingsPath.length === 0) {
       throw new Error('settings not initialized.');
     }
