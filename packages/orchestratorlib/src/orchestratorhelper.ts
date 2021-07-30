@@ -75,10 +75,6 @@ export class OrchestratorHelper {
     fs.unlinkSync(filePath);
   }
 
-  public static label(name: string, offset: number, length: number): {entity: string; startPos: number; endPos: number} {
-    return {entity: name, startPos: offset, endPos: offset + length - 1};
-  }
-
   public static createDteContent(utteranceLabelsMap: Map<string, Set<string>>) {
     const labelUtteranceMap: Map<string, string> = new Map<string, string>();
     // eslint-disable-next-line guard-for-in
@@ -761,15 +757,16 @@ export class OrchestratorHelper {
             });
           }
           // eslint-disable-next-line no-prototype-builtins
-          if (jsonBluExample.hasOwnProperty('entities')) { // ---- NOTE-TODO-NEED-TO-REEXAMINE-AFTER-BLU-IS-IMPLEMENTED ----
+          if (jsonBluExample.hasOwnProperty('entities')) {
             const jsonBluExampleEntities: any[] = jsonBluExample.entities;
             jsonBluExampleEntities.forEach((jsonBluExampleEntity: any) => {
               const jsonBluExampleEntityLabel: string = jsonBluExampleEntity.entity;
               const jsonBluExampleEntityOffset: number = jsonBluExampleEntity.offset;
               const jsonBluExampleEntityLength: number = jsonBluExampleEntity.length;
+              const newEntityLabel: Label = Label.newEntityLabel(jsonBluExampleEntityLabel, jsonBluExampleEntityOffset, jsonBluExampleEntityLength);
               OrchestratorHelper.addNewEntityLabelObjectUtterance(
                 utterance,
-                Label.newEntityLabel(jsonBluExampleEntityLabel, jsonBluExampleEntityOffset, jsonBluExampleEntityLength),
+                newEntityLabel,
                 utteranceEntityLabelsMap,
                 utteranceEntityLabelDuplicateMap);
             });
@@ -859,9 +856,10 @@ export class OrchestratorHelper {
                 } else if (labelType === LabelType.Entity) {
                   const labelSpanOffset: number = label.span.offset;
                   const labelSpanLength: number = label.span.length;
-                  OrchestratorHelper.addNewEntityLabelUtterance(
+                  const newEntityLabel: Label = Label.newEntityLabel(labelName, labelSpanOffset, labelSpanLength);
+                  OrchestratorHelper.addNewEntityLabelObjectUtterance(
                     utterance,
-                    this.label(labelName, labelSpanOffset, labelSpanLength),
+                    newEntityLabel,
                     utteranceEntityLabelsMap,
                     utteranceEntityLabelDuplicateMap);
                 }
@@ -967,6 +965,75 @@ export class OrchestratorHelper {
 
   // ---- NOTE-TO-REFACTOR ----
   // eslint-disable-next-line max-params
+  static addNewEntityLabelUtteranceTraversal(
+    utterance: string,
+    existingEntityLabels: Label[],
+    entityEntry: any,
+    utteranceEntityLabelsMap: Map<string, Label[]>,
+    utteranceEntityLabelDuplicateMap: Map<string, Label[]>,
+    entityLabelPrefix: string = ''): void {
+    try {
+      let entityName: string = entityEntry.entity;
+      const startPos: number = Number(entityEntry.startPos);
+      const endPos: number = Number(entityEntry.endPos);
+      // const entityMention: string = entityEntry.text;
+      if (Utility.isEmptyString(entityName) || (startPos === undefined) || (endPos === undefined)) {
+        Utility.debuggingThrow(`EMPTY entityName: '${entityName}', startPos='${startPos}', endPos='${endPos}', entityEntry='${entityEntry}', utterance='${utterance}'`);
+      }
+      if (!UtilityDispatcher.isEmptyString(entityLabelPrefix)) {
+        entityName = `${entityLabelPrefix}:${entityName}`;
+      }
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal()-entityName', entityName);
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal()-startPos', startPos);
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal()-endPos', endPos);
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap-B', UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap]));
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap.size-B', utteranceEntityLabelsMap.size);
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-[...utteranceEntityLabelsMap].length-B', [...utteranceEntityLabelsMap].length);
+      const entityLabel: Label = Label.newEntityLabelByPosition(entityName, startPos, endPos);
+      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
+        existingEntityLabels = [entityLabel];
+        utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
+        UtilityDispatcher.debuggingLog1(
+          'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap-I', UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap]));
+        UtilityDispatcher.debuggingLog1(
+          'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap.size-I', utteranceEntityLabelsMap.size);
+        UtilityDispatcher.debuggingLog1(
+          'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-[...utteranceEntityLabelsMap].length-I', [...utteranceEntityLabelsMap].length);
+      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityLabel, existingEntityLabels)) {
+        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
+      }
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap-A', UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap]));
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-utteranceEntityLabelsMap.size-A', utteranceEntityLabelsMap.size);
+      UtilityDispatcher.debuggingLog1(
+        'OrchestratorHelper.addNewEntityLabelUtteranceTraversal(),-[...utteranceEntityLabelsMap].length-A', [...utteranceEntityLabelsMap].length);
+      // eslint-disable-next-line no-prototype-builtins
+      if (entityEntry.hasOwnProperty('children')) {
+        entityEntry.children.forEach((childEntityEntry: any) => {
+          OrchestratorHelper.addNewEntityLabelUtteranceTraversal(
+            utterance,
+            existingEntityLabels,
+            childEntityEntry,
+            utteranceEntityLabelsMap,
+            utteranceEntityLabelDuplicateMap,
+            entityName);
+        });
+      }
+    } catch (error) {
+      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceTraversal(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
+      throw error;
+    }
+  }
+
+  // ---- NOTE-TO-REFACTOR ----
+  // eslint-disable-next-line max-params
   static addNewEntityLabelUtterance(
     utterance: string,
     entityEntry: any,
@@ -978,20 +1045,13 @@ export class OrchestratorHelper {
       if (utteranceEntityLabelsMap.has(utterance)) {
         existingEntityLabels = utteranceEntityLabelsMap.get(utterance) as Label[];
       }
-      const entityName: string = entityEntry.entity;
-      const startPos: number = Number(entityEntry.startPos);
-      const endPos: number = Number(entityEntry.endPos);
-      // const entityMention: string = entityEntry.text;
-      if (Utility.isEmptyString(entityName) || (startPos === undefined) || (endPos === undefined)) {
-        Utility.debuggingThrow(`EMPTY entityName: '${entityName}', startPos='${startPos}', endPos='${endPos}', entityEntry='${entityEntry}', utterance='${utterance}'`);
-      }
-      const entityLabel: Label = Label.newEntityLabelByPosition(entityName, startPos, endPos);
-      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
-        existingEntityLabels = [entityLabel];
-        utteranceEntityLabelsMap.set(utterance, existingEntityLabels);
-      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityLabel, existingEntityLabels)) {
-        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
-      }
+      OrchestratorHelper.addNewEntityLabelUtteranceTraversal(
+        utterance,
+        existingEntityLabels,
+        entityEntry,
+        utteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap,
+        '');
     } catch (error) {
       Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtterance(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
       throw error;
@@ -1047,70 +1107,6 @@ export class OrchestratorHelper {
       throw error;
     }
     return false;
-  }
-
-  // ---- NOTE-TO-REFACTOR ----
-  // eslint-disable-next-line max-params
-  static addNewLabelUtteranceToObjectDictionary(
-    utterance: string,
-    label: string,
-    hierarchicalLabel: string,
-    utteranceLabelsMap: {[id: string]: string[]},
-    utteranceLabelDuplicateMap: Map<string, Set<string>>): void {
-    const isHierarchicalLabel: boolean = !Utility.isEmptyString(hierarchicalLabel);
-    let existingLabels: string[] = [];
-    try {
-      // eslint-disable-next-line no-prototype-builtins
-      if (utteranceLabelsMap.hasOwnProperty(utterance)) {
-        existingLabels = utteranceLabelsMap[utterance];
-      }
-      if (!Utility.isEmptyStringArray(existingLabels)) {
-        if (isHierarchicalLabel) {
-          if (!OrchestratorHelper.addUniqueLabelToArray(hierarchicalLabel, existingLabels)) {
-            Utility.insertStringPairToStringIdStringSetNativeMap(utterance, hierarchicalLabel, utteranceLabelDuplicateMap);
-          }
-        } else if (!OrchestratorHelper.addUniqueLabelToArray(label, existingLabels)) {
-          Utility.insertStringPairToStringIdStringSetNativeMap(utterance, label, utteranceLabelDuplicateMap);
-        }
-      } else if (isHierarchicalLabel) {
-        utteranceLabelsMap[utterance] = [hierarchicalLabel];
-      } else {
-        utteranceLabelsMap[utterance] = [label];
-      }
-    } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewLabelUtteranceToObjectDictionary(), error='${error}', label='${label}', utterance='${utterance}', hierarchicalLabel='${hierarchicalLabel}', isHierarchicalLabel='${isHierarchicalLabel}', existingLabels='${existingLabels}'`);
-      throw error;
-    }
-  }
-
-  // ---- NOTE-TO-REFACTOR ----
-  // eslint-disable-next-line max-params
-  static addNewEntityLabelUtteranceToObjectDictionary(
-    utterance: string,
-    entityEntry: any,
-    utteranceEntityLabelsMap: {[id: string]: Label[]},
-    utteranceEntityLabelDuplicateMap: Map<string, Label[]>): void {
-    let existingEntityLabels: Label[] = [];
-    try {
-      // eslint-disable-next-line no-prototype-builtins
-      if (utteranceEntityLabelsMap.hasOwnProperty(utterance)) {
-        existingEntityLabels = utteranceEntityLabelsMap[utterance];
-      }
-      const entityName: string = entityEntry.entity;
-      const startPos: number = Number(entityEntry.startPos);
-      const endPos: number = Number(entityEntry.endPos);
-      // const entityMention: string = entityEntry.text;
-      const entityLabel: Label = Label.newEntityLabelByPosition(entityName, startPos, endPos);
-      if (Utility.isEmptyGenericArray(existingEntityLabels)) {
-        existingEntityLabels = [entityLabel];
-        utteranceEntityLabelsMap[utterance] = existingEntityLabels;
-      } else if (!OrchestratorHelper.addUniqueEntityLabelArray(entityLabel, existingEntityLabels)) {
-        Utility.insertStringLabelPairToStringIdLabelSetNativeMap(utterance, entityLabel, utteranceEntityLabelDuplicateMap);
-      }
-    } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling addNewEntityLabelUtteranceToObjectDictionary(), error='${error}', entityEntry='${entityEntry}', utterance='${utterance}', existingEntityLabels='${existingEntityLabels}'`);
-      throw error;
-    }
   }
 
   // ---- NOTE-TO-REFACTOR ----
