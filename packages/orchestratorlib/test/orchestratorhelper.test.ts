@@ -17,6 +17,7 @@ import {OrchestratorHelper} from '../src/orchestratorhelper';
 import {DictionaryMapUtility} from '@microsoft/bf-dispatcher';
 
 import {Utility} from '../src/utility';
+import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 import {UnitTestHelper} from './utility.test';
 
 describe('Test Suite - orchestratorhelper', () => {
@@ -85,7 +86,7 @@ describe('Test Suite - orchestratorhelper', () => {
         utteranceEntityLabelDuplicateMap);
     });
     Utility.debuggingLog(
-      `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+      `utteranceEntityLabelsMap=${UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap])}`);
     let utteranceEntityLabelsMapSize: number = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Seattle');
     assert.ok(utteranceEntityLabelsMapSize === 1);
@@ -109,7 +110,7 @@ describe('Test Suite - orchestratorhelper', () => {
         utteranceEntityLabelDuplicateMap);
     });
     Utility.debuggingLog(
-      `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+      `utteranceEntityLabelsMap=${UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap])}`);
     utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
@@ -130,7 +131,7 @@ describe('Test Suite - orchestratorhelper', () => {
         utteranceEntityLabelDuplicateMap);
     });
     Utility.debuggingLog(
-      `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+      `utteranceEntityLabelsMap=${UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap])}`);
     utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
@@ -153,7 +154,7 @@ describe('Test Suite - orchestratorhelper', () => {
         utteranceEntityLabelDuplicateMap);
     });
     Utility.debuggingLog(
-      `utteranceEntityLabelsMap=${Utility.jsonStringify(utteranceEntityLabelsMap)}`);
+      `utteranceEntityLabelsMap=${UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap])}`);
     utteranceEntityLabelsMapSize = utteranceEntityLabelsMap.size;
     assert.ok(entityObject.text === 'Paris');
     assert.ok(entityObjectSecond.text === 'Berlin');
@@ -351,6 +352,78 @@ describe('Test Suite - orchestratorhelper', () => {
       `(utteranceEntityLabelDuplicateMap.get(utterance0) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance0) as Label[]).length}`);
     assert.ok((utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length === 3,
       `(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length=${(utteranceEntityLabelDuplicateMap.get(utterance1) as Label[]).length}`);
+  });
+  it('Test.0201 OrchestratorHelper.getJsonIntentsEntitiesUtterances() with child entity labels', function () {
+    Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
+    this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
+    const utterance: string = 'traveling from Paris to Berlin';
+    const jsonObjectArray: {
+      'text': string;
+      'intents': string[];
+      'entities': {
+        'entity': string;
+        'startPos': number;
+        'endPos': number;
+        'children': {
+          'entity': string;
+          'startPos': number;
+          'endPos': number;
+        }[];
+      }[];
+    }[] = [
+      {
+        text: utterance,
+        intents: ['Travel'],
+        entities: [
+          {
+            entity: 'trip',
+            startPos: 15,
+            endPos: 29,
+            children: [
+              {
+                entity: 'origin',
+                startPos: 15,
+                endPos: 19,
+              },
+              {
+                entity: 'destination',
+                startPos: 24,
+                endPos: 29,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+    OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+      jsonObjectArray,
+      '',
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+    const utteranceLabelDuplicateMapSize: number = utteranceLabelDuplicateMap.size;
+    const utteranceEntityLabelDuplicateMapSize: number = utteranceEntityLabelDuplicateMap.size;
+    Utility.debuggingLog(
+      `utteranceLabelsMap=${DictionaryMapUtility.jsonStringifyStringKeyGenericSetNativeMapArrayValue(utteranceLabelsMap)}`);
+    Utility.debuggingLog(
+      `utteranceEntityLabelsMap=${UtilityDispatcher.jsonStringify([...utteranceEntityLabelsMap])}`);
+    assert.ok(utteranceLabelsMap.size === 1,
+      `utteranceLabelsMap.size=${utteranceLabelsMap.size}`);
+    assert.ok(utteranceLabelDuplicateMapSize === 0,
+      `utteranceLabelDuplicateMapSize=${utteranceLabelDuplicateMapSize}`);
+    assert.ok(utteranceEntityLabelsMap.size === 1,
+      `utteranceEntityLabelsMap.size=${utteranceEntityLabelsMap.size}`);
+    assert.ok(utteranceEntityLabelDuplicateMapSize === 0,
+      `utteranceEntityLabelDuplicateMapSize=${utteranceEntityLabelDuplicateMapSize}`);
+    assert.ok((utteranceLabelsMap.get(utterance) as Set<string>).size === 1,
+      `(utteranceLabelsMap.get(utterance) as Set<string>).size=${(utteranceLabelsMap.get(utterance) as Set<string>).size}`);
+    assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 3,
+      `(utteranceEntityLabelsMap.get(utterance) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance) as Label[]).length}`);
   });
 
   it('Test.0300 OrchestratorHelper.getJsonIntentEntityScoresUtterances()', function () {
