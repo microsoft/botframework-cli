@@ -47,7 +47,7 @@ export class LuBuildCore {
   }
 
   public async getApplicationList() {
-    const url = `${this.endpoint}/apps`
+    const url = `${this.endpoint}/apps/?skip=0&take=500`
 
     let apps
     let retryCount = this.retryCount + 1
