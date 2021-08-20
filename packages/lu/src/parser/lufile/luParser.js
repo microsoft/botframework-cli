@@ -25,8 +25,75 @@ const defaultConfig = {
   enableComments: true // Temporarily enabled by default, cannot be configured
 }
 
-class LUParser {
+const objectFactory = (className) => {
+    const classes = { 
+        NestedIntentSection, 
+        SimpleIntentSection, 
+        EntitySection, 
+        NewEntitySection, 
+        ImportSection, 
+        ReferenceSection, 
+        QnaSection, 
+        ModelInfoSection
+    };
+    return classes[className]
+}
 
+const extractElementSections = (mapFunction, filterFunction, className, fileContext, content) => {
+    if (fileContext === undefined
+        || fileContext === null) {
+            return [];
+    }
+
+    let entitySections = fileContext.paragraph()
+        .map(x => x[mapFunction]());
+
+    if (filterFunction) {
+        entitySections = entitySections.filter(x => x && x[filterFunction]());
+    } else {
+        entitySections = entitySections.filter(x => x !== undefined && x !== null);
+    }
+
+    let entitySectionList = entitySections.map(x => {
+        const classToBuild = objectFactory(className)
+        if (content) {
+            return new classToBuild(x, content);
+        }
+        return new classToBuild(x);
+    });
+
+    return entitySectionList;
+}
+
+const buildSection = (strategyObject) => {
+    let builtSections = []
+    let builtErrors = []
+
+    try {
+        let sectionToBuild = extractElementSections.apply(this, strategyObject.args);
+        sectionToBuild.forEach(section => builtErrors = builtErrors.concat(section.Errors));
+
+        if (strategyObject.postProcess) {
+            let postProcessArgs = [sectionToBuild].concat(strategyObject.postProcessArgs ? strategyObject.postProcessArgs : []);
+            let result = strategyObject.postProcess.apply(this, postProcessArgs);
+            builtSections = builtSections.concat(result.sections);
+            builtErrors = builtErrors.concat(result.errors)
+        }
+        builtSections = builtSections.concat(sectionToBuild);
+    } catch (err) {
+        builtErrors.push(BuildDiagnostic({
+            message: `${strategyObject.message} ${err.message}`
+        }));
+    }
+
+    return {
+            sections: builtSections,
+            errors: builtErrors,
+    }
+}
+
+
+class LUParser {
     /**
      *
      * @param {string} text
@@ -63,134 +130,33 @@ class LUParser {
         let sections = [];
         let modelInfoSections = [];
 
-        try {
-            modelInfoSections = this.extractModelInfoSections(fileContent);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing model information: ${err.message}`
-            }))
-        }
+        let result = buildSection({args:['modelInfoSection', undefined, 'ModelInfoSection', fileContent], message: 'Error happened when parsing model information:' });
+        sections = sections.concat(result.sections);
+        errors = errors.concat(result.errors)
 
         if (modelInfoSections && modelInfoSections.length > 0 && !config.enableModelDescription) {
           errors.push(BuildDiagnostic({
             message: `Do not support Model Description. Please make sure enableModelDescription is set to true.`
           }))
         }
-        modelInfoSections.forEach(section => errors = errors.concat(section.Errors));
-        sections = sections.concat(modelInfoSections);
 
-        try {
-            let isSectionEnabled = sectionEnabled === undefined ?  this.isSectionEnabled(sections) : sectionEnabled;
+        let isSectionEnabled = sectionEnabled === undefined ?  this.isSectionEnabled(sections) : sectionEnabled;
 
-            let nestedIntentSections = this.extractNestedIntentSections(fileContent, content);
-            nestedIntentSections.forEach(section => errors = errors.concat(section.Errors));
-            if (isSectionEnabled) {
-                sections = sections.concat(nestedIntentSections);
-            } else {
-                nestedIntentSections.forEach(section => {
-                    let emptyIntentSection = new SimpleIntentSection();
-                    emptyIntentSection.Name = section.Name;
-                    emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
+        let strategies = [
+            {args:['nestedIntentSection', undefined, 'NestedIntentSection', fileContent, content], message: 'Error happened when parsing nested intent section:', postProcess: this.filterNestedEntities, postProcessArgs: isSectionEnabled},
+            {args:['simpleIntentSection', 'intentDefinition', 'SimpleIntentSection', fileContent, content], message: 'Error happened when parsing simple intent section:' }, 
+            {args:['entitySection', 'entityDefinition', 'EntitySection', fileContent], message: 'Error happened when parsing entities:'},
+            {args:['newEntitySection', 'newEntityDefinition', 'NewEntitySection', fileContent], message: 'Error happened when parsing new entities:', postProcess: this.filterPrebuiltEntities },
+            {args:['importSection', undefined, 'ImportSection', fileContent], message: 'Error happened when parsing import section:'}, 
+            {args:['referenceSection', undefined, 'ReferenceSection', fileContent], message: 'Error happened when parsing reference section:'},
+            {args:['qnaSection', undefined, 'QnaSection', fileContent], message: 'Error happened when parsing qna section'}
+        ]
 
-                    // get the end character index
-                    // this is default value
-                    // it will be reset in function extractSectionBody()
-                    let endCharacter = section.Name.length + 2;
-
-                    const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
-                    emptyIntentSection.Range = range;
-                    let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
-                    let error = BuildDiagnostic({
-                        message: errorMsg,
-                        range: emptyIntentSection.Range,
-                        severity: DiagnosticSeverity.WARN
-                    })
-
-                    errors.push(error);
-                    sections.push(emptyIntentSection);
-
-                    section.SimpleIntentSections.forEach(subSection => {
-                        sections.push(subSection);
-                        errors = errors.concat(subSection.Errors);
-                    })
-                });
-            }
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing nested intent section: ${err.message}`
-            }))
-        }
-
-        try {
-            let simpleIntentSections = this.extractSimpleIntentSections(fileContent, content);
-            simpleIntentSections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(simpleIntentSections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing simple intent section: ${err.message}`
-            }))
-        }
-
-        try {
-            let entitySections = this.extractEntitiesSections(fileContent);
-            entitySections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(entitySections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing entities: ${err.message}`
-            }))
-        }
-
-        try {
-            let newEntitySections = this.extractNewEntitiesSections(fileContent);
-            const prebuilts = new Set(['age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
-                'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime']);
-            newEntitySections.forEach(section =>{
-                if (prebuilts.has(section.Name) && section.Type && section.Type !== 'prebuilt') {
-                    section.Errors.push(BuildDiagnostic({
-                        message: `The model name ${section.Name} is reserved.`,
-                        range: section.Range
-                    }))
-                }
-            });
-
-            newEntitySections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(newEntitySections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing new entities: ${err.message}`
-            }))
-        }
-
-        try {
-            let importSections = this.extractImportSections(fileContent);
-            importSections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(importSections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing import section: ${err.message}`
-            }))
-        }
-
-        try {
-            let referenceSections = this.extractReferenceSections(fileContent);
-            referenceSections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(referenceSections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing reference section: ${err.message}`
-            }))
-        }
-
-        try {
-            let qnaSections = this.extractQnaSections(fileContent);
-            qnaSections.forEach(section => errors = errors.concat(section.Errors));
-            sections = sections.concat(qnaSections);
-        } catch (err) {
-            errors.push(BuildDiagnostic({
-                message: `Error happened when parsing qna section: ${err.message}`
-            }))
-        }
+        for(let i = 0; i < strategies.length; i++){
+            result = buildSection(strategies[i]);
+            sections = sections.concat(result.sections);
+            errors = errors.concat(result.errors)
+        };
 
         sections = this.reconstractIntentSections(sections)
 
@@ -224,150 +190,60 @@ class LUParser {
         return { fileContent, errors };
     }
 
-    /**
-     * @param {FileContext} fileContext
-     * @param {string} content
-     */
-    static extractNestedIntentSections(fileContext, content) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let nestedIntentSections = fileContext.paragraph()
-            .map(x => x.nestedIntentSection())
-            .filter(x => x !== undefined && x !== null);
-
-        let nestedIntentSectionList = nestedIntentSections.map(x => new NestedIntentSection(x, content));
-
-        return nestedIntentSectionList;
+    static filterPrebuiltEntities (newEntitySections) {
+        const prebuilts = new Set(['age', 'datetimeV2', 'dimension', 'email', 'geographyV2', 'keyPhrase', 'money', 'number', 'ordinal', 'ordinalV2',
+        'percentage', 'personName', 'phonenumber', 'temperature', 'url', 'datetime']);
+        newEntitySections.forEach(section =>{
+            if (prebuilts.has(section.Name) && section.Type && section.Type !== 'prebuilt') {
+                section.Errors.push(BuildDiagnostic({
+                    message: `The model name ${section.Name} is reserved.`,
+                    range: section.Range
+                }))
+            }
+        });
+        return {sections:[], errors:[]};
     }
 
-    /**
-     * @param {FileContext} fileContext
-     * @param {string} content
-     */
-    static extractSimpleIntentSections(fileContext, content) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
+    static filterNestedEntities (nestedIntentSections, isSectionEnabled) {
+        let sections = [];
+        let errors = [];
+        if (isSectionEnabled) {
+            sections = sections.concat(nestedIntentSections);
+        } else {
+            nestedIntentSections.forEach(section => {
+                let emptyIntentSection = new SimpleIntentSection();
+                emptyIntentSection.Name = section.Name;
+                emptyIntentSection.Id = `${emptyIntentSection.SectionType}_${emptyIntentSection.Name}`
+
+                // get the end character index
+                // this is default value
+                // it will be reset in function extractSectionBody()
+                let endCharacter = section.Name.length + 2;
+
+                const range = new Range(section.Range.Start, new Position(section.Range.Start.Line, endCharacter))
+                emptyIntentSection.Range = range;
+                let errorMsg = `no utterances found for intent definition: "# ${emptyIntentSection.Name}"`
+                let error = BuildDiagnostic({
+                    message: errorMsg,
+                    range: emptyIntentSection.Range,
+                    severity: DiagnosticSeverity.WARN
+                })
+
+                errors.push(error);
+                sections.push(emptyIntentSection);
+
+                section.SimpleIntentSections.forEach(subSection => {
+                    sections.push(subSection);
+                    errors = errors.concat(subSection.Errors);
+                })
+            });
         }
 
-        let simpleIntentSections = fileContext.paragraph()
-            .map(x => x.simpleIntentSection())
-            .filter(x => x && x.intentDefinition());
-
-        let simpleIntentSectionList = simpleIntentSections.map(x => new SimpleIntentSection(x, content));
-
-        return simpleIntentSectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractEntitiesSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
+        nestedIntentSections.splice(0, nestedIntentSections.length);
+        return {
+            sections,
+            errors
         }
-
-        let entitySections = fileContext.paragraph()
-            .map(x => x.entitySection())
-            .filter(x => x && x.entityDefinition());
-
-        let entitySectionList = entitySections.map(x => new EntitySection(x));
-
-        return entitySectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractNewEntitiesSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let newEntitySections = fileContext.paragraph()
-            .map(x => x.newEntitySection())
-            .filter(x => x && x.newEntityDefinition());
-
-        let newEntitySectionList = newEntitySections.map(x => new NewEntitySection(x));
-
-        return newEntitySectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractImportSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let importSections = fileContext.paragraph()
-            .map(x => x.importSection())
-            .filter(x => x !== undefined && x !== null);
-
-        let importSectionList = importSections.map(x => new ImportSection(x));
-
-        return importSectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractReferenceSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let referenceSections = fileContext.paragraph()
-            .map(x => x.referenceSection())
-            .filter(x => x !== undefined && x !== null);
-
-        let referenceSectionList = referenceSections.map(x => new ReferenceSection(x));
-
-        return referenceSectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractQnaSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let qnaSections = fileContext.paragraph()
-            .map(x => x.qnaSection())
-            .filter(x => x !== undefined && x !== null);
-
-        let qnaSectionList = qnaSections.map(x => new QnaSection(x));
-
-        return qnaSectionList;
-    }
-
-    /**
-     * @param {FileContext} fileContext
-     */
-    static extractModelInfoSections(fileContext) {
-        if (fileContext === undefined
-            || fileContext === null) {
-                return [];
-        }
-
-        let modelInfoSections = fileContext.paragraph()
-            .map(x => x.modelInfoSection())
-            .filter(x => x !== undefined && x !== null);
-
-        let modelInfoSectionList = modelInfoSections.map(x => new ModelInfoSection(x));
-
-        return modelInfoSectionList;
     }
 
     /**
