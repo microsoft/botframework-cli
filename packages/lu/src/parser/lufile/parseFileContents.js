@@ -207,6 +207,23 @@ const parseFileContentsModule = {
     }
 };
 
+const throwDiagnosticError = function (diagnosticDetails) {
+    let diagnostic = {
+        message: diagnosticDetails.message,
+    }
+    if (diagnosticDetails.line) {
+        diagnostic['line'] = diagnosticDetails.line;
+    }
+    if (diagnosticDetails.range) {
+        diagnostic['range'] = diagnosticDetails.range;
+    }
+
+    const error = BuildDiagnostic(diagnostic);
+    const errorCode = diagnosticDetails.errorCode ? diagnosticDetails.errorCode : retCode.errorCode.INVALID_INPUT;
+
+    throw new exception(errorCode, error.toString(), [error]);
+}
+
 /**
  * Main parser code to parse current file contents into LUIS and QNA sections.
  * @param {parserObj} Object with that contains list of additional files to parse, parsed LUIS object and parsed QnA object
@@ -323,10 +340,7 @@ const updateModelBasedOnNDepthEntities = function(utterances, entities) {
                             let parentLabelled = utterance.entities.find(entityUtt => entityUtt.entity == parent);
                             if (!parentLabelled) {
                                 const errorMsg = `Every child entity labelled in an utterance must have its parent labelled in that utterance. Parent "${parent}" for child "${entityInUtterance.entity}" is not labelled in utterance "${utterance.text}" for intent "${utterance.intent}".`;
-                                const error = BuildDiagnostic({
-                                    message: errorMsg
-                                });
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                throwDiagnosticError({message: errorMsg});                        
                             } else {
                                 isParentLabelled = true;
                             }
@@ -366,21 +380,16 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
         if(child.instanceOf) {
             let baseEntityFound = entitiesAndRoles.find(i => i.name == child.instanceOf);
             if (!baseEntityFound) {
-                let errorMsg = `Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
-                const error = BuildDiagnostic({
-                    message: errorMsg,
-                    line: child.context.line
-                });
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                const errorMsg = `Invalid child entity definition found. No definition for "${child.instanceOf}" in child entity definition "${child.context.definition}".`;
+                throwDiagnosticError({message: errorMsg, line: child.context.line});
             }
             // base type can only be a list or regex or prebuilt.
             if (![EntityTypeEnum.LIST, EntityTypeEnum.REGEX, EntityTypeEnum.PREBUILT, EntityTypeEnum.ML].includes(baseEntityFound.type)) {
                 let errorMsg = `Invalid child entity definition found. "${child.instanceOf}" is of type "${baseEntityFound.type}" in child entity definition "${child.context.definition}". Child cannot be only be an instance of "${EntityTypeEnum.LIST}, ${EntityTypeEnum.REGEX} or ${EntityTypeEnum.PREBUILT}.`;
-                const error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     line: child.context.line
                 });
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
 
         }
@@ -399,11 +408,10 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         featureHandled = true;
                     } else if (featureExists.type == EntityTypeEnum.PATTERNANY) {
                         let errorMsg = `Invalid child entity definition found. "${feature}" is of type "${EntityTypeEnum.PATTERNANY}" in child entity definition "${child.context.definition}". Child cannot include a usesFeature of type "${EntityTypeEnum.PATTERNANY}".`;
-                        const error = BuildDiagnostic({
+                        throwDiagnosticError({
                             message: errorMsg,
                             line: child.context.line
                         });
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     } else {
                         child.features[idx] = new helperClass.modelToFeature(feature, featureProperties.entityFeatureToModel[featureExists.type]);
                         featureHandled = true;
@@ -417,11 +425,10 @@ const validateNDepthEntities = function(collection, entitiesAndRoles, intentsCol
                         featureHandled = true;
                     } else {
                         let errorMsg = `Invalid child entity definition found. No definition found for "${feature}" in child entity definition "${child.context.definition}". Features must be defined before they can be added to a child.`;
-                        const error = BuildDiagnostic({
+                        throwDiagnosticError({
                             message: errorMsg,
                             line: child.context.line
                         });
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                     }
                 }
             })
@@ -457,22 +464,20 @@ const validateFeatureAssignment = function(srcItemType, srcItemName, tgtFeatureT
             // can use everything as a feature except pattern.any
             if (tgtFeatureType === EntityTypeEnum.PATTERNANY) {
                 let errorMsg = `'patternany' entity cannot be added as a feature. Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}"`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     range: range
-                })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
             break;
         default:
             // cannot have any features assigned
             let errorMsg = `Invalid definition found for "@ ${srcItemType} ${srcItemName} usesFeature ${tgtFeatureName}". usesFeature is only available for intent, ${plAllowedTypes.join(', ')}`;
-            let error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
                 range: range
-            })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
-            break;
+            });
+
     }
 }
 /**
@@ -488,11 +493,10 @@ const addFeatures = function(tgtItem, feature, featureType, range, featureProper
     if (tgtItem.name === feature && !featureIsPhraseList) {
         // Item must be defined before being added as a feature.
         let errorMsg = `Source and target cannot be the same for usesFeature. e.g. x usesFeature x  is invalid. "${tgtItem.name}" usesFeature "${feature}" is invalid.`;
-        let error = BuildDiagnostic({
+        throwDiagnosticError({
             message: errorMsg,
             range: range
-        })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+        });
     }
     let featureToModelAlreadyDefined = (tgtItem.features || []).find(item => item.featureName == feature);
     let modelToFeatureAlreadyDefined = (tgtItem.features || []).find(item => item.modelName == feature);
@@ -526,10 +530,9 @@ const addFeatures = function(tgtItem, feature, featureType, range, featureProper
  */
 const parseFeatureSections = function(parsedContent, featuresToProcess, config) {
     if (!config.enableFeatures) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Features. Please make sure enableFeatures is set to true.',
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     // We are only interested in extracting features and setting things up here.
     (featuresToProcess || []).forEach(section => {
@@ -537,11 +540,10 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
             // Intents can only have features and nothing else.
             if (section.Roles) {
                 let errorMsg = `Intents can only have usesFeature and nothing else. Invalid definition for "${section.Name}".`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     range: section.Range
-                })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
             if (!section.Features) return;
             // verify intent exists
@@ -590,20 +592,18 @@ const parseFeatureSections = function(parsedContent, featuresToProcess, config) 
                     } else {
                         // Item must be defined before being added as a feature.
                         let errorMsg = `Features must be defined before assigned to an intent. No definition found for feature "${feature}" in usesFeature definition for intent "${section.Name}"`;
-                        let error = BuildDiagnostic({
+                        throwDiagnosticError({
                             message: errorMsg,
                             range: section.Range
-                        })
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                        });
                     }
                 })
             } else {
                 let errorMsg = `Features can only be added to intents that have a definition. Invalid feature definition found for intent "${section.Name}".`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     range: section.Range
-                })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
         } else {
             // handle as entity
@@ -712,10 +712,9 @@ const updateDependencyList = function(type, parsedContent, dependencyList) {
 
                     if (circularItemFound) {
                     const errorMsg = `Circular dependency found for usesFeature. ${circularItemFound.value.map(v => v.feature ? v.feature : v).join(' -> ')}`;
-                    const error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg
                     });
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                 }
 
             })
@@ -748,10 +747,9 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
     let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
         if (!config.enableExternalReferences) {
-          const error = BuildDiagnostic({
+          throwDiagnosticError({
             message: 'Do not support External References. Please make sure enableExternalReferences is set to true.'
           });
-          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
 
         let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
@@ -770,22 +768,20 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
                 } catch (err) {
                     // throw, invalid URI
                     let errorMsg = `URI: "${linkValue}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
-                        range: luImport.Range
-                    })
-
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
+                        range: luImport.Range,
+                        errorCode: retCode.errorCode.INVALID_URI
+                    });
                 }
 
                 if (response.status !== 200) {
                     let errorMsg = `URI: "${linkValue}" appears to be invalid. Please double check the URI or re-try this parse when you are connected to the internet.`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
-                        range: luImport.Range
-                    })
-
-                    throw (new exception(retCode.errorCode.INVALID_URI, error.toString(), [error]));
+                        range: luImport.Range,
+                        errorCode: retCode.errorCode.INVALID_URI
+                    });
                 }
 
                 let contentType = response.headers['content-type'];
@@ -806,12 +802,10 @@ const parseAndHandleImportSection = async function (parsedContent, luResource, c
                         linkValue = foundReference.Path
                     } else {
                         let errorMsg = `Cannot find reference "${linkValue}" when resolving import "${luImport.Description}${luImport.Path}".`;
-                            let error = BuildDiagnostic({
+                            throwDiagnosticError({
                                 message: errorMsg,
                                 range: luImport.Range
-                            })
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                            });
                     }
                 }
 
@@ -830,10 +824,9 @@ const validateImportSection = function (luResource, config) {
     let luImports = luResource.Sections.filter(s => s.SectionType === SectionType.IMPORTSECTION);
     if (luImports && luImports.length > 0) {
         if (!config.enableExternalReferences) {
-          const error = BuildDiagnostic({
+          throwDiagnosticError({
             message: 'Do not support External References. Please make sure enableExternalReferences is set to true.'
           });
-          throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
     }
 }
@@ -932,12 +925,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
             let intentName = intent.Name;
             if (InvalidCharsInIntentOrEntityName.some(x => intentName.includes(x))) {
                 let errorMsg = `Invalid intent line, intent name ${intentName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     line: intent.Range.Start.Line
-                })
-    
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
 
             // insert only if the intent is not already present.
@@ -955,12 +946,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         let reference = references.find(refer => refer.ReferenceId === referenceId)
                         if (!reference) {
                             let errorMsg = `Cannot find reference ${reference} when resolving utternace "${utteranceAndEntities.contextText}".`;
-                            let error = BuildDiagnostic({
+                            throwDiagnosticError({
                                 message: errorMsg,
                                 range: utteranceAndEntities.range
-                            })
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                            });
                         }
 
                         utterance = `${utterance.slice(0, index)}(${reference.Path})`
@@ -991,34 +980,29 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                     let havePatternAnyEntity = entitiesFound.find(item => item.type == LUISObjNameEnum.PATTERNANYENTITY);
                     if (havePatternAnyEntity !== undefined) {
                       if (!config.enablePattern) {
-                        const error = BuildDiagnostic({
-                          message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
-                          range: utteranceAndEntities.range
+                        throwDiagnosticError({
+                            message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
+                            range: utteranceAndEntities.range
                         });
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                       }
                         utterance = handleAtForPattern(utterance, entitiesFound, parsedContent.LUISJsonStructure.flatListOfEntityAndRoles);
                         let mixedEntity = entitiesFound.filter(item => item.type != LUISObjNameEnum.PATTERNANYENTITY);
                         if (mixedEntity.length !== 0) {
                             let errorMsg = `Utterance "${utteranceAndEntities.contextText}" has mix of entites with labelled values and ones without. Please update utterance to either include labelled values for all entities or remove labelled values from all entities.`;
-                            let error = BuildDiagnostic({
+                            throwDiagnosticError({
                                 message: errorMsg,
                                 range: utteranceAndEntities.range
-                            })
-
-                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                            });
                         }
 
                         let prebuiltEntities = entitiesFound.filter(item => builtInTypes.consolidatedList.map(prebuiltEntity => prebuiltEntity.toLowerCase()).includes(item.entity.toLowerCase()));
                         prebuiltEntities.forEach(prebuiltEntity => {
                             if (parsedContent.LUISJsonStructure.prebuiltEntities.findIndex(e => e.name === prebuiltEntity.entity) < 0) {
                                 let errorMsg = `Pattern "${utteranceAndEntities.contextText}" has prebuilt entity ${prebuiltEntity.entity}. Please define it explicitly with @ prebuilt ${prebuiltEntity.entity}.`;
-                                let error = BuildDiagnostic({
+                                throwDiagnosticError({
                                     message: errorMsg,
                                     range: utteranceAndEntities.range
-                                })
-
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                });
                             }
                         })
 
@@ -1080,12 +1064,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                                 );
                                 if ((otherEntities || []).find(item => item.name == entity.entity) === undefined) {
                                     let errorMsg = `Utterance "${utterance}" has invalid reference to Phrase List entity "${nonAllowedPhrseListEntityInUtterance.name}". Phrase list entities cannot be given an explicit labelled value.`;
-                                    let error = BuildDiagnostic({
+                                    throwDiagnosticError({
                                         message: errorMsg,
                                         range: utteranceAndEntities.range
                                     });
-
-                                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                 }
                             }
 
@@ -1097,11 +1079,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                             let patternAnyExists = (parsedContent.LUISJsonStructure.patternAnyEntities || []).find(item => item.name == entity.entity);
                             if (compositeExists === undefined && listExists === undefined && prebuiltExists === undefined && regexExists === undefined && patternAnyExists === undefined) {
                                 if (!config.enableMLEntities) {
-                                  const error = BuildDiagnostic({
+                                throwDiagnosticError({
                                     message: 'Do not support ML entity. Please make sure enableMLEntities is set to true.',
                                     range: utteranceAndEntities.range
                                 });
-                                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                               }
                                 if (entity.role && entity.role !== '') {
                                     addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.ENTITIES, entity.entity, [entity.role.trim()]);
@@ -1119,12 +1100,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                                     } else {
                                         if (!isChildEntity(entity, entitiesFound)) {
                                             let errorMsg = `${entity.entity} has been defined as a LIST entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                            let error = BuildDiagnostic({
+                                            throwDiagnosticError({
                                                 message: errorMsg,
                                                 range: utteranceAndEntities.range
                                             });
-
-                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                         }
                                     }
                                 } else if (prebuiltExists !== undefined) {
@@ -1133,12 +1112,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                                     } else {
                                         if (!isChildEntity(entity, entitiesFound)) {
                                             let errorMsg = `${entity.entity} has been defined as a PREBUILT entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                            let error = BuildDiagnostic({
+                                            throwDiagnosticError({
                                                 message: errorMsg,
                                                 range: utteranceAndEntities.range
                                             });
-
-                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                         }
                                     }
                                 } else if (regexExists !== undefined) {
@@ -1147,12 +1124,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                                     } else {
                                         if (!isChildEntity(entity, entitiesFound)) {
                                             let errorMsg = `${entity.entity} has been defined as a Regex entity type. It cannot be explicitly included in a labelled utterance unless the label includes a role.`;
-                                            let error = BuildDiagnostic({
+                                            throwDiagnosticError({
                                                 message: errorMsg,
                                                 range: utteranceAndEntities.range
                                             });
-
-                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                                         }
                                     }
                                 } else if (patternAnyExists !== undefined) {
@@ -1191,12 +1166,11 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
                                 let errorMsg = `No labelled value found for entity: "${item.entity}" in utterance: "${utteranceAndEntities.contextText}"`;
-                                let error = BuildDiagnostic({
+                                throwDiagnosticError({
                                     message: errorMsg,
-                                    range: utteranceAndEntities.range
-                                })
-
-                                throw (new exception(retCode.errorCode.MISSING_LABELLED_VALUE, error.toString(), [error]));
+                                    range: utteranceAndEntities.range,
+                                    errorCode: retCode.errorCode.MISSING_LABELLED_VALUE
+                                });
                             }
 
                             let utteranceEntity = new helperClass.utteranceEntity(item.entity, item.startPos, item.endPos);
@@ -1235,11 +1209,10 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                                             let oldUtterance = expandUtterance(utterance, priorLabelFound);
                                             let newUtterance = expandUtterance(utterance, utteranceEntity);
                                             let errorMsg = `[Error] Duplicate overlapping labels found for entity '${priorLabelFound.name}' for Intent '${priorLabelFound.intent}'.\n    1. ${oldUtterance}\n    2. ${newUtterance}`;
-                                            let error = BuildDiagnostic({
+                                            throwDiagnosticError({
                                                 message: errorMsg,
                                                 range: utteranceAndEntities.range
-                                            })
-                                            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                                            });
                                         default:
                                             // take the longest label
                                             if ((utteranceEntity.startPos >= priorLabelFound.startPos) && (utteranceEntity.endPos >= priorLabelFound.endPos)) {
@@ -1323,11 +1296,10 @@ const validateAndGetRoles = function(parsedContent, roles, range, entityName, en
                 let hasBadNonPLRoles = (roleFound.roles || []).filter(item => item.toLowerCase() !== PLCONSTS.INTERCHANGEABLE && item.toLowerCase() !== PLCONSTS.ENABLEDFORALLMODELS && item.toLowerCase() !== PLCONSTS.DISABLED && item.toLowerCase() !== PLCONSTS.DISABLEDFORALLMODELS);
                 if (hasBadNonPLRoles.length !== 0) {
                     let errorMsg = `Roles must be unique across entity types. Invalid role definition found "${entityName}". Prior definition - '@ ${roleFound.type} ${roleFound.name}${roleFound.roles.length > 0 ? ` hasRoles ${roleFound.roles.join(',')}` : ``}'`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
                         range: range
-                    })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                    });
                 }
             }
         });
@@ -1383,29 +1355,26 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                 let entityType = !entity.Type ? getEntityType(entity.Name, entities) : entity.Type;
                 if (!entityType) {
                     let errorMsg = `No type definition found for entity "${entityName}". Supported types are ${Object.values(EntityTypeEnum).join(', ')}. Note: Type names are case sensitive.`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
                         range: entity.Range
-                    })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                    });
                 };
 
                 if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
                     let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
                         line: entity.Range.Start.Line
-                    })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                    });
                 }
 
                 if (entityType === entityName) {
                     let errorMsg = `Entity name "${entityName}" cannot be the same as entity type "${entityType}"`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
                         range: entity.Range
-                    })
-                    throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                    });
                 }
                 let entityRoles = validateAndGetRoles(parsedContent, entity.Roles, entity.Range, entityName, entityType);
                 let PAEntityRoles = RemoveDuplicatePatternAnyEntity(parsedContent, entityName, entityType, entity.Range);
@@ -1417,11 +1386,10 @@ const parseAndHandleEntityV2 = function (parsedContent, luResource, log, locale,
                 switch(entityType) {
                     case EntityTypeEnum.ML:
                       if (!config.enableMLEntities) {
-                          const error = BuildDiagnostic({
+                        throwDiagnosticError({
                             message: 'Do not support ML entity. Please make sure enableMLEntities is set to true.',
                             range: entity.Range
                         });
-                        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
                       }
                         handleNDepthEntity(parsedContent, entityName, entityRoles, entity.ListBody, entity.Range);
                         break;
@@ -1500,11 +1468,10 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         let groupsFound = captureGroups.exec(child);
         if (!groupsFound) {
             let errorMsg = `Invalid child entity definition found for "${child.trim()}". Child definitions must start with '- @' and only include a type, name and optionally one or more usesFeature(s) definition.`;
-            const error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
                 line: defLine
             });
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let childEntityName = groupsFound.groups.entityName.replace(/^['"]/g, '').replace(/['"]$/g, '');
         let childEntityType = groupsFound.groups.instanceOf.trim().replace(/^['"]/g, '').replace(/['"]$/g, '');
@@ -1523,11 +1490,10 @@ const handleNDepthEntity = function(parsedContent, entityName, entityRoles, enti
         entityIdxByLevel.reverse();
         if (!currentParentEntity) {
             let errorMsg = `[ERROR] line ${defLine}: Invalid definition found for child "${child.trim()}". Parent of each child entity must be of type "${EntityTypeEnum.ML}".`;
-            const error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
                 line: defLine
             });
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
         }
         let context = {line : defLine, definition: child.trim()};
         if (groupsFound.groups.instanceOf.toLowerCase().trim() === EntityTypeEnum.SIMPLE) {
@@ -1590,11 +1556,10 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, r
     });
     if (entityFound !== undefined) {
         let errorMsg = `${matchType} Prior definition - '@ ${entityFound.type} ${entityFound.name}${entityFound.roles.length > 0 ? ` hasRoles ${entityFound.roles.join(',')}` : ``}'`;
-        let error = BuildDiagnostic({
+        throwDiagnosticError({
             message: errorMsg,
             range: range
-        })
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+        });
     }
 }
 /**
@@ -1605,11 +1570,10 @@ const verifyUniqueEntityName = function(parsedContent, entityName, entityType, r
  */
 const handlePatternAny = function(parsedContent, entityName, entityRoles, range, config) {
     if (!config.enablePattern) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Pattern. Please make sure enablePattern is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
       // check if this patternAny entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
      try {
@@ -1653,11 +1617,10 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
     if (PAEntityFound !== undefined && PAIdx !== -1 && entityType != EntityTypeEnum.PATTERNANY) {
         if (entityType.toLowerCase().trim().includes('phraselist')) {
             let errorMsg = `Phrase lists cannot be used as an entity in a pattern "${pEntityName}"`;
-            let error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
                 range: range
-            })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            });
         }
         entityRoles = (PAEntityFound.roles.length !== 0) ? PAEntityFound.roles : [];
         parsedContent.LUISJsonStructure.patternAnyEntities.splice(PAIdx, 1);
@@ -1675,20 +1638,18 @@ const RemoveDuplicatePatternAnyEntity = function(parsedContent, pEntityName, ent
  */
 const handlePhraseList = function(parsedContent, entityName, entityType, entityRoles, valuesList, range, config) {
     if (!config.enablePhraseLists) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Phrase Lists. Please make sure enablePhraseLists is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
 
     // phraselist name can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]
     if (!/[a-zA-Z0-9@#_,.,^\\\[\]]+$/.test(entityName.toLowerCase().includes('interchangeable') ? entityName.split(/\(.*\)/g)[0] : entityName)) {
-        const error = BuildDiagnostic({
+        throwDiagnosticError({
             message: `Invalid phraselist line, phraselist name ${entityName} can only contain letters (a-z, A-Z), numbers (0-9) and symbols @ # _ . , ^ \\ [ ]`,
             line: range.Start.Line
         });
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     };
 
     let isPLEnabledForAllModels = undefined;
@@ -1706,12 +1667,10 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
                 entityName += item;
             } else {
                 let errorMsg = `Phrase list entity ${entityName} has invalid role definition with roles = ${entityRoles.join(', ')}. Roles are not supported for Phrase Lists`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     context: range
-                })
-
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
         })
     }
@@ -1741,12 +1700,10 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
         if (entityType) {
             if (pLEntityExists.mode !== intc) {
                 let errorMsg = `Phrase list: "${entityName}" has conflicting definitions. One marked interchangeable and another not interchangeable`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     range: range
-                })
-
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
         }
         let wordsSplit = pLEntityExists.words.split(',');
@@ -1773,11 +1730,10 @@ const handlePhraseList = function(parsedContent, entityName, entityType, entityR
  */
 const handlePrebuiltEntity = function(parsedContent, entityName, entityType, entityRoles, locale, log, range, config) {
     if (!config.enablePrebuiltEntities) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Prebuilt entity. Please make sure enablePrebuiltEntities is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
 
     locale = locale ? locale.toLowerCase() : 'en-us';
@@ -1793,12 +1749,10 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
     // verify if the requested entityType is available in the requested locale
     if (!builtInTypes.consolidatedList.map(item => item.toLowerCase()).includes(entityType.toLowerCase())) {
         let errorMsg = `Unknown PREBUILT entity '${entityType}'. Available pre-built types are ${builtInTypes.consolidatedList.join(',')}`;
-        let error = BuildDiagnostic({
+        throwDiagnosticError({
             message: errorMsg,
             range: range
-        })
-
-        throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+        });
     }
     let prebuiltCheck = builtInTypes.perLocaleAvailability[locale][entityType];
     if (prebuiltCheck === null) {
@@ -1807,12 +1761,10 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
             process.stdout.write(chalk.default.yellowBright('  Skipping this prebuilt entity..\n'));
         } else {
             let errorMsg = `PREBUILT entity '${entityType}' is not available for the requested locale '${locale}'`;
-            let error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
                 range: range
-            })
-
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            });
         }
     } else if (prebuiltCheck && prebuiltCheck.includes('datetime')) {
         if (log) {
@@ -1838,11 +1790,10 @@ const handlePrebuiltEntity = function(parsedContent, entityName, entityType, ent
  */
 const handleComposite = function(parsedContent, entityName, entityType, entityRoles, range, inlineChildRequired, isEntityTypeDefinition, config) {
     if (!config.enableCompositeEntities) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Composite entity. Please make sure enableCompositeEntities is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
 
     // remove simple entity definitions for composites but carry forward roles.
@@ -1863,12 +1814,11 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
     let childDefinition = entityType.trim().replace('[', '').replace(']', '').trim();
     if (childDefinition.length === 0 && inlineChildRequired) {
         let errorMsg = `Composite entity: ${entityName} is missing child entity definitions. Child entities are denoted via [entity1, entity2] notation.`;
-        let error = BuildDiagnostic({
+        throwDiagnosticError({
             message: errorMsg,
-            range: range
+            range: range,
+            errorCode: retCode.errorCode.INVALID_COMPOSITE_ENTITY
         })
-
-        throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
     }
     // split the children based on ',' or ';' delimiter. Trim each child to remove white spaces.
     let compositeChildren = childDefinition !== "" ? childDefinition.split(new RegExp(/[,;]/g)).map(item => item.trim()) : [];
@@ -1884,12 +1834,11 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
         if (isEntityTypeDefinition) {
             if (compositeEntity.children.length !== 0 && JSON.stringify(compositeChildren.sort()) !== JSON.stringify(compositeEntity.children.sort())) {
                 let errorMsg = `Composite entity: ${entityName} has multiple definition with different children. \n 1. ${compositeChildren.join(', ')}\n 2. ${compositeEntity.children.join(', ')}`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
-                    range: range
-                })
-
-                throw (new exception(retCode.errorCode.INVALID_COMPOSITE_ENTITY, error.toString(), [error]));
+                    range: range,
+                    errorCode: retCode.errorCode.INVALID_COMPOSITE_ENTITY
+                });
             }
         }
 
@@ -1910,11 +1859,10 @@ const handleComposite = function(parsedContent, entityName, entityType, entityRo
  */
 const handleClosedList = function (parsedContent, entityName, listLines, entityRoles, range, config) {
     if (!config.enableListEntities) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support List entity. Please make sure enableListEntities is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     // check if this list entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
@@ -1957,12 +1905,11 @@ const handleClosedList = function (parsedContent, entityName, listLines, entityR
                 item = item.trim();
                 if (!nvExists || !nvExists.list) {
                     let errorMsg = `Closed list ${entityName} has synonyms list "${line}" without a normalized value.`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
-                        range: range
-                    })
-
-                    throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
+                        range: range,
+                        errorCode: retCode.errorCode.SYNONYMS_NOT_A_LIST
+                    });
                 }
                 nvExists.list.push(item);
             })
@@ -2000,11 +1947,10 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
 
             if (entityType !== EntityTypeEnum.PHRASELIST && InvalidCharsInIntentOrEntityName.some(x => entityName.includes(x))) {
                 let errorMsg = `Invalid entity line, entity name ${entityName} cannot contain any of the following characters: [<, >, *, %, &, :, \\, $]`;
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg,
                     line: entity.Range.Start.Line
-                })
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+                });
             }
 
             let parsedRoleAndType = helpers.getRolesAndType(entityType);
@@ -2037,12 +1983,11 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                         parsedContent.qnaAlterations.wordAlterations.push(new qnaAlterations().wordAlterations = {"alterations": alterationlist});
                     } else {
                         let errorMsg = `QnA alteration section: "${alterationlist}" does not have list decoration. Prefix line with "-" or "+" or "*"`;
-                        let error = BuildDiagnostic({
+                        throwDiagnosticError({
                             message: errorMsg,
-                            range: entity.range
-                        })
-
-                        throw (new exception(retCode.errorCode.SYNONYMS_NOT_A_LIST, error.toString(), [error]));
+                            range: entity.range,
+                            errorCode: retCode.errorCode.SYNONYMS_NOT_A_LIST
+                        });
                     }
                 } else {
                     // treat this as a LUIS list entity type
@@ -2095,12 +2040,11 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
                     handleRegExEntity(parsedContent, entityName, entityType, entityRoles, entity.Range, config);
                 } else {
                     let errorMsg = `RegEx entity: ${regExEntity.name} is missing trailing '/'. Regex patterns need to be enclosed in forward slashes. e.g. /[0-9]/`;
-                    let error = BuildDiagnostic({
+                    throwDiagnosticError({
                         message: errorMsg,
-                        range: entity.Range
-                    })
-
-                    throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
+                        range: entity.Range,
+                        errorCode: retCode.errorCode.INVALID_REGEX_ENTITY
+                    });
                 }
             } else {
                 // TODO: handle other entity types
@@ -2118,11 +2062,10 @@ const parseAndHandleEntitySection = function (parsedContent, luResource, log, lo
  */
 const handleRegExEntity = function(parsedContent, entityName, entityType, entityRoles, range, config) {
     if (!config.enableRegexEntities) {
-      const error = BuildDiagnostic({
+      throwDiagnosticError({
         message: 'Do not support Regex entity. Please make sure enableRegexEntities is set to true.',
         range: range
       });
-      throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
     }
     // check if this regex entity is already labelled in an utterance and or added as a simple entity. if so, throw an error.
     try {
@@ -2139,12 +2082,11 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
         regex = entityType.slice(1, entityType.length - 1);
         if (regex === '') {
             let errorMsg = `RegEx entity: ${entityName} has empty regex pattern defined.`;
-            let error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
-                range: range
-            })
-
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
+                range: range,
+                errorCode: retCode.errorCode.INVALID_REGEX_ENTITY
+            });
         }
     }
 
@@ -2156,12 +2098,12 @@ const handleRegExEntity = function(parsedContent, entityName, entityType, entity
         // throw an error if the pattern is different for the same entity
         if (regExEntity.regexPattern !== '' && regex !== '' && regExEntity.regexPattern !== regex) {
             let errorMsg = `RegEx entity: ${regExEntity.name} has multiple regex patterns defined. \n 1. /${regex}/\n 2. /${regExEntity.regexPattern}/`;
-            let error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: errorMsg,
-                range: range
-            })
-
-            throw (new exception(retCode.errorCode.INVALID_REGEX_ENTITY, error.toString(), [error]));
+                range: range,
+                errorCode: retCode.errorCode.INVALID_REGEX_ENTITY
+            });
+                
         } else {
             // update roles
             addItemOrRoleIfNotPresent(parsedContent.LUISJsonStructure, LUISObjNameEnum.REGEX, regExEntity.name, entityRoles);
@@ -2228,10 +2170,9 @@ const parseAndHandleModelInfoSection = function (parsedContent, luResource, log,
     let modelInfos = luResource.Sections.filter(s => s.SectionType === SectionType.MODELINFOSECTION);
     if (modelInfos && modelInfos.length > 0) {
         if (!config.enableModelDescription) {
-            const error = BuildDiagnostic({
+            throwDiagnosticError({
                 message: `Do not support Model Description. Please make sure enableModelDescription is set to true.`
-            })
-            throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
+            });
         }
 
         for (const modelInfo of modelInfos) {
@@ -2423,11 +2364,9 @@ const VerifyAndUpdateSimpleEntityCollection = function (parsedContent, entityNam
                 }
             } else if (entityType !== 'Phrase List') {              // Fix for # 1151. Phrase lists can have same name as other entities.
                 let errorMsg = `'${entityType}' entity: "${entityName}" is added as a labelled entity in utterance "${entityExistsInUtteranceLabel.text}". ${entityType} cannot be added with explicit labelled values in utterances.`
-                let error = BuildDiagnostic({
+                throwDiagnosticError({
                     message: errorMsg
                 });
-
-                throw (new exception(retCode.errorCode.INVALID_INPUT, error.toString(), [error]));
             }
         });
     }
