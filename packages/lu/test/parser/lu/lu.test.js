@@ -38,9 +38,7 @@ describe('LU instance raw parsing', function() {
       const luInstance = new LU(luContent.toString())
       let result = luInstance.parse()
       let sanitizedResult = JSON.stringify(result);
-      console.log(sanitizedResult);
       let sanitizedResponse = JSON.stringify(response);
-      console.log(sanitizedResponse);
       compareLuFiles(JSON.parse(sanitizedResult), JSON.parse(sanitizedResponse));
   });
 });
