@@ -48,18 +48,16 @@ const extractElementSections = (mapFunction, filterFunction, className, fileCont
     let entitySections = fileContext.paragraph()
         .map(x => x[mapFunction]());
 
+    let filterToApply = (x => x !== undefined && x !== null);
     if (filterFunction) {
-        entitySections = entitySections.filter(x => x && x[filterFunction]());
-    } else {
-        entitySections = entitySections.filter(x => x !== undefined && x !== null);
-    }
+        filterToApply = (x => x && x[filterFunction]());
+    } 
+
+    entitySections = entitySections.filter(filterToApply);
 
     let entitySectionList = entitySections.map(x => {
         const classToBuild = objectFactory(className)
-        if (content) {
-            return new classToBuild(x, content);
-        }
-        return new classToBuild(x);
+        return new classToBuild(x, content);
     });
 
     return entitySectionList;
@@ -70,7 +68,7 @@ const buildSection = (strategyObject) => {
     let builtErrors = []
 
     try {
-        let sectionToBuild = extractElementSections.apply(this, strategyObject.args);
+        let sectionToBuild = extractElementSections(...strategyObject.args);
         sectionToBuild.forEach(section => builtErrors = builtErrors.concat(section.Errors));
 
         if (strategyObject.postProcess) {
