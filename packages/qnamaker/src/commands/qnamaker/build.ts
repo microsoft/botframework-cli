@@ -40,6 +40,7 @@ export default class QnamakerBuild extends Command {
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
+    logKeys: flags.string({description: 'Writes the QnA knowledge base endpointKeys to the console output', default: false}),
   }
 
   async run() {
@@ -170,18 +171,22 @@ export default class QnamakerBuild extends Command {
         })
 
         if (writeDone) {    
-          this.log(`Successfully wrote settings file to ${outputFolder}\n`)      
-          this.log('QnA knowledge base endpointKeys:')
-          this.log(endpointKeys)
+          this.log(`Successfully wrote settings file to ${outputFolder}\n`)
+          if (flags.logKeys) {
+            this.log('QnA knowledge base endpointKeys:')
+            this.log(endpointKeys)  
+          }
         } else {
           this.log(`No changes to settings file in ${outputFolder}\n`)
         }
       } else {
         this.log('The published knowledge base setting:')
         this.log(JSON.stringify(JSON.parse(settingsContent[0].content).qna, null, 4))
-        this.log('\n')
-        this.log('QnA knowledge base endpointKeys:')
-        this.log(endpointKeys)
+        if (flags.logKeys) {
+          this.log('\n')
+          this.log('QnA knowledge base endpointKeys:')
+          this.log(endpointKeys)  
+        }
       }
     } catch (error) {
       if (error instanceof exception) {
