@@ -182,8 +182,8 @@ export default class QnamakerBuild extends Command {
       } else {
         this.log('The published knowledge base setting:')
         this.log(JSON.stringify(JSON.parse(settingsContent[0].content).qna, null, 4))
+        this.log('\n')
         if (flags.logKeys) {
-          this.log('\n')
           this.log('QnA knowledge base endpointKeys:')
           this.log(endpointKeys)  
         }
