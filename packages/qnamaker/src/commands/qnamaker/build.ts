@@ -40,7 +40,7 @@ export default class QnamakerBuild extends Command {
     log: flags.boolean({description: 'Writes out log messages to console', default: false}),
     endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
     schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
-    logKeys: flags.string({description: 'Writes the QnA knowledge base endpointKeys to the console output', default: false}),
+    logKeys: flags.boolean({description: 'Writes the QnA knowledge base endpointKeys to the console output', default: false}),
   }
 
   async run() {
