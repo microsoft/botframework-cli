@@ -499,6 +499,18 @@ describe('dialog:merge', async () => {
         scope.done()
         nock.cleanAll()
     })
+
+    it('non-object ref', async() => {
+        const scope = nock('http://json-schema.org')
+            .get(/draft-07/)
+            .reply(200, '<xml></xml>')
+            .persist()
+        const [merged, lines] = await merge(['nuget/nuget3/1.0.0/*.schema'], 'app.schema')
+        assert(!merged, 'Merging should fail')
+        assert(countMatches(/did not resolve to JSON Schema/i, lines) === 1, 'Did not detect bad definition')
+        scope.done()
+        nock.cleanAll()
+    })
 })
 
 /* TODO: These tests are related to verify and need to be updated and moved there.
