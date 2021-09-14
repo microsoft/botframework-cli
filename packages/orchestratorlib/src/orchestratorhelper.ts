@@ -352,7 +352,7 @@ export class OrchestratorHelper {
 
         default: throw new Error(`Unknown file type ${ext}`);
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}`);
     }
   }
@@ -421,15 +421,17 @@ export class OrchestratorHelper {
     if (!luContent || luContent.length === 0) {
       return;
     }
-    const luObject: any = {
-      content: luContent,
-      id: luFile,
-    };
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
-    if (Utility.toPrintDetailedDebuggingLogToConsole) {
-      UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
-    }
     try {
+      const luObject: any = {
+        content: luContent,
+        id: luFile,
+      };
+      
+      const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+      if (Utility.toPrintDetailedDebuggingLogToConsole) {
+        UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
+      }  
+
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
         luisObject,
         hierarchicalLabel,
@@ -437,12 +439,11 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap,
         utteranceEntityLabelsMap,
         utteranceEntityLabelDuplicateMap);
-      if (!rvLu) {
-        throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
-      }
-    } catch (error) {
-      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
-      throw error;
+    }
+    catch (error: any) {
+      Utility.debuggingLog(`EXCEPTION in parseLuContent, error=${error}`);
+      const errorText: string = error.hasOwnProperty('text') ? error.text : '';
+      throw new Error(`Failed parsing lu file ${luFile} - ${errorText}`);
     }
   }
 
@@ -602,20 +603,22 @@ export class OrchestratorHelper {
       return;
     }
 
-    const newlines: string[] = [];
-    lines.forEach((line: string) => {
-      if (line.toLowerCase().indexOf('@qna.pair.source =') < 0) {
-        newlines.push(line);
-      }
-    });
-
-    // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
-    const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
-    const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
-    if (qnaObject) {
+    try {
+      const newlines: string[] = [];
+      lines.forEach((line: string) => {
+        if (line.toLowerCase().indexOf('@qna.pair.source =') < 0) {
+          newlines.push(line);
+        }
+      });
+  
+      // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
+      const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
+      const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
-    } else {
-      throw new Error(`Failed parsing qna file ${qnaFile}`);
+    }
+    catch (error: any) {
+      const errorText: string = error.hasOwnProperty('text') ? error.text : '';
+      throw new Error(`Failed parsing qna file ${qnaFile} - ${errorText}`);
     }
   }
 
