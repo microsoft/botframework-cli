@@ -426,12 +426,10 @@ export class OrchestratorHelper {
         content: luContent,
         id: luFile,
       };
-      
       const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
-      }  
-
+      }
       const rvLu: boolean = OrchestratorHelper.getIntentsEntitiesUtterances(
         luisObject,
         hierarchicalLabel,
@@ -439,10 +437,11 @@ export class OrchestratorHelper {
         utteranceLabelDuplicateMap,
         utteranceEntityLabelsMap,
         utteranceEntityLabelDuplicateMap);
-    }
-    catch (error: any) {
-      Utility.debuggingLog(`EXCEPTION in parseLuContent, error=${error}`);
-      const errorText: string = error.hasOwnProperty('text') ? error.text : '';
+      if (!rvLu) {
+        throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+      }
+    } catch (error: any) {
+      const errorText: string = 'text' in error ? error.text : '';
       throw new Error(`Failed parsing lu file ${luFile} - ${errorText}`);
     }
   }
@@ -610,14 +609,12 @@ export class OrchestratorHelper {
           newlines.push(line);
         }
       });
-  
       // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
       const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
       const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
-    }
-    catch (error: any) {
-      const errorText: string = error.hasOwnProperty('text') ? error.text : '';
+    } catch (error: any) {
+      const errorText: string = 'text' in error ? error.text : '';
       throw new Error(`Failed parsing qna file ${qnaFile} - ${errorText}`);
     }
   }
