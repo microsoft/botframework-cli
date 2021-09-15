@@ -1,0 +1,17 @@
+
+> LUIS application information
+> !# @app.name = Weather
+> !# @app.desc = Weather LUIS application - Bot Builder Samples
+> !# @app.versionId = 0.1
+> !# @app.culture = en-us
+> !# @app.luis_schema_version = 4.0.0
+
+
+> # Intent definitions
+- current weather ?
+- do {@Location=florida} residents usually need ice 
+
+## Get Weather Forecast
+- forecast in celcius
+- get the forcast for me
+- i want to know the temperature at {@Location=death valley}

@@ -588,4 +588,67 @@ describe('Test Suite - orchestratorhelper', () => {
     assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
     assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
   });
+  it('Test.0600 OrchestratorHelper.parseQnaFile()', async () => {
+    const validFile: string = './test/fixtures/parses/good.qna';
+    const inValidFile: string = './test/fixtures/parses/bad.qna';
+    
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    try {
+      await OrchestratorHelper.parseQnaFile(
+        inValidFile,
+        '',
+        utteranceLabelsMap,
+        utteranceLabelDuplicateMap);
+      
+      assert.fail("Invalid syntax exception is not thrown.");
+    }
+    catch (e: any) {
+      assert.ok(e.text.startsWith("Failed parsing qna file") && e.text.startsWith("[ERROR] line "));
+    }
+  
+    assert.ok(utteranceLabelsMap.size == 0);
+
+    await OrchestratorHelper.parseQnaFile(
+      validFile,
+      '',
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap);
+    assert.ok(utteranceLabelsMap.size > 0);
+  });
+  it('Test.0600 OrchestratorHelper.parseLuFile()', async () => {
+    const validFile: string = './test/fixtures/parses/good.lu';
+    const inValidFile: string = './test/fixtures/parses/bad.lu';
+    
+    const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceLabelDuplicateMap: Map<string, Set<string>> = new Map<string, Set<string>>();
+    const utteranceEntityLabelsMap: Map<string, Label[]> = new Map<string, Label[]>();
+    const utteranceEntityLabelDuplicateMap: Map<string, Label[]> = new Map<string, Label[]>();
+
+    try {
+      await OrchestratorHelper.parseLuFile(
+        inValidFile,
+        '',
+        utteranceLabelsMap,
+        utteranceLabelDuplicateMap,
+        utteranceEntityLabelsMap,
+        utteranceEntityLabelDuplicateMap);
+      
+      assert.fail("Invalid syntax exception is not thrown.");
+    }
+    catch (e: any) {
+      assert.ok(e.text.startsWith("Failed parsing lu file") && e.text.startsWith("[ERROR] line "));
+    }
+  
+    assert.ok(utteranceLabelsMap.size == 0);
+
+    await OrchestratorHelper.parseLuFile(
+      validFile,
+      '',
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap,
+      utteranceEntityLabelsMap,
+      utteranceEntityLabelDuplicateMap);
+    assert.ok(utteranceLabelsMap.size > 0);
+  });
 });
