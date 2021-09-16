@@ -441,7 +441,7 @@ export class OrchestratorHelper {
         throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
       }
     } catch (error: any) {
-        throw new Error(`Failed parsing lu file ${luFile} ${error.text}`);
+      throw new Error(`Failed parsing lu file ${luFile} ${error.text}`);
     }
   }
 
@@ -613,7 +613,7 @@ export class OrchestratorHelper {
       const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
     } catch (error: any) {
-        throw new Error(`Failed parsing qna file ${qnaFile} ${error.text}`);
+      throw new Error(`Failed parsing qna file ${qnaFile} ${error.text}`);
     }
   }
 
