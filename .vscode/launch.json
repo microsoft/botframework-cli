@@ -15,7 +15,7 @@
         "999999",
         "--colors",
         "-g",
-        ".*addAsync.*"
+        "Test.0600 OrchestratorHelper.parseLuFile()"
       ],
       "cwd": "${workspaceFolder}/packages/orchestratorlib",
       "internalConsoleOptions": "openOnSessionStart",
@@ -90,7 +90,7 @@
         "999999",
         "--colors",
         "-g",
-        "dialog:merge.*missing schema.*"
+        "dialog:merge.*"
       ],
       "cwd": "${workspaceFolder}/packages/dialog",
       "internalConsoleOptions": "openOnSessionStart",

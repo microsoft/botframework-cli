@@ -1,0 +1,22 @@
+# ?store hours
+```
+Most our stores are open M-F 9AM-10PM.
+```
+**Prompts:**
+- [Seattle store](#1)
+- [Portland store](#2)
+
+<a id = "1"></a>
+
+# ?seattle
+```
+The Seattle store is open M-F 9AM-10PM.
+```
+
+<a id = "2"></a>
+
+# ?when is the portland store open
+- portland store hours
+```
+The Portland store is open 24/7.
+```

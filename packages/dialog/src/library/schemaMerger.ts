@@ -502,7 +502,7 @@ export class SchemaMerger {
             this.log('')
             imports = await this.copyAssets()
         } catch (e) {
-            this.mergingError(e)
+            this.mergingError((e as string | Error))
         }
         if (this.failed) {
             this.error('*** Could not merge components ***')
@@ -629,7 +629,7 @@ export class SchemaMerger {
                     this.definitions[kind] = component
                 }
             } catch (e) {
-                this.parsingError(e)
+                this.parsingError((e as string | Error))
             }
         }
         this.currentFile = ''
@@ -752,7 +752,7 @@ export class SchemaMerger {
                             delete component.$schema
                             locale[kindName] = mergeObjects(locale[kindName], component)
                         } catch (e) {
-                            this.parsingError(e)
+                            this.parsingError((e as string | Error))
                         }
                     }
 
@@ -861,7 +861,7 @@ export class SchemaMerger {
                                 if (msg) {
                                     this.log(msg)
                                 }
-                                this.mergingError(e)
+                                this.mergingError((e as string | Error))
                             }
                         }
 
@@ -1178,7 +1178,7 @@ export class SchemaMerger {
                     this.parsingWarning('Missing package')
                 }
             } catch (e) {
-                this.parsingWarning(e.message)
+                this.parsingWarning((e as Error).message)
             } finally {
                 this.currentFile = this.currentParent().metadata.path
             }
@@ -1830,7 +1830,11 @@ export class SchemaMerger {
                                 // New source
                                 this.currentFile = path
                                 this.vlog(`Bundling ${path}`)
-                                schema.definitions[name] = await getJSON(path)
+                                const definition = await getJSON(path)
+                                if (typeof (definition) !== 'object') {
+                                    throw new Error(`Error ${val} did not resolve to JSON Schema object ${definition}`)
+                                }
+                                schema.definitions[name] = definition
                                 sources.push(name)
                             }
                             const ref = `#/definitions/${name}${pointer}`
