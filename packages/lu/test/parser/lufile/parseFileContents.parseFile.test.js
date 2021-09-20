@@ -6,7 +6,20 @@ const parseFile = require('./../../../src/parser/lufile/parseFileContents');
 const validateLUISBlob = require('./../../../src/parser/luis/luisValidator')
 var chai = require('chai');
 var assert = chai.assert;
-describe('With helper functions', function () {
+describe('parseFile', function () {
+        it('Parsefile do not treat two distinct utterancess as the same even though they might share the same hash code', function(done) {
+                let luFile = `
+# testIntent
+- video for digital MDT
+- How do i sell tele-coaching`;
+                parseFile.parseFile(luFile)
+                        .then(res => {
+                                assert.equal(res.LUISJsonStructure.utterances.length, 2)
+                                done()
+                        })
+                        // .catch(err => done(err))
+        })
+
         it('Parsefile correctly handles non nDepth entity references in patterns', function(done) {
                 let luFile = `@ list foo=
                 @ ml operation=
