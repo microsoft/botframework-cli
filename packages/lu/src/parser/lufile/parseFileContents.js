@@ -925,7 +925,7 @@ const parseAndHandleNestedIntentSection = function (luResource, enableMergeInten
 const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, config) {
     // handle intent
     let intents = luResource.Sections.filter(s => s.SectionType === SectionType.SIMPLEINTENTSECTION);
-    let hashTable = {}
+    let utteranceStringToObjectMap = new Map()
     if (intents && intents.length > 0) {
         let references = luResource.Sections.filter(s => s.SectionType === SectionType.REFERENCESECTION);
         for (const intent of intents) {
@@ -945,7 +945,6 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
             for (const utteranceAndEntities of intent.UtteranceAndEntitiesMap) {
                 // add utterance
                 let utterance = utteranceAndEntities.utterance.trim();
-                let uttHash = helpers.hashCode(utterance);
                 // Fix for BF-CLI #122.
                 // Ensure only links are detected and passed on to be parsed.
                 if (helpers.isUtteranceLinkRef(utterance || '')) {
@@ -1023,9 +1022,9 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
                         })
 
                         let newPattern = new helperClass.pattern(utterance, intentName);
-                        if (!hashTable[uttHash]) {
+                        if (!utteranceStringToObjectMap.has(utterance)) {
                             parsedContent.LUISJsonStructure.patterns.push(newPattern);
-                            hashTable[uttHash] = newPattern;
+                            utteranceStringToObjectMap.set(utterance, newPattern);
                         }
 
                         // add all entities to pattern.Any only if they do not have another type.
@@ -1181,12 +1180,12 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
 
                         // add utterance
                         let utteranceObject;
-                        if (hashTable[uttHash]) {
-                            utteranceObject = hashTable[uttHash];
+                        if (utteranceStringToObjectMap.has(utterance)) {
+                            utteranceObject = utteranceStringToObjectMap.get(utterance);
                         } else {
                             utteranceObject = new helperClass.utterances(utterance, intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
-                            hashTable[uttHash] = utteranceObject;
+                            utteranceStringToObjectMap.set(utterance, utteranceObject);
                         }
                         entitiesFound.forEach(item => {
                             if (item.startPos > item.endPos) {
@@ -1254,17 +1253,15 @@ const parseAndHandleSimpleIntentSection = function (parsedContent, luResource, c
 
                 } else {
                     // detect if utterance is a pattern and if so add it as a pattern
-                    if (helpers.isUtterancePattern(utterance)) {
-                        let patternObject = new helperClass.pattern(utterance, intentName);
-                        if (!hashTable[uttHash]) {
+                    if (!utteranceStringToObjectMap.has(utterance)) {
+                        if (helpers.isUtterancePattern(utterance)) {
+                            let patternObject = new helperClass.pattern(utterance, intentName);
                             parsedContent.LUISJsonStructure.patterns.push(patternObject);
-                            hashTable[uttHash] = patternObject;
-                        }
-                    } else {
-                        if(!hashTable[uttHash]) {
+                            utteranceStringToObjectMap.set(utterance, patternObject);
+                        } else {
                             let utteranceObject = new helperClass.utterances(utterance.replace(/\\[\[\]\(\)]/gi, match => match.slice(1)), intentName, []);
                             parsedContent.LUISJsonStructure.utterances.push(utteranceObject);
-                            hashTable[uttHash] = utteranceObject;
+                            utteranceStringToObjectMap.set(utterance, utteranceObject);
                         }
                     }
                 }
