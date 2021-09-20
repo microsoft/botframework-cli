@@ -36,8 +36,8 @@ const build = async function (luArray, verbose, luis_culture, luSearchFn) {
 const collate = function (luisList) {
     if (luisList.length === 0) return
     let luisObject = new Luis(luisList[0])
-    let hashTable = {};
-    initializeHash(luisObject, hashTable)
+    let blobItemJsonStringifiedToObjectMap = new Map();
+    initializeMap(luisObject, blobItemJsonStringifiedToObjectMap)
     for (let i = 1; i < luisList.length; i++) {
         let blob = luisList[i]
         mergeResults(blob, luisObject, LUISObjNameEnum.INTENT);
@@ -45,8 +45,8 @@ const collate = function (luisList) {
         mergeNDepthEntities(blob.entities, luisObject.entities);
         mergeResults_closedlists(blob, luisObject, LUISObjNameEnum.CLOSEDLISTS);
         mergeResults(blob, luisObject, LUISObjNameEnum.PATTERNANYENTITY);
-        mergeResultsWithHash(blob, luisObject, LUISObjNameEnum.UTTERANCE, hashTable);
-        mergeResultsWithHash(blob, luisObject, LUISObjNameEnum.PATTERNS, hashTable);
+        mergeResultsWithMap(blob, luisObject, LUISObjNameEnum.UTTERANCE, blobItemJsonStringifiedToObjectMap);
+        mergeResultsWithMap(blob, luisObject, LUISObjNameEnum.PATTERNS, blobItemJsonStringifiedToObjectMap);
         buildRegex(blob, luisObject)
         buildPrebuiltEntities(blob, luisObject)
         buildModelFeatures(blob, luisObject)
@@ -78,18 +78,18 @@ const cleanupEntities = function (luisObject) {
     delete luisObject.onAmbiguousLabels;
 }
 
-const mergeResultsWithHash = function (blob, finalCollection, type, hashTable) {
+const mergeResultsWithMap = function (blob, finalCollection, type, blobItemJsonStringifiedToObjectMap) {
     if (blob[type] === undefined || blob[type].length === 0) {
         return
     }
     blob[type].forEach(function (blobItem) {
-        // add if this item if it does not already exist by hash look up.
-        let hashCode = helpers.hashCode(JSON.stringify(blobItem));
-        if (!hashTable[hashCode]) {
+        // add this item if it does not already exist in the map.
+        let blobItemJsonStringified = JSON.stringify(blobItem);
+        if (!blobItemJsonStringifiedToObjectMap.has(blobItemJsonStringified)) {
             finalCollection[type].push(blobItem);
-            hashTable[hashCode] = blobItem;
+            blobItemJsonStringifiedToObjectMap.set(blobItemJsonStringified, blobItem);
         } else {
-            let item = hashTable[hashCode];
+            let item = blobItemJsonStringifiedToObjectMap.get(blobItemJsonStringified);
 
             if (type !== LUISObjNameEnum.INTENT &&
                 type !== LUISObjNameEnum.PATTERNS &&
@@ -427,10 +427,10 @@ const buildPatternAny = function (blob, FinalLUISJSON) {
     })
 }
 
-const initializeHash = function (LuisJSON, hashTable = undefined) {
+const initializeMap = function (LuisJSON, blobItemJsonStringifiedToObjectMap = undefined) {
     for (let prop in LuisJSON) {
-        if (hashTable !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
-            (LuisJSON[prop] || []).forEach(item => hashTable[helpers.hashCode(JSON.stringify(item))] = item)
+        if (blobItemJsonStringifiedToObjectMap !== undefined && (prop === LUISObjNameEnum.UTTERANCE || prop === LUISObjNameEnum.PATTERNS)) {
+            (LuisJSON[prop] || []).forEach(item => blobItemJsonStringifiedToObjectMap.set(JSON.stringify(item), item))
         }
     }
 }
