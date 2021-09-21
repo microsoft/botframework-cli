@@ -4,8 +4,8 @@
  */
 
 const translateHelpers = require('./../lufile/translate-helpers')
-
 const luOptions = require('./luOptions')
+const luParser = require('./../lufile/luParser')
 
 class Lu {
     constructor(content, options = new luOptions){
@@ -20,6 +20,10 @@ class Lu {
         } else {
             this.name = this.id + '.lu'
         }
+    }
+
+    parse(){
+        return luParser.parse(this.content, undefined, {});
     }
 
     async translate(translate_key, tgt_lang, translate_comments = false, translate_link_text = false, region = ''){
