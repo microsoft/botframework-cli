@@ -160,7 +160,6 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap);
       }
     }
-    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
     return {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -353,7 +352,7 @@ export class OrchestratorHelper {
         default: throw new Error(`Unknown file type ${ext}`);
       }
     } catch (error: any) {
-      throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}`);
+      throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}, error=${os.EOL}${UtilityDispatcher.jsonStringify(error)}`);
     }
   }
 
