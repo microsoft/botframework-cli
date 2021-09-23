@@ -41,24 +41,8 @@ export class OrchestratorHelper {
     fs.mkdirSync(path, {recursive: true});
   }
 
-  public static readBluSnapshotFile(filePath: string): string {
-    return ReadText.readSync(filePath);
-    // ---- NOTE
-    // the code below was trying to normalize unknown labels in a BLU file,
-    // but the unknown labels should have been processed during ingesting
-    // a raw input file (LU, QnA, TSV, etc.) and before creating a BLU file,
-    // so there is really no need to process unknown labels in a BLU file
-    // anymore. The line below is thus deprecated, especially now the BLU
-    // file can be a JSON, so the statement below does not apply anyway.
-    // ---- return Utility.processUnknownSpuriousLabelsInTsvBluFileContent(ReadText.readSync(filePath));
-  }
-
   public static readFile(filePath: string): string {
-    try {
-      return ReadText.readSync(filePath);
-    } catch {
-      return '';
-    }
+    return ReadText.readSync(filePath);
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
@@ -124,10 +108,10 @@ export class OrchestratorHelper {
   }
 
   public static getSnapshotFromFile(snapshotPath: string) {
-    if (Utility.exists(snapshotPath) && !OrchestratorHelper.isDirectory(snapshotPath)) {
-      return new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(snapshotPath));
+    if (!Utility.exists(snapshotPath) || OrchestratorHelper.isDirectory(snapshotPath)) {
+      throw new Error(`Cannot read ${snapshotPath}`);
     }
-    return new Uint8Array();
+    return new TextEncoder().encode(OrchestratorHelper.readFile(snapshotPath));
   }
 
   public static async getUtteranceLabelsMap(
