@@ -30,14 +30,14 @@ export class UtilityLabelResolver {
     } = {
       ignore_same_example: ignoreSameExample,
     };
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExample=${ignoreSameExample}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExampleObject=${ignoreSameExampleObject}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExampleObject.ignore_same_example=${ignoreSameExampleObject.ignore_same_example}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), ignoreSameExample=${ignoreSameExample}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), ignoreSameExampleObject=${ignoreSameExampleObject}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), ignoreSameExampleObject.ignore_same_example=${ignoreSameExampleObject.ignore_same_example}`);
     const ignoreSameExampleObjectJson: string = Utility.jsonStringify(ignoreSameExampleObject);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), ignoreSameExampleObjectJson=${ignoreSameExampleObjectJson}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), ignoreSameExampleObjectJson=${ignoreSameExampleObjectJson}`);
     LabelResolver.setRuntimeParams(ignoreSameExampleObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`ready to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 
@@ -49,14 +49,14 @@ export class UtilityLabelResolver {
     } = {
       use_compact_embeddings: !fullEmbeddings,
     };
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), fullEmbeddings=${fullEmbeddings}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject=${useCompactEmbeddingsObject}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject.use_compact_embeddings=${useCompactEmbeddingsObject.use_compact_embeddings}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), fullEmbeddings=${fullEmbeddings}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject=${useCompactEmbeddingsObject}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObject.use_compact_embeddings=${useCompactEmbeddingsObject.use_compact_embeddings}`);
     const useCompactEmbeddingsObjectJson: string = Utility.jsonStringify(useCompactEmbeddingsObject);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObjectJson=${useCompactEmbeddingsObjectJson}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), useCompactEmbeddingsObjectJson=${useCompactEmbeddingsObjectJson}`);
     LabelResolver.setRuntimeParams(useCompactEmbeddingsObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`ready to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 
@@ -68,14 +68,14 @@ export class UtilityLabelResolver {
     } = {
       knn_k: knnK,
     };
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnK=${knnK}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObject=${knnKObject}`);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObject.knn_k=${knnKObject.knn_k}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), knnK=${knnK}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), resetAll=${resetAll}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), knnKObject=${knnKObject}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), knnKObject.knn_k=${knnKObject.knn_k}`);
     const knnKObjectJson: string = Utility.jsonStringify(knnKObject);
-    Utility.debuggingLog(`read to call LabelResolver.setRuntimeParams(), knnKObjectJson=${knnKObjectJson}`);
+    Utility.debuggingLog(`ready to call LabelResolver.setRuntimeParams(), knnKObjectJson=${knnKObjectJson}`);
     LabelResolver.setRuntimeParams(knnKObjectJson, resetAll);
-    Utility.debuggingLog(`read to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
+    Utility.debuggingLog(`ready to call Utility.getConfigJson(), LabelResolver.LabelResolver=${LabelResolver.LabelResolver}`);
     return LabelResolver.getConfigJson();
   }
 
