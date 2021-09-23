@@ -42,7 +42,22 @@ export class OrchestratorHelper {
   }
 
   public static readFile(filePath: string): string {
-    return ReadText.readSync(filePath);
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHElper.readFile() calling ReadText.readSync()',
+      filePath);
+    try {
+      const fileStats: fs.Stats = fs.statSync(filePath);
+      if (fileStats.size === 0) {
+        return '';
+      }
+      return ReadText.readSync(filePath);
+    } catch (error) {
+      UtilityDispatcher.debuggingLog2(
+        'EXCEPTION calling ReadText.readSync()',
+        filePath,
+        error);
+      throw error;
+    }
   }
 
   public static writeToFile(filePath: string, content: string, options: any = {encoding: 'utf8', flag: 'w'}): string {
@@ -108,10 +123,13 @@ export class OrchestratorHelper {
   }
 
   public static getSnapshotFromFile(snapshotPath: string) {
-    if (!Utility.exists(snapshotPath) || OrchestratorHelper.isDirectory(snapshotPath)) {
-      throw new Error(`Cannot read ${snapshotPath}`);
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.getSnapshotFromFile()',
+      snapshotPath);
+    if (Utility.exists(snapshotPath) && !OrchestratorHelper.isDirectory(snapshotPath)) {
+      return new TextEncoder().encode(OrchestratorHelper.readFile(snapshotPath));
     }
-    return new TextEncoder().encode(OrchestratorHelper.readFile(snapshotPath));
+    return new Uint8Array();
   }
 
   public static async getUtteranceLabelsMap(
