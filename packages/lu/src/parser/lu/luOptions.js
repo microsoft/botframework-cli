@@ -1,8 +1,15 @@
+const getLuisCultureFromPath = require('../../utils/localehelper').getLuisCultureFromPath
+
 class LuOptions {
     constructor(id = '', includeInCollate = true, language = '', path = ''){
+        let fileLocale
+        if (id) {
+            fileLocale = getLuisCultureFromPath(`${id}.lu`)
+        }
+
         this.id = id ? id : get_guid()
         this.includeInCollate = includeInCollate
-        this.language = language
+        this.language = language ? language : fileLocale ? fileLocale : ''
         this.path = path
     }
 }
