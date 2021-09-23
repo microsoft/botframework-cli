@@ -425,6 +425,7 @@ describe('Test Suite - orchestratorhelper', () => {
     assert.ok((utteranceEntityLabelsMap.get(utterance) as Label[]).length === 3,
       `(utteranceEntityLabelsMap.get(utterance) as Label[]).length=${(utteranceEntityLabelsMap.get(utterance) as Label[]).length}`);
   });
+
   it('Test.0300 OrchestratorHelper.getJsonIntentEntityScoresUtterances()', function () {
     Utility.resetFlagToPrintDebuggingLogToConsole(UnitTestHelper.getDefaultUnitTestDebuggingLogFlag());
     this.timeout(UnitTestHelper.getDefaultUnitTestTimeout());
@@ -587,6 +588,7 @@ describe('Test Suite - orchestratorhelper', () => {
     assert.ok(result.has('Add item'), 'Incorrect result from getUtteranceLabelsMap, missing Add item utterance');
     assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
   });
+
   it('Test.0600 OrchestratorHelper.parseQnaFile()', async () => {
     const validFile: string = './test/fixtures/parser/valid.qna';
     const inValidFile: string = './test/fixtures/parser/invalid.qna';
@@ -608,7 +610,7 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelDuplicateMap);
     assert.ok(utteranceLabelsMap.size > 0);
   });
-  it('Test.0600 OrchestratorHelper.parseLuFile()', async () => {
+  it('Test.0601 OrchestratorHelper.parseLuFile()', async () => {
     const validFile: string = './test/fixtures/parser/valid.lu';
     const inValidFile: string = './test/fixtures/parser/invalid.lu';
     const utteranceLabelsMap: Map<string, Set<string>> = new Map<string, Set<string>>();

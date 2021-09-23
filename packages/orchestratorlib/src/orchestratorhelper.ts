@@ -17,7 +17,7 @@ import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 const ReadText: any = require('read-text-file');
-const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
+const luisCollateBuildNoValidate: any = require('@microsoft/bf-lu/lib/parser/luis/luisCollate').build;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 const processedFiles: string[] = [];
 
@@ -233,7 +233,7 @@ export class OrchestratorHelper {
   }
 
   public static async getEntitiesInLu(luObject: any): Promise<any> {
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    const luisObject: any = await luisCollateBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);
   }
 
@@ -419,6 +419,12 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.parseLuContent()',
+      luFile);
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.parseLuContent()',
+      luContent);
     if (!luContent || luContent.length === 0) {
       return;
     }
@@ -427,7 +433,7 @@ export class OrchestratorHelper {
         content: luContent,
         id: luFile,
       };
-      const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+      const luisObject: any = await luisCollateBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
       }
