@@ -517,7 +517,7 @@ const parseAndValidateContent = async function (objectArray, verbose, importReso
     if (object.content && object.content !== '') {
       if (fileExt === fileExtEnum.LUFile) {
         if (!object.id.endsWith(fileExtEnum.LUFile)) object.id += fileExtEnum.LUFile
-        let result = await LuisBuilderVerbose.build([object], verbose, undefined, importResolver)
+        let result = await LuisBuilderVerbose.build([object], verbose, object.language, importResolver)
         let luisObj = new Luis(result)
         fileContent = luisObj.parseToLuContent()
       } else {

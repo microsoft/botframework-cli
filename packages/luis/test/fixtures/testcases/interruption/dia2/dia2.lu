@@ -1,3 +1,5 @@
+> !# @app.culture = it-it
+
 # dia3_trigger
 - book a flight from {fromLocation = Seattle} to {toLocation = Beijing}
 

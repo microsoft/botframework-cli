@@ -8,7 +8,6 @@ const retCode = require('./enums/CLI-errors');
 const exception = require('./exception');
 const NEWLINE = require('os').EOL;
 const ANY_NEWLINE = /\r\n|\r|\n/g;
-const url = require('url');
 const hClasses = require('../lufile/classes/hclasses');
 const helpers = {
 

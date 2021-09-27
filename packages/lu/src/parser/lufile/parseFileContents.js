@@ -284,6 +284,7 @@ const parseLuAndQnaWithAntlr = async function (parsedContent, fileContent, log, 
 
     helpers.checkAndUpdateVersion(parsedContent.LUISJsonStructure);
 
+    updateCulture(parsedContent.LUISJsonStructure, locale)
 }
 
 const updateIntentAndEntityFeatures = function(luisObj) {
@@ -292,6 +293,12 @@ const updateIntentAndEntityFeatures = function(luisObj) {
         luisObj.intents.forEach(intent => updateFeaturesWithPL(intent, pl.name));
         luisObj.entities.forEach(entity => updateFeaturesWithPL(entity, pl.name));
     })
+}
+
+const updateCulture = function(luisObj, locale) {
+    if (!luisObj.culture) {
+        luisObj.culture = locale ? locale : 'en-us'
+    }
 }
 
 const updateFeaturesWithPL = function(collection, plName) {
