@@ -21,7 +21,7 @@ class Luis {
         this.versionId = "0.1";
         this.name = "";
         this.desc = "";
-        this.culture = "en-us";
+        this.culture = "";
 
         if (LuisJSON) {
             initialize(this, LuisJSON)

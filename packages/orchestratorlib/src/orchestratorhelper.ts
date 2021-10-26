@@ -17,7 +17,7 @@ import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
 const ReadText: any = require('read-text-file');
-const LuisBuilder: any = require('@microsoft/bf-lu').V2.LuisBuilder;
+const luisCollateBuildNoValidate: any = require('@microsoft/bf-lu/lib/parser/luis/luisCollate').build;
 const QnaMakerBuilder: any = require('@microsoft/bf-lu').V2.QnAMakerBuilder;
 const processedFiles: string[] = [];
 
@@ -41,23 +41,22 @@ export class OrchestratorHelper {
     fs.mkdirSync(path, {recursive: true});
   }
 
-  public static readBluSnapshotFile(filePath: string): string {
-    return ReadText.readSync(filePath);
-    // ---- NOTE
-    // the code below was trying to normalize unknown labels in a BLU file,
-    // but the unknown labels should have been processed during ingesting
-    // a raw input file (LU, QnA, TSV, etc.) and before creating a BLU file,
-    // so there is really no need to process unknown labels in a BLU file
-    // anymore. The line below is thus deprecated, especially now the BLU
-    // file can be a JSON, so the statement below does not apply anyway.
-    // ---- return Utility.processUnknownSpuriousLabelsInTsvBluFileContent(ReadText.readSync(filePath));
-  }
-
   public static readFile(filePath: string): string {
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHElper.readFile() calling ReadText.readSync()',
+      filePath);
     try {
+      const fileStats: fs.Stats = fs.statSync(filePath);
+      if (fileStats.size === 0) {
+        return '';
+      }
       return ReadText.readSync(filePath);
-    } catch {
-      return '';
+    } catch (error) {
+      UtilityDispatcher.debuggingLog2(
+        'EXCEPTION calling ReadText.readSync()',
+        filePath,
+        error);
+      throw error;
     }
   }
 
@@ -124,8 +123,11 @@ export class OrchestratorHelper {
   }
 
   public static getSnapshotFromFile(snapshotPath: string) {
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.getSnapshotFromFile()',
+      snapshotPath);
     if (Utility.exists(snapshotPath) && !OrchestratorHelper.isDirectory(snapshotPath)) {
-      return new TextEncoder().encode(OrchestratorHelper.readBluSnapshotFile(snapshotPath));
+      return new TextEncoder().encode(OrchestratorHelper.readFile(snapshotPath));
     }
     return new Uint8Array();
   }
@@ -160,7 +162,6 @@ export class OrchestratorHelper {
           utteranceEntityLabelDuplicateMap);
       }
     }
-    Utility.processUnknownSpuriousLabelsInUtteranceLabelsMap({utteranceLabelsMap, utteranceLabelDuplicateMap});
     return {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap,
@@ -232,7 +233,7 @@ export class OrchestratorHelper {
   }
 
   public static async getEntitiesInLu(luObject: any): Promise<any> {
-    const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+    const luisObject: any = await luisCollateBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
     return this.transformEntities(luisObject);
   }
 
@@ -353,7 +354,7 @@ export class OrchestratorHelper {
         default: throw new Error(`Unknown file type ${ext}`);
       }
     } catch (error: any) {
-      throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}`);
+      throw new Error(`${error.message}${os.EOL}Failed to parse ${filePath}, error=${os.EOL}${UtilityDispatcher.jsonStringify(error)}`);
     }
   }
 
@@ -418,6 +419,12 @@ export class OrchestratorHelper {
     utteranceLabelDuplicateMap: Map<string, Set<string>>,
     utteranceEntityLabelsMap: Map<string, Label[]>,
     utteranceEntityLabelDuplicateMap: Map<string, Label[]>): Promise<void> {
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.parseLuContent()',
+      luFile);
+    UtilityDispatcher.debuggingLog1(
+      'OrchestratorHelper.parseLuContent()',
+      luContent);
     if (!luContent || luContent.length === 0) {
       return;
     }
@@ -426,7 +433,7 @@ export class OrchestratorHelper {
         content: luContent,
         id: luFile,
       };
-      const luisObject: any = await LuisBuilder.fromLUAsync([luObject], OrchestratorHelper.findLuFiles);
+      const luisObject: any = await luisCollateBuildNoValidate([luObject], false, '', OrchestratorHelper.findLuFiles);
       if (Utility.toPrintDetailedDebuggingLogToConsole) {
         UtilityDispatcher.debuggingNamedLog1('OrchestratorHelper.parseLuContent(): calling getIntentsEntitiesUtterances()', luisObject, 'luisObject');
       }

@@ -75,7 +75,7 @@ const httpRequest = async function (config: any) {
       return error.response
     } else {
       // Something happened in setting up the request that triggered an Error
-      return Error(error.message)
+      throw error
     }
   }
 }

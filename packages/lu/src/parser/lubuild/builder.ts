@@ -12,6 +12,7 @@ const path = require('path')
 const fs = require('fs-extra')
 const delay = require('delay')
 const fileHelper = require('./../../utils/filehelper')
+const localeHelper = require('./../../utils/localehelper')
 const fileExtEnum = require('./../utils/helpers').FileExtTypeEnum
 const retCode = require('./../utils/enums/CLI-errors')
 const exception = require('./../utils/exception')
@@ -43,7 +44,7 @@ export class Builder {
       let fileCulture: string
       let fileName: string
 
-      let cultureFromPath = fileHelper.getLuisCultureFromPath(file)
+      let cultureFromPath = localeHelper.getLuisCultureFromPath(file)
       if (cultureFromPath) {
         fileCulture = cultureFromPath
         let fileNameWithCulture = path.basename(file, path.extname(file))
