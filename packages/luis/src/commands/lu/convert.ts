@@ -9,83 +9,43 @@ export default class LuConvert extends Command {
   static description = 'Parsing of lu format to NLU providers input'
 
   v2 = `
-intents:
+  intents:
   - name: AskForUserName
-  - name: CreateAlarm
-  - name: CommunicationPreference
-entities:
-  - name: userName
-    roles: []
-composites: []
-closedLists:
-  - name: commPreference
-    subLists:
-      - canonicalForm: call
-        list:
-          - phone call
-          - give me a ring
-          - ring
-          - call
-          - cell phone
-          - phone
-      - canonicalForm: text
-        list:
-          - message
-          - text
-          - sms
-          - text message
-      - canonicalForm: fax
-        list:
-          - fax
-          - fascimile
-    roles: []
-regex_entities: []
-model_features:
-  - name: ChocolateType
-    words: 'm&m,mars,mints,spearmings,payday,jelly,kit kat,kitkat,twix'
-    mode: false
-    activated: true
-  - name: question
-    words: 'are you,you are'
-    mode: true
-    activated: true
-regex_features: []
-utterances:
-  - text: I'm [vishwac](userName)
-    intent: AskForUserName
-  - text: call me [vishwac](userName)
-    intent: AskForUserName
-  - text: my name is [vishwac](userName)
-    intent: AskForUserName
-  - text: you  can call me [vishwac](userName)
-    intent: AskForUserName
-  - text: create  an alarm
-    intent: CreateAlarm
-  - text: create an alarm for 7AM
-    intent: CreateAlarm
-  - text: set an alarm for 7AM next thursday
-    intent: CreateAlarm
-  - text: set phone call as my communication preference
-    intent: CommunicationPreference
-  - text: I prefer to receive text message
-    intent: CommunicationPreference
-patterns:
-  - pattern: 'delete the {alarmTime} alarm'
-    intent: DeleteAlarm
-  - pattern: 'remove the {alarmTime} alarm'
-    intent: DeleteAlarm
-patternAnyEntities:
-  - name: alarmTime
-    explicitList: []
-    roles: []
-prebuiltEntities:
-  - name: datetimeV2
-    roles: []
-luis_schema_version: 3.2.0
-versionId: '0.1'
-name: all
-desc: ''
-culture: en-us
+    utterances:
+      - text: My full name is vishwac lastName
+  - name: OrderPizza
+    utterances:
+      - text: a cheese pizza [medium](size) [with some](Modifier) [pineapple](topping1) and [chicken](topping2)
+        annotations:
+          - label: toppingWithModifiers
+            value:
+              - modifier
+              - topping1
+              - topping2
+      - text: add [5](quantity) [party size](size) [marinera pizzas](pizzatype) and i will pick them up at 6pm
+      - text: can i get [3](quantity) [pepperoni pizzas](pizzatype) and a [four cheese pizza](pizzatype2) with [a large house salad](sideproduct) and [a large fries](sideproduct2)
+        annotations:
+          - label: FullPizzaWithModifiers2
+            value:
+              - pizzatype2
+  entities:
+    - name: order
+      value:
+        - FullPizzaWithModifiers
+        - SideOrder
+    - name : FullPizzaWithModifiers
+      value:
+        - PizzaType
+        - Size
+        - Quantity
+        - ToppingWithModifiers
+      references: [FullPizzaWithModifiers2]
+    - name: ToppingWithModifiers
+      value:
+        - Topping
+        - Modifier
+    - name: Topping
+      references: [topping1, topping2]
 `
 
   static flags: flags.Input<any> = {
@@ -98,26 +58,41 @@ culture: en-us
   async run() {
     const {args, flags} = this.parse(LuConvert)
     const luis = this.parseToLUIS()
-    this.log(JSON.stringify(luis, null, 2))
-    const yamlLU = this.parseToYAML(luis);
-    this.log(yamlLU)
+    // this.log(JSON.stringify(luis, null, 2))
+    // const yamlLU = this.parseToYAML(luis);
+    // this.log(yamlLU)
   }
 
   parseToLUIS() {
     const yamlLU= yaml.load(this.v2);
-    for(let utterance of yamlLU.utterances) {
-      let regexDeclaration = /\[.*\]\(.*\)/i;
-      if (regexDeclaration.test(utterance['text'])) {
-        let match = regexDeclaration.exec(utterance['text'])
-        let regexEntity = /\[(.*?)\]/i;
-        let regexEntityName = /\((.*?)\)/i;
-        let entity = regexEntity.exec(match ? match[0] + '' : '')
-        let entityName = regexEntityName.exec(match ? match[0] + '' : '')
-       utterance['entities'] = {
-         'entity': (entityName ? entityName[1] : ''),
-         'startPos': (match ? match.index : 0),
-         'endPos': (match ? match.index : 0) + (entity ? entity[1].length -1 : 0)
-       }
+    // Extract entity definition
+    let entityMap: any = {}
+    let entityMapChildToParent: any = {}
+    for(let entity of yamlLU.entities) {
+      entityMap[entity.name] = entity.value;
+      for(let child in entity.value){
+        entityMapChildToParent[child] = entity.name
+      }
+    }
+
+    // Extract entities from utterances
+    for(let intent of yamlLU.intents) {
+      for(let utterance of intent.utterances){
+        let regexDeclaration = /(\[(?:(\w|\s)*)+\]\((?:(\w|\s)*)+\))/gm;
+        if (regexDeclaration.test(utterance['text'])) {
+          // let match = regexDeclaration.exec(utterance['text'])
+          let match = [...utterance['text'].matchAll(regexDeclaration)]
+          this.log(match ? match[0] + '' : '');
+          let regexEntity = /\[(.*?)\]/i;
+          let regexEntityName = /\((.*?)\)/i;
+          let entity = regexEntity.exec(match ? match[0] + '' : '')
+          let entityName = regexEntityName.exec(match ? match[0] + '' : '')
+          // utterance['entities'] = {
+          //   'entity': (entityName ? entityName[1] : ''),
+          //   'startPos': (match ? match.index : 0),
+          //   'endPos': (match ? match.index : 0) + (entity ? entity[1].length -1 : 0)
+          // }
+        }
       }
     }
     return yamlLU
