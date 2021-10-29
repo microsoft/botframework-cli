@@ -10,42 +10,48 @@ export default class LuConvert extends Command {
 
   v2 = `
   intents:
-  - name: AskForUserName
-    utterances:
-      - text: My full name is vishwac lastName
   - name: OrderPizza
     utterances:
-      - text: a cheese pizza [medium](size) [with some](Modifier) [pineapple](topping1) and [chicken](topping2)
-        annotations:
-          - label: toppingWithModifiers
+      - text: a cheese pizza [medium](s1) [with some](m1) [pineapple](t1)
+      - text: add [5](q1) [party size](s1) [marinera pizzas](pt1) and i will pick them up at 6pm
+      - text: can i get [3](q1) [pepperoni pizzas](pt1) and a [four cheese pizza](pt2) with [a large house salad](sp) and [a large fries](sp2)
+        disambiguation:
+          - label: FPWM2
             value:
-              - modifier
-              - topping1
-              - topping2
-      - text: add [5](quantity) [party size](size) [marinera pizzas](pizzatype) and i will pick them up at 6pm
-      - text: can i get [3](quantity) [pepperoni pizzas](pizzatype) and a [four cheese pizza](pizzatype2) with [a large house salad](sideproduct) and [a large fries](sideproduct2)
-        annotations:
-          - label: FullPizzaWithModifiers2
-            value:
-              - pizzatype2
+              - pt2
   entities:
     - name: order
+      type: ml
       value:
         - FullPizzaWithModifiers
         - SideOrder
     - name : FullPizzaWithModifiers
+      type: ml
       value:
         - PizzaType
         - Size
         - Quantity
         - ToppingWithModifiers
-      references: [FullPizzaWithModifiers2]
+      references: [FPWM2]
     - name: ToppingWithModifiers
       value:
         - Topping
         - Modifier
     - name: Topping
-      references: [topping1, topping2]
+      type: list
+      references: [t1]
+    - name: Size
+      type: list
+      references: [s1]
+    - name: PizzaType
+      type: list
+      references: [pt1, pt2]
+    - name: Modifier
+      type: list
+      references: [m1]
+    - name: Quantity
+      type: list
+      references: [q1]
 `
 
   static flags: flags.Input<any> = {
@@ -78,21 +84,19 @@ export default class LuConvert extends Command {
     // Extract entities from utterances
     for(let intent of yamlLU.intents) {
       for(let utterance of intent.utterances){
-        let regexDeclaration = /(\[(?:(\w|\s)*)+\]\((?:(\w|\s)*)+\))/gm;
-        if (regexDeclaration.test(utterance['text'])) {
-          // let match = regexDeclaration.exec(utterance['text'])
-          let match = [...utterance['text'].matchAll(regexDeclaration)]
-          this.log(match ? match[0] + '' : '');
-          let regexEntity = /\[(.*?)\]/i;
-          let regexEntityName = /\((.*?)\)/i;
-          let entity = regexEntity.exec(match ? match[0] + '' : '')
-          let entityName = regexEntityName.exec(match ? match[0] + '' : '')
-          // utterance['entities'] = {
-          //   'entity': (entityName ? entityName[1] : ''),
-          //   'startPos': (match ? match.index : 0),
-          //   'endPos': (match ? match.index : 0) + (entity ? entity[1].length -1 : 0)
-          // }
-        }
+        let regexDeclaration = /(\[(?:(\w|\s)*)+\]\((?:(\w|\s)*)+\))/g;
+        let match = utterance['text'].match(regexDeclaration)
+        this.log('utternace: ' + utterance['text']);
+        this.log(match ? match.length + '' : '');
+        let regexEntity = /\[(.*?)\]/i;
+        let regexEntityName = /\((.*?)\)/i;
+        let entity = regexEntity.exec(match ? match[0] + '' : '')
+        let entityName = regexEntityName.exec(match ? match[0] + '' : '')
+        // utterance['entities'] = {
+        //   'entity': (entityName ? entityName[1] : ''),
+        //   'startPos': (match ? match.index : 0),
+        //   'endPos': (match ? match.index : 0) + (entity ? entity[1].length -1 : 0)
+        // }
       }
     }
     return yamlLU
