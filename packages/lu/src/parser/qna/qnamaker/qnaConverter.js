@@ -48,7 +48,7 @@ const qnaToLuContent = function(qnaJSON){
         if (qnaItem.context && qnaItem.context.prompts && qnaItem.context.prompts.length !== 0) {
             fileContent += NEWLINE + '**Prompts:**' + NEWLINE;
             qnaItem.context.prompts.forEach(function(prompt) {
-                fileContent += `- [${prompt.displayText}](#${prompt.qnaId})`;
+                fileContent += `- [${prompt.displayText.replace(/\n/g, "\\n")}](#${prompt.qnaId})`;
                 // See if the linked prompt is context only and if so, add the decoration.
                 let promptQnA = root.find(item => item.id == prompt.qnaId);
                 if (promptQnA) {
