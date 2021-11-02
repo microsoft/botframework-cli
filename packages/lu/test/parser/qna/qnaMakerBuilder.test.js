@@ -41,7 +41,7 @@ describe('QnAMakerBuilder', function() {
         \`\`\`
         
         **Prompts:**
-        - [hi greeting](#hi)`;
+        - [hi greeting\\n](#hi)`;
 
         let qnaContent3 =
         `# ? hi

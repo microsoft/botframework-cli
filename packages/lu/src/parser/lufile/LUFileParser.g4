@@ -230,7 +230,7 @@ promptSection
     ;
 
 filterLine
-    : WS* DASH (WS|TEXT)* newline
+    : WS* DASH (WS|TEXT|ESCAPE_CHARACTER)* newline
     ;
 
 errorFilterLine
