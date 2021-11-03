@@ -610,12 +610,9 @@ export class OrchestratorHelper {
     }
 
     try {
-      // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
-      const qnaNormalized: string = Utility.cleanStringOnTabs(fileContents); // ---- NOTE ---- QnaMakerBuilder does not like TAB
-      const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
+      const qnaObject: any = await QnaMakerBuilder.fromContent(fileContents);
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
     } catch (error: any) {
-      console.log('ERROR JSON: ' + JSON.stringify(error));
       throw new Error(`Failed parsing qna file ${qnaFile} ${error.text}\n${JSON.stringify(error)}`);
     }
   }
