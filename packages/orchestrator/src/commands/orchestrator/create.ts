@@ -63,10 +63,12 @@ export default class OrchestratorCreate extends Command {
       const hasDataSources: boolean = settings.DataSources?.inputs?.length > 0 ?? false;
       if (hasDataSources) {
         hierarchical = true;
-        // do not override the input folder from the --in parameter 
-        const inputPathSpecified = !Utility.isEmptyString(flags.in);
+        // do not override the input folder from the --in parameter
+        const inputPathSpecified: boolean = !Utility.isEmptyString(flags.in);
         if (!inputPathSpecified && !Utility.isEmptyString(settings.DataSources.path)) {
           input = settings.DataSources.path;
+        } else {
+          settings.DataSources.path = flags.in;
         }
       }
 
