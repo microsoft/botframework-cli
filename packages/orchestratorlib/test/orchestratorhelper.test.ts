@@ -609,6 +609,14 @@ describe('Test Suite - orchestratorhelper', () => {
       utteranceLabelsMap,
       utteranceLabelDuplicateMap);
     assert.ok(utteranceLabelsMap.size > 0);
+
+    // test qna file with \n in it, parsing should succeed
+    await OrchestratorHelper.parseQnaFile(
+      './test/fixtures/parser/qna_export.qna',
+      '',
+      utteranceLabelsMap,
+      utteranceLabelDuplicateMap);
+    assert.ok(utteranceLabelsMap.size > 0);
   });
   it('Test.0601 OrchestratorHelper.parseLuFile()', async () => {
     const validFile: string = './test/fixtures/parser/valid.lu';
