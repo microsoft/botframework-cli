@@ -448,6 +448,7 @@ export class OrchestratorHelper {
         throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
       }
     } catch (error: any) {
+      Utility.debuggingLog(`EXCEPTION calling getIntentsEntitiesUtterances(), error=${error}`);
       throw new Error(`Failed parsing lu file ${luFile} ${error.text}`);
     }
   }
@@ -609,18 +610,10 @@ export class OrchestratorHelper {
     }
 
     try {
-      const newlines: string[] = [];
-      lines.forEach((line: string) => {
-        if (line.toLowerCase().indexOf('@qna.pair.source =') < 0) {
-          newlines.push(line);
-        }
-      });
-      // Utility.debuggingLog('OrchestratorHelper.parseQnaFile() ready to call QnaMakerBuilder.fromContent()');
-      const qnaNormalized: string = Utility.cleanStringOnTabs(newlines.join('\n')); // ---- NOTE ---- QnaMakerBuilder does not like TAB
-      const qnaObject: any = await QnaMakerBuilder.fromContent(qnaNormalized);
+      const qnaObject: any = await QnaMakerBuilder.fromContent(fileContents);
       OrchestratorHelper.getQnaQuestionsAsUtterances(qnaObject, hierarchicalLabel, utteranceLabelsMap, utteranceLabelDuplicateMap);
     } catch (error: any) {
-      throw new Error(`Failed parsing qna file ${qnaFile} ${error.text}`);
+      throw new Error(`Failed parsing qna file ${qnaFile} ${error.text}\n${JSON.stringify(error)}`);
     }
   }
 
