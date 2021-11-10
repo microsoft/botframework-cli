@@ -75,6 +75,19 @@ export class DataSourceHelper {
     return path.extname(input) === '.dispatch';
   }
 
+  public static getInputFolderPath(input: string, currentWorkingDir: string, dataSources: OrchestratorDataSourceSettings): string {
+    // do not override the input folder from the --in parameter
+    if (Utility.isEmptyString(input) && !Utility.isEmptyString(dataSources.path)) {
+      input = dataSources.path;
+    } else if (OrchestratorHelper.isDirectory(input)) {
+      dataSources.path = input;
+    } else {
+      input =  path.join(currentWorkingDir, 'dataSources');
+      dataSources.path = input;
+    }
+    return input;
+  }
+
   public static async getQnAFileFromQnaKb(input: OrchestratorDataSource, endpoint: string = ''): Promise<any> {
     const qna: any = await LuisQnaHelper.getQnaFromKb(input.Id, input.Key, endpoint);
     return qna;
