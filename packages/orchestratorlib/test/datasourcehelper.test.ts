@@ -7,6 +7,7 @@ import {} from 'mocha';
 import {DataSourceHelper} from '../src/datasourcehelper';
 import {OrchestratorDataSourceSettings} from '../src/settings';
 import * as path from 'path';
+import * as fs from 'fs-extra';
 import assert = require('assert');
 
 describe('DataSourceHelperTests', () => {
@@ -24,7 +25,8 @@ describe('DataSourceHelperTests', () => {
   });
 
   it('getInputFolderPathWithInputAndWithExistingOrchestratorSettingsFile', () => {
-    const inputPath: string = './test/fixtures/output/dataSources';
+    const inputPath: string = path.resolve('./test/fixtures/output/dataSources');
+    fs.mkdirSync(inputPath, {recursive: true});
     const dataSourceSettings: OrchestratorDataSourceSettings = new OrchestratorDataSourceSettings([], true, path.join(cwd, 'dataSources'));
     const input: string = DataSourceHelper.getInputFolderPath(inputPath, cwd, dataSourceSettings);
     assert(input === inputPath);

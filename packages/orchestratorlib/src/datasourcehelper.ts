@@ -77,6 +77,7 @@ export class DataSourceHelper {
 
   public static getInputFolderPath(input: string, currentWorkingDir: string, dataSources: OrchestratorDataSourceSettings): string {
     // do not override the input folder from the --in parameter
+    input = path.resolve(input);
     if (Utility.isEmptyString(input) && !Utility.isEmptyString(dataSources.path)) {
       input = dataSources.path;
     } else if (OrchestratorHelper.isDirectory(input)) {
