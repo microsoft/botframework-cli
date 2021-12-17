@@ -22,8 +22,9 @@ namespace LUISGenTest
     [TestClass]
     public class Tests
     {
-        private readonly string _appId = TestUtilities.GetKey("LUISAPPID", "ed5f31d2-9a96-495a-be34-19fa838b50e4");
-        private readonly string _endpointKey = TestUtilities.GetKey("LUISAPPKEY", "69370670960f479bac48626999f8c4de");
+        // Update the values below to get the tests to run 
+        private readonly string _appId = TestUtilities.GetKey("LUISAPPID", "");
+        private readonly string _endpointKey = TestUtilities.GetKey("LUISAPPKEY", "");
         private readonly string _endpoint = TestUtilities.GetKey("LUISENDPOINT", "https://westus.api.cognitive.microsoft.com");
         // Changing this to false will cause running against the actual LUIS service.
         // This is useful in order to see if the oracles for mocking or testing have changed.
