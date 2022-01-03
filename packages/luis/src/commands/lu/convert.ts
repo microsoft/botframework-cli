@@ -9,16 +9,14 @@ export default class LuConvert extends Command {
   static description = 'Parsing of lu format to NLU providers input'
 
   v2 = `
+
+  namespace: uri://piza.org/american#
   intents:
   - name: OrderPizza
     utterances:
-      - text: a cheese pizza [medium](s1) [with some](m1) [pineapple](t1)
-      - text: add [5](q1) [party size](s1) [marinera pizzas](pt1) and i will pick them up at 6pm
-      - text: can i get [3](q1) [pepperoni pizzas](pt1) and a [four cheese pizza](pt2) with [a large house salad](sp) and [a large fries](sp2)
-        disambiguation:
-          - label: FPWM2
-            value:
-              - pt2
+      - text: a cheese pizza [medium](uri://piza.org/american#size) [with some](uri://piza.org/american#modifier) [pineapple](uri://piza.org/american#topping)
+      - text: add [5](uri://piza.org/american#quantity) [party size](uri://piza.org/american#size) [marinera pizzas](uri://piza.org/american#pizzaType) and i will pick them up at 6pm
+      - text: can i get [3](uri://piza.org/american#quantity) [pepperoni pizzas](uri://piza.org/american#pizzaType) and a [four cheese pizza](uri://piza.org/american#pizzaType[2])
   entities:
     - name: order
       type: ml
@@ -28,30 +26,14 @@ export default class LuConvert extends Command {
     - name : FullPizzaWithModifiers
       type: ml
       value:
-        - PizzaType
-        - Size
-        - Quantity
-        - ToppingWithModifiers
-      references: [FPWM2]
-    - name: ToppingWithModifiers
+        - pizzaType
+        - size
+        - quantity
+        - toppingModifiers
+    - name: toppingModifiers
       value:
-        - Topping
-        - Modifier
-    - name: Topping
-      type: list
-      references: [t1]
-    - name: Size
-      type: list
-      references: [s1]
-    - name: PizzaType
-      type: list
-      references: [pt1, pt2]
-    - name: Modifier
-      type: list
-      references: [m1]
-    - name: Quantity
-      type: list
-      references: [q1]
+        - topping
+        - modifier
 `
 
   static flags: flags.Input<any> = {
