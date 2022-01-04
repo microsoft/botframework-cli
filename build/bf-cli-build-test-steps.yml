@@ -86,3 +86,9 @@ steps:
     Contents: './common/config/rush/pnpm-lock.yaml' 
     #RemoveSourceFolder: # Optional
 
+#Run component governance and fail build if not passed
+- task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
+  displayName: 'Component Detection'
+  inputs:
+    failOnAlert: true
+
