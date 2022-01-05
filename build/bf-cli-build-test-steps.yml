@@ -64,8 +64,8 @@ steps:
 - task: AzureArtifacts.manifest-generator-task.manifest-generator-task.ManifestGeneratorTask@0
   displayName: 'generate software bill of materials'
   inputs:
-    BuildDropPath: '$(Build.ArtifactStagingDirectory)'
-    PackageName: 'Microsoft Bot Framework SDK for Node.js'
+    BuildDropPath: '$(Build.ArtifactStagingDirectory)/drop'
+    PackageName: 'Microsoft Bot Framework CLI'
     PackageVersion: $(buildVersion)
 
 - task: PublishBuildArtifacts@1
