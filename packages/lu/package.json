@@ -35,7 +35,7 @@
   "dependencies": {
     "@types/node-fetch": "~2.5.5",
     "antlr4": "4.9.2",
-    "axios": "~0.21.1",
+    "axios": "~0.24.0",
     "https-proxy-agent": "^5.0.0",
     "chalk": "2.4.1",
     "console-stream": "^0.1.1",
@@ -45,7 +45,7 @@
     "get-stdin": "^6.0.0",
     "globby": "^10.0.1",
     "intercept-stdout": "^0.1.2",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "semver": "^5.5.1",
     "tslib": "^2.0.3"
   },

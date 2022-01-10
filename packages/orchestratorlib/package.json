@@ -37,7 +37,7 @@
   "dependencies": {
     "@microsoft/bf-lu": "1.0.0",
     "@microsoft/bf-dispatcher": "1.0.0",
-    "axios":"~0.21.1",
+    "axios":"~0.21.4",
     "https-proxy-agent": "^5.0.0",
     "tslib": "^2.0.3",
     "@microsoft/orchestrator-core": "~4.14.0",

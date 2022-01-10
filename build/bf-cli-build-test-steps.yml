@@ -78,24 +78,12 @@ steps:
   displayName: 'Dir workspace except node_modules'
   continueOnError: true
   condition: succeededOrFailed()
-
-# Delete pnpm files
-- task: DeleteFiles@1
-  inputs:
-    #SourceFolder: # Optional
-    Contents: './common/temp' 
-    #RemoveSourceFolder: # Optional
-
-# Delete pnpm lock yaml
-- task: DeleteFiles@1
-  inputs:
-    #SourceFolder: # Optional
-    Contents: './common/config/rush/pnpm-lock.yaml' 
-    #RemoveSourceFolder: # Optional
-
+    
 #Run component governance and fail build if not passed
 - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
   displayName: 'Component Detection'
   inputs:
+    sourceScanPath: './packages'
+    ignoreDirectories: './common/temp/pnpm-local/node_modules/pnpm,./common/temp/pnpm-store,./common/config/rush/pnpm-lock.yaml,./common/temp/pnpm-lock.yaml'
     failOnAlert: true
 
