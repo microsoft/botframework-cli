@@ -14,11 +14,11 @@
     "adaptive-expressions":"4.13.0",
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "tslib": "^2.0.3",
     "read-text-file": "^1.1.0",
     "readline-sync": "^1.4.10",
-    "axios":"~0.21.1",
+    "axios":"~0.24.0",
     "https-proxy-agent": "^5.0.0"
   },
   "devDependencies": {
