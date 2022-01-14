@@ -34,11 +34,11 @@ steps:
   inputs:
     versionSpec: 14.x
 
-- task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@2
-  displayName: 'Set variable: npm_config_registry to: Azure Artifacts'
-  inputs:
-    variableName: 'npm_config_registry'
-    Value: 'https://fuselabs.pkgs.visualstudio.com/_packaging/FuseNPM/npm/registry/'
+# - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@2
+#   displayName: 'Set variable: npm_config_registry to: Azure Artifacts'
+#   inputs:
+#     variableName: 'npm_config_registry'
+#     Value: 'https://fuselabs.pkgs.visualstudio.com/_packaging/FuseNPM/npm/registry/'
 
 - script: 'node ./common/scripts/set-registry-artifacts.js'
   displayName: 'Version and Pack'
