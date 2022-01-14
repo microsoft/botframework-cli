@@ -41,7 +41,7 @@ steps:
 #     Value: 'https://fuselabs.pkgs.visualstudio.com/_packaging/FuseNPM/npm/registry/'
 
 - script: 'node ./common/scripts/set-registry-artifacts.js'
-  displayName: 'Version and Pack'
+  displayName: 'Point /common/config/rush/.npmrc to artifacts url'
 
 - task: npmAuthenticate@0
   displayName: 'npm Authenticate common/config/rush/.npmrc'
