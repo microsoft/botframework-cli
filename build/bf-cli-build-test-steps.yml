@@ -68,6 +68,13 @@ steps:
   displayName: 'Version and Pack'
 
 - task: CopyFiles@2
+  displayName: 'Copy logs to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder:  /Users/runner/.npm/
+    Contents: '**/*.log'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: CopyFiles@2
   displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
   inputs:
     SourceFolder: ./.output
