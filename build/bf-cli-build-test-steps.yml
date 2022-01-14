@@ -73,6 +73,16 @@ steps:
     SourceFolder:  /Users/runner/.npm/
     Contents: '**/*.log'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
+  continueOnError: true
+  condition: failed()
+    
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: drop
+  continueOnError: true
+  condition: failed()
 
 - task: CopyFiles@2
   displayName: 'Copy packages to: $(Build.ArtifactStagingDirectory)/drop'
