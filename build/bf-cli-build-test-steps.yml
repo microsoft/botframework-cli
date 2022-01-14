@@ -43,10 +43,10 @@ steps:
 - script: 'node ./common/scripts/set-registry-artifacts.js'
   displayName: 'Point /common/config/rush/.npmrc to artifacts url'
 
-- task: npmAuthenticate@0
-  displayName: 'npm Authenticate common/config/rush/.npmrc'
-  inputs:
-    workingFile: common/config/rush/.npmrc
+# - task: npmAuthenticate@0
+#   displayName: 'npm Authenticate common/config/rush/.npmrc'
+#   inputs:
+#     workingFile: common/config/rush/.npmrc
 
 - task: Npm@1
   displayName: 'npm install --global @microsoft/rush'
