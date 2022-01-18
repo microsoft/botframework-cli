@@ -48,12 +48,15 @@ steps:
   inputs:
     workingFile: common/config/rush/.npmrc
 
-- task: Npm@1
+# - task: Npm@1
+#   displayName: 'npm install --global @microsoft/rush'
+#   inputs:
+#     command: custom
+#     verbose: false
+#     customCommand: 'install --global @microsoft/rush@5.33.0'
+    
+ - script: 'npm install --global @microsoft/rush@5.33.0'
   displayName: 'npm install --global @microsoft/rush'
-  inputs:
-    command: custom
-    verbose: false
-    customCommand: 'install --global @microsoft/rush@5.33.0'
 
 - script: 'rush update'
   displayName: 'rush update'
