@@ -56,7 +56,7 @@ steps:
 #     customCommand: 'install --global @microsoft/rush@5.33.0'
     
  - script: 'npm install --global @microsoft/rush@5.33.0'
-  displayName: 'npm install --global @microsoft/rush'
+   displayName: 'npm install --global @microsoft/rush'
 
 - script: 'rush update'
   displayName: 'rush update'
