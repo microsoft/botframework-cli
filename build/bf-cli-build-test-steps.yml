@@ -34,12 +34,6 @@ steps:
   inputs:
     versionSpec: 14.x
 
-# - task: jessehouwing.jessehouwing-vsts-variable-tasks.vsts-variable-set.VariableSetTask@2
-#   displayName: 'Set variable: npm_config_registry to: Azure Artifacts'
-#   inputs:
-#     variableName: 'npm_config_registry'
-#     Value: 'https://fuselabs.pkgs.visualstudio.com/_packaging/FuseNPM/npm/registry/'
-
 - script: 'node ./common/scripts/set-registry-artifacts.js'
   displayName: 'Point /common/config/rush/.npmrc to artifacts url'
 
@@ -47,13 +41,6 @@ steps:
   displayName: 'npm Authenticate common/config/rush/.npmrc'
   inputs:
     workingFile: common/config/rush/.npmrc
-
-# - task: Npm@1
-#   displayName: 'npm install --global @microsoft/rush'
-#   inputs:
-#     command: custom
-#     verbose: false
-#     customCommand: 'install --global @microsoft/rush@5.33.0'
     
 - script: 'npm install --global @microsoft/rush@5.33.0'
   displayName: 'npm install --global @microsoft/rush'
@@ -69,15 +56,6 @@ steps:
 
 - script: 'node ./common/scripts/version-and-pack.js --version $(buildVersion)'
   displayName: 'Version and Pack'
-
-- task: CopyFiles@2
-  displayName: 'Copy logs to: $(Build.ArtifactStagingDirectory)'
-  inputs:
-    SourceFolder:  /Users/runner/.npm/
-    Contents: '**/*.log'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
-  continueOnError: true
-  condition: failed()
     
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: drop'
