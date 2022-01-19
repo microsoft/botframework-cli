@@ -34,12 +34,16 @@ steps:
   inputs:
     versionSpec: 14.x
 
-- task: Npm@1
-  displayName: 'npm install --global @microsoft/rush'
+- script: 'node ./common/scripts/set-registry-artifacts.js'
+  displayName: 'Point /common/config/rush/.npmrc to artifacts url'
+
+- task: npmAuthenticate@0
+  displayName: 'npm Authenticate common/config/rush/.npmrc'
   inputs:
-    command: custom
-    verbose: false
-    customCommand: 'install --global @microsoft/rush@5.33.0'
+    workingFile: common/config/rush/.npmrc
+    
+- script: 'npm install --global @microsoft/rush@5.33.0'
+  displayName: 'npm install --global @microsoft/rush'
 
 - script: 'rush update'
   displayName: 'rush update'
