@@ -87,7 +87,7 @@ steps:
 - task: ms.vss-governance-buildtask.governance-build-task-component-detection.ComponentGovernanceComponentDetection@0
   displayName: 'Component Detection'
   inputs:
-    sourceScanPath: './packages'
+#    sourceScanPath: './packages'
     ignoreDirectories: './common/temp/pnpm-local/node_modules/pnpm,./common/temp/pnpm-store,./common/config/rush/pnpm-lock.yaml,./common/temp/pnpm-lock.yaml'
     failOnAlert: true
 
