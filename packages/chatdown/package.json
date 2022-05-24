@@ -17,7 +17,7 @@
     "intercept-stdout": "^0.1.2",
     "latest-version": "^4.0.0",
     "mime-types": "^2.1.18",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.6",
     "axios":"~0.24.0",
     "https-proxy-agent": "^5.0.0",
     "please-upgrade-node": "^3.0.1",
