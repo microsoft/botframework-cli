@@ -63,7 +63,7 @@ module.exports = {
             "personName": null
         },
         "it-it": {
-            "datetimeV2": "datetime",
+            "datetime": "datetimeV2",
             "geographyV2": null,
             "personName": null,
             "ordinalV2": null
