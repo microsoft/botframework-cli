@@ -589,6 +589,16 @@ describe('Test Suite - orchestratorhelper', () => {
     assert.ok(result.has('delete to do go shopping'), 'Incorrect result from getUtteranceLabelsMap, missing delete to do go shopping utterance');
   });
 
+  it('Test.0501 OrchestratorHelper.getUtteranceLabelsMap().InvalidFormat', async () => {
+    const inputFile: string = './test/fixtures/adaptive/UnsupportedFile.json';
+    let result: Map<string, Set<string>> = new Map<string, Set<string>>();
+    try {
+      result = (await OrchestratorHelper.getUtteranceLabelsMap(inputFile)).utteranceLabelsMap;
+      assert.fail(`Unsupported file extension. Skipping file '${inputFile}'`);
+    } catch {}
+    assert.ok(result.size === 0);
+  });
+
   it('Test.0600 OrchestratorHelper.parseQnaFile()', async () => {
     const validFile: string = './test/fixtures/parser/valid.qna';
     const inValidFile: string = './test/fixtures/parser/invalid.qna';

@@ -331,7 +331,7 @@ export class OrchestratorHelper {
             utteranceEntityLabelDuplicateMap)) {
             return;
           }
-          Utility.writeStringLineToConsoleStdout(`  - Failed to parse file '${filename}'. This file will be ignored.`);
+          Utility.writeStringLineToConsoleStdout(`  - Unsupported file extension. Skipping file '${filename}'.`);
           break;
 
         case '.tsv':
