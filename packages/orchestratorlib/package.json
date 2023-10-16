@@ -37,10 +37,10 @@
   "dependencies": {
     "@microsoft/bf-lu": "1.0.0",
     "@microsoft/bf-dispatcher": "1.0.0",
-    "axios":"~0.21.4",
+    "axios": "~0.21.4",
     "https-proxy-agent": "^5.0.0",
     "tslib": "^2.0.3",
-    "@microsoft/orchestrator-core": "~4.14.0",
+    "@microsoft/orchestrator-core": "https://bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz",
     "@types/fs-extra": "~8.1.0",
     "fs-extra": "~9.0.0",
     "read-text-file": "~1.1.0",
