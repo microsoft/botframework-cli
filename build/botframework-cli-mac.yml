@@ -6,7 +6,7 @@
 name: $(Build.BuildId)
 
 pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macos-latest'
 
 pr:
   branches:
