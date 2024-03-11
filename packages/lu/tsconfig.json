@@ -5,7 +5,7 @@
     "composite": false,
     "declaration": false,
     "outDir": "lib",
-    "rootDir": "src"
+    "rootDir": "src",
   },
   "include": [
     "src/**/*"

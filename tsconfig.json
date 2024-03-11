@@ -8,8 +8,9 @@
     "module": "commonjs",
     "skipLibCheck": true,
     "sourceMap": true,
+    "target": "es2017",
     "strict": true,
-    "target": "es2017"
+    "useUnknownInCatchVariables": false
   },
   "ts-node": {
     "transpileOnly": true

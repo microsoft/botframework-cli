@@ -1498,7 +1498,7 @@ export class SchemaMerger {
             xml = xml.slice(1)
         }
         return new Promise((resolve, reject) =>
-            xp.parseString(xml, (err: Error, result: any) => {
+            xp.parseString(xml, (err: Error | null, result: any) => {
                 if (err) {
                     reject(err)
                 } else {
