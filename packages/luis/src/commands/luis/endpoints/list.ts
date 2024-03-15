@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 import Application from './../../../api/application'
 
@@ -16,17 +16,17 @@ export default class LuisEndpointsList extends Command {
     $ bf luis:endpoints:list --appId {APPLICATION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    out: flags.string({char: 'o', description: 'Output results to specified file in JSON format, otherwise prints to STDOUT (optional)'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    out: Flags.string({char: 'o', description: 'Output results to specified file in JSON format, otherwise prints to STDOUT (optional)'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisEndpointsList)
+    const {flags} = await this.parse(LuisEndpointsList)
     const flagLabels = Object.keys(LuisEndpointsList.flags)
     const configDir = this.config.configDir
 

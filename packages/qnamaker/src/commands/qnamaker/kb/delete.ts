@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 const qnamaker = require('./../../../../utils/index')
 const Knowledgebase = require('./../../../../utils/api/knowledgebase')
@@ -15,16 +15,16 @@ const {cli} = require('cli-ux')
 export default class QnamakerKbDelete extends Command {
   static description = 'Delete a knowledgebase by id'
 
-  static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'Knowledgebase id to be deleted. Overrides the knowledge base id present in the config'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
-    force: flags.boolean({description: 'Do not prompt for confirmation, force the operation'}),
-    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
-    help: flags.help({char: 'h', description: 'qnamaker:kb:delete command help'}),
+  static flags = {
+    kbId: Flags.string({description: 'Knowledgebase id to be deleted. Overrides the knowledge base id present in the config'}),
+    subscriptionKey: Flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    force: Flags.boolean({description: 'Do not prompt for confirmation, force the operation'}),
+    endpoint: Flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:kb:delete command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerKbDelete)
+    const {flags} = await this.parse(QnamakerKbDelete)
     let input: Inputs = await processInputs(flags, deleteKbJSON, this.config.configDir)
 
     if (!flags.force) {

@@ -6,7 +6,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Command, Flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
 import {Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import {Expression, ExpressionEvaluator} from 'adaptive-expressions'
@@ -24,17 +24,17 @@ type TemplateToReferences = Map<FullTemplateName, SourceToReferences>
 export default class AnalyzeCommand extends Command {
   static description = 'Analyze templates in .lg files to show all the places where a template is used'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'LG File or folder that contains .lg file(s)', required: true}),
-    recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    'external-functions': flags.string({char: 'e', helpValue: 'function1,function2', description: 'Pass a list of external functions and add them to Expression functions, seprated by ",". for example, "function1,function2,function3"'}),
-    help: flags.help({char: 'h', description: 'lg:analyze help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'LG File or folder that contains .lg file(s)', required: true}),
+    recurse: Flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
+    'external-functions': Flags.string({char: 'e', helpValue: 'function1,function2', description: 'Pass a list of external functions and add them to Expression functions, seprated by ",". for example, "function1,function2,function3"'}),
+    help: Flags.help({char: 'h', description: 'lg:analyze help'}),
   }
 
   async run() {
-    const {flags} = this.parse(AnalyzeCommand)
+    const {flags} = await this.parse(AnalyzeCommand)
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
 
@@ -55,7 +55,7 @@ export default class AnalyzeCommand extends Command {
     }
 
     const templateToReferences = this.templateUsage(allTemplates)
-    await this.writeTemplateReferences(templateToReferences, flags.out, flags.force)
+    await this.writeTemplateReferences(templateToReferences, flags.out as string, flags.force)
   }
 
   private templateUsage(templates: Templates[]): TemplateToReferences {

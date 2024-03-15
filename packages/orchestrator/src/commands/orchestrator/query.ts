@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorQuery extends Command {
@@ -13,15 +13,15 @@ export default class OrchestratorQuery extends Command {
   static examples: Array<string> = [`
     $ bf orchestrator:query --in=./path/to/snapshot/file --query=hi --model=./path/to/base/model/directory`]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator snapshot (.blu file).'}),
-    query: flags.string({char: 'q', description: '(required) Query string to predict.'}),
-    // out: flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: '(required) Path to Orchestrator base model directory.'}),
-    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    limit: flags.string({char: 'l', description: '(optional) Limit of number of predictions. Default to 3. Less or equal to 0 for listing all predictions.'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator snapshot (.blu file).'}),
+    query: Flags.string({char: 'q', description: '(required) Query string to predict.'}),
+    // out: Flags.string({char: 'o', description: 'Directory where analysis and output files will be placed.'}),
+    model: Flags.string({char: 'm', description: '(required) Path to Orchestrator base model directory.'}),
+    entityModel: Flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
+    limit: Flags.string({char: 'l', description: '(optional) Limit of number of predictions. Default to 3. Less or equal to 0 for listing all predictions.'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h'}),
   }
   // ---- NOTE ---- advanced parameters removed from command line, but still can be set through environment variables.
   //
@@ -35,7 +35,7 @@ export default class OrchestratorQuery extends Command {
   // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
   async run(): Promise<void>  {
-    const {flags}: flags.Output = this.parse(OrchestratorQuery);
+    const {flags}: flags.Output = await this.parse(OrchestratorQuery);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {
       this._help();

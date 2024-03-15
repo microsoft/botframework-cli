@@ -5,9 +5,8 @@
 
 // tslint:disable:object-curly-spacing ordered-imports
 
-import { Command as Base } from '@oclif/command'
-export { flags } from '@oclif/command'
-import { CLIError as OCLIFError } from '@oclif/errors'
+import { Command as Base, Errors as OCLIFError } from '@oclif/core'
+export { Args, Flags, Errors } from '@oclif/core'
 import { CLIError } from './clierror'
 export { CLIError } from './clierror'
 import ReadPipedData from './readpipeddata'
@@ -33,19 +32,20 @@ export abstract class Command extends Base {
     console.error(chalk.red(input))
   }
 
-  warn(input: string | Error): void {
+  warn(input: string | Error): Error | string {
     /* tslint:disable:no-console */
     console.error(chalk.yellow(input))
+    return '';
   }
 
   async catch(err: any) {
-    if (err instanceof CLIError || err instanceof OCLIFError || (err && err.oclif && err.message)) {
+    if (err instanceof CLIError || err instanceof OCLIFError.CLIError || (err && err.oclif && err.message)) {
       if (!err.message.match(/EEXIT: 0/)) {
         this.error(err.message)
       }
     } else {
       try {
-        this.trackEvent(this.id + '', {flags : this.getTelemetryProperties(), error: this.extractError(err)})
+        this.trackEvent(this.id + '', {flags : await this.getTelemetryProperties(), error: this.extractError(err)})
         this.error('Unknown error during execution. Please file an issue on https://github.com/microsoft/botframework-cli/issues')
         this.error(err.message)
       } catch (e) {}
@@ -84,9 +84,9 @@ export abstract class Command extends Base {
     return input instanceof Error ? input.name : input
   }
 
-  private getTelemetryProperties(): Array<string> {
+  private async getTelemetryProperties(): Promise<Array<string>> {
     // Retrieve flags from command
-    const {flags, argv} = this.parse(this.ctor)
+    const {flags, argv} = await this.parse(this.ctor);
 
     // Iterate through flags and store only flags and not parameters or arguments to avoid instrumentation on user data
     let properties: string [] = []

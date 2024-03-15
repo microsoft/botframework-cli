@@ -1,6 +1,5 @@
-import {Command} from '../src/command'
+import {Command, Errors as OCLIFError} from '../src/command'
 import {CLIError} from './../src/clierror' 
-import { CLIError as OCLIFError } from '@oclif/errors'
 import {expect, fancy} from 'fancy-test'
 import ReadPipedStdin from '../src/readpipeddata'
 import * as path from 'path';
@@ -50,7 +49,7 @@ describe('command', () => {
   .do(async () => {
     class Test extends Command {
         async run() {
-          throw new OCLIFError('failure')
+          throw new OCLIFError.CLIError('failure')
         }
       }
 

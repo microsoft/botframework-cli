@@ -3,19 +3,19 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, Config} from '../../utils/configfilehandler'
 
 export default class ConfigShow extends Command {
   static description = 'Displays the config file'
 
-  static flags: flags.Input<any> = {
-    key: flags.string({char: 'k', description: 'Shows specific key value'}),
-    help: flags.help({char: 'h', description: 'config:show help'})
+  static flags = {
+    key: Flags.string({char: 'k', description: 'Shows specific key value'}),
+    help: Flags.help({char: 'h', description: 'config:show help'})
   }
 
   async run() {
-    const {flags} = this.parse(ConfigShow)
+    const {flags} = await this.parse(ConfigShow)
     const userConfig: Config = await getConfigFile(this.config.configDir)
     let value
     if (flags.key) {

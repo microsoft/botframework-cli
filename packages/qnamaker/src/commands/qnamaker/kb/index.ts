@@ -3,16 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
+import { loadHelpClass } from '@oclif/core'
 
 export default class QnamakerKbIndex extends Command {
   static description = 'Commands for manipulating your knowledge base'
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'display qnamaker:kb available commands'}),
+  static flags = {
+    help: Flags.help({char: 'h', description: 'display qnamaker:kb available commands'}),
   }
 
   async run() {
-    this._help()
+    await new (await loadHelpClass(this.config))(this.config).showHelp([])
   }
 }

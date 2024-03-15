@@ -1,8 +1,7 @@
-const fs = require('fs-extra')
-const path = require('path')
-const NEWLINE = require('os').EOL
-var chai = require('chai');
-var assert = chai.assert;
+import fs from 'fs-extra'
+import path from 'path'
+import { EOL as NEWLINE } from 'os'
+//import { assert } from 'chai'
 const LuisBuilder = require('./../../../src/parser/luis/luisBuilder')
 
 const loadLuFile = async function(filePath) {

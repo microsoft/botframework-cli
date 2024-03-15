@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorTest extends Command {
@@ -34,15 +34,15 @@ export default class OrchestratorTest extends Command {
     $ bf orchestrator:test --in=./path/to/ground-truth/file --prediction=./path/to/prediction/file --out=./path/to/output/folder/
     $ bf orchestrator:test --in=./path/to/snapshot/file --out=./path/to/output/folder/ [--model=./path/to/model/directory]`]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator .blu file.'}),
-    out: flags.string({char: 'o', description: '(required) Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: 'Optional directory for hosting Orchestrator config and base model files, not needed for the "assessment" mode.'}),
-    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    test: flags.string({char: 't', description: 'Optional path to a test file. This option enable the "test" mode.'}),
-    prediction: flags.string({char: 'p', description: 'Optional path to a prediction label file, or comma-separated paths to a collection of (e.g., crosss-valiaton) files.'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: '(required) Path to a previously created Orchestrator .blu file.'}),
+    out: Flags.string({char: 'o', description: '(required) Directory where analysis and output files will be placed.'}),
+    model: Flags.string({char: 'm', description: 'Optional directory for hosting Orchestrator config and base model files, not needed for the "assessment" mode.'}),
+    entityModel: Flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
+    test: Flags.string({char: 't', description: 'Optional path to a test file. This option enable the "test" mode.'}),
+    prediction: Flags.string({char: 'p', description: 'Optional path to a prediction label file, or comma-separated paths to a collection of (e.g., crosss-valiaton) files.'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h'}),
   }
   // ---- NOTE ---- advanced parameters removed from command line, but still can be set through environment variables.
   //
@@ -59,7 +59,7 @@ export default class OrchestratorTest extends Command {
 
   // eslint-disable-next-line complexity
   async run(): Promise<void> {
-    const {flags}: flags.Output = this.parse(OrchestratorTest);
+    const {flags}: flags.Output = await this.parse(OrchestratorTest);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {
       this._help();

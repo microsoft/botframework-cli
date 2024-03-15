@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
 
 export default class ConfigSetLuis extends Command {
@@ -13,18 +13,18 @@ export default class ConfigSetLuis extends Command {
     $ bf config:set:luis --appId {APPLICATION_ID} --authoringKey {AUTHORING_KEY} --subscriptionKey {SUBSCRIPTION_KEY} --versionId {VERSION_ID} --endpoint {ENDPOINT}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    appId: flags.string({description: 'LUIS application Id'}),
-    authoringKey: flags.string({description: 'LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).'}),
-    subscriptionKey: flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
-    armToken: flags.string({description: 'User`s ARM token used to validate azure accounts information)'}),
-    versionId: flags.string({description: 'LUIS version Id'}),
-    endpoint: flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    appId: Flags.string({description: 'LUIS application Id'}),
+    authoringKey: Flags.string({description: 'LUIS cognitive services authoring key (aka Ocp-Apim-Subscription-Key).'}),
+    subscriptionKey: Flags.string({description: 'LUIS cognitive services subscription key (aka Ocp-Apim-Subscription-Key)'}),
+    armToken: Flags.string({description: 'User`s ARM token used to validate azure accounts information)'}),
+    versionId: Flags.string({description: 'LUIS version Id'}),
+    endpoint: Flags.string({description: 'LUIS application endpoint hostname, ex: <region>.api.cognitive.microsoft.com'}),
   }
 
   async run() {
-    const {flags} = this.parse(ConfigSetLuis)
+    const {flags} = await this.parse(ConfigSetLuis)
 
     if (Object.entries(flags).length === 0 && flags.constructor === Object) {
       return this.log('No config settings specified')

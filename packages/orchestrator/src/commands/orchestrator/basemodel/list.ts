@@ -3,20 +3,20 @@
  * Licensed under the MIT License.
  */
 
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorBaseModelList extends Command {
   static description: string = 'Lists all Orchestrator base model versions'
 
-  static flags: flags.Input<any> = {
-    all: flags.boolean({description: 'Optional. Display all models', default: false}),
-    help: flags.help({char: 'h', description: 'Orchestrator basemodel:list command help'}),
-    raw: flags.boolean({char: 'r', description: 'Optional. Raw output', default: false}),
+  static flags = {
+    all: Flags.boolean({description: 'Optional. Display all models', default: false}),
+    help: Flags.help({char: 'h', description: 'Orchestrator basemodel:list command help'}),
+    raw: Flags.boolean({char: 'r', description: 'Optional. Raw output', default: false}),
   }
 
   async run(): Promise<void>  {
-    const {flags}: flags.Output = this.parse(OrchestratorBaseModelList);
+    const {flags}: flags.Output = await this.parse(OrchestratorBaseModelList);
     const all: boolean = flags.all;
     Utility.resetFlagToPrintDebuggingLogToConsole(flags.debug);
 

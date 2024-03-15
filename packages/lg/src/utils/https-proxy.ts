@@ -3,9 +3,10 @@
  * Licensed under the MIT License.
  */
 
-import httpsProxyAgent from 'https-proxy-agent'
 import {AxiosRequestConfig} from 'axios'
 import {Url, parse} from 'url'
+
+const httpsProxyAgent = require('https-proxy-agent')
 
 export function httpsProxy(config: AxiosRequestConfig) {
   const parsed: Url = parse(config.url || '')
@@ -17,7 +18,7 @@ export function httpsProxy(config: AxiosRequestConfig) {
   const envProxy = process.env.HTTPS_PROXY || process.env.https_proxy
   if (envProxy) {
     const parsed: Url = parse(envProxy)
-    const proxyOpt: Record<string, string | undefined> =
+    const proxyOpt: Record<string, string | null> =
     {
       hostname: parsed.hostname,
       port: parsed.port,

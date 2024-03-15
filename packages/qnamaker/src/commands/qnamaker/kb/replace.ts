@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import {Inputs, processInputs} from '../../../utils/qnamakerbase'
 
 const qnaBuilderVerbose = require('@microsoft/bf-lu/lib/parser/qna/qnamaker/kbCollate')
@@ -16,16 +16,16 @@ const replaceKbJSON = require('./../../../../utils/payloads/replacekb')
 export default class QnamakerKbReplace extends Command {
   static description = 'Replace a knowledgebase contents with new contents'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'File path to the ReplaceKbDTO object to send in the body of the request. Alternately this can be path to a .qna file'}),
-    kbId: flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
-    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
-    help: flags.help({char: 'h', description: 'qnamaker:kb:replace command help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'File path to the ReplaceKbDTO object to send in the body of the request. Alternately this can be path to a .qna file'}),
+    kbId: Flags.string({description: 'Knowledgebase id. Overrides the knowledge base id present in the config'}),
+    subscriptionKey: Flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: Flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:kb:replace command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerKbReplace)
+    const {flags} = await this.parse(QnamakerKbReplace)
     const stdin = await this.readStdin()
     if (!stdin && !flags.in) {
       throw new CLIError('No input. Please set file path with --in or pipe required data to the command')

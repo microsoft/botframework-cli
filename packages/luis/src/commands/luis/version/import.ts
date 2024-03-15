@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 const Luis = require('@microsoft/bf-lu').V2.LuisBuilder
 import Version from './../../../api/version'
@@ -17,18 +17,18 @@ export default class LuisVersionImport extends Command {
     $ echo {SERIALIZED_JSON} | bf luis:version:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: 'Version to import (defaults to config:LUIS:versionId)'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
-    json: flags.boolean({description: 'Display output as JSON'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: Flags.string({description: 'Version to import (defaults to config:LUIS:versionId)'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    in: Flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
+    json: Flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionImport)
+    const {flags} = await this.parse(LuisVersionImport)
     const flagLabels = Object.keys(LuisVersionImport.flags)
     const configDir = this.config.configDir
     const stdin = await this.readStdin()

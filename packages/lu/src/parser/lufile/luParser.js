@@ -1,8 +1,6 @@
-import antlr4 from 'antlr4';
-const { CommonTokenStream, InputStream } = antlr4;
+import { CommonTokenStream, InputStream }  from 'antlr4';
 import LUFileLexer from './generated/LUFileLexer.js';
 import LUFileParser from './generated/LUFileParser.js';
-import FileContext from './generated/LUFileParser.js';
 const LUResource = require('./luResource');
 const NestedIntentSection = require('./nestedIntentSection');
 const SimpleIntentSection = require('./simpleIntentSection');

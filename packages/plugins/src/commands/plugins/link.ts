@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags, Args} from '@microsoft/bf-cli-command'
 import Plugins from  '@oclif/plugin-plugins/lib/plugins'
-import cli from 'cli-ux'
+import { ux } from '@oclif/core'
 const fs = require('fs')
 
 export default class PluginsLink extends Command {
@@ -16,25 +16,27 @@ e.g. If you have a user-installed or core plugin that has a 'hello' command, ins
 
   static usage = 'plugins:link PLUGIN'
 
-  static args = [{name: 'path', description: 'path to plugin', required: true, default: '.'}]
+  static args = {
+    path: Args.string({description: 'path to plugin', required: true, default: '.'})
+  }
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    verbose: flags.boolean({char: 'v'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    verbose: Flags.boolean({char: 'v'}),
   }
 
   plugins = new Plugins(this.config)
 
   async run() {
-    const {flags, args} = this.parse(PluginsLink)
+    const {flags, args} = await this.parse(PluginsLink)
     this.plugins.verbose = flags.verbose
 
     if (!fs.existsSync(args.path)) {
       throw new CLIError('Path to plugin does not exist')
     }
 
-    cli.action.start(`Linking plugin ${args.path}`)
-    await this.plugins.link(args.path)
-    cli.action.stop()
+    ux.action.start(`Linking plugin ${args.path}`)
+    await this.plugins.link(args.path as string, { install: true })
+    ux.action.stop()
   }
 }

@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import {Hook} from '@oclif/config'
-import cli from 'cli-ux'
+import {Hook} from '@oclif/core'
+import { ux } from '@oclif/core'
 import * as fs from 'fs-extra'
 const chalk = require('chalk')
 const path = require('path')
@@ -76,7 +76,7 @@ const hook: Hook<'init'> = async function (opts) {
     if (process.env.BF_CLI_TELEMETRY) {
       userConfig.telemetry = process.env.BF_CLI_TELEMETRY.toLowerCase() === 'true' ? true : false
     } else if (userConfig.telemetry === null && !isCI) {
-      const disableTelemetry = await cli.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
+      const disableTelemetry = await ux.prompt(chalk.red('Help us improve products by allowing Microsoft to collect anonymous command and flags usage: (Y/N)'))
       if (disableTelemetry === 'Y' || disableTelemetry === 'y') {
         userConfig.telemetry = true
         this.log(chalk.blue('Telemetry has been enabled. You can disable at any time by running bf config:set:telemetry --disable'))

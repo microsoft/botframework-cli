@@ -1894,7 +1894,7 @@ export class Utility {
         Utility.debuggingLog(
             `Utility.loadFile(): process.cmd()=${process.cwd()}`);
         try {
-            const fileContent: string = fs.readFileSync(filename, encoding);
+            const fileContent: string = fs.readFileSync(filename, { encoding: encoding as BufferEncoding });
             return fileContent;
         } catch (error) {
             Utility.debuggingThrow(
@@ -1910,7 +1910,7 @@ export class Utility {
         //     `Utility.dumpFile(): filename=${filename}`);
         try {
             fs.mkdirSync(path.dirname(filename), {recursive: true});
-            fs.writeFileSync(filename, content, encoding);
+            fs.writeFileSync(filename, content, { encoding: encoding as BufferEncoding });
         } catch (error) {
             // ---- NOTE ---- An error occurred
             Utility.debuggingThrow(`FAILED to dump a file: filename=${filename}, exception=${error}`);

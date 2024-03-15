@@ -7,7 +7,7 @@ export default {
   async train(
     param: EndpointParameters,
     versionId: string,
-    mode: string) {
+    mode: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/train`
     if (mode) {
       url += `?mode=${mode}`
@@ -17,7 +17,7 @@ export default {
 
   async getStatus(
     param: EndpointParameters,
-    versionId: string) {
+    versionId: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/train`
 
     return http.get(url, param.subscriptionKey)

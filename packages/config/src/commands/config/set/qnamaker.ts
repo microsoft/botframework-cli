@@ -3,18 +3,19 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, writeConfigFile, Config} from '../../../utils/configfilehandler'
+import { loadHelpClass } from '@oclif/core'
 
 export default class ConfigSetQnamaker extends Command {
   static description = 'Set the QnAMaker config data'
 
-  static flags: flags.Input<any> = {
-    kbId: flags.string({description: 'QnAMaker kbId to be set'}),
-    subscriptionKey: flags.string({description: 'QnAMaker subscriptionkey to be set'}),
-    hostname: flags.string({description: 'QnAMaker hostname to be set'}),
-    endpointKey: flags.string({description: 'QnAMaker endpointKey to be set'}),
-    help: flags.help({char: 'h', description: 'config:set:qnamaker help'})
+  static flags = {
+    kbId: Flags.string({description: 'QnAMaker kbId to be set'}),
+    subscriptionKey: Flags.string({description: 'QnAMaker subscriptionkey to be set'}),
+    hostname: Flags.string({description: 'QnAMaker hostname to be set'}),
+    endpointKey: Flags.string({description: 'QnAMaker endpointKey to be set'}),
+    help: Flags.help({char: 'h', description: 'config:set:qnamaker help'})
   }
 
   static examples = [`
@@ -27,7 +28,7 @@ export default class ConfigSetQnamaker extends Command {
   `]
 
   async run() {
-    const {flags} = this.parse(ConfigSetQnamaker)
+    const {flags} = await this.parse(ConfigSetQnamaker)
     let userConfig: Config = await getConfigFile(this.config.configDir)
     if (flags.subscriptionKey) {
       this.setValue('subscriptionKey', flags.subscriptionKey, userConfig)
@@ -49,7 +50,7 @@ export default class ConfigSetQnamaker extends Command {
       await writeConfigFile(this.config.configDir, userConfig)
     } else {
       this.log('Plase specify flag')
-      this._help()
+      await new (await loadHelpClass(this.config))(this.config).showHelp([])
     }
   }
 

@@ -3,23 +3,23 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command';
+import {Command, Flags, Args} from '@microsoft/bf-cli-command';
 import * as chalk from 'chalk';
 import {Definition, DialogTracker, SchemaTracker} from '../../library/dialogTracker';
 
 export default class DialogVerify extends Command {
     static description = 'Verify .dialog files match their app.schema.'
 
-    static args = [
-        {name: 'patterns', required: true, description: 'Any number of glob regex patterns to match .dialog files.'}
-    ]
+    static args = {
+        patterns: Args.string({required: true, description: 'Any number of glob regex patterns to match .dialog files.'})
+    }
 
     static strict = false
 
-    static flags: flags.Input<any> = {
-        help: flags.help({char: 'h'}),
-        schema: flags.string({char: 's', description: 'Default schema to use if no $schema in dialog file.'}),
-        verbose: flags.boolean({char: 'v', description: 'Show verbose output', default: false}),
+    static flags = {
+        help: Flags.help({char: 'h'}),
+        schema: Flags.string({char: 's', description: 'Default schema to use if no $schema in dialog file.'}),
+        verbose: Flags.boolean({char: 'v', description: 'Show verbose output', default: false}),
     }
 
     private currentFile = ''
@@ -28,15 +28,15 @@ export default class DialogVerify extends Command {
     private warnings = 0
 
     async run() {
-        const {argv, flags} = this.parse(DialogVerify)
+        const {argv, flags} = await this.parse(DialogVerify)
         await this.execute(argv, flags.verbose, flags.schema)
     }
 
-    async execute(dialogFiles: string[], verbose?: boolean, schemaPath?: string): Promise<void> {
+    async execute(dialogFiles: unknown[], verbose?: boolean, schemaPath?: string): Promise<void> {
         const schema = new SchemaTracker()
         const tracker = new DialogTracker(schema, undefined, schemaPath)
 
-        await tracker.addDialogFiles(dialogFiles)
+        await tracker.addDialogFiles(dialogFiles as string[])
 
         if (tracker.dialogs.length === 0) {
             this.error('No  dialogs found!')

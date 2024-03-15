@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from './command'
+import {CLIError, Args, Command, Flags} from './command'
 import utils from './utils'
-export {CLIError, Command, flags, utils}
+export {CLIError, Args, Command, Flags, utils}
 export default Command

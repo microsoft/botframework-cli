@@ -3,14 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import {Plugin} from '@oclif/config'
-import Plugins from  '@oclif/plugin-plugins/lib/plugins'
-import cli from 'cli-ux'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
+import {Plugin} from '@oclif/core'
+import Plugins from  '@oclif/plugin-plugins'
+import { ux } from '@oclif/core'
 
 export default class PluginsList extends Command {
-  static flags: flags.Input<any> = {
-    core: flags.boolean({description: 'show core plugins'}),
+  static flags = {
+    core: Flags.boolean({description: 'show core plugins'}),
   }
 
   static description = 'List installed plugins'
@@ -18,8 +18,8 @@ export default class PluginsList extends Command {
   plugins = new Plugins(this.config)
 
   async run() {
-    const {flags} = this.parse(PluginsList)
-    let plugins = this.config.plugins
+    const {flags} = await this.parse(PluginsList)
+    let plugins = [...this.config.plugins].map((e) => e[1]);
 
     if (!flags.core) {
       plugins = plugins.filter(p => p.type !== 'core' && p.type !== 'dev')
@@ -41,7 +41,7 @@ export default class PluginsList extends Command {
   }
 
   private createTree(plugin: Plugin) {
-    const tree = cli.tree()
+    const tree = ux.tree()
     for (const p of plugin.children) {
       const name = this.formatPlugin(p)
       tree.insert(name, this.createTree(p))

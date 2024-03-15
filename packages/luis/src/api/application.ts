@@ -9,7 +9,7 @@ export default {
     armToken: string,
     azureSubscriptionId: string,
     resourceGroup: string,
-    accountName: string) {
+    accountName: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/azureaccounts`
 
     const appJSON = {
@@ -23,21 +23,21 @@ export default {
 
   async create(
     param: EndpointParameters,
-    applicationCreateObject: any) {
+    applicationCreateObject: any): Promise<any> {
     let url = buildUrl(param.endpoint)
 
     return http.post(url, param.subscriptionKey, applicationCreateObject)
   },
 
   async delete(
-    param: EndpointParameters) {
+    param: EndpointParameters): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}`
 
     return http.delete(url, param.subscriptionKey)
   },
 
   async getEndpoints(
-    param: EndpointParameters) {
+    param: EndpointParameters): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/endpoints`
     return http.get(url, param.subscriptionKey)
   },
@@ -45,7 +45,7 @@ export default {
   async import(
     param: EndpointParameters,
     appJSON: any,
-    name = '') {
+    name = ''): Promise<any> {
     name = name ? `?appName=${name}` : ''
     let url = buildUrl(param.endpoint) + `/import${name}`
     return http.post(url, param.subscriptionKey, appJSON)
@@ -54,7 +54,7 @@ export default {
   async list(
     param: EndpointParameters,
     skip = '0',
-    take = '100') {
+    take = '100'): Promise<any> {
     let url = buildUrl(param.endpoint) + `/?skip=${skip}&take=${take}`
 
     return http.get(url, param.subscriptionKey)
@@ -62,7 +62,7 @@ export default {
 
   async publish(
     param: EndpointParameters,
-    applicationPublishObject: any) {
+    applicationPublishObject: any): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${ param.appId}/publish`
 
     return http.post(url, param.subscriptionKey, applicationPublishObject)
@@ -74,7 +74,7 @@ export default {
     query: string,
     log: true,
     show_all = false,
-    timezone = '') {
+    timezone = ''): Promise<any> {
     let url = param.endpoint +
     `/luis/prediction/v3.0/apps/${param.appId}/slots/${slotName}/predict?verbose=false&log=${log}&show-all-intents=${show_all}`
 
@@ -92,7 +92,7 @@ export default {
   async rename(
     param: EndpointParameters,
     name: string,
-    description: string) {
+    description: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}`
 
     const body = {
@@ -104,7 +104,7 @@ export default {
   },
 
   async show(
-    param: EndpointParameters) {
+    param: EndpointParameters): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}`
     return http.get(url, param.subscriptionKey)
   }

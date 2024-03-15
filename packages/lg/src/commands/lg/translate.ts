@@ -6,7 +6,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Command, Flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper, TranslateLine, PARSERCONSTS, Block, TranslateOption, TranslateParts} from '../../utils'
 import * as txtfile from 'read-text-file'
 import * as path from 'path'
@@ -30,22 +30,22 @@ export default class TranslateCommand extends Command {
 
   private readonly ExpressionRegex = /(?<!\\)\$\{(('[^'\r\n]*')|("[^"\r\n]*")|(`(\\`|[^`])*`)|([^\r\n{}'"`]))+\}?/g
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
-    tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
-    translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
-    recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
-    translate_comments: flags.boolean({description: 'Machine translate all comments found in .lg file'}),
-    translate_link_text: flags.boolean({description: 'Machine translate link description in .lg file'}),
-    region: flags.string({description: 'The sub region.', required: true}),
-    help: flags.help({char: 'h', description: 'lg:translate help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
+    tgtlang: Flags.string({description: 'Comma separated list of target languages.', required: true}),
+    translatekey: Flags.string({description: 'Machine translation endpoint key.', required: true}),
+    recurse: Flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
+    srclang: Flags.string({description: 'Source lang code. Auto detect if missing.'}),
+    translate_comments: Flags.boolean({description: 'Machine translate all comments found in .lg file'}),
+    translate_link_text: Flags.boolean({description: 'Machine translate link description in .lg file'}),
+    region: Flags.string({description: 'The sub region.', required: true}),
+    help: Flags.help({char: 'h', description: 'lg:translate help'}),
   }
 
   async run() {
-    const {flags} = this.parse(TranslateCommand)
+    const {flags} = await this.parse(TranslateCommand)
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
     Helper.checkInputAndOutput(lgFilePaths, flags.out)

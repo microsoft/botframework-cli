@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 import Version from './../../../api/version'
 const utils = require('../../../utils/index')
@@ -15,18 +15,18 @@ export default class LuisVersionRename extends Command {
     $ bf luis:version:rename --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --name {NAME} --description {DESCRIPTION}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: '(required) Version to update (defaults to config:LUIS:versionId)'}),
-    newVersionId: flags.string({description: '(required) New version id'}),
-    json: flags.boolean({description: 'Display output as JSON'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: Flags.string({description: '(required) Version to update (defaults to config:LUIS:versionId)'}),
+    newVersionId: Flags.string({description: '(required) New version id'}),
+    json: Flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionRename)
+    const {flags} = await this.parse(LuisVersionRename)
     const flagLabels = Object.keys(LuisVersionRename.flags)
     const configDir = this.config.configDir
 

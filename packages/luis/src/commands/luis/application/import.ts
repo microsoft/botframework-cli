@@ -3,8 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import Application from './../../../api/application'
 
 const Luis = require('@microsoft/bf-lu').V2.LuisBuilder
@@ -18,18 +17,18 @@ export default class LuisApplicationImport extends Command {
     $ echo {SERIALIZED_JSON} | bf luis:application:import --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --name {NAME}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: '(required) LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config subscriptionKey)'}),
-    name: flags.string({description: 'LUIS application name (optional)'}),
-    in: flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
-    save: flags.boolean({description: 'Save configuration settings from imported app (appId, subscriptionKey & endpoint)'}),
-    json: flags.boolean({description: 'Display output as JSON'})
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: '(required) LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config subscriptionKey)'}),
+    name: Flags.string({description: 'LUIS application name (optional)'}),
+    in: Flags.string({char: 'i', description: '(required) File path containing LUIS application contents, uses STDIN if not specified'}),
+    save: Flags.boolean({description: 'Save configuration settings from imported app (appId, subscriptionKey & endpoint)'}),
+    json: Flags.boolean({description: 'Display output as JSON'})
   }
 
   async run() {
-    const {flags} = this.parse(LuisApplicationImport)
+    const {flags} = await this.parse(LuisApplicationImport)
     const flagLabels = Object.keys(LuisApplicationImport.flags)
     const configDir = this.config.configDir
     const stdin = await this.readStdin()

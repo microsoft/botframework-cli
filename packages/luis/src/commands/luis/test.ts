@@ -5,7 +5,7 @@
 
 import {LUISRuntimeClient} from '@azure/cognitiveservices-luis-runtime'
 import {CognitiveServicesCredentials} from '@azure/ms-rest-azure-js'
-import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const file = require('@microsoft/bf-lu/lib/utils/filehelper')
 const testHelper = require('@microsoft/bf-lu/lib/parser/test/testhelper')
@@ -19,22 +19,22 @@ import {hasContent} from './../../utils/luisinstanceutils'
 export default class LuisTest extends Command {
   static description = 'Test a .lu file or LUIS application JSON model against a published LUIS model'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source .lu file or LUIS application JSON model for testing'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    subscriptionKey: flags.string({char: 's', description: 'LUIS cognitive services subscription key', required: true}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname', default: 'https://westus.api.cognitive.microsoft.com'}),
-    appId: flags.string({char: 'a', description: 'LUIS application Id', required: true}),
-    intentOnly: flags.boolean({description: 'Only test intent', default: false}),
-    staging: flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
-    allowIntentsCount: flags.integer({description: 'Top-scoring intent or top n Intent with score to show in the result', default: 1}),
-    force: flags.boolean({description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'luis:test help'})
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Source .lu file or LUIS application JSON model for testing'}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    subscriptionKey: Flags.string({char: 's', description: 'LUIS cognitive services subscription key', required: true}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname', default: 'https://westus.api.cognitive.microsoft.com'}),
+    appId: Flags.string({char: 'a', description: 'LUIS application Id', required: true}),
+    intentOnly: Flags.boolean({description: 'Only test intent', default: false}),
+    staging: Flags.boolean({description: 'Presence of flag targets the staging app, if no flag passed defaults to production', default: false}),
+    allowIntentsCount: Flags.integer({description: 'Top-scoring intent or top n Intent with score to show in the result', default: 1}),
+    force: Flags.boolean({description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: Flags.help({char: 'h', description: 'luis:test help'})
   }
 
   async run() {
     try {
-      const {flags} = this.parse(LuisTest)
+      const {flags} = await this.parse(LuisTest)
       // Check if data piped in stdin
       const stdin = await this.readStdin()
 

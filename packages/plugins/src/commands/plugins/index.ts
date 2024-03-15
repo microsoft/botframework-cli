@@ -3,16 +3,17 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
+import { loadHelpClass } from '@oclif/core'
 
 export default class PluginsIndex extends Command {
-  static flags: flags.Input<any> = {
-    help: flags.help({description: 'Display plugins commands help.'}),
+  static flags = {
+    help: Flags.help({description: 'Display plugins commands help.'}),
   }
 
   static description = 'Install, uninstall and show installed plugins'
 
   async run() {
-    this._help()
+    await new (await loadHelpClass(this.config))(this.config).showHelp([])
   }
 }

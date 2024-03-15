@@ -216,7 +216,7 @@ Rush and pnpm are newer tools and not all that popular outside of Microsoft, why
     
     3. Add the typing to the flags property like this if needed:
     
-      static flags: flags.Input<any> = {
+      static flags = {
         help: flags.help({description: 'Display help'}),
       }
     

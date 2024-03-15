@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorInteractive extends Command {
@@ -13,13 +13,13 @@ export default class OrchestratorInteractive extends Command {
   static examples: Array<string> = [`
     $ bf orchestrator:interactive --in=./path/to/snapshot/file --out=./path/to/output/folder/ --model=./path/to/model/directory`]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),
-    out: flags.string({char: 'o', description: 'Optional Directory where analysis and output files will be placed.'}),
-    model: flags.string({char: 'm', description: '(required) Directory or hosting Orchestrator config and base model files.'}),
-    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h'}),
+  static flags = {
+    in: Flags.string({char: 'l', description: 'Optional path to a previously created Orchestrator .blu file.'}),
+    out: Flags.string({char: 'o', description: 'Optional Directory where analysis and output files will be placed.'}),
+    model: Flags.string({char: 'm', description: '(required) Directory or hosting Orchestrator config and base model files.'}),
+    entityModel: Flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h'}),
   }
   // --fullEmbeddings                                Optional flag to run on full embeddings instead
   //                                                 of compact embeddings.
@@ -33,7 +33,7 @@ export default class OrchestratorInteractive extends Command {
   // -u, --unknownLabelPredictionThreshold=threshold Optional unknown label threshold, default to 0.3.
 
   async run(): Promise<void> {
-    const {flags}: flags.Output = this.parse(OrchestratorInteractive);
+    const {flags}: flags.Output = await this.parse(OrchestratorInteractive);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {
       this._help();

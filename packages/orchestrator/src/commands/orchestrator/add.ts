@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, OrchestratorDataSource, OrchestratorHelper, OrchestratorSettings} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorAdd extends Command {
@@ -19,25 +19,25 @@ export default class OrchestratorAdd extends Command {
     $ bf orchestrator:add -t qna --id QNA_KB  --key QNA_KB_SERVICE_KEY --routingName q_kb
     `]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
-    model: flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
-    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    out: flags.string({char: 'o', description: 'Path where generated Orchestrator example file will be placed. Default to current working directory.'}),
-    dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
-    id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
-    key: flags.string({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna.'}),
-    endpoint: flags.string({description: 'LUIS/QnAMaker endpoint.'}),
-    type: flags.string({char: 't', description: 'Type of input (luis/qna/file).'}),
-    routingName: flags.string({description: 'Routing name, default to file name.'}),
-    version: flags.string({char: 'v', description: 'Applies only for type=luis, LUIS app version'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator add command help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
+    model: Flags.string({char: 'm', description: 'Path to Orchestrator model directory.'}),
+    entityModel: Flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
+    out: Flags.string({char: 'o', description: 'Path where generated Orchestrator example file will be placed. Default to current working directory.'}),
+    dialog: Flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file.', default: false}),
+    id: Flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
+    key: Flags.string({char: 'k', description: 'LUIS authoring key or QnAMaker service key if type = luis/qna.'}),
+    endpoint: Flags.string({description: 'LUIS/QnAMaker endpoint.'}),
+    type: Flags.string({char: 't', description: 'Type of input (luis/qna/file).'}),
+    routingName: Flags.string({description: 'Routing name, default to file name.'}),
+    version: Flags.string({char: 'v', description: 'Applies only for type=luis, LUIS app version'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h', description: 'Orchestrator add command help'}),
   }
 
   async run() {
-    const {flags}: flags.Output = this.parse(OrchestratorAdd);
+    const {flags}: Flags.Output = await this.parse(OrchestratorAdd);
     const cwd: string = process.cwd();
     const inputPath: string = path.resolve(flags.in || cwd);
     const output: string = flags.out;

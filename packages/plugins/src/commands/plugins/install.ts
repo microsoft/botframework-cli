@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-import Plugins from  '@oclif/plugin-plugins/lib/plugins'
-import cli from 'cli-ux'
+import {CLIError, Command, Flags, Args} from '@microsoft/bf-cli-command'
+import { ux } from '@oclif/core'
+import Plugins from '@oclif/plugin-plugins'
 
 export default class PluginsInstall extends Command {
   static description = `Installs a plugin into the BF CLI
@@ -15,12 +15,14 @@ This is useful if a user needs to update core plugin functionality in the CLI wi
 
   static strict = false
 
-  static args = [{name: 'plugin', description: 'plugin to install', required: true}]
+  static args = {
+    plugin: Args.string({description: 'plugin to install', required: true})
+  }
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    verbose: flags.boolean({char: 'v'}),
-    force: flags.boolean({char: 'f', description: 'yarn install with force flag'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    verbose: Flags.boolean({char: 'v'}),
+    force: Flags.boolean({char: 'f', description: 'yarn install with force flag'}),
   }
 
   static aliases = ['plugins:add']
@@ -31,28 +33,28 @@ This is useful if a user needs to update core plugin functionality in the CLI wi
   // sequentially so the `no-await-in-loop` rule is ugnored
   /* eslint-disable no-await-in-loop */
   async run() {
-    const {flags, argv} = this.parse(PluginsInstall)
+    const {flags, argv} = await this.parse(PluginsInstall)
     if (flags.verbose) this.plugins.verbose = true
     const aliases = this.config.pjson.oclif.aliases || {}
     for (let name of argv) {
-      if (aliases[name] === null || !name.startsWith('@microsoft')) {
+      if (aliases[name as string] === null || !(name as string).startsWith('@microsoft')) {
         throw new CLIError(`${name} is blacklisted`)
       }
 
-      name = aliases[name] || name
-      const p = await this.parsePlugin(name)
+      name = aliases[name as string] || name
+      const p = await this.parsePlugin(name as string)
       let plugin
       await this.config.runHook('plugins:preinstall', {
         plugin: p,
       })
       if (p.type === 'npm') {
-        cli.action.start(`Installing plugin ${this.plugins.friendlyName(p.name)}`)
+        ux.action.start(`Installing plugin ${this.plugins.friendlyName(p.name)}`)
         plugin = await this.plugins.install(p.name, {tag: p.tag, force: flags.force})
       } else {
-        cli.action.start(`Installing plugin ${p.url}`)
+        ux.action.start(`Installing plugin ${p.url}`)
         plugin = await this.plugins.install(p.url, {force: flags.force})
       }
-      cli.action.stop(`installed v${plugin.version}`)
+      ux.action.stop(`installed v${plugin.version}`)
     }
   }
 

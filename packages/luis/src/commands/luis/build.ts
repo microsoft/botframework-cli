@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 const path = require('path')
 const fs = require('fs-extra')
 const exception = require('@microsoft/bf-lu/lib/parser/utils/exception')
@@ -23,30 +23,30 @@ export default class LuisBuild extends Command {
     $ bf luis:build --in {INPUT_FILE_OR_FOLDER} --authoringKey {AUTHORING_KEY} --botName {BOT_NAME}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'luis:build command help'}),
-    in: flags.string({char: 'i', description: '(required) Lu file or folder'}),
-    authoringKey: flags.string({description: '(required) LUIS authoring key. Refered to as subscriptionKey in other cli commands.'}),
-    botName: flags.string({description: '(required) Bot name'}),
-    region: flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, application setting will be output to console'}),
-    defaultCulture: flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
-    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
-    suffix: flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    luConfig: flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
-    deleteOldVersion: flags.boolean({description: 'Deletes old version of LUIS application after building new one.'}),
-    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
-    endpoint: flags.string({description: '(required) Luis authoring endpoint for publishing'}),
-    schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
-    isStaging: flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
-    directVersionPublish: flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
+  static flags = {
+    help: Flags.help({char: 'h', description: 'luis:build command help'}),
+    in: Flags.string({char: 'i', description: '(required) Lu file or folder'}),
+    authoringKey: Flags.string({description: '(required) LUIS authoring key. Refered to as subscriptionKey in other cli commands.'}),
+    botName: Flags.string({description: '(required) Bot name'}),
+    region: Flags.string({description: 'LUIS authoring region [westus|westeurope|australiaeast]', default: 'westus'}),
+    out: Flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, application setting will be output to console'}),
+    defaultCulture: Flags.string({description: 'Culture code for the content. Infer from .lu if available. Defaults to en-us'}),
+    fallbackLocale: Flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
+    suffix: Flags.string({description: 'Environment name as a suffix identifier to include in LUIS app name. Defaults to current logged in user alias'}),
+    dialog: Flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    luConfig: Flags.string({description: 'Path to config for lu build which can contain switches for arguments'}),
+    deleteOldVersion: Flags.boolean({description: 'Deletes old version of LUIS application after building new one.'}),
+    log: Flags.boolean({description: 'Writes out log messages to console', default: false}),
+    endpoint: Flags.string({description: '(required) Luis authoring endpoint for publishing'}),
+    schema: Flags.string({description: 'Defines $schema for generated .dialog files'}),
+    isStaging: Flags.boolean({description: 'Publishes luis application to staging slot if set. Default to production slot', default: false}),
+    directVersionPublish: Flags.boolean({description: 'Available only in direct version query. Do not publish to staging or production', default: false})
   }
 
   async run() {
     try {
-      const {flags} = this.parse(LuisBuild)
+      const {flags} = await this.parse(LuisBuild)
 
       // Luconfig overrides flags
       let files: string[] = []

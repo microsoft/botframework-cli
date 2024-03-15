@@ -3,4 +3,4 @@
  * Licensed under the MIT License.
  */
 
-export {run} from '@oclif/command'
+export {run} from '@oclif/core'

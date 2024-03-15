@@ -3,8 +3,8 @@
  * Licensed under the MIT License.
  */
 
-import {flags} from '@oclif/command'
-import {CLIError, Command, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Flags, Command, utils} from '@microsoft/bf-cli-command'
+import { loadHelpClass } from '@oclif/core'
 const chalk = require('chalk')
 const chatdown = require('../../../utils/index')
 const fs = require('fs-extra')
@@ -21,18 +21,18 @@ export default class ChatdownConvert extends Command {
   $ bf chatdown --in ./test/utils/*.sample.chat -o ./
   $ (echo user=Joe && [ConversationUpdate=MembersAdded=Joe]) | bf chatdown --static`]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'The path of the chat file or directory to be parsed. A glob expression may be passed containing chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an output directory is not present (-o), it will default the output to the current working directory.'}),
-    out: flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
-    stamp: flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
-    prefix: flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'Chatdown command help'})
+  static flags = {
+    in: Flags.string({char: 'i', description: 'The path of the chat file or directory to be parsed. A glob expression may be passed containing chat files to be processed all at once, ex. ./**/*.chat. If flag is omitted, stdin will be used. If an output directory is not present (-o), it will default the output to the current working directory.'}),
+    out: Flags.string({char: 'o', description: 'Path to the directory where the output of the multiple chat file processing (-o) will be placed.'}),
+    stamp: Flags.boolean({char: 's', description: 'Use static timestamps when generating timestamps on activities.'}),
+    prefix: Flags.boolean({char: 'p', description: 'Prefix stdout with package name.'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: Flags.help({char: 'h', description: 'Chatdown command help'})
   }
 
   async run() {
     try {
-      const {flags} = this.parse(ChatdownConvert)
+      const {flags} = await this.parse(ChatdownConvert)
 
       let inputIsDirectory = flags.in ? (flags.in.includes('*') || this.isDir(flags.in)) : false
 
@@ -66,7 +66,7 @@ export default class ChatdownConvert extends Command {
         } else if (flags.in && !fileContents) {
           throw new CLIError('No file contents found in: ' + flags.in)
         } else {
-          return this._help()
+          await new (await loadHelpClass(this.config))(this.config).showHelp([])
         }
       }
 

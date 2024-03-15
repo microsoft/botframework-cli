@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 const qnamaker = require('./../../../../utils/index')
 const replaceAlterationsJSON = require('./../../../../utils/payloads/replacealterations')
 import {Inputs, processInputs} from '../../../utils/qnamakerbase'
@@ -11,15 +11,15 @@ import {Inputs, processInputs} from '../../../utils/qnamakerbase'
 export default class QnamakerAlterationsReplace extends Command {
   static description = 'Replaces word alterations (synonyms) for the KB with the give records.'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'File path to the WordAlterationsDTO object to send in the body of the request'}),
-    subscriptionKey: flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
-    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
-    help: flags.help({char: 'h', description: 'qnamaker:alterations:replace command help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'File path to the WordAlterationsDTO object to send in the body of the request'}),
+    subscriptionKey: Flags.string({description: 'Specifies the qnamaker Ocp-Apim-Subscription Key (found in Keys under Resource Management section for your Qna Maker cognitive service). Overrides the subscriptionkey value present in the config'}),
+    endpoint: Flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:alterations:replace command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerAlterationsReplace)
+    const {flags} = await this.parse(QnamakerAlterationsReplace)
     const stdin = await this.readStdin()
 
     if (!stdin && !flags.in) {

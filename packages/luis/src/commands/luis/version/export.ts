@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 import Version from './../../../api/version'
 
@@ -16,19 +16,19 @@ export default class LuisVersionExport extends Command {
     $ bf luis:version:export --appId {APP_ID} --versionId {VERSION_ID} --out {FILENAME.json or PATH/FILENAME.json} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: '(required) Version to export (defaults to config:LUIS:versionId)'}),
-    exportLU: flags.boolean({description: 'Export format type as LU'}),
-    out: flags.string({char: 'o', description: 'Save exported application to specified file, uses STDOUT if not specified (optional)'}),
-    force: flags.boolean({char: 'f', description: 'Overwrites output file if exists, otherwise creates a parallel numbered file (optional)', default: false}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: Flags.string({description: '(required) Version to export (defaults to config:LUIS:versionId)'}),
+    exportLU: Flags.boolean({description: 'Export format type as LU'}),
+    out: Flags.string({char: 'o', description: 'Save exported application to specified file, uses STDOUT if not specified (optional)'}),
+    force: Flags.boolean({char: 'f', description: 'Overwrites output file if exists, otherwise creates a parallel numbered file (optional)', default: false}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionExport)
+    const {flags} = await this.parse(LuisVersionExport)
     const flagLabels = Object.keys(LuisVersionExport.flags)
     const configDir = this.config.configDir
 

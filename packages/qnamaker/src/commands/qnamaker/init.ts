@@ -3,9 +3,9 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
 import {updateQnAMakerConfig} from '../../utils/qnamakerbase'
-import cli from 'cli-ux'
+import { ux } from '@oclif/core'
 
 const Knowledgebase = require('./../../../utils/api/knowledgebase')
 const Endpointkeys = require('./../../../utils/api/endpointkeys')
@@ -14,13 +14,13 @@ const chalk = require('chalk')
 export default class QnamakerInit extends Command {
   static description = 'Initializes the config file with settings.'
 
-  static flags: flags.Input<any> = {
-    endpoint: flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
-    help: flags.help({char: 'h', description: 'qnamaker:init command help'}),
+  static flags = {
+    endpoint: Flags.string({description: 'Overrides public endpoint https://westus.api.cognitive.microsoft.com/qnamaker/v4.0/'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:init command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerInit)
+    const {flags} = await this.parse(QnamakerInit)
     const result = await this.initializeConfig(flags.endpoint)
     if (result) {
       this.log(`Successfully wrote ${this.config.configDir}/config.json`)
@@ -38,7 +38,7 @@ export default class QnamakerInit extends Command {
     /* tslint:disable: prefer-for-of */
     for (let i = 0; i < questions.length; i++) {
       const question = questions[i]
-      const answer = await cli.prompt(question)
+      const answer = await ux.prompt(question)
       answers.push(answer)
     }
 
@@ -47,15 +47,15 @@ export default class QnamakerInit extends Command {
     const config = Object.assign({}, {subscriptionKey, kbId, endpoint, endpointKey: '', hostname: ''})
 
     if (subscriptionKey && kbId) {
-      cli.action.start('Updating config file hostname and endpoint key')
+      ux.action.start('Updating config file hostname and endpoint key')
       await this.updateKbId(config)
-      cli.action.stop()
+      ux.action.stop()
     }
 
     let confirmation: boolean
     delete config.endpoint
     try {
-      confirmation = await cli.confirm(`Does this look ok?\n${JSON.stringify(config, null, 2)}\n[Yes]/No:`)
+      confirmation = await ux.confirm(`Does this look ok?\n${JSON.stringify(config, null, 2)}\n[Yes]/No:`)
       /* tslint:disable: no-unused */
     } catch (e) {
       return false

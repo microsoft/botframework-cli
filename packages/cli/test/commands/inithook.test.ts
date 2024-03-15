@@ -1,5 +1,5 @@
 import {expect, test} from '@oclif/test'
-import cli from 'cli-ux'
+import { ux } from '@oclif/core'
 import * as fs from 'fs-extra'
 const path = require('path')
 const semver = require('semver')

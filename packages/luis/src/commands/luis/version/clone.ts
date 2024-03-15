@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 import Version from './../../../api/version'
 
@@ -16,18 +16,18 @@ export default class LuisVersionClone extends Command {
     $ bf luis:version:clone --appId {APP_ID} --versionId {VERSION_ID} --targetVersionId {TARGET_VERSION_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    versionId: flags.string({description: '(required) Source version to clone (defaults to config:LUIS:versionId)'}),
-    targetVersionId: flags.string({description: '(required) Destination version to create'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: 'LUIS authoring (Ocp-Apim-subscription) key'}),
-    json: flags.boolean({description: 'Display output as JSON'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    versionId: Flags.string({description: '(required) Source version to clone (defaults to config:LUIS:versionId)'}),
+    targetVersionId: Flags.string({description: '(required) Destination version to create'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: 'LUIS authoring (Ocp-Apim-subscription) key'}),
+    json: Flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionClone)
+    const {flags} = await this.parse(LuisVersionClone)
     const flagLabels = Object.keys(LuisVersionClone.flags)
     const configDir = this.config.configDir
 
@@ -37,7 +37,7 @@ export default class LuisVersionClone extends Command {
     utils.validateRequiredProps(requiredProps)
 
     try {
-      const messageData = await Version.clone({subscriptionKey, endpoint, appId}, flags.versionId, flags.targetVersionId)
+      const messageData = await Version.clone({subscriptionKey, endpoint, appId}, flags.versionId as string, flags.targetVersionId as string)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)

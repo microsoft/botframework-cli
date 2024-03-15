@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags, utils} from '@microsoft/bf-cli-command'
 import {sortQnA, sortAlterations} from './../../utils/qnamakerinstanceutils'
 const exception = require('@microsoft/bf-lu').V2.Exception
 const fs = require('fs-extra')
@@ -17,21 +17,21 @@ const fileExtEnum = require('@microsoft/bf-lu/lib/parser/utils/helpers').FileExt
 export default class QnamakerConvert extends Command {
   static description = 'Converts .qna file(s) to QnA application JSON models or vice versa.'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source .qna file(s) or QnA KB JSON file'}),
-    alterations: flags.boolean({description: 'Indicates if files is QnA Alterations'}),
-    log: flags.boolean({description: 'Enables log messages', default: false}),
-    sort: flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files', default: false}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    name: flags.string({description: 'Name of the QnA KB'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'qnamaker:convert help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Source .qna file(s) or QnA KB JSON file'}),
+    alterations: Flags.boolean({description: 'Indicates if files is QnA Alterations'}),
+    log: Flags.boolean({description: 'Enables log messages', default: false}),
+    sort: Flags.boolean({description: 'When set, questions collections are alphabetically sorted are alphabetically sorted in .qna files', default: false}),
+    recurse: Flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .qna file(s)'}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    name: Flags.string({description: 'Name of the QnA KB'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: Flags.help({char: 'h', description: 'qnamaker:convert help'}),
   }
 
   async run() {
     try {
-      const {flags} = this.parse(QnamakerConvert)
+      const {flags} = await this.parse(QnamakerConvert)
 
       // Check if data piped in stdin
       const stdin = await this.readStdin()

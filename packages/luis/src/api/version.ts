@@ -7,7 +7,7 @@ export default {
   async clone(
     param: EndpointParameters,
     oldVersionId: string,
-    version: string) {
+    version: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${oldVersionId}/clone`
 
     return http.post(url, param.subscriptionKey, {version})
@@ -15,7 +15,7 @@ export default {
 
   async delete(
     param: EndpointParameters,
-    versionId: string) {
+    versionId: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/`
 
     return http.delete(url, param.subscriptionKey)
@@ -24,7 +24,7 @@ export default {
   async export(
     param: EndpointParameters,
     versionId: string,
-    format = 'json') {
+    format = 'json'): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/export?format=${format}`
     return http.get(url, param.subscriptionKey)
   },
@@ -32,7 +32,7 @@ export default {
   async import(
     param: EndpointParameters,
     appJSON: any,
-    versionId: string) {
+    versionId: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/import?versionId=${versionId}`
 
     return http.post(url, param.subscriptionKey, appJSON)
@@ -41,7 +41,7 @@ export default {
   async list(
     param: EndpointParameters,
     skip = '0',
-    take = '100') {
+    take = '100'): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/?skip=${skip}&take=${take}]`
 
     return http.get(url, param.subscriptionKey)
@@ -50,7 +50,7 @@ export default {
   async rename(
     param: EndpointParameters,
     versionId: string,
-    newVersion: string) {
+    newVersion: string): Promise<any> {
     let url = buildUrl(param.endpoint) + `/${param.appId}/versions/${versionId}/`
 
     return http.put(url, param.subscriptionKey, {version: newVersion})

@@ -10,7 +10,6 @@ import * as os from 'os'
 import * as ppath from 'path'
 import * as xp from 'xml2js'
 import Ajv = require('ajv')
-import parser from '@apidevtools/json-schema-ref-parser'
 import {JsonPointer as ptr} from 'json-ptr'
 import getJSON from './getJSON'
 
@@ -19,6 +18,7 @@ const clone = require('clone')
 const glob = require('globby')
 const semverRsort = require('semver/functions/rsort')
 const util = require('util')
+const parser = require('@apidevtools/json-schema-ref-parser')
 
 const exec = util.promisify(require('child_process').exec)
 

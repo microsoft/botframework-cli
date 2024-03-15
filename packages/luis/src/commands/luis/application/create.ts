@@ -3,8 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import Application from './../../../api/application'
 
 const utils = require('../../../utils/index')
@@ -17,21 +16,21 @@ export default class LuisApplicationCreate extends Command {
     --domain {DOMAIN} --description {DESCRIPTION} --versionId {INITIAL_VERSION_ID}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    name: flags.string({description: '(required) Name of LUIS application'}),
-    culture: flags.string({description: 'Specify culture language (default: en-us)'}),
-    description: flags.string({description: 'Description of LUIS application'}),
-    versionId: flags.string({description: '(required) LUIS version Id. (defaults to config:LUIS:versionId)'}),
-    tokenizerVersion: flags.string({description: 'Version specifies how sentences are tokenized (optional). See also: https://aka.ms/luistokens'}),
-    save: flags.boolean({description: 'Save configuration settings from imported app (appId & endpoint)'}),
-    json: flags.boolean({description: 'Display output as JSON'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    name: Flags.string({description: '(required) Name of LUIS application'}),
+    culture: Flags.string({description: 'Specify culture language (default: en-us)'}),
+    description: Flags.string({description: 'Description of LUIS application'}),
+    versionId: Flags.string({description: '(required) LUIS version Id. (defaults to config:LUIS:versionId)'}),
+    tokenizerVersion: Flags.string({description: 'Version specifies how sentences are tokenized (optional). See also: https://aka.ms/luistokens'}),
+    save: Flags.boolean({description: 'Save configuration settings from imported app (appId & endpoint)'}),
+    json: Flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisApplicationCreate)
+    const {flags} = await this.parse(LuisApplicationCreate)
     const flagLabels = Object.keys(LuisApplicationCreate.flags)
     const configDir = this.config.configDir
 

@@ -6,7 +6,7 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags, CLIError} from '@microsoft/bf-cli-command'
+import {Command, Flags, CLIError} from '@microsoft/bf-cli-command'
 import {Helper} from '../../utils'
 import {TemplatesParser, Templates, DiagnosticSeverity, Diagnostic} from 'botbuilder-lg'
 import * as txtfile from 'read-text-file'
@@ -20,21 +20,21 @@ export default class ExpandCommand extends Command {
 
   private readonly TempTemplateName = '__temp__'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
-    recurse: flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
-    template: flags.string({description: 'Name of the template to expand. Template names with spaces must be enclosed in quotes.'}),
-    expression: flags.string({description: 'Inline expression provided as a string to evaluate.'}),
-    all: flags.boolean({description: 'When set, all templates in the .lg file be expanded.'}),
-    interactive: flags.boolean({description: 'Interactively prompt for all missing entity value references required for expansion.'}),
-    testInput: flags.string({description: 'Path to a JSON file containing test input for all variable references.'}),
-    help: flags.help({char: 'h', description: 'lg:expand help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Folder that contains .lg file.', required: true}),
+    recurse: Flags.boolean({char: 'r', description: 'Consider sub-folders to find .lg file(s)'}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file'}),
+    template: Flags.string({description: 'Name of the template to expand. Template names with spaces must be enclosed in quotes.'}),
+    expression: Flags.string({description: 'Inline expression provided as a string to evaluate.'}),
+    all: Flags.boolean({description: 'When set, all templates in the .lg file be expanded.'}),
+    interactive: Flags.boolean({description: 'Interactively prompt for all missing entity value references required for expansion.'}),
+    testInput: Flags.string({description: 'Path to a JSON file containing test input for all variable references.'}),
+    help: Flags.help({char: 'h', description: 'lg:expand help'}),
   }
 
   async run() {
-    const {flags} = this.parse(ExpandCommand)
+    const {flags} = await this.parse(ExpandCommand)
 
     const lgFilePaths = Helper.findLGFiles(flags.in, flags.recurse)
 
@@ -46,7 +46,7 @@ export default class ExpandCommand extends Command {
 
       const originalTemplateNames = lg.allTemplates.map(u => u.name)
       const templateNameList = this.buildTemplateNameList(originalTemplateNames, flags.all, flags.expression, flags.template)
-      const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput, flags.interactive)
+      const expandedTemplates = this.expandTemplates(lg, templateNameList, flags.testInput as string, flags.interactive)
 
       this.handlerOutputContent(expandedTemplates, filePath, flags.out, flags.force)
     }

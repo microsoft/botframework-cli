@@ -4,8 +4,9 @@
  */
 
 import Ajv = require('ajv')
-import parser from '@apidevtools/json-schema-ref-parser'
 import http from './getJSON'
+
+const parser = require('@apidevtools/json-schema-ref-parser')
 
 // Get JSON from a URI.
 async function getJSON(uri: string): Promise<any> {

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import {processFlags} from '../../utils/qnamakerbase'
 
 const path = require('path')
@@ -25,26 +25,26 @@ export default class QnamakerBuild extends Command {
   `]
 
   static flags: any = {
-    help: flags.help({char: 'h', description: 'qnamaker:build command help'}),
-    in: flags.string({char: 'i', description: 'Source .qna file or folder'}),
-    subscriptionKey: flags.string({char: 's', description: 'QnA maker subscription key'}),
-    botName: flags.string({char: 'b', description: 'Bot name'}),
-    region: flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
-    out: flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, knowledge base setting will be output to console'}),
-    defaultCulture: flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
-    fallbackLocale: flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
-    suffix: flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
-    dialog: flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    qnaConfig: flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
-    log: flags.boolean({description: 'Writes out log messages to console', default: false}),
-    endpoint: flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
-    schema: flags.string({description: 'Defines $schema for generated .dialog files'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:build command help'}),
+    in: Flags.string({char: 'i', description: 'Source .qna file or folder'}),
+    subscriptionKey: Flags.string({char: 's', description: 'QnA maker subscription key'}),
+    botName: Flags.string({char: 'b', description: 'Bot name'}),
+    region: Flags.string({description: 'Overrides public endpoint https://<region>.api.cognitive.microsoft.com/qnamaker/v4.0/', default: 'westus'}),
+    out: Flags.string({char: 'o', description: 'Output folder name to write out .dialog and settings files. If not specified, knowledge base setting will be output to console'}),
+    defaultCulture: Flags.string({description: 'Culture code for the content. Infer from .qna if available. Defaults to en-us if not set'}),
+    fallbackLocale: Flags.string({description: 'Locale to be used at the fallback if no locale specific recognizer is found. Only valid if --out is set'}),
+    suffix: Flags.string({description: 'Environment name as a suffix identifier to include in qnamaker kb name. Defaults to current logged in user alias'}),
+    dialog: Flags.string({description: 'Dialog recognizer type [multiLanguage|crosstrained]. No dialog recognizers will be generated if not specified. Only valid if --out is set'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    qnaConfig: Flags.string({description: 'Path to config for qna build which can contain switches for arguments'}),
+    log: Flags.boolean({description: 'Writes out log messages to console', default: false}),
+    endpoint: Flags.string({description: 'Qnamaker authoring endpoint for publishing'}),
+    schema: Flags.string({description: 'Defines $schema for generated .dialog files'}),
   }
 
   async run() {
     try {
-      const {flags}: any = this.parse(QnamakerBuild)
+      const {flags}: any = await this.parse(QnamakerBuild)
 
       // Luconfig overrides flags
       let files: string[] = []

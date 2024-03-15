@@ -3,24 +3,24 @@
  * Licensed under the MIT License.
  */
 
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {OrchestratorBaseModel, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 import * as path from 'path';
 
 export default class OrchestratorBaseModelGet extends Command {
   static description: string = 'Gets Orchestrator base model'
 
-  static flags: flags.Input<any> = {
-    out: flags.string({char: 'o', description: 'Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.'}),
-    versionId: flags.string({description: 'Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.'}),
-    getEntity: flags.boolean({description: 'Optional. Download default entity model at the same time, which will be placed in the entity subfolder of the output path.', default: false}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator basemodel:get command help'}),
-    verbose: flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
+  static flags = {
+    out: Flags.string({char: 'o', description: 'Optional. Path to where Orchestrator base model will be saved to. Default to current working directory.'}),
+    versionId: Flags.string({description: 'Optional. Base model version to download -- reference basemodel:list output for options.  If not specified, default model will be downloaded.'}),
+    getEntity: Flags.boolean({description: 'Optional. Download default entity model at the same time, which will be placed in the entity subfolder of the output path.', default: false}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h', description: 'Orchestrator basemodel:get command help'}),
+    verbose: Flags.boolean({char: 'v', description: 'Enable verbose logging', default: false}),
   }
 
   async run(): Promise<void> {
-    const {flags}: flags.Output = this.parse(OrchestratorBaseModelGet);
+    const {flags}: flags.Output = await this.parse(OrchestratorBaseModelGet);
     const cwd: string = process.cwd();
     const output: string = flags.out || path.join(cwd, 'model');
     let basemodelId: any = flags.versionId || '';

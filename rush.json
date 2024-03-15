@@ -1,9 +1,9 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/rush/v5/rush.schema.json",
-  "rushVersion": "5.33.0",
-  "pnpmVersion": "4.14.4",
+  "rushVersion": "5.117.9",
+  "pnpmVersion": "8.15.4",
   "pnpmOptions": {},
-  "nodeSupportedVersionRange": ">=14.0.0",
+  "nodeSupportedVersionRange": ">=16.0.0",
   "projects": [
     {
       "packageName": "@microsoft/bf-cli-command",
@@ -28,14 +28,6 @@
     {
       "packageName": "@microsoft/bf-dispatcher",
       "projectFolder": "packages/dispatcher"
-    },
-    {
-      "packageName": "@microsoft/bf-orchestrator",
-      "projectFolder": "packages/orchestratorlib"
-    },
-    {
-      "packageName": "@microsoft/bf-orchestrator-cli",
-      "projectFolder": "packages/orchestrator"
     },
     {
       "packageName": "@microsoft/bf-lg-cli",

@@ -3,8 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import Application from './../../../api/application'
 
 const utils = require('../../../utils/index')
@@ -16,18 +15,18 @@ export default class LuisApplicationRename extends Command {
     $ bf luis:application:rename --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --appId {APP_ID} --name {NAME} --description {DESCRIPTION}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    name: flags.string({description: '(required) Name of LUIS application', required: true}),
-    description: flags.string({description: 'Description of LUIS application'}),
-    json: flags.boolean({description: 'Display output as JSON'}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    name: Flags.string({description: '(required) Name of LUIS application', required: true}),
+    description: Flags.string({description: 'Description of LUIS application'}),
+    json: Flags.boolean({description: 'Display output as JSON'}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisApplicationRename)
+    const {flags} = await this.parse(LuisApplicationRename)
     const flagLabels = Object.keys(LuisApplicationRename.flags)
     const configDir = this.config.configDir
 

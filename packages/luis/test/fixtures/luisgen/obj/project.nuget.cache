@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "+wZl+u1Z5zjgLH6D5/NS++B8EhebfZQk1X0xQk06qDx8BCLpJJsEMWF06Sere5YK6/ATHT2FjhvLo6cnvWF7BQ==",
+  "success": false,
+  "projectFilePath": "D:\\botframework\\cli\\packages\\luis\\test\\fixtures\\luisgen\\LUISGenTest.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1301",
+      "level": "Error",
+      "message": "Unable to load the service index for source https://msazure.pkgs.visualstudio.com/_packaging/CCI-Dependency/nuget/v3/index.json.",
+      "libraryId": "Microsoft.Bot.Builder.AI.Luis"
+    }
+  ]
+}

@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const Luis = require('@microsoft/bf-lu').V2.Luis
 const LuisBuilder = require('@microsoft/bf-lu/lib/parser/luis/luisCollate')
@@ -15,24 +15,24 @@ import {hasContent, sort} from './../../utils/luisinstanceutils'
 export default class LuisConvert extends Command {
   static description = 'Convert .lu file(s) to a LUIS application JSON model or vice versa'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source .lu file(s) or LUIS application JSON model'}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
-    log: flags.boolean({description: 'Enables log messages', default: false}),
-    sort: flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
-    out: flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
-    name: flags.string({description: 'Name of the LUIS application'}),
-    description: flags.string({description: 'Text describing the LUIS applicaion'}),
-    culture: flags.string({description: 'Lang code for the LUIS application'}),
-    versionid: flags.string({description: 'Version ID of the LUIS application'}),
-    schemaversion: flags.string({description: 'Schema version of the LUIS application'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'luis:convert help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Source .lu file(s) or LUIS application JSON model'}),
+    recurse: Flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to file .lu file(s)', default: false}),
+    log: Flags.boolean({description: 'Enables log messages', default: false}),
+    sort: Flags.boolean({description: 'When set, intent, utterances, entities are alphabetically sorted in .lu files', default: false}),
+    out: Flags.string({char: 'o', description: 'Output file or folder name. If not specified stdout will be used as output'}),
+    name: Flags.string({description: 'Name of the LUIS application'}),
+    description: Flags.string({description: 'Text describing the LUIS applicaion'}),
+    culture: Flags.string({description: 'Lang code for the LUIS application'}),
+    versionid: Flags.string({description: 'Version ID of the LUIS application'}),
+    schemaversion: Flags.string({description: 'Schema version of the LUIS application'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: Flags.help({char: 'h', description: 'luis:convert help'}),
   }
 
   async run() {
     try {
-      const {flags} = this.parse(LuisConvert)
+      const {flags} = await this.parse(LuisConvert)
       // Check if data piped in stdin
       const stdin = await this.readStdin()
 

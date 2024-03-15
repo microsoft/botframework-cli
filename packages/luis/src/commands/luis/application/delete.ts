@@ -3,8 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
-
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 import Application from './../../../api/application'
 
 const {cli} = require('cli-ux')
@@ -17,17 +16,17 @@ export default class LuisApplicationDelete extends Command {
     $ bf luis:application:delete --appId {APP_ID} --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    force: flags.boolean({description: 'Force delete with no confirmation'}),
-    json: flags.boolean({description: 'Display output as JSON'})
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    force: Flags.boolean({description: 'Force delete with no confirmation'}),
+    json: Flags.boolean({description: 'Display output as JSON'})
   }
 
   async run() {
-    const {flags} = this.parse(LuisApplicationDelete)
+    const {flags} = await this.parse(LuisApplicationDelete)
     const flagLabels = Object.keys(LuisApplicationDelete.flags)
     const configDir = this.config.configDir
 

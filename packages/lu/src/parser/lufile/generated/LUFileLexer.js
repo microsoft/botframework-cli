@@ -1,6 +1,6 @@
 // Generated from LUFileLexer.g4 by ANTLR 4.9.2
 // jshint ignore: start
-import antlr4 from 'antlr4';
+import {antlr4} from 'antlr4';
 
 
 

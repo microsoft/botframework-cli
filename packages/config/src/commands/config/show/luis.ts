@@ -3,14 +3,14 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
+import {Command, Flags} from '@microsoft/bf-cli-command'
 import {getConfigFile, Config} from '../../../utils/configfilehandler'
 
 export default class ConfigShowLuis extends Command {
   static description = 'Display LUIS settings'
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'config:show:luis help'})
+  static flags = {
+    help: Flags.help({char: 'h', description: 'config:show:luis help'})
   }
 
   async run() {

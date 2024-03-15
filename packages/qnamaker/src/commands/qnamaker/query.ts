@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 const qnamaker = require('./../../../utils/index')
 const queryQuestionJSON = require('./../../../utils/payloads/queryquestion')
 import {getFileInput, Inputs, processInputs} from '../../utils/qnamakerbase'
@@ -11,22 +11,22 @@ import {getFileInput, Inputs, processInputs} from '../../utils/qnamakerbase'
 export default class QnamakerQuery extends Command {
   static description = 'Generate Answer for fetching the answer from Kb for a query'
 
-  static flags: flags.Input<any> = {
-    question: flags.string({description: 'Query to get a prediction for', required: true}),
-    top: flags.integer({description: 'Specifies the number of matching results'}),
-    test: flags.boolean({description: 'Query against the test index', default: false}),
-    scorethreshold: flags.integer({description: 'Specifies the confidence score threshold for the returned answer.'}),
-    strictfilters: flags.string({description: 'Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}'}),
-    qnaId: flags.integer({description: 'Exact qnaId to fetch from the knowledgebase, this field takes priority over question'}),
-    context: flags.string({description: 'Path to Context object json file with previous QnA'}),
-    hostname: flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config'}),
-    endpointKey: flags.string({description: 'Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user settings page). Overrides the value present in config'}),
-    kbId: flags.string({description: 'Specifies the active qnamaker knowledgebase id. Overrides the value present in the config'}),
-    help: flags.help({char: 'h', description: 'qnamaker:query command help'}),
+  static flags = {
+    question: Flags.string({description: 'Query to get a prediction for', required: true}),
+    top: Flags.integer({description: 'Specifies the number of matching results'}),
+    test: Flags.boolean({description: 'Query against the test index', default: false}),
+    scorethreshold: Flags.integer({description: 'Specifies the confidence score threshold for the returned answer.'}),
+    strictfilters: Flags.string({description: 'Path to json file with MetadataDTO[] e.g {"strictfilters": MetadataDTO[]}'}),
+    qnaId: Flags.integer({description: 'Exact qnaId to fetch from the knowledgebase, this field takes priority over question'}),
+    context: Flags.string({description: 'Path to Context object json file with previous QnA'}),
+    hostname: Flags.string({description: 'Specifies the url for your private QnA service. Overrides the value present in config'}),
+    endpointKey: Flags.string({description: 'Specifies the endpoint key for your private QnA service (From qnamaker.ai portal user settings page). Overrides the value present in config'}),
+    kbId: Flags.string({description: 'Specifies the active qnamaker knowledgebase id. Overrides the value present in the config'}),
+    help: Flags.help({char: 'h', description: 'qnamaker:query command help'}),
   }
 
   async run() {
-    const {flags} = this.parse(QnamakerQuery)
+    const {flags} = await this.parse(QnamakerQuery)
     let input: Inputs = await processInputs(flags, queryQuestionJSON, this.config.configDir)
     input.requestBody = {
       question: flags.question,

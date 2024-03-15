@@ -4,7 +4,7 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {Orchestrator, OrchestratorDataSource, OrchestratorSettings} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorRemove extends Command {
@@ -17,16 +17,16 @@ export default class OrchestratorRemove extends Command {
     $ bf orchestrator:remove -t file -i FILE_PATH 
     `]
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
-    id: flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
-    type: flags.string({char: 't', description: 'Type of input (luis/qna/file).'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator remove command help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Path to example file (.lu/.qna/.json/.blu).'}),
+    id: Flags.string({description: 'LUIS app id or QnAMaker kb id if type = luis/qna.'}),
+    type: Flags.string({char: 't', description: 'Type of input (luis/qna/file).'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h', description: 'Orchestrator remove command help'}),
   }
 
   async run() {
-    const {flags}: flags.Output = this.parse(OrchestratorRemove);
+    const {flags}: flags.Output = await this.parse(OrchestratorRemove);
     const cwd: string = process.cwd();
     const filePath: string = path.resolve(flags.in || cwd);
     const type: string = (flags.type.toLowerCase() || '');

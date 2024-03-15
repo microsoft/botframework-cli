@@ -3,16 +3,16 @@
  * Licensed under the MIT License.
  */
 
-import {Command, flags} from '@microsoft/bf-cli-command'
-
+import {Command, Flags} from '@microsoft/bf-cli-command'
+import { loadHelpClass } from '@oclif/core'
 export default class ChatdownIndex extends Command {
   static description = 'Converts chat dialog files in <filename>.chat format into transcript files. Writes corresponding <filename>.transcript for each .chat file.'
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h', description: 'Chatdown command help'})
+  static flags = {
+    help: Flags.help({char: 'h', description: 'Chatdown command help'})
   }
 
   async run() {
-    this._help()
+    await new (await loadHelpClass(this.config))(this.config).showHelp([])
   }
 }

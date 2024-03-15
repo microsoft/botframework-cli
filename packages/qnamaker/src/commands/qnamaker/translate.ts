@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags, utils} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags, utils} from '@microsoft/bf-cli-command'
 const fs = require('fs-extra')
 const path = require('path')
 const QnA = require('@microsoft/bf-lu').V2.QNA
@@ -18,24 +18,24 @@ const fileHelper = require('@microsoft/bf-lu/lib/utils/filehelper')
 export default class QnamakerTranslate extends Command {
   static description = 'Translate given QnA maker application JSON model or qna file(s)'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Source .qna file(s) or QnA maker application JSON model'}),
-    recurse: flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to find .qna file(s)'}),
-    out: flags.string({char: 'o', description: 'Output folder name. If not specified stdout will be used as output'}),
-    srclang: flags.string({description: 'Source lang code. Auto detect if missing.'}),
-    tgtlang: flags.string({description: 'Comma separated list of target languages.', required: true}),
-    translatekey: flags.string({description: 'Machine translation endpoint key.', required: true}),
-    translate_comments: flags.boolean({description: 'When set, machine translate comments found in .qna file'}),
-    translate_link_text: flags.boolean({description: 'When set, machine translate link description in .qna file'}),
-    subscription_region: flags.string({description: 'Required request header if using a Cognitive Services Resource. Optional if using a Translator Resource.'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
-    help: flags.help({char: 'h', description: 'qnamaker:translate help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Source .qna file(s) or QnA maker application JSON model'}),
+    recurse: Flags.boolean({char: 'r', description: 'Indicates if sub-folders need to be considered to find .qna file(s)'}),
+    out: Flags.string({char: 'o', description: 'Output folder name. If not specified stdout will be used as output'}),
+    srclang: Flags.string({description: 'Source lang code. Auto detect if missing.'}),
+    tgtlang: Flags.string({description: 'Comma separated list of target languages.', required: true}),
+    translatekey: Flags.string({description: 'Machine translation endpoint key.', required: true}),
+    translate_comments: Flags.boolean({description: 'When set, machine translate comments found in .qna file'}),
+    translate_link_text: Flags.boolean({description: 'When set, machine translate link description in .qna file'}),
+    subscription_region: Flags.string({description: 'Required request header if using a Cognitive Services Resource. Optional if using a Translator Resource.'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+    help: Flags.help({char: 'h', description: 'qnamaker:translate help'}),
   }
 
   /* tslint:disable:forin no-for-in */
   async run() {
     try {
-      const {flags} = this.parse(QnamakerTranslate)
+      const {flags} = await this.parse(QnamakerTranslate)
       // Check if data piped in stdin
       const stdin = await this.readStdin()
       let translationSettings: InstanceType<typeof translate> = {

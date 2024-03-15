@@ -3,7 +3,7 @@
  * Licensed under the MIT License.
  */
 
-import {CLIError, Command, flags} from '@microsoft/bf-cli-command'
+import {CLIError, Command, Flags} from '@microsoft/bf-cli-command'
 
 import Version from './../../../api/version'
 const utils = require('../../../utils/index')
@@ -16,19 +16,19 @@ export default class LuisVersionList extends Command {
     $ bf luis:version:list --endpoint {ENDPOINT} --subscriptionKey {SUBSCRIPTION_KEY} --out {PATH_TO_JSON_FILE}
   `]
 
-  static flags: flags.Input<any> = {
-    help: flags.help({char: 'h'}),
-    endpoint: flags.string({description: 'LUIS endpoint hostname'}),
-    subscriptionKey: flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
-    appId: flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
-    out: flags.string({char: 'o', description: 'Output results to specified folder and/or file in JSON format, otherwise prints to STDOUT (optional)'}),
-    skip: flags.string({description: 'Number of entries to skip. Default: 0 (no skips)'}),
-    take: flags.string({description: 'Number of etnries to return. Maximum page size is 500. Default: 100'}),
-    force: flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
+  static flags = {
+    help: Flags.help({char: 'h'}),
+    endpoint: Flags.string({description: 'LUIS endpoint hostname'}),
+    subscriptionKey: Flags.string({description: '(required) LUIS cognitive services subscription key (default: config:LUIS:subscriptionKey)'}),
+    appId: Flags.string({description: '(required) LUIS application Id (defaults to config:LUIS:appId)'}),
+    out: Flags.string({char: 'o', description: 'Output results to specified folder and/or file in JSON format, otherwise prints to STDOUT (optional)'}),
+    skip: Flags.string({description: 'Number of entries to skip. Default: 0 (no skips)'}),
+    take: Flags.string({description: 'Number of etnries to return. Maximum page size is 500. Default: 100'}),
+    force: Flags.boolean({char: 'f', description: 'If --out flag is provided with the path to an existing file, overwrites that file', default: false}),
   }
 
   async run() {
-    const {flags} = this.parse(LuisVersionList)
+    const {flags} = await this.parse(LuisVersionList)
     const flagLabels = Object.keys(LuisVersionList.flags)
     const configDir = this.config.configDir
 

@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = LUISGenTest
+build_property.ProjectDir = D:\botframework\cli\packages\luis\test\fixtures\luisgen\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

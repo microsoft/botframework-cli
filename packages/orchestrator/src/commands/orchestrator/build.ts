@@ -4,25 +4,25 @@
  */
 
 import * as path from 'path';
-import {Command, CLIError, flags} from '@microsoft/bf-cli-command';
+import {Command, CLIError, Flags} from '@microsoft/bf-cli-command';
 import {LabelResolver, Orchestrator, OrchestratorHelper, OrchestratorSettings, Utility} from '@microsoft/bf-orchestrator';
 
 export default class OrchestratorBuild extends Command {
   static description: string = 'Creates Orchestrator snapshot file and Orchestrator dialog definition file (optional) for each lu file in input folder.'
 
-  static flags: flags.Input<any> = {
-    in: flags.string({char: 'i', description: 'Path to lu file or folder with lu files.'}),
-    model: flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
-    entityModel: flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
-    out: flags.string({char: 'o', description: 'Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.'}),
-    luconfig: flags.string({description: 'Path to luconfig.json.'}),
-    dialog: flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
-    debug: flags.boolean({char: 'd'}),
-    help: flags.help({char: 'h', description: 'Orchestrator build command help'}),
+  static flags = {
+    in: Flags.string({char: 'i', description: 'Path to lu file or folder with lu files.'}),
+    model: Flags.string({char: 'm', description: 'Path to Orchestrator model.'}),
+    entityModel: Flags.string({char: 'e', description: 'Path to Orchestrator entity base model directory.'}),
+    out: Flags.string({char: 'o', description: 'Path where Orchestrator snapshot/dialog file(s) will be placed. Default to current working directory.'}),
+    luconfig: Flags.string({description: 'Path to luconfig.json.'}),
+    dialog: Flags.boolean({description: 'Generate multi language or cross train Orchestrator recognizers.'}),
+    debug: Flags.boolean({char: 'd'}),
+    help: Flags.help({char: 'h', description: 'Orchestrator build command help'}),
   }
 
   async run(): Promise<void> {
-    const {flags}: flags.Output = this.parse(OrchestratorBuild);
+    const {flags}: Flags.Output = await this.parse(OrchestratorBuild);
     const flagsKeys: string[] = Object.keys(flags);
     if (Utility.isEmptyStringArray(flagsKeys)) {
       this._help();
