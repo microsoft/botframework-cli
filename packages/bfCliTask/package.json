@@ -1,0 +1,21 @@
+{
+  "name": "@microsoft/bfcli-task",
+  "version": "1.0.0",
+  "description": "A task that wraps the BF CLI tooling",
+  "main": "index.js",
+  "scripts": {
+    "build": "cd src && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "posttest": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/botframework-cli.git"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/botframework-cli/issues"
+  },
+  "homepage": "https://github.com/microsoft/botframework-cli#readme"
+}
