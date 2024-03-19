@@ -15,11 +15,11 @@
   "devDependencies": {
     "@types/argparse": "^1.0.36",
     "@types/chai": "^4.2.4",
-    "@types/mocha": "^5.2.7",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^10.17.3",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
-    "mocha": "^5.2.0",
+    "mocha": "^10.3.0",
     "nyc": "^14.1.1",
     "rimraf": "^3.0.0",
     "ts-node": "^8.4.1",
