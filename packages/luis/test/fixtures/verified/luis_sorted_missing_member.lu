@@ -17,8 +17,8 @@
 @ intent AskForUserName usesFeatures Want,question,abc
 
 # BookFlight
-- book flight from {@city:fromCity} to {city:toCity}
-- [can you] get me a flight from {@city:fromCity} to {city:toCity}
+- book flight from {@city:fromCity} to {@city:toCity}
+- [can you] get me a flight from {@city:fromCity} to {@city:toCity}
 - get me a flight to {@city:toCity}
 - I need to fly from {@city:fromCity}
 
