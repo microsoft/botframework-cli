@@ -34,5 +34,10 @@ function readPackage(packageJson, context) {
   //  packageJson.dependencies['log4js'] = '0.6.38';
   // }
 
+  if (packageJson.name === '@babel/traverse') {
+    context.log('Fixed up dependencies for @babel/traverse');
+    packageJson.dependencies['@babel/traverse'] = '7.23.2';
+  }
+
   return packageJson;
 }

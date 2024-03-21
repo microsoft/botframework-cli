@@ -19,6 +19,5 @@
   ],
   "all": true,
   "cache": true,
-  "extends": "@istanbuljs/nyc-config-typescript",
   "check-coverage": false
 }
