@@ -161,7 +161,7 @@
 - please order {@Order={@FullPizzaWithModifiers={@Quantity=two} {@Crust=pan crust} {@Size=small} {@PizzaType=pepperoni pizza} {@ToppingModifiers={@Modifier=with} {@Topping=beef}}} and {@FullPizzaWithModifiers={@Quantity=three} {@Size=medium} {@PizzaType=cheese pizza} {@ToppingModifiers=with italian sausage}}}
 - request {@Order={@FullPizzaWithModifiers={@Quantity=seven} {@Size=large} {@PizzaType=honolulu hawaiian pizza} {@ToppingModifiers={@Modifier=with} {@Topping=bacon} and {@Topping=salami}}} and {@SideOrder={@SideProduct=add chicken wings}}}
 - three pizzas large chicken barbeque for tomorrow evening
-- {@number} pizzas {SizeList} {ToppingList} {ToppingList} for {datetimeV2}
+- {@number} pizzas {@SizeList} {@ToppingList} {@ToppingList} for {@datetimeV2}
 
 
 @ intent ModifyOrder usesFeatures ToppingDescriptor,SizeDescriptor,QuantityDescriptor,ModifierDescriptor,ScopeDescriptor,CrustDescriptor,GreetingDescriptor
