@@ -8,7 +8,7 @@
     "@oclif/command": "~1.5.19",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
-    "@oclif/plugin-plugins": "~5.0.4",
+    "@oclif/plugin-plugins": "~1.10.0",
     "cli-ux": "^5.4.1",
     "tslib": "^2.0.3"
   },

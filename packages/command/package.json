@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@oclif/plugin-help": "^2.1.6",
-    "@oclif/plugin-plugins": "^5.0.4",
+    "@oclif/plugin-plugins": "^1.10.0",
     "@oclif/tslint": "^3.1.1",
     "@types/ansi-styles": "^3.2.1",
     "@types/chai": "^4.1.7",
