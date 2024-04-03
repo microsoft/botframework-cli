@@ -24,7 +24,7 @@
     "eslint-config-oclif": "^3.1.0",
     "eslint-config-oclif-typescript": "^0.1.0",
     "globby": "^10.0.1",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "nyc": "^14.1.1",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
@@ -48,6 +48,18 @@
     "bin": "bf",
     "devPlugins": [
       "@oclif/plugin-help"
+    ]
+  },
+  "mocha": {
+    "extension": [
+      ".test.js",
+      ".test.ts"
+    ],
+    "recursive": true,
+    "timeout": 60000,
+    "require": [
+      "../../test/hook.js",
+      "source-map-support/register"
     ]
   },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/plugins",

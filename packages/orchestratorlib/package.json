@@ -22,6 +22,18 @@
   ],
   "homepage": "https://github.com/microsoft/botframework-cli",
   "license": "MIT",
+  "mocha": {
+    "extension": [
+      ".test.js",
+      ".test.ts"
+    ],
+    "recursive": true,
+    "timeout": 60000,
+    "require": [
+      "../../test/hook.js",
+      "source-map-support/register"
+    ]
+  },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/orchestratorlib",
   "scripts": {
     "prepack": "npm run clean && npm run build",
@@ -54,7 +66,7 @@
     "@types/sinon": "^9.0.4",
     "chai": "^4.2.0",
     "eslint": "^5.16.0",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
     "rimraf": "^2.6.3",

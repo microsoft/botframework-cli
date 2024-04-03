@@ -13,6 +13,18 @@
   "keywords": [],
   "license": "MIT",
   "main": "lib/index.js",
+  "mocha": {
+    "extension": [
+      ".test.js",
+      ".test.ts"
+    ],
+    "recursive": true,
+    "timeout": 60000,
+    "require": [
+      "../../test/hook.js",
+      "source-map-support/register"
+    ]
+  },
   "repository": "https://github.com/microsoft/botframework-cli",
   "scripts": {
     "postpack": "",
@@ -53,7 +65,7 @@
     "@types/supports-color": "^5.3.0",
     "chai": "^4.2.0",
     "fancy-test": "^1.4.3",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "nock": "^11.7.0",
     "nyc": "^14.1.1",
     "proxyquire": "^2.1.0",

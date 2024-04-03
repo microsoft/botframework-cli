@@ -24,6 +24,19 @@
       "@oclif/plugin-help"
     ]
   },
+  "mocha": {
+    "extension": [
+      ".test.js",
+      ".test.ts"
+    ],
+    "recursive": true,
+    "timeout": 60000,
+    "slow": 10000,
+    "require": [
+      "../../test/hook.js",
+      "source-map-support/register"
+    ]
+  },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/dialog",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
@@ -73,7 +86,7 @@
     "@types/node": "^10.14.15",
     "@types/seedrandom": "~2.4.28",
     "chai": "^4.2.0",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "nock": "^13.0.11",
     "nyc": "^14.1.1",
     "rimraf": "^2.6.3",
