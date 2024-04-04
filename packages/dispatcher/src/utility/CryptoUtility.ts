@@ -62,15 +62,27 @@ export class CryptoUtility {
         return hash.update(input).digest("hex");
     }
 
+    /**
+     * @deprecated Use `CryptoUtility.getObjectSha256Hash` instead.
+     *
+     * Products must use the SHA-2 family of hash algorithms.
+     * Other algorithms are susceptible to hash collisions, which effectively *break* them.
+     *
+     * Recommendation: SHA256, SHA384, SHA512.
+     */
     public static getObjectSha1Hash(objectValue: object): string|Int32Array {
-        const hash = crypto.createHash("sha1");
-        hash.update(CryptoUtility.salt);
-        return hash.update(Utility.jsonStringify(objectValue)).digest("hex");
+        return CryptoUtility.getObjectSha256Hash(objectValue);
     }
+    /**
+     * @deprecated Use `CryptoUtility.getStringSha256Hash` instead.
+     *
+     * Products must use the SHA-2 family of hash algorithms.
+     * Other algorithms are susceptible to hash collisions, which effectively *break* them.
+     *
+     * Recommendation: SHA256, SHA384, SHA512.
+     */
     public static getStringSha1Hash(input: string): string|Int32Array {
-        const hash = crypto.createHash("sha1");
-        hash.update(CryptoUtility.salt);
-        return hash.update(input).digest("hex");
+        return CryptoUtility.getStringSha256Hash(input);
     }
 
     public static getCryptoHashes(): string[] {
