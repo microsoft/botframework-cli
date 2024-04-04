@@ -12,7 +12,7 @@ import {ITextUtteranceLabelMapDataStructure, Label, LabelStructureUtility, Label
 import {LabelResolver} from './labelresolver';
 import {UtilityLabelResolver} from './utilitylabelresolver';
 import {PrebuiltToRecognizerMap} from './resources/recognizer-map';
-import {OrchestratorBuild, OrchestratorSettings} from '.';
+import {OrchestratorBuild} from '.';
 import {Utility} from './utility';
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
 
@@ -291,6 +291,7 @@ export class OrchestratorHelper {
     }
 
     Utility.writeStringLineToConsoleStdout(`Processing ${filePath}...`);
+    const filename: string = path.basename(filePath);
     try {
       switch (ext) {
         case '.lu':
@@ -312,9 +313,6 @@ export class OrchestratorHelper {
           break;
 
         case '.json':
-          if (filePath.endsWith(OrchestratorSettings.OrchestratorSettingsFileName)) {
-            return;
-          }
           if (OrchestratorHelper.getIntentsEntitiesUtterances(
             fs.readJsonSync(filePath),
             routingName,
@@ -324,15 +322,16 @@ export class OrchestratorHelper {
             utteranceEntityLabelDuplicateMap)) {
             return;
           }
-          if (!OrchestratorHelper.getJsonIntentsEntitiesUtterances(
+          if (OrchestratorHelper.getJsonIntentsEntitiesUtterances(
             fs.readJsonSync(filePath),
             routingName,
             utteranceLabelsMap,
             utteranceLabelDuplicateMap,
             utteranceEntityLabelsMap,
             utteranceEntityLabelDuplicateMap)) {
-            throw new Error('Failed to parse LUIS or JSON file on intent/entity labels');
+            return;
           }
+          Utility.writeStringLineToConsoleStdout(`  - Unsupported file extension. Skipping file '${filename}'.`);
           break;
 
         case '.tsv':

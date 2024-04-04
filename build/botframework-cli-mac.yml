@@ -6,24 +6,24 @@
 name: $(Build.BuildId)
 
 pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macos-latest'
 
-pr:
-  branches:
-    include:
-     - main
-  paths:
-    include:
-      - '*'
-    exclude:
-      - README.md
-      - specs/*
-      - PortingMap.md
-      - ToolLifetimeSchedule.md
-      - AzureCli.md
-      - CONTRIBUTING.md
-      - LICENSE
-      - PRIVACY.md
+#pr:
+#  branches:
+#    include:
+#     - main
+#  paths:
+#    include:
+#      - '*'
+#    exclude:
+#      - README.md
+#      - specs/*
+#      - PortingMap.md
+#      - ToolLifetimeSchedule.md
+#      - AzureCli.md
+#      - CONTRIBUTING.md
+#      - LICENSE
+#      - PRIVACY.md
 
 variables:
   version: '1.0.0'
