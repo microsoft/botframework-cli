@@ -34,7 +34,7 @@ describe('lg:verify lg file', async () => {
     '-r',
     '-f'])
   .it('', async () => {
-    const result =  await fs.pathExists(path.join(generatedFolderPath, '1.diagnostic.txt'))
+    const result =  await fs.pathExists(path.join(__dirname, generatedFolderPath, '1.diagnostic.txt'))
     expect(result).to.deep.equal(false)
   })
 
@@ -48,20 +48,21 @@ describe('lg:verify lg file', async () => {
     '-r',
     '-f'])
   .it('', async () => {
-    const result =  await fs.pathExists(path.join(generatedFolderPath, '2.diagnostic.txt'))
+    const result =  await fs.pathExists(path.join(__dirname, generatedFolderPath, '2.diagnostic.txt'))
     expect(result).to.deep.equal(false)
   })
 
   // error lg file
-  const errorFileName = '3.lg'
-
   test
   .command(['lg:verify',
     '--in',
-    path.join(__dirname, testcaseFolderPath, errorFileName),
+    path.join(__dirname, testcaseFolderPath, '3.lg'),
+    '--out',
+    generatedFolder,
     '-r',
     '-f'])
   .it('', async () => {
-    // show diagnostics in terminal
+    const result =  await fs.pathExists(path.join(__dirname, generatedFolderPath, '3.diagnostic.txt'))
+    expect(result).to.deep.equal(true)
   })
 })

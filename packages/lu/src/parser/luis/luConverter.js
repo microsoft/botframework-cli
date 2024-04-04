@@ -529,7 +529,7 @@ const addUtteranceToCollection = function (attribute, srcItem, matchInTarget) {
     if(attribute === 'text') {
         matchInTarget.utterances.push(srcItem); 
     } else {
-        let utteranceFromPattern = new helperClasses.utterances(srcItem.pattern.replace('{', '{@'),srcItem.intent,[]);
+        let utteranceFromPattern = new helperClasses.utterances(srcItem.pattern.replace(/{/g, '{@'),srcItem.intent,[]);
         utteranceFromPattern.isPattern = true;
         matchInTarget.utterances.push(utteranceFromPattern);
     }
