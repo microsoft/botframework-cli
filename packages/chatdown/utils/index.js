@@ -565,5 +565,5 @@ function* fileLineIterator(fileContents) {
 }
 
 function getHashCode(contents) {
-    return crypto.createHash('sha1').update(contents).digest('base64')
+    return crypto.createHash('sha256').update(contents).digest('base64')
 }

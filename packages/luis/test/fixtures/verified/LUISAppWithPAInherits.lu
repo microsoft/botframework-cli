@@ -186,7 +186,7 @@
 - would you add {@ToDo.TaskContent=heavy cream} to the todos list
 - would you please add todo item of {@ToDo.TaskContent=all hands meeting next monday}
 - ^(add|create|append) an item [(called|about|of)] "{@ToDo.TaskContent.Any}" [as (next|first|last) task][(in|on|to) my (to do|to-do|todos) list]
-- ^[(can you|could you|would you)] [please] (put|add|append) {@ToDo.TaskContent} [and] [{ToDo.TaskContent}] (on|to)[my][(to do|todos|todo)]list
+- ^[(can you|could you|would you)] [please] (put|add|append) {@ToDo.TaskContent} [and] [{@ToDo.TaskContent}] (on|to)[my][(to do|todos|todo)]list
 
 
 > # Entity definitions

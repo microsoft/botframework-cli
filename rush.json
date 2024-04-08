@@ -3,6 +3,15 @@
   "rushVersion": "5.117.9",
   "pnpmVersion": "7.33.5",
   "nodeSupportedVersionRange": ">=14.0.0",
+  "eventHooks": {
+    "postRushInstall": [
+      "npx rimraf ./packages/orchestratorlib/node_modules/@microsoft/orchestrator-core/node_modules/@babel/traverse",
+      "npx rimraf ./common/temp/pnpm-store/2/registry.npmjs.org/@babel/traverse/",
+      "npx rimraf ./common/temp/pnpm-store/2/registry.npmjs.org/@babel/traverse/7.8.6/node_modules/@babel/traverse",
+      "npx rimraf ./common/temp/pnpm-store/2/bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz/package/node_modules/@babel/traverse",
+      "npx rimraf ./common/temp/pnpm-store/2/bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz/node_modules/@microsoft/orchestrator-core/node_modules/@babel/traverse"
+    ]
+  },
   "projects": [
     {
       "packageName": "@microsoft/bf-cli-command",
