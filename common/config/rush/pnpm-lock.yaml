@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 overrides:
   yarn: ^1.22.22
   '@oclif/config': 1.15.1
+  lodash: ^4.17.21
 
 specifiers:
   '@apidevtools/json-schema-ref-parser': ^9.0.1
@@ -1277,7 +1278,7 @@ packages:
       eslint-visitor-keys: 1.1.0
       glob: 7.1.6
       is-glob: 4.0.1
-      lodash: 4.17.15
+      lodash: 4.17.21
       semver: 6.3.0
       tsutils: 3.17.1
     dev: false
@@ -1295,7 +1296,7 @@ packages:
       eslint-visitor-keys: 1.1.0
       glob: 7.1.6
       is-glob: 4.0.1
-      lodash: 4.17.15
+      lodash: 4.17.21
       semver: 6.3.0
       tsutils: 3.17.1_typescript@4.0.3
       typescript: 4.0.3
@@ -1698,7 +1699,7 @@ packages:
     dependencies:
       adaptive-expressions: 4.13.0
       antlr4ts: 0.5.0-alpha.3
-      lodash: 4.17.19
+      lodash: 4.17.21
       path: 0.12.7
       uuid: 8.3.2
     dev: false
@@ -2328,7 +2329,7 @@ packages:
     resolution: {integrity: sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==}
     deprecated: Debug versions >=3.2.0 <3.2.7 || >=4 <4.3.1 have a low-severity ReDos regression when used in a Node.js environment. It is recommended you upgrade to 3.2.7 or 4.3.1. (https://github.com/visionmedia/debug/issues/797)
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
     dev: false
 
   /debug/4.1.1:
@@ -2844,7 +2845,7 @@ packages:
       js-yaml: 3.13.1
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.3.0
-      lodash: 4.17.15
+      lodash: 4.17.21
       minimatch: 3.0.4
       mkdirp: 0.5.1
       natural-compare: 1.4.0
@@ -3004,7 +3005,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 13.9.0
       '@types/sinon': 7.5.2
-      lodash: 4.17.15
+      lodash: 4.17.21
       mock-stdin: 0.3.1
       stdout-stderr: 0.1.13
     transitivePeerDependencies:
@@ -3033,7 +3034,7 @@ packages:
     dependencies:
       '@nodelib/fs.stat': 2.0.3
       '@nodelib/fs.walk': 1.2.4
-      glob-parent: 5.1.0
+      glob-parent: 5.1.2
       merge2: 1.3.0
       micromatch: 4.0.2
       picomatch: 2.2.1
@@ -3386,13 +3387,6 @@ packages:
       path-dirname: 1.0.2
     dev: false
 
-  /glob-parent/5.1.0:
-    resolution: {integrity: sha512-qjtRgnIVmOfnKUE3NJAQEdk+lKrxfw8t5ke7SXtfMTHcjsBfOfWXCQfdb30zfDoZQ2IRSIiidmjtbHZPZ++Ihw==}
-    engines: {node: '>= 6'}
-    dependencies:
-      is-glob: 4.0.1
-    dev: false
-
   /glob-parent/5.1.2:
     resolution: {integrity: sha512-AOIgSQCepiJYwP3ARnGx+5VnTu2HBYdzbGP45eLw1vr3zB3vZLeyed1sC9hnbcOc9/SrMyM5RPQrkGz4aS9Zow==}
     engines: {node: '>= 6'}
@@ -3648,7 +3642,7 @@ packages:
   /humanize-ms/1.2.1:
     resolution: {integrity: sha512-Fl70vYtsAFb/C06PTS9dZBo7ihau+Tu/DNCk/OyHhea07S+aeMWpFFkUaXRa8fI+ScZbEI8dfSxwY7gxZ9SAVQ==}
     dependencies:
-      ms: 2.1.2
+      ms: 2.1.3
     dev: false
 
   /hyperlinker/1.0.0:
@@ -3746,7 +3740,7 @@ packages:
       cli-width: 2.2.0
       external-editor: 3.1.0
       figures: 2.0.0
-      lodash: 4.17.15
+      lodash: 4.17.21
       mute-stream: 0.0.7
       run-async: 2.4.0
       rxjs: 6.5.4
@@ -4161,7 +4155,7 @@ packages:
   /json-schema-compare/0.2.2:
     resolution: {integrity: sha512-c4WYmDKyJXhs7WWvAWm3uIYnfyWFoIp+JEoX34rctVvEkMYCPGhXtvmFFXiffBbxfZsvQ0RNnV5H7GvDF5HCqQ==}
     dependencies:
-      lodash: 4.17.15
+      lodash: 4.17.21
     dev: false
 
   /json-schema-merge-allof/0.7.0:
@@ -4169,7 +4163,7 @@ packages:
     dependencies:
       compute-lcm: 1.1.0
       json-schema-compare: 0.2.2
-      lodash: 4.17.15
+      lodash: 4.17.21
     dev: false
 
   /json-schema-traverse/0.4.1:
@@ -4390,14 +4384,6 @@ packages:
     resolution: {integrity: sha1-7GZi5IlkCO1KtsVCo5kLcswIACA=}
     dev: false
 
-  /lodash/4.17.15:
-    resolution: {integrity: sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==}
-    dev: false
-
-  /lodash/4.17.19:
-    resolution: {integrity: sha512-JNvd8XER9GQX0v2qJgsaN/mzFCNA5BRe/j8JN9d+tWyGLSodKQHKFicdwNYzWwI3wjRnaKPsGj1XkBjx/F96DQ==}
-    dev: false
-
   /lodash/4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
@@ -4601,7 +4587,7 @@ packages:
     dev: false
 
   /minimist/0.0.8:
-    resolution: {integrity: sha1-hX/Kv8M5fSYluCKCYuhqp6ARsF0=}
+    resolution: {integrity: sha512-miQKw5Hv4NS1Psg2517mV4e4dYNaO3++hjAvLOAzKqZ61rH8NS1SK+vbfBWZ5PY/Me/bEWhUwqMghEW5Fb9T7Q==}
     dev: false
 
   /minimist/1.2.0:
@@ -5400,7 +5386,7 @@ packages:
     resolution: {integrity: sha512-QnHxlD12qhGGjvoEW4PIp8tA80tKjh5CxTg5wLTPp/aqvHElBA+Ag3JN0dWlHY96CUaJqSGmLxTLi+7wbysyZw==}
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
     dependencies:
-      lodash: 4.17.15
+      lodash: 4.17.21
       resolve: 1.15.1
     dev: false
 
@@ -6142,8 +6128,8 @@ packages:
     resolution: {integrity: sha512-wmEc8m4fjnob4gt5riFRtTu/6+4rSe12TpAELNSqHMfF3IqnA+CH37USM6/YR3qRZv7e56kAEAtd6nKZaxe0Ug==}
     engines: {node: '>=6.0.0'}
     dependencies:
-      ajv: 6.12.0
-      lodash: 4.17.15
+      ajv: 6.12.6
+      lodash: 4.17.21
       slice-ansi: 2.1.0
       string-width: 3.1.0
     dev: false
@@ -6192,7 +6178,7 @@ packages:
     resolution: {integrity: sha512-koLssZcTF1ou1hVD7rYvxOjx3xQHODDH1ajKckL8iID05Y2BEm/+U1YDrQV3lIejCqAp7uwbVNVHyhK7ikUxsg==}
     engines: {node: '>= 4.0.0'}
     dependencies:
-      lodash: 4.17.15
+      lodash: 4.17.21
       quibble: 0.5.7
       stringify-object-es5: 2.5.0
       theredoc: 1.0.0
