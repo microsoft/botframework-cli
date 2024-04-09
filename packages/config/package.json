@@ -23,6 +23,18 @@
       "@oclif/plugin-help"
     ]
   },
+  "mocha": {
+    "extension": [
+      ".test.js",
+      ".test.ts"
+    ],
+    "recursive": true,
+    "timeout": 10000,
+    "require": [
+      "../../test/hook.js",
+      "source-map-support/register"
+    ]
+  },
   "repository": "https://github.com/microsoft/botframework-cli/tree/master/packages/config",
   "scripts": {
     "postpack": "rimraf oclif.manifest.json",
@@ -52,12 +64,12 @@
     "@oclif/test": "^1.2.4",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
-    "@types/mocha": "^5.2.7",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^10.14.12",
     "chai": "^4.2.0",
     "globby": "^10.0.1",
-    "mocha": "^6.2.2",
     "nyc": "^15.1.0",
+    "mocha": "^10.4.0",
     "rimraf": "^2.6.3",
     "ts-node": "^9.0.0",
     "tslint": "^5.18.0",
