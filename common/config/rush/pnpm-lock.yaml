@@ -41,7 +41,7 @@ specifiers:
   applicationinsights: ^1.0.8
   argparse: ~1.0.10
   botbuilder-lg: 4.22.1
-  botframework-schema: ^4.5.1
+  botframework-schema: ^4.22.1
   camelcase: ^4.1.0
   chai: ^4.2.0
   cli-table3: ^0.5.1
@@ -121,7 +121,7 @@ dependencies:
   applicationinsights: 1.7.3
   argparse: 1.0.10
   botbuilder-lg: 4.22.1
-  botframework-schema: 4.7.2
+  botframework-schema: 4.22.1
   camelcase: 4.1.0
   chai: 4.2.0
   cli-table3: 0.5.1
@@ -1367,6 +1367,10 @@ packages:
       xpath: 0.0.32
     dev: false
 
+  /adaptivecards/1.2.3:
+    resolution: {integrity: sha512-amQ5OSW3OpIkrxVKLjxVBPk/T49yuOtnqs1z5ZPfZr0+OpTovzmiHbyoAGDIsu5SNYHwOZFp/3LGOnRaALFa/g==}
+    dev: false
+
   /agent-base/4.3.0:
     resolution: {integrity: sha512-salcGninV0nPrwpGNn4VTXBb1SOuXQBiqbrNXoeizJsHrsL6ERFM2Ne3JUSBWRE6aeNJI2ROP/WEEIDUiDe3cg==}
     engines: {node: '>= 4.0.0'}
@@ -1715,8 +1719,12 @@ packages:
       uuid: 8.3.2
     dev: false
 
-  /botframework-schema/4.7.2:
-    resolution: {integrity: sha512-rSTywVl5dYzL4FNoK86s9kFPNkRx5iYJi7MAWEaSrhUiDV3KEHX/5VEHLa00d4nzQxC/jI9BqfbqdffpO97KIA==}
+  /botframework-schema/4.22.1:
+    resolution: {integrity: sha512-4hE7iMYMgLz+L+MrgkZ7Y1pir3ze5Puhjko0a/VKkLUXkoSTHcZ5P0mIqhl/lxu7TlrREtGanGsX0rWkQ8+FJA==}
+    dependencies:
+      adaptivecards: 1.2.3
+      uuid: 8.3.2
+      zod: 3.22.4
     dev: false
 
   /brace-expansion/1.1.11:
@@ -7021,6 +7029,10 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
+  /zod/3.22.4:
+    resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
+    dev: false
+
   '@bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz':
     resolution: {tarball: https://bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz}
     name: '@microsoft/orchestrator-core'
@@ -7038,7 +7050,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-xRJlT4UB2IzBdQCR/KG3EH7n7xDwr1DNpUwCa6/cBg3y5P7AiCje31PpDqqQHSjq1V7bmB7Hy7ilCdDBTJ3xKg==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-OWLOPz4s+ISnndyKJsev2/0GITg0+vpPb9S1hvbZ0gQQyiTfs+qDGKkV+hCgUbKG3nFo+x5VV+B+1tpzxy+9ig==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -7056,7 +7068,7 @@ packages:
       '@types/node': 10.17.17
       '@types/rimraf': 2.0.3
       axios: 0.24.0_debug@4.1.1
-      botframework-schema: 4.7.2
+      botframework-schema: 4.22.1
       chai: 4.2.0
       chalk: 2.4.1
       cli-table3: 0.5.1
