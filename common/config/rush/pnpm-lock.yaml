@@ -45,7 +45,7 @@ specifiers:
   botbuilder-lg: 4.13.0
   botframework-schema: ^4.5.1
   camelcase: ^4.1.0
-  chai: ^4.2.0
+  chai: 4.4.1
   cli-table3: ^0.5.1
   clone: ^2.1.2
   console-stream: ^0.1.1
@@ -125,7 +125,7 @@ dependencies:
   botbuilder-lg: 4.13.0
   botframework-schema: 4.7.2
   camelcase: 4.1.0
-  chai: 4.2.0
+  chai: 4.4.1
   cli-table3: 0.5.1
   clone: 2.1.2
   console-stream: 0.1.1
@@ -254,7 +254,7 @@ packages:
       '@babel/traverse': 7.24.1
       '@babel/types': 7.24.0
       convert-source-map: 2.0.0
-      debug: 4.1.1
+      debug: 4.3.4
       gensync: 1.0.0-beta.2
       json5: 2.2.3
       semver: 6.3.1
@@ -1181,6 +1181,8 @@ packages:
       regexpp: 3.0.0
       tsutils: 3.17.1_typescript@4.0.3
       typescript: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@typescript-eslint/eslint-plugin/2.22.0_7x7iwbiqfroe7msydaxytpcvou:
@@ -1201,6 +1203,8 @@ packages:
       functional-red-black-tree: 1.0.1
       regexpp: 3.0.0
       tsutils: 3.17.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@typescript-eslint/experimental-utils/2.22.0_eslint@5.16.0:
@@ -1214,6 +1218,7 @@ packages:
       eslint: 5.16.0
       eslint-scope: 5.0.0
     transitivePeerDependencies:
+      - supports-color
       - typescript
     dev: false
 
@@ -1228,6 +1233,7 @@ packages:
       eslint: 5.16.0
       eslint-scope: 5.0.0
     transitivePeerDependencies:
+      - supports-color
       - typescript
     dev: false
 
@@ -1246,6 +1252,8 @@ packages:
       '@typescript-eslint/typescript-estree': 2.22.0
       eslint: 5.16.0
       eslint-visitor-keys: 1.1.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@typescript-eslint/parser/2.22.0_osrrhjjbprn3hs3e62h6733x3a:
@@ -1264,6 +1272,8 @@ packages:
       eslint: 5.16.0
       eslint-visitor-keys: 1.1.0
       typescript: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@typescript-eslint/typescript-estree/2.22.0:
@@ -1275,13 +1285,15 @@ packages:
       typescript:
         optional: true
     dependencies:
-      debug: 4.1.1
+      debug: 4.3.4
       eslint-visitor-keys: 1.1.0
       glob: 7.1.6
       is-glob: 4.0.1
       lodash: 4.17.21
-      semver: 6.3.0
+      semver: 6.3.1
       tsutils: 3.17.1
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@typescript-eslint/typescript-estree/2.22.0_typescript@4.0.3:
@@ -1293,14 +1305,16 @@ packages:
       typescript:
         optional: true
     dependencies:
-      debug: 4.1.1
+      debug: 4.3.4
       eslint-visitor-keys: 1.1.0
       glob: 7.1.6
       is-glob: 4.0.1
       lodash: 4.17.21
-      semver: 6.3.0
+      semver: 6.3.1
       tsutils: 3.17.1_typescript@4.0.3
       typescript: 4.0.3
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /abbrev/1.1.1:
@@ -1881,15 +1895,16 @@ packages:
       redeyed: 2.1.1
     dev: false
 
-  /chai/4.2.0:
-    resolution: {integrity: sha512-XQU3bhBukrOsQCuwZndwGcCVQHyZi53fQ6Ys1Fym7E4olpIqqZZhhoFJoaKVvV17lWQoXYwgWN2nF5crA8J2jw==}
+  /chai/4.4.1:
+    resolution: {integrity: sha512-13sOfMv2+DWduEU+/xbun3LScLoqN17nBeTLUsmDfKdoiC1fr0n9PU4guu4AhRcOVFk/sW8LyZWHuhWtQZiF+g==}
     engines: {node: '>=4'}
     dependencies:
       assertion-error: 1.1.0
-      check-error: 1.0.2
-      deep-eql: 3.0.1
-      get-func-name: 2.0.0
-      pathval: 1.1.0
+      check-error: 1.0.3
+      deep-eql: 4.1.3
+      get-func-name: 2.0.2
+      loupe: 2.3.7
+      pathval: 1.1.1
       type-detect: 4.0.8
     dev: false
 
@@ -1941,8 +1956,10 @@ packages:
     resolution: {integrity: sha1-wKHS86cJLgN3S/qD8UwPxXkKhmc=}
     dev: false
 
-  /check-error/1.0.2:
-    resolution: {integrity: sha1-V00xLt2Iu13YkS6Sht1sCu1KrII=}
+  /check-error/1.0.3:
+    resolution: {integrity: sha512-iKEoDYaRmd1mxM90a2OEfWhjsjPpYPuQ+lMYsoxB126+t8fw7ySEO48nmDg5COTjxDI65/Y2OWpeEHk3ZOe8zg==}
+    dependencies:
+      get-func-name: 2.0.2
     dev: false
 
   /chokidar/3.5.3:
@@ -2132,7 +2149,7 @@ packages:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
     dependencies:
       string-width: 4.2.2
-      strip-ansi: 6.0.0
+      strip-ansi: 6.0.1
       wrap-ansi: 6.2.0
     dev: false
 
@@ -2399,9 +2416,9 @@ packages:
       mimic-response: 1.0.1
     dev: false
 
-  /deep-eql/3.0.1:
-    resolution: {integrity: sha512-+QeIQyN5ZuO+3Uk5DYh6/1eKO0m0YmJFGNmFHGACpf1ClL1nmlV/p4gNgbl2pJGxgXb4faqo6UE+M5ACEMyVcw==}
-    engines: {node: '>=0.12'}
+  /deep-eql/4.1.3:
+    resolution: {integrity: sha512-WaEtAOpRA1MQ0eohqZjpGD8zdI0Ovsm8mmFhaDN8dvDZzyoUMcYDnf5Y6iu7HTXxf8JDS23qWa4a+hKCDyOPzw==}
+    engines: {node: '>=6'}
     dependencies:
       type-detect: 4.0.8
     dev: false
@@ -2687,6 +2704,7 @@ packages:
       eslint-plugin-unicorn: 6.0.1_eslint@5.16.0
     transitivePeerDependencies:
       - eslint
+      - supports-color
       - typescript
     dev: false
 
@@ -2703,6 +2721,7 @@ packages:
       eslint-plugin-unicorn: 6.0.1_eslint@5.16.0
     transitivePeerDependencies:
       - eslint
+      - supports-color
       - typescript
     dev: false
 
@@ -3337,8 +3356,8 @@ packages:
     engines: {node: 6.* || 8.* || >= 10.*}
     dev: false
 
-  /get-func-name/2.0.0:
-    resolution: {integrity: sha1-6td0q+5y4gQJQzoGY2YCPdaIekE=}
+  /get-func-name/2.0.2:
+    resolution: {integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==}
     dev: false
 
   /get-package-type/0.1.0:
@@ -3352,7 +3371,7 @@ packages:
     dev: false
 
   /get-stream/3.0.0:
-    resolution: {integrity: sha1-jpQ9E1jcN1VQVOy+LtsFqhdO3hQ=}
+    resolution: {integrity: sha512-GlhdIUuVakc8SJ6kK0zAFbiGzRFzNnY4jUuEbV9UROo4Y+0Ny4fjvcZFVTeDA4odpFyOQzaw6hXukJSq/f28sQ==}
     engines: {node: '>=4'}
     dev: false
 
@@ -4407,6 +4426,12 @@ packages:
       '@sinonjs/commons': 1.8.2
     dev: false
 
+  /loupe/2.3.7:
+    resolution: {integrity: sha512-zSMINGVYkdpYSOBmLi0D1Uo7JU9nVdQKrHxC8eYlV+9YKK9WePqAlL7lSlorG/U2Fw1w0hTBmaa/jrQ3UbPHtA==}
+    dependencies:
+      get-func-name: 2.0.2
+    dev: false
+
   /lower-case/1.1.4:
     resolution: {integrity: sha1-miyr0bno4K6ZOkv31YdcOcQujqw=}
     dev: false
@@ -5232,8 +5257,8 @@ packages:
       util: 0.10.4
     dev: false
 
-  /pathval/1.1.0:
-    resolution: {integrity: sha1-uULm1L3mUwBe9rcTYd74cn0GReA=}
+  /pathval/1.1.1:
+    resolution: {integrity: sha512-Dp6zGqpTdETdR63lehJYPeIOqpiNBNtc7BpWSLrOje7UaIsE5aY92r/AunQA7rsXvet3lrJ3JnZX29UPTKXyKQ==}
     dev: false
 
   /picocolors/1.0.0:
@@ -5981,7 +6006,7 @@ packages:
     dependencies:
       emoji-regex: 8.0.0
       is-fullwidth-code-point: 3.0.0
-      strip-ansi: 6.0.0
+      strip-ansi: 6.0.1
     dev: false
 
   /string.prototype.trimleft/2.1.1:
@@ -7028,7 +7053,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-xRJlT4UB2IzBdQCR/KG3EH7n7xDwr1DNpUwCa6/cBg3y5P7AiCje31PpDqqQHSjq1V7bmB7Hy7ilCdDBTJ3xKg==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-M2lY1qkuUmUji+XWMJBZ0lqLcqnXY27uaUzDj2r1Rl5tDmUmdC66pM4JjWk+9IGFhkQZnilNM+4ioalR0Mbt7w==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -7047,7 +7072,7 @@ packages:
       '@types/rimraf': 2.0.3
       axios: 0.24.0_debug@4.1.1
       botframework-schema: 4.7.2
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.1
       cli-table3: 0.5.1
       fs-extra: 5.0.0
@@ -7074,7 +7099,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-command.tgz:
-    resolution: {integrity: sha512-MDWv9PwHNUeNNT4lM6SpqgWcBlfPy3Kg0EfKrWfSmqpdgaK01gtWzYXSd+GVKn/IOuvXdck62hIKiN6+ypN9fw==, tarball: file:projects/bf-cli-command.tgz}
+    resolution: {integrity: sha512-vXdxKsmZw53TWJ5+5yKrWoB3YX6iZydxIimuy7OwU/59PCMOCogEeQatKqM1RFmnyxBJoaUIDi6YXA+fbAsf1w==, tarball: file:projects/bf-cli-command.tgz}
     name: '@rush-temp/bf-cli-command'
     version: 0.0.0
     dependencies:
@@ -7095,7 +7120,7 @@ packages:
       '@types/sinon': 7.5.2
       '@types/supports-color': 5.3.0
       applicationinsights: 1.7.3
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.1
       cli-ux: 4.9.3
       debug: 4.3.4
@@ -7117,7 +7142,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-config.tgz:
-    resolution: {integrity: sha512-Wcca6BRTC4dymEj8lOlY83bpIkqxj5xlgiXjbtU303b+fTulc7qOn5FsddQ+cUfgS1ta9A1meTHeeEe3mp/jHQ==, tarball: file:projects/bf-cli-config.tgz}
+    resolution: {integrity: sha512-vVwUbYWYX54Lxp4xdT+aVDu6kRyqalVSyUYg/k7/MvpNzh/FYFF1E6g61+07AqEkQi7ZWkkXKrhY7ZGmeQgkVg==, tarball: file:projects/bf-cli-config.tgz}
     name: '@rush-temp/bf-cli-config'
     version: 0.0.0
     dependencies:
@@ -7131,7 +7156,7 @@ packages:
       '@types/chai': 4.2.10
       '@types/mocha': 10.0.6
       '@types/node': 10.17.17
-      chai: 4.2.0
+      chai: 4.4.1
       cli-ux: 5.6.7
       fs-extra: 7.0.1
       globby: 10.0.2
@@ -7147,7 +7172,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-plugins.tgz:
-    resolution: {integrity: sha512-OA7pyvtsfrpB8NZQVg9nIG3GwgFAExRbuqK/Xt5e7z2CZSTLc/bbA0pGR2qsWwB64vOle2M5jzsimg/N3n0+/A==, tarball: file:projects/bf-cli-plugins.tgz}
+    resolution: {integrity: sha512-put3TbAfSs7mdxrLMAFaGdvahVh09TScyYP3W8muOkKF3+QTuQv6gmNMYyqdhd8+/Z9EbGIAttKSjoLGoaTggw==, tarball: file:projects/bf-cli-plugins.tgz}
     name: '@rush-temp/bf-cli-plugins'
     version: 0.0.0
     dependencies:
@@ -7161,7 +7186,7 @@ packages:
       '@types/chai': 4.2.10
       '@types/mocha': 10.0.6
       '@types/node': 10.17.17
-      chai: 4.2.0
+      chai: 4.4.1
       cli-ux: 5.6.7
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
@@ -7178,7 +7203,7 @@ packages:
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-cC2Wbaf4ELNE2hgtSAW+5WE8DU2rsGOz1nFECgQwbaINO5VcQ3s5Zp8/eOiWmzcQhNkJy3/YRdFdn2UEXRx/VA==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-1j/K7uaSez6xXMqmESbHu0vpmay3GbLDuxClbn+KBj07WyZ4DCJTvI6El7TOsrwjoCe8t65VKMGuf0Eq61j3+g==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -7202,7 +7227,7 @@ packages:
       '@types/xml2js': 0.4.5
       ajv: 6.12.6
       axios: 0.24.0_debug@4.1.1
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.2
       clone: 2.1.2
       fs-extra: 8.1.0
@@ -7228,7 +7253,7 @@ packages:
     dev: false
 
   file:projects/bf-dispatcher.tgz:
-    resolution: {integrity: sha512-RwehZooCpOORBD/ziUbt2K2D22ZVr4zQwxKXhvzpUxuet4XPnCRHMS7t1yNhmpQGhAzrAVILwZMUWw5+RxMWxw==, tarball: file:projects/bf-dispatcher.tgz}
+    resolution: {integrity: sha512-VoSjoLk3qLRId6yUhA5FstH1d44Ev9/ZZEE2xOaPjQTD9BVBtt+7JqyetNZHjELr/cpNIUACEPjn8s+8UMmOlQ==, tarball: file:projects/bf-dispatcher.tgz}
     name: '@rush-temp/bf-dispatcher'
     version: 0.0.0
     dependencies:
@@ -7243,7 +7268,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 10.17.17
       argparse: 1.0.10
-      chai: 4.2.0
+      chai: 4.4.1
       globby: 10.0.2
       mocha: 10.4.0
       nyc: 15.1.0
@@ -7259,7 +7284,7 @@ packages:
     dev: false
 
   file:projects/bf-lg-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-m4rhIcbmeqxlknna0H+Bn42B10mx5ABVmSZw0JnJ5XIHJi+q8shLcs211kHqVlo3OJHTeteH1XpRUWw0L/mpZQ==, tarball: file:projects/bf-lg-cli.tgz}
+    resolution: {integrity: sha512-cBFR15IsRTK2+QyyiAq/u+VOsSZoTlmrtYELJKZu03cC8ftHyDEHVJftbyaqsh8glhiWk7d3GifR2CuoChN7bA==, tarball: file:projects/bf-lg-cli.tgz}
     id: file:projects/bf-lg-cli.tgz
     name: '@rush-temp/bf-lg-cli'
     version: 0.0.0
@@ -7280,7 +7305,7 @@ packages:
       adaptive-expressions: 4.13.0
       axios: 0.24.0_debug@4.1.1
       botbuilder-lg: 4.13.0
-      chai: 4.2.0
+      chai: 4.4.1
       delay: 4.3.0
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
@@ -7303,7 +7328,7 @@ packages:
     dev: false
 
   file:projects/bf-lu.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-P929+G54OBCCiSTNqNFY29ZCdlaIqZOOzqbUzbHt8Qb1EExEAuC+X8ImxpK1y+zSYPWQIbZag9CbshuPz2Sx8w==, tarball: file:projects/bf-lu.tgz}
+    resolution: {integrity: sha512-wPlX3kYE6lB68N6Zb5EvJhsftxqpFxCRPwybnbMw1o3KcrlY5SfSvRGerult8K58B7C92Zxi9/DgfdP2OzBIbg==, tarball: file:projects/bf-lu.tgz}
     id: file:projects/bf-lu.tgz
     name: '@rush-temp/bf-lu'
     version: 0.0.0
@@ -7317,7 +7342,7 @@ packages:
       '@types/node-fetch': 2.5.5
       antlr4: 4.9.2
       axios: 0.24.0_debug@4.1.1
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.1
       console-stream: 0.1.1
       deep-equal: 1.1.1
@@ -7344,7 +7369,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-qVnDu4CPz33QEIXJlDlAbgPAX3SV9rFBCID8gm8JAmwTMxBUC7eRlG4Tp4fUB6w+Iz3X9IRLypt0ychhGJCX5w==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-RCX2C9jyDn2T+Ghv9sfn7+NbD0DJk0luI1BAr2ATPPr5VVxdiuS70XnXHgmwNo0k+g4j/2GMOww77qZxBH+OrA==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -7368,7 +7393,7 @@ packages:
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.2
       axios: 0.24.0_debug@4.1.1
-      chai: 4.2.0
+      chai: 4.4.1
       cli-ux: 5.3.3
       fs-extra: 8.1.0
       globby: 10.0.2
@@ -7391,7 +7416,7 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator-cli.tgz:
-    resolution: {integrity: sha512-skIgYmoQpytGdY/s17pbh3Q23s55sx1AMGorDNU7cvIllLnIABhi4jdu1U6/LS9sYu8eTVNYVnw/+6wusKMXhA==, tarball: file:projects/bf-orchestrator-cli.tgz}
+    resolution: {integrity: sha512-qlTCxQhYo+hDehdAHNnzg64Yys+XCCKiuS7H1Y2tVeoRkpO05UjmdnMnxcaQazcaQtu6Ese6pWZonJ4iabHXlA==, tarball: file:projects/bf-orchestrator-cli.tgz}
     name: '@rush-temp/bf-orchestrator-cli'
     version: 0.0.0
     dependencies:
@@ -7406,7 +7431,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 10.17.17
       '@types/sinon': 9.0.11
-      chai: 4.2.0
+      chai: 4.4.1
       eslint: 5.16.0
       eslint-config-oclif: 3.1.0_eslint@5.16.0
       eslint-config-oclif-typescript: 0.1.0_osrrhjjbprn3hs3e62h6733x3a
@@ -7425,7 +7450,7 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-8xf7U16buMUXVHpUdqLImUVXfKJaKubZh6jcBOg7g8k83fwkWoZarUKwc4FeB2iuCc+ELWzT36Dav7SsRkrAWw==, tarball: file:projects/bf-orchestrator.tgz}
+    resolution: {integrity: sha512-S2BIiSUbWebyg58/auvlBu3s2qYG+IJ71aBgnh/9KaWdZZU2Zu1canpAVlICnXeVd6D8nqqVYrkIG3zAdEQlTA==, tarball: file:projects/bf-orchestrator.tgz}
     id: file:projects/bf-orchestrator.tgz
     name: '@rush-temp/bf-orchestrator'
     version: 0.0.0
@@ -7437,7 +7462,7 @@ packages:
       '@types/node': 10.17.17
       '@types/sinon': 9.0.11
       axios: 0.21.4_debug@4.1.1
-      chai: 4.2.0
+      chai: 4.4.1
       eslint: 5.16.0
       fast-text-encoding: 1.0.3
       fs-extra: 9.0.1
@@ -7458,7 +7483,7 @@ packages:
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-QqrKFDJIvuXSnhfOpPavFy99gxDd49VPC9VrSuBuY5CZjxrGu6MDASqtiOTFImnSBmhBOSev75hZf7pn5VFKsw==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-HFDPFZnoj2Kars910ZDB/eQ7uCeWja++df1TH0/9HK++672iMagD+Bt5XfJvuC1ij62oQgmWQTV7IPWSs+4F2w==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
@@ -7477,7 +7502,7 @@ packages:
       '@types/node': 10.17.17
       axios: 0.24.0_debug@4.1.1
       camelcase: 4.1.0
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.1
       cli-table3: 0.5.1
       cli-ux: 5.6.7
@@ -7510,7 +7535,7 @@ packages:
     dev: false
 
   file:projects/botframework-cli.tgz:
-    resolution: {integrity: sha512-+j47rT+x8Tv7J7j2zZ5xRe9C8qr1Rs9IAqw8s6BsqNbJBQjYSrFbyfWhTuhyNcvWULSkimAI1qYqFQ0dL+NE5Q==, tarball: file:projects/botframework-cli.tgz}
+    resolution: {integrity: sha512-6vbSsSdQbqMpmBA2Z6yU635i+9D5RqxzbD320UpkS8MzG+4gjM9niuL+x6fE4cOCzHgFbcxnAWAE5akd+/1+Rw==, tarball: file:projects/botframework-cli.tgz}
     name: '@rush-temp/botframework-cli'
     version: 0.0.0
     dependencies:
@@ -7527,7 +7552,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/nock': 11.1.0
       '@types/node': 10.17.17
-      chai: 4.2.0
+      chai: 4.4.1
       chalk: 2.4.1
       cli-ux: 5.6.7
       fs-extra: 7.0.1
