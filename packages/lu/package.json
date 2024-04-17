@@ -56,7 +56,7 @@
     "delay": "^4.3.0",
     "fs-extra": "^8.1.0",
     "get-stdin": "^6.0.0",
-    "globby": "^10.0.1",
+    "globby": "^11.0.4",
     "intercept-stdout": "^0.1.2",
     "lodash": "^4.17.21",
     "semver": "^5.5.1",
