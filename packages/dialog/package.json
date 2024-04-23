@@ -63,7 +63,7 @@
     "chalk": "^2.4.2",
     "clone": "^2.1.2",
     "fs-extra": "^8.1.0",
-    "globby": "^11.0.0",
+    "globby": "^11.0.4",
     "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "os": "~0.1.1",
     "path": "^0.12.7",

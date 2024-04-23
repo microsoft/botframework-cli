@@ -265,14 +265,8 @@ All the tests are discoverable by the script npm run test executing : "test": "n
 Telemetry is exposed  through the cli-command [https://github.com/microsoft/botframework-cli/blob/master/packages/command/src/command.ts]
 
 #### Installation, invocation & runtime environment (how/where to install, uninstall and invoke using 'bf' command)
-$ npm install -g botframework-cli
+$ npm i -g @microsoft/botframework-cli
 $ bf COMMAND
-running command...
-$ bf (-v|--version|version)
-botframework-cli/0.0.0 darwin-x64 node-v12.1.0
-$ bf --help [COMMAND]
-USAGE
-  $ bf COMMAND
 
 #### Configuration management
 <where do we store configuration file, how do we manage it, what format, what's in it, how plugins can read/write/update configuration>
