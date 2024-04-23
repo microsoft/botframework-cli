@@ -6948,6 +6948,11 @@ packages:
     engines: {node: '>=4.0'}
     dev: false
 
+  /xmldom/0.5.0:
+    resolution: {integrity: sha512-Foaj5FXVzgn7xFzsKeNIde9g6aFBxTPi37iwsno8QvApmtg7KYrr+OPyRHcJF7dud2a5nGRBXK3n0dL62Gf7PA==}
+    engines: {node: '>=10.0.0'}
+    dev: false
+
   /xpath/0.0.32:
     resolution: {integrity: sha512-rxMJhSIoiO8vXcWvSifKqhvV96GjiD5wYb8/QHdoRyQvraTpp4IEv944nhGausZZ3u7dhQXteZuZbaqfpB7uYw==}
     engines: {node: '>=0.6.0'}
