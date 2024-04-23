@@ -30,7 +30,7 @@
     "@types/lodash": "~4.14.146",
     "@types/mocha": "^10.0.6",
     "@types/node": "^10.17.15",
-    "chai": "^4.2.0",
+    "chai": "^4.4.1",
     "eslint": "^5.16.0",
     "eslint-config-oclif": "^3.1.0",
     "eslint-config-oclif-typescript": "^0.1.0",
