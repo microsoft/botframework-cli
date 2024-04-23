@@ -5,6 +5,7 @@ overrides:
   '@oclif/config': 1.15.1
   minimist: ^1.2.6
   lodash: ^4.17.21
+  xml2js: ^0.5.0
 
 specifiers:
   '@apidevtools/json-schema-ref-parser': ^9.0.1
@@ -85,7 +86,7 @@ specifiers:
   username: ^4.1.0
   uuid: ^3.3.3
   window-size: ^1.1.0
-  xml2js: ^0.4.19
+  xml2js: ^0.5.0
 
 dependencies:
   '@apidevtools/json-schema-ref-parser': 9.0.1
@@ -166,7 +167,7 @@ dependencies:
   username: 4.1.0
   uuid: 3.4.0
   window-size: 1.1.1
-  xml2js: 0.4.23
+  xml2js: 0.5.0
 
 packages:
 
@@ -219,7 +220,7 @@ packages:
       tslib: 1.11.1
       tunnel: 0.0.6
       uuid: 3.4.0
-      xml2js: 0.4.23
+      xml2js: 0.5.0
     dev: false
 
   /@babel/code-frame/7.24.2:
@@ -1362,6 +1363,9 @@ packages:
       lodash.isequal: 4.5.0
       lru-cache: 5.1.1
       uuid: 8.3.2
+      x2js: 3.4.1
+      xml2js: 0.5.0
+      xmldom: 0.5.0
       xpath: 0.0.32
     dev: false
 
@@ -3863,7 +3867,7 @@ packages:
     dev: false
 
   /kind-of/3.2.2:
-    resolution: {integrity: sha1-MeohpzS6ubuw8yRm2JOupR5KPGQ=}
+    resolution: {integrity: sha512-NOW9QQXMoZGg/oqnVNoNTTIFEIid1627WCffUBJEdMxYApq7mNE7CpzucIPc+ZQg25Phej7IJSmX3hO+oblOtQ==}
     engines: {node: '>=0.10.0'}
     dependencies:
       is-buffer: 1.1.6
@@ -6238,8 +6242,14 @@ packages:
       mkdirp: 0.5.1
     dev: false
 
-  /xml2js/0.4.23:
-    resolution: {integrity: sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==}
+  /x2js/3.4.1:
+    resolution: {integrity: sha512-RCMEmHNsyeyzF5NyGHbmCCZU9N8uMiz9FluAj3CpfVREHpgm3JB9Wr/dEWdPqGHmK3lRd2fm0ccOWtuJ2YUowQ==}
+    dependencies:
+      xmldom: 0.5.0
+    dev: false
+
+  /xml2js/0.5.0:
+    resolution: {integrity: sha512-drPFnkQJik/O+uPKpqSgr22mpuFHqKdbS835iAQrUC73L2F5WkboIRd63ai/2Yg6I1jzifPFKH2NTK+cfglkIA==}
     engines: {node: '>=4.0.0'}
     dependencies:
       sax: 1.2.4
@@ -6249,6 +6259,11 @@ packages:
   /xmlbuilder/11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
+    dev: false
+
+  /xmldom/0.5.0:
+    resolution: {integrity: sha512-Foaj5FXVzgn7xFzsKeNIde9g6aFBxTPi37iwsno8QvApmtg7KYrr+OPyRHcJF7dud2a5nGRBXK3n0dL62Gf7PA==}
+    engines: {node: '>=10.0.0'}
     dev: false
 
   /xpath/0.0.32:
@@ -6514,7 +6529,7 @@ packages:
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-99ebiKQYl7sjlfOEKOQIIl0hpUC0HJqjHUpZw93DIwCZtb7LCurSuaZt3wuEJL+7v8XL88ni9ejulDt86xPfng==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-p+3DnuDsgFvPLACOcGbaOxR309UFmczw9tg+H0P3MszL6DuwDzsXLEqZUJxxNP76PnSr4PtNEaa7f+ZA4TKTOg==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -6557,7 +6572,7 @@ packages:
       tslib: 2.6.2
       tslint: 5.20.1_typescript@4.0.3
       typescript: 4.0.3
-      xml2js: 0.4.23
+      xml2js: 0.5.0
     transitivePeerDependencies:
       - debug
       - supports-color
