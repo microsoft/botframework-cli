@@ -14,7 +14,7 @@ specifiers:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
   '@istanbuljs/nyc-config-typescript': ^1.0.2
-  '@microsoft/orchestrator-core': https://bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz
+  '@microsoft/orchestrator-core': 4.14.4
   '@oclif/parser': ~3.8.4
   '@rush-temp/bf-chatdown': file:./projects/bf-chatdown.tgz
   '@rush-temp/bf-cli-command': file:./projects/bf-cli-command.tgz
@@ -72,6 +72,7 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.6
   mocha: ^10.4.0
+  node-fetch: 2.6.7
   nyc: ^15.1.0
   os: ~0.1.1
   pascal-case: ^2.0.1
@@ -95,7 +96,7 @@ dependencies:
   '@azure/cognitiveservices-luis-runtime': 5.0.0
   '@azure/ms-rest-azure-js': 2.0.1
   '@istanbuljs/nyc-config-typescript': 1.0.2_nyc@15.1.0
-  '@microsoft/orchestrator-core': '@bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz'
+  '@microsoft/orchestrator-core': 4.14.4
   '@oclif/parser': 3.8.4
   '@rush-temp/bf-chatdown': file:projects/bf-chatdown.tgz_debug@4.1.1
   '@rush-temp/bf-cli-command': file:projects/bf-cli-command.tgz
@@ -139,7 +140,7 @@ dependencies:
   eslint-config-oclif-typescript: 0.1.0_eslint@5.16.0
   fancy-test: 1.4.7
   fast-text-encoding: 1.0.3
-  fetch-mock: 7.7.3
+  fetch-mock: 7.7.3_node-fetch@2.6.7
   get-stdin: 6.0.0
   glob: 7.1.6
   globby: 11.1.0
@@ -153,6 +154,7 @@ dependencies:
   mime-types: 2.1.26
   minimist: 1.2.8
   mocha: 10.4.0
+  node-fetch: 2.6.7
   nyc: 15.1.0
   os: 0.1.1
   pascal-case: 2.0.1
@@ -193,6 +195,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/cognitiveservices-luis-runtime/5.0.0:
@@ -200,6 +204,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/ms-rest-azure-js/2.0.1:
@@ -207,6 +213,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/ms-rest-js/2.0.5:
@@ -216,12 +224,14 @@ packages:
       '@types/tunnel': 0.0.1
       abort-controller: 3.0.0
       form-data: 2.5.1
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       tough-cookie: 3.0.1
       tslib: 1.11.1
       tunnel: 0.0.6
       uuid: 3.4.0
       xml2js: 0.5.0
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@babel/code-frame/7.24.2:
@@ -541,13 +551,30 @@ packages:
       detect-libc: 1.0.3
       https-proxy-agent: 5.0.0
       make-dir: 3.1.0
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       nopt: 5.0.0
       npmlog: 4.1.2
       rimraf: 3.0.2
       semver: 7.6.0
       tar: 6.2.1
     transitivePeerDependencies:
+      - encoding
+      - supports-color
+    dev: false
+
+  /@microsoft/orchestrator-core/4.14.4:
+    resolution: {integrity: sha512-4thqBc4n82WEvJmgm+9Yhhg1YJghPwl9EMtkxsKf6w4l210+5MP3idUZjpRBH9AaFsSXbjvuv9iM8ROkJeXe9w==}
+    engines: {node: ^10.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^16.0.0}
+    cpu: [x64, ia32]
+    os: [darwin, linux, win32]
+    requiresBuild: true
+    dependencies:
+      '@mapbox/node-pre-gyp': 1.0.3
+      bindings: 1.2.1
+      node-addon-api: 3.2.1
+      node-gyp: 8.0.0
+    transitivePeerDependencies:
+      - encoding
       - supports-color
     dev: false
 
@@ -2889,7 +2916,7 @@ packages:
       reusify: 1.0.4
     dev: false
 
-  /fetch-mock/7.7.3:
+  /fetch-mock/7.7.3_node-fetch@2.6.7:
     resolution: {integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==}
     engines: {node: '>=4.0.0'}
     requiresBuild: true
@@ -2903,25 +2930,7 @@ packages:
       core-js: 2.6.11
       glob-to-regexp: 0.4.1
       lodash.isequal: 4.5.0
-      path-to-regexp: 2.4.0
-      whatwg-url: 6.5.0
-    dev: false
-
-  /fetch-mock/7.7.3_node-fetch@2.6.1:
-    resolution: {integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==}
-    engines: {node: '>=4.0.0'}
-    requiresBuild: true
-    peerDependencies:
-      node-fetch: '*'
-    peerDependenciesMeta:
-      node-fetch:
-        optional: true
-    dependencies:
-      babel-polyfill: 6.26.0
-      core-js: 2.6.11
-      glob-to-regexp: 0.4.1
-      lodash.isequal: 4.5.0
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       path-to-regexp: 2.4.0
       whatwg-url: 6.5.0
     dev: false
@@ -4382,9 +4391,16 @@ packages:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
     dev: false
 
-  /node-fetch/2.6.1:
-    resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
+  /node-fetch/2.6.7:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
+    peerDependencies:
+      encoding: ^0.1.0
+    peerDependenciesMeta:
+      encoding:
+        optional: true
+    dependencies:
+      whatwg-url: 5.0.0
     dev: false
 
   /node-gyp/8.0.0:
@@ -5606,8 +5622,12 @@ packages:
       punycode: 2.1.1
     dev: false
 
+  /tr46/0.0.3:
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
+    dev: false
+
   /tr46/1.0.1:
-    resolution: {integrity: sha1-qLE/1r/SSJUZZ0zN5VujaTtwbQk=}
+    resolution: {integrity: sha512-dTpowEjclQ7Kgx5SdBkqRzVhERQXov8/l9Ft9dVM9fmg0W0KQSVaXX9T4i6twCPNtYiZM53lpSSUAwJbFPOHxA==}
     dependencies:
       punycode: 2.1.1
     dev: false
@@ -6086,8 +6106,19 @@ packages:
     resolution: {integrity: sha1-9j/+2iSL8opnqNSODjtGGhZluvg=}
     dev: false
 
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
+    dev: false
+
   /webidl-conversions/4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
+    dev: false
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
     dev: false
 
   /whatwg-url/6.5.0:
@@ -6334,24 +6365,8 @@ packages:
     resolution: {integrity: sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==}
     dev: false
 
-  '@bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz':
-    resolution: {tarball: https://bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz}
-    name: '@microsoft/orchestrator-core'
-    version: 4.14.4
-    engines: {node: ^10.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^16.0.0}
-    os: [darwin, linux, win32]
-    requiresBuild: true
-    dependencies:
-      '@mapbox/node-pre-gyp': 1.0.3
-      bindings: 1.2.1
-      node-addon-api: 3.2.1
-      node-gyp: 8.0.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: false
-
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-RjBM6Jg3c9wsCrFYtwQGZ0CLEo7zZ3XzMKhNSXnxThitZhZ8huk0OZq0PoTlUoooCYnLxjYezrnm3PJ+/+jtmw==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-GNMuzUQLjug4Yl1RKORhgHFfTUd2Yz7Zd2O1MkwpNncYnEyjts6lTvjr2xDGKQz9JHAuR+IBE2f6NPgA460TaA==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -6397,7 +6412,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-command.tgz:
-    resolution: {integrity: sha512-PYk7+9n7qXCHQgp+AL5nwSWOG9AOKfSIEqQEcodw5WbyAvcd+s5nAux3wsZg6gRs3fFloDfSxdgxEq8DWXke1Q==, tarball: file:projects/bf-cli-command.tgz}
+    resolution: {integrity: sha512-Y7SZxIWGq+v2StXk4njIbFuh+mmGcfSTzQWxBRjSdtvT/7EaOu40aobba7PYNGCRT3aie/KS78t+oSuwjsOY7g==, tarball: file:projects/bf-cli-command.tgz}
     name: '@rush-temp/bf-cli-command'
     version: 0.0.0
     dependencies:
@@ -6440,7 +6455,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-config.tgz:
-    resolution: {integrity: sha512-9rK9JnhE6zdMLBpCGaTQRdMrjuudvxvh/UaMBZLgseoqY0h8FzGFnReM4R4U1lg44X9NGCVN8p+H55dUvCoWPA==, tarball: file:projects/bf-cli-config.tgz}
+    resolution: {integrity: sha512-pcQfnQETUR+6J6miS0nyJ2yUuHKsmNOIo7R47j4ATo7HEWCRbfNDdRQbjnVptSgKVFSDfUSfA188hMpRfEc8kQ==, tarball: file:projects/bf-cli-config.tgz}
     name: '@rush-temp/bf-cli-config'
     version: 0.0.0
     dependencies:
@@ -6470,7 +6485,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-plugins.tgz:
-    resolution: {integrity: sha512-VtoH7BppdfZWXX3Ed9G8QnNw1VUgnJBzIi/J6oWtdsti8ndh9fw1I0eZL+9QZb68BuIMDP1mf0+vuszRfkbpJg==, tarball: file:projects/bf-cli-plugins.tgz}
+    resolution: {integrity: sha512-DfALjnZSwKADif3gMbfQzGcTJrfUHEz9nPGXKHLxKWpOXzgX+m64V+ws22ymCLAW5xVeaEiCplRlYV84Xe6wJg==, tarball: file:projects/bf-cli-plugins.tgz}
     name: '@rush-temp/bf-cli-plugins'
     version: 0.0.0
     dependencies:
@@ -6501,7 +6516,7 @@ packages:
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-vyVxhUrNnRKjsazxQ3UO0D0B3u2ytTxFbrS93hTUWpyjjKkFWMXLK3epFzFImlSvqnDz+4udxUm3xPPc4NnOzQ==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-RLJSDglEUMvUOFnvbuj+2RR69KzxV3N8XUycaSuv16NxXBO5EqeV0EXrJtiAzF4jWcmY0AN2CcULJck1iPcBXQ==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -6551,7 +6566,7 @@ packages:
     dev: false
 
   file:projects/bf-dispatcher.tgz:
-    resolution: {integrity: sha512-6gWhjBjCPw5sFwCET0NO7uPuoDEMo42ywkNYRfPETf/aEznqOeAZRJa6kf2sLAwv0dFJjQuL41JPMTXYYY4xDg==, tarball: file:projects/bf-dispatcher.tgz}
+    resolution: {integrity: sha512-2txYaJNw5Xo0qNWDKJaXpeiPc4lG67Z/7ZxFfOIMRRGjaYmz8rOBw81X5An59vSWz6WtT3ih1JyZNKzPSQap0w==, tarball: file:projects/bf-dispatcher.tgz}
     name: '@rush-temp/bf-dispatcher'
     version: 0.0.0
     dependencies:
@@ -6582,7 +6597,7 @@ packages:
     dev: false
 
   file:projects/bf-lg-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-P9BUyzXRotAZ4bKFXIokryujX0oNHwmO4e+Aqo1YLL3SvaS5sDHzvUjavSlyrfY48knGjwacNz66mYDGh/RArA==, tarball: file:projects/bf-lg-cli.tgz}
+    resolution: {integrity: sha512-Rh1QPKPzeBI+uU30cdURdw/68UZRQC0P1qFaJpHBh68TyvhNNRfcgrkBYkdAVdwu7jmG7BjFaMtKtwN9g6stRw==, tarball: file:projects/bf-lg-cli.tgz}
     id: file:projects/bf-lg-cli.tgz
     name: '@rush-temp/bf-lg-cli'
     version: 0.0.0
@@ -6626,7 +6641,7 @@ packages:
     dev: false
 
   file:projects/bf-lu.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-3bpPv1HS0RehqGvU7pfyZquYX0TwTs2j9ALRN76o22OL3B0ioz22s6Aa+Yxif83uPgh91wgQsnqDGbWd+ZLxVQ==, tarball: file:projects/bf-lu.tgz}
+    resolution: {integrity: sha512-FXOnK8kAqhK7DEaWW0ad1TxJv7mEn3dzmKsfvBjlmYVvFYMiULl7eaJiZyk2Gp5Zbl++9TnVIe/yIqAFkggivg==, tarball: file:projects/bf-lu.tgz}
     id: file:projects/bf-lu.tgz
     name: '@rush-temp/bf-lu'
     version: 0.0.0
@@ -6667,7 +6682,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-SOsA8Nc9kn6V6FEplU6OVQSzxUJeZwP3wUIAh+mh+FB11cnoon0D0FLB+TmfodMc9IVe0S26fdud9gFkv9BiBw==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-K1XqOc9wKyCzfQ4DvkUprojnvjwSBlJ5bUh4A/OebaQc0TEVh/1nicfrRNKwMPSI+QS+nVaRfapTnRIBigaxNg==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -6698,7 +6713,7 @@ packages:
       lodash: 4.17.21
       mocha: 10.4.0
       nock: 11.9.1
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       nyc: 15.1.0
       rimraf: 3.0.2
       sinon: 7.5.0
@@ -6710,11 +6725,12 @@ packages:
       uuid: 3.4.0
     transitivePeerDependencies:
       - debug
+      - encoding
       - supports-color
     dev: false
 
   file:projects/bf-orchestrator-cli.tgz:
-    resolution: {integrity: sha512-IG1h5NsGBWlW8LLqAMSjfNzameSZlWrRRG7IgzoMYnnzbM9Zx+JWNElkwi0I19QKvSbxI0HtduqBUK1kvUgCVg==, tarball: file:projects/bf-orchestrator-cli.tgz}
+    resolution: {integrity: sha512-wMBEJakT2BsgIXQWY5RwxRSX7nmOMFqFoB3Jm8qQgDkh5ASh0K3usRkKEjHvPprnsiLaz1jg+WcivBPN85GaZw==, tarball: file:projects/bf-orchestrator-cli.tgz}
     name: '@rush-temp/bf-orchestrator-cli'
     version: 0.0.0
     dependencies:
@@ -6748,12 +6764,12 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-Uhysy+GJcCfyvY9UasMkbJ6caIWp+ch9FPGZTR7Lm1dygJkCLok27X0W4CNyQ5VTvUhe1EoLcirORjo5t16VHg==, tarball: file:projects/bf-orchestrator.tgz}
+    resolution: {integrity: sha512-xX3eahI/WZXiY/1+fgF96JTcko8AgjFH2UvtVoCpJ4+9Rn6wUS6yGpP8Fi9s3xyLMdjJl/z2Qxdght8KpcmS9A==, tarball: file:projects/bf-orchestrator.tgz}
     id: file:projects/bf-orchestrator.tgz
     name: '@rush-temp/bf-orchestrator'
     version: 0.0.0
     dependencies:
-      '@microsoft/orchestrator-core': '@bcmodelsprod.azureedge.net/native/orchestrator-core-v4.14.4-node-v93-win32-x64.tar.gz'
+      '@microsoft/orchestrator-core': 4.14.4
       '@types/chai': 4.2.10
       '@types/fs-extra': 8.1.0
       '@types/mocha': 10.0.6
@@ -6777,11 +6793,12 @@ packages:
       unzip-stream: 0.3.1
     transitivePeerDependencies:
       - debug
+      - encoding
       - supports-color
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-hLMgw+fcg8AzIPlnd6GIdGb0NcImGM2XwJFxsCosd74tB2Icouu2HcxG6YvZMwgCfIj7UyNi4WLW49tK2VF4BQ==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-ZMHKJwapzPxtzFhPfg1F7465HUMFUZkbJPlWjG5qJt1VS9ODB9JCWSjMh/OpUuU06rSeXGFHF9T1lw256xEg/A==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
@@ -6805,7 +6822,7 @@ packages:
       cli-table3: 0.5.1
       cli-ux: 5.6.7
       delay: 5.0.0
-      fetch-mock: 7.7.3_node-fetch@2.6.1
+      fetch-mock: 7.7.3_node-fetch@2.6.7
       fs-extra: 5.0.0
       get-stdin: 6.0.0
       globby: 11.1.0
@@ -6814,7 +6831,7 @@ packages:
       md5: 2.2.1
       mocha: 10.4.0
       nock: 11.9.1
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       nyc: 15.1.0
       pascal-case: 2.0.1
       readline: 1.3.0
@@ -6829,11 +6846,12 @@ packages:
       window-size: 1.1.1
     transitivePeerDependencies:
       - debug
+      - encoding
       - supports-color
     dev: false
 
   file:projects/botframework-cli.tgz:
-    resolution: {integrity: sha512-LtAtwqeAgUJqynVClqCjHWS4wXfh04rKKwg1V4opo9XCilphChKPYyK5dQIPNzYIvwTrYWQs7IEXRhEAv2iEOw==, tarball: file:projects/botframework-cli.tgz}
+    resolution: {integrity: sha512-Y5gyRRotUVRtzAkKTSj7rp6nKhT14qLmiJUvyBHo0GBc1+wnzPtXt7H3r5kJYp3Z4DK+0fJKmfEuPDfj8NUKIQ==, tarball: file:projects/botframework-cli.tgz}
     name: '@rush-temp/botframework-cli'
     version: 0.0.0
     dependencies:
