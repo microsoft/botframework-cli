@@ -45,7 +45,7 @@ export default class LuisApplicationRename extends Command {
     try {
       const appUpdateStatus = await Application.rename({subscriptionKey, endpoint, appId}, name, description)
 
-      if (appUpdateStatus.code === 'Success') {
+      if ('code' in appUpdateStatus && appUpdateStatus.code === 'Success') {
         const output = flags.json ? JSON.stringify({Status: 'Success'}, null, 2) : 'App successfully renamed'
         this.log(output)
       }

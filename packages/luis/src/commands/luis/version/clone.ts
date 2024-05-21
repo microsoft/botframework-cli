@@ -37,12 +37,13 @@ export default class LuisVersionClone extends Command {
     utils.validateRequiredProps(requiredProps)
 
     try {
-      const messageData = await Version.clone({subscriptionKey, endpoint, appId}, flags.versionId, flags.targetVersionId)
+      const message = await Version.clone({subscriptionKey, endpoint, appId}, flags.versionId, flags.targetVersionId)
 
-      if (messageData.error) {
-        throw new CLIError(messageData.error.message)
+      if (message.error) {
+        throw new CLIError(message.error.message)
       }
 
+      const messageData = JSON.stringify(message)
       const output = flags.json ? JSON.stringify({Status: 'Success', version: messageData}, null, 2) : `App successfully cloned. Latest version is now: ${messageData}`
       this.log(output)
     } catch (err) {

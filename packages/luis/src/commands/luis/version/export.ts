@@ -55,7 +55,7 @@ export default class LuisVersionExport extends Command {
         const writtenFilePath: string = await utils.writeToFile(out, messageData, force)
         this.log(`File successfully written: ${writtenFilePath}`)
       } else {
-        this.log(flags.exportLU ? messageData : JSON.stringify(messageData, null, 2))
+        this.log(flags.exportLU ? JSON.stringify(messageData) : JSON.stringify(messageData, null, 2))
       }
     } catch (error) {
       throw new CLIError(error)

@@ -1,12 +1,7 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": true,
-    "forceConsistentCasingInFileNames": true,
-    "esModuleInterop": true,
     "resolveJsonModule": true,
-    "importHelpers": true,
-    "sourceMap": true,
-    "module": "commonjs",
     "outDir": "./lib",
     "pretty": true,
     "rootDirs": [

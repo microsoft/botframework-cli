@@ -45,12 +45,13 @@ export default class LuisVersionImport extends Command {
 
     try {
       appJSON = await this.formatInput(appJSON, versionId)
-      const messageData = await Version.import({subscriptionKey, endpoint, appId}, JSON.parse(appJSON), versionId)
+      const message = await Version.import({subscriptionKey, endpoint, appId}, JSON.parse(appJSON), versionId)
 
-      if (messageData.error) {
-        throw new CLIError(messageData.error.message)
+      if (message.error) {
+        throw new CLIError(message.error.message)
       }
 
+      const messageData = JSON.stringify(message)
       const output = flags.json ? JSON.stringify({Status: 'Success', version: messageData}, null, 2) : `App version successfully imported as version ${messageData}.`
       this.log(output)
     } catch (err) {

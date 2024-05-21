@@ -41,7 +41,7 @@ export default class LuisVersionDelete extends Command {
 
     try {
       const result = await Version.delete({subscriptionKey, endpoint, appId}, versionId)
-      if (result.code === 'Success') {
+      if ('code' in result && result.code === 'Success') {
         const output = flags.json ? JSON.stringify({Status: 'Success', version: versionId}, null, 2) : `Successfully deleted version ${versionId}`
         this.log(output)
       }

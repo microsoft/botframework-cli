@@ -49,7 +49,7 @@ export default class LuisApplicationDelete extends Command {
 
     try {
       const result = await Application.delete({subscriptionKey, endpoint, appId})
-      if (result.code === 'Success') {
+      if ('code' in result && result.code === 'Success') {
         const output = flags.json ? JSON.stringify({Status: 'Success', id: flags.appId}, null, 2) : 'App successfully deleted.'
         this.log(output)
       }
