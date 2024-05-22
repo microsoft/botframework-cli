@@ -3,14 +3,6 @@ import EndpointParameters from './parameters'
 
 const urlPath = '/luis/authoring/v3.0-preview/apps'
 
-//include properties to AxiosResponse interface
-declare module 'axios' {
-  interface AxiosResponse<T = any> {
-    body: T
-    error: T
-  }
-}
-
 export default {
   async assignAzureAccount(
     param: EndpointParameters,
