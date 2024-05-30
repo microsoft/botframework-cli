@@ -106,7 +106,7 @@ export class OrchestratorBaseModel {
       url: modelUrl,
       responseType: 'stream',
     });
-    const totalLength: number = parseInt(response.headers['content-length']?? '0');
+    const totalLength: number = parseInt(response.headers['content-length'] ?? '0', 10);
     onProgress(`Total to download: ${totalLength} bytes...`);
     let totalCompleted: number = 0;
     let totalCompletedPct: number = 0;
