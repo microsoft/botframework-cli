@@ -46,13 +46,12 @@ export default class LuisApplicationImport extends Command {
 
     try {
       appJSON = await this.formatInput(appJSON, name)
-      let messageData = await Application.import({subscriptionKey, endpoint}, JSON.parse(appJSON), name)
+      const messageData = await Application.import({subscriptionKey, endpoint}, JSON.parse(appJSON), name)
 
       if (messageData.error) {
         throw new CLIError(messageData.error.message)
       }
 
-      messageData = JSON.stringify(messageData)
       const output: string = flags.json ? JSON.stringify({Status: 'Success', id: messageData}, null, 2) : `App successfully imported with id ${messageData}.`
       this.log(output)
 

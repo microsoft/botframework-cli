@@ -65,25 +65,27 @@ export default class LuisTrainRun extends Command {
   async checkTrainingStatus(params: any, versionId: string, jsonOutput: boolean) {
     try {
       const trainingStatusData = await Train.getStatus(params, versionId)
-      const inProgress = trainingStatusData.filter((model: any) => {
-        if (model.details && model.details.status) {
-          return model.details.status === 'InProgress' || model.details.status === 'Queued'
-        }
-      })
-      if (inProgress.length > 0) {
-        await this.timeout(1000)
-        await this.checkTrainingStatus(params, versionId, jsonOutput)
-      } else {
-        let completionMssg = ''
-        trainingStatusData.map((model: any) => {
-          if (model.details && model.details.status && model.details.status === 'Fail') {
-            completionMssg += `Training failed for model id ${model.modelId}. Failure reason: ${model.details.failureReason}\n`
+      if (Array.isArray(trainingStatusData)) {
+        const inProgress = trainingStatusData.filter((model: any) => {
+          if (model.details && model.details.status) {
+            return model.details.status === 'InProgress' || model.details.status === 'Queued'
           }
         })
+        if (inProgress.length > 0) {
+          await this.timeout(1000)
+          await this.checkTrainingStatus(params, versionId, jsonOutput)
+        } else {
+          let completionMssg = ''
+          trainingStatusData.map((model: any) => {
+            if (model.details && model.details.status && model.details.status === 'Fail') {
+              completionMssg += `Training failed for model id ${model.modelId}. Failure reason: ${model.details.failureReason}\n`
+            }
+          })
 
-        completionMssg = completionMssg ? completionMssg : 'Success'
-        const output = jsonOutput ? JSON.stringify({Status: completionMssg}, null, 2) : `${completionMssg} Training is complete`
-        this.log(output)
+          completionMssg = completionMssg ? completionMssg : 'Success'
+          const output = jsonOutput ? JSON.stringify({Status: completionMssg}, null, 2) : `${completionMssg} Training is complete`
+          this.log(output)
+        }
       }
     } catch (err) {
       throw new CLIError(err)

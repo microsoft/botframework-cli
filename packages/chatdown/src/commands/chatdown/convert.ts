@@ -156,7 +156,7 @@ export default class ChatdownConvert extends Command {
       return validatedPath
     }
     const output = JSON.stringify(activities, null, 2)
-    await new Promise(done => process.stdout.write(output, 'utf-8', () => done()))
+    await new Promise<void>(done => process.stdout.write(output, 'utf-8', () => done()))
     return true
   }
 }
