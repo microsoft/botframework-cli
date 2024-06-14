@@ -1,0 +1,27 @@
+{
+  "name": "src",
+  "version": "1.0.0",
+  "description": "A task that wraps the BF CLI tooling",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install && tsc -b",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/microsoft/botframework-cli.git"
+  },
+  "author": "Microsoft",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/microsoft/botframework-cli/issues"
+  },
+  "homepage": "https://github.com/microsoft/botframework-cli#readme",
+  "dependencies": {
+    "azure-pipelines-task-lib": "^2.9.3"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.31",
+    "@types/q": "^1.5.2"
+  }
+}
