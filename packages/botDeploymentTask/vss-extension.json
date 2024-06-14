@@ -1,0 +1,44 @@
+{
+    "manifestVersion": 1,
+     "id": "bot-deployment",
+     "name": "Bot Deployment",
+     "version": "4.8.0.81",
+     "publisher": "Microsoft",
+     "targets": [
+         {
+             "id": "Microsoft.VisualStudio.Services"
+         }
+     ],    
+    "description": "Deploy a bot to Azure and connect it with channels",
+    "categories": [
+         "Azure Pipelines"
+     ],
+    "icons": {
+         "default": "images/icon.png"        
+     },
+     "content": {
+         "details": {
+             "path": "readme.md"
+         }
+     },
+    "files": [
+         {
+             "path": "botDeployment"
+         }
+     ],
+    "contributions": [
+         {
+             "id": "custom-bot-deployment-task",
+             "type": "ms.vss-distributed-task.task",
+             "targets": [
+                 "ms.vss-distributed-task.tasks"
+             ],
+             "properties": {
+                 "name": "botDeployment"
+             }
+     }
+     ],
+     "galleryFlags": [
+         "Public"
+     ]
+}
