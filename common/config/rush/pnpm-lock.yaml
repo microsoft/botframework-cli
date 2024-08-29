@@ -951,14 +951,11 @@ packages:
     deprecated: Deprecated in favor of @oclif/core
     dev: false
 
-  /@oclif/test/4.0.9:
-    resolution: {integrity: sha512-xDGBFBNE6ckoBT9EhMi6ZvwAaEeJRGvRmn2qZWujJl9EJ56a72KHZsvTJVgl2p/AQ2vZ1UH06YZ440GOnjExzQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      '@oclif/core': '>= 3.0.0'
+  /@oclif/test/1.2.9:
+    resolution: {integrity: sha512-op+ak0NTyeBKqjLVH1jfPCRGWK5befIoQpCL/xwekjucUEmMfCbUpV1Sa60f9rU8X58HEqrclwWbAH+DtQR6FQ==}
+    engines: {node: '>=8.0.0'}
     dependencies:
-      ansis: 3.3.2
-      debug: 4.3.6
+      fancy-test: 1.4.10
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -2943,6 +2940,23 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
+  /fancy-test/1.4.10:
+    resolution: {integrity: sha512-AaUX6wKS7D5OP2YK2q5G7c8PGx2lgoyLUD7Bbg8z323sb9aebBqzb9UN6phzI73UgO/ViihmNfOxF3kdfZLhew==}
+    engines: {node: '>=8.0.0'}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+    dependencies:
+      '@types/chai': 4.2.10
+      '@types/lodash': 4.14.159
+      '@types/node': 13.9.0
+      '@types/sinon': 9.0.11
+      lodash: 4.17.21
+      mock-stdin: 1.0.0
+      nock: 13.5.5
+      stdout-stderr: 0.1.13
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
   /fancy-test/1.4.7:
     resolution: {integrity: sha512-drgNrpNbvXXbPAz0rn7jvzjoEihDKpm1fFF+aZ+FVLatjE3jZSc6WwfgC5x7N/+nhmentMx4TXPQ0OkS0SElVQ==}
     engines: {node: '>=8.0.0'}
@@ -4471,6 +4485,10 @@ packages:
 
   /mock-stdin/0.3.1:
     resolution: {integrity: sha1-xlfZZC2QeGQ1xkyl6Zu9TQm9fdM=}
+    dev: false
+
+  /mock-stdin/1.0.0:
+    resolution: {integrity: sha512-tukRdb9Beu27t6dN+XztSRHq9J0B/CoAOySGzHfn8UTfmqipA5yNT/sDUEyYdAV3Hpka6Wx6kOMxuObdOex60Q==}
     dev: false
 
   /module-not-found-error/1.0.1:
@@ -6442,7 +6460,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-Pu0pHL5edPKWb55oQq0MmjaUV/Dln8gtEM/WJym5u3F5P8ehP3oxRSa7doVJLCBwg0GlOHDwfZ5G3ds/uuo49w==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-qKDkzgEZVc5iChigEX9xtdbt4Kl4RXhWwf/n8IISguYvE25pkRBE4wqAs3NPUUzqkAUSbnFths8VOojk+Gy1uw==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -6452,7 +6470,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@types/chai': 4.2.10
       '@types/fs-extra': 5.1.0
@@ -6483,7 +6501,6 @@ packages:
       typescript: 4.0.3
       window-size: 1.1.1
     transitivePeerDependencies:
-      - '@oclif/core'
       - debug
       - supports-color
     dev: false
@@ -6532,7 +6549,7 @@ packages:
     dev: false
 
   file:projects/bf-cli-config.tgz:
-    resolution: {integrity: sha512-iYOIlS0FtfAChTK+/NiBN6TdJD7fPxML75PPu+K9JpHDZ1dmsOupzlNKIn/hZgmQhtJ8+Swm37BUm6msMb3G9g==, tarball: file:projects/bf-cli-config.tgz}
+    resolution: {integrity: sha512-u87bj3u+CZpakQzzja/1cCdW2yb07/qM5BfejXaBTWz/F3HSP+C7lnkdhWFpTyakGyTYytSvBlVHHCmLRYANAg==, tarball: file:projects/bf-cli-config.tgz}
     name: '@rush-temp/bf-cli-config'
     version: 0.0.0
     dependencies:
@@ -6541,7 +6558,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@types/chai': 4.2.10
       '@types/mocha': 10.0.6
@@ -6558,12 +6575,11 @@ packages:
       tslint: 5.20.1_typescript@4.0.3
       typescript: 4.0.3
     transitivePeerDependencies:
-      - '@oclif/core'
       - supports-color
     dev: false
 
   file:projects/bf-cli-plugins.tgz:
-    resolution: {integrity: sha512-Oq7NjhTZA9Dem3ULOr7bL7IIyJQ/ZMvERsHvf/teXPKLkTmgQ2EtuPzRZzjhNp4ZYgr55Bp8ARy2InbGA0Co0Q==, tarball: file:projects/bf-cli-plugins.tgz}
+    resolution: {integrity: sha512-OTicOMmfUAnWp7QF7QYYR8zDMNrBaOwuFlGz245apsnK7JvJo+eEm3HqXrYsu4lW2EJb5mjT1tciCjK06Me4gg==, tarball: file:projects/bf-cli-plugins.tgz}
     name: '@rush-temp/bf-cli-plugins'
     version: 0.0.0
     dependencies:
@@ -6573,7 +6589,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
       '@oclif/plugin-plugins': 1.10.11
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@types/chai': 4.2.10
       '@types/mocha': 10.0.6
       '@types/node': 10.17.17
@@ -6590,12 +6606,11 @@ packages:
       tslib: 2.6.2
       typescript: 4.0.3
     transitivePeerDependencies:
-      - '@oclif/core'
       - supports-color
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-H2DnObb9HEfy27Wn/pO3g7AsHcKBP77qXCNtbtMwv+AnZD5gVDvJX4vvX5v3oF7QetI/p+ETaOhSQFS5Z9XH7g==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-ffD0UY0ru4Sut+va/ljk3l9+MXDrDg+Xg+1+tixTMTQYw+H5Oq9lql44QFHgwD0faLSVzrK2lHluINmywzvYmg==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -6607,7 +6622,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@snyk/nuget-semver': 1.3.0
       '@types/chai': 4.2.10
@@ -6640,7 +6655,6 @@ packages:
       typescript: 4.0.3
       xml2js: 0.5.0
     transitivePeerDependencies:
-      - '@oclif/core'
       - debug
       - supports-color
     dev: false
@@ -6671,7 +6685,7 @@ packages:
     dev: false
 
   file:projects/bf-lg-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-BY/18c+Ljhz5epiavmS9ebeL0yR2RRcpmO649lrf8hqCI/+2IlVOS2Ury6LZ1NxfcfQJnAHFqVxWWM1/laZTzg==, tarball: file:projects/bf-lg-cli.tgz}
+    resolution: {integrity: sha512-PnlcjAGZPQkzVnQTSZydKAKXfO2oU1T1xTUj/rKl+3QVffzQBH5Vc2oKP0tKzGZ2RuZE5FqDErAdWn1EHW682A==, tarball: file:projects/bf-lg-cli.tgz}
     id: file:projects/bf-lg-cli.tgz
     name: '@rush-temp/bf-lg-cli'
     version: 0.0.0
@@ -6681,7 +6695,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@types/chai': 4.2.10
       '@types/fs-extra': 8.1.0
       '@types/lodash': 4.14.159
@@ -6710,7 +6724,6 @@ packages:
       tslib: 2.6.2
       typescript: 4.0.3
     transitivePeerDependencies:
-      - '@oclif/core'
       - debug
       - supports-color
     dev: false
@@ -6757,7 +6770,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-KODxyEmaOzyYn7UKsPD4uidcx8WsFb6f+J8YhrNG5RocauAnM3J2UucAL5yy93rDgTYTrb1Cc16KIDYSgrSB1A==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-5utTaMCEeDXFveEl8UpWtPk729Q3hYe4icZCPlQPNBNeZW+VL25Li4JzMhVr6h5FMbU8pYvsRKJv+fCYbrWOaw==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -6770,7 +6783,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@types/chai': 4.2.10
       '@types/lodash': 4.14.159
@@ -6799,13 +6812,12 @@ packages:
       username: 4.1.0
       uuid: 3.4.0
     transitivePeerDependencies:
-      - '@oclif/core'
       - debug
       - supports-color
     dev: false
 
   file:projects/bf-orchestrator-cli.tgz:
-    resolution: {integrity: sha512-k+lBbm9ZuLs3zBt177djz1cc9+2BC8hfrlF8tiWA0J12hgi1NyUKVvkjvnvnpqFzUhjGgk+q6qAvl8rQSxGGUQ==, tarball: file:projects/bf-orchestrator-cli.tgz}
+    resolution: {integrity: sha512-3KDvjR5S1FwpiRuHHerXqyrbdIbr0y9KFGVA0jCUF7VGrB85gIo7662ELA6a80sU1PAtBLkuaUCJcgFTGQS+hQ==, tarball: file:projects/bf-orchestrator-cli.tgz}
     name: '@rush-temp/bf-orchestrator-cli'
     version: 0.0.0
     dependencies:
@@ -6814,7 +6826,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@types/chai': 4.2.10
       '@types/fs-extra': 8.1.0
       '@types/mocha': 10.0.6
@@ -6835,7 +6847,6 @@ packages:
       tslib: 2.6.2
       typescript: 4.0.3
     transitivePeerDependencies:
-      - '@oclif/core'
       - supports-color
     dev: false
 
@@ -6874,7 +6885,7 @@ packages:
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-1NZgrXU0oU0D7/DGjKHd/mGiIPH64ZpdzRckDpcL743zcMgSz/DzHCxpr8qH91vBOR2Jd3yvJyd1xb6SvgVing==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-GLqWjXhkvyRyP9Y7P52vqeAenhl/BTaBptj/LsRoL3p1F+/l4IxMDVepBXCa6JrH1Mr2cb2OhCE4jorhbjp+Ug==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
@@ -6885,7 +6896,7 @@ packages:
       '@oclif/errors': 1.3.6
       '@oclif/parser': 3.8.17
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@types/chai': 4.2.10
       '@types/mocha': 10.0.6
@@ -6921,14 +6932,13 @@ packages:
       username: 4.1.0
       window-size: 1.1.1
     transitivePeerDependencies:
-      - '@oclif/core'
       - debug
       - encoding
       - supports-color
     dev: false
 
   file:projects/botframework-cli.tgz:
-    resolution: {integrity: sha512-jO6ZkCLAfsPT7hllFcrTlIY2FLpRWb6iyvEx/1geqF4U3vyCV3eGSYm3NOHzO0eftZdxohaG8bv0RDzU5fuSrw==, tarball: file:projects/botframework-cli.tgz}
+    resolution: {integrity: sha512-1NC2P1Tg2cNE2sl87ipm1+QIp+lIfdXnTqPDmW5TPRoUQ5Nx4ziJGhUxJkkIHEQJzLP+Ib1ff5xC/cebEhW6lg==, tarball: file:projects/botframework-cli.tgz}
     name: '@rush-temp/botframework-cli'
     version: 0.0.0
     dependencies:
@@ -6938,7 +6948,7 @@ packages:
       '@oclif/dev-cli': 1.26.10
       '@oclif/errors': 1.3.6
       '@oclif/plugin-help': 6.2.10
-      '@oclif/test': 4.0.9
+      '@oclif/test': 1.2.9
       '@oclif/tslint': 3.1.1_3qfq3kdjvngdxxpotf75ivub24
       '@types/chai': 4.2.10
       '@types/fs-extra': 5.1.0
@@ -6962,7 +6972,6 @@ packages:
       tslint: 5.20.1_typescript@4.0.3
       typescript: 4.0.3
     transitivePeerDependencies:
-      - '@oclif/core'
       - supports-color
     dev: false
 
