@@ -52,7 +52,7 @@ import {EvaluationSummaryTemplateHtml} from './resources/evaluation-summary-temp
 import {UtilityLabelResolver} from './utilitylabelresolver';
 
 import {Utility as UtilityDispatcher} from '@microsoft/bf-dispatcher';
-import {AxiosRequestConfig} from 'axios';
+import {InternalAxiosRequestConfig} from 'axios';
 
 export class Utility {
   public static toPrintDebuggingLogToConsole: boolean = false;
@@ -6864,7 +6864,7 @@ export class Utility {
   }
 }
 
-export function httpsProxy(config: AxiosRequestConfig) {
+export function httpsProxy(config: InternalAxiosRequestConfig) {
   const parsed: Url = parse(config.url || '');
   const protocol: string | undefined = parsed.protocol;
   if (protocol !== 'https:') {
