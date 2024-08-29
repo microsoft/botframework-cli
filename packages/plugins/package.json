@@ -5,7 +5,7 @@
   "bugs": "https://github.com/microsoft/botframework-cli/issues",
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
-    "@oclif/command": "~1.5.19",
+    "@oclif/command": "~1.8.36",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@oclif/plugin-plugins": "~1.10.0",
@@ -13,8 +13,8 @@
     "tslib": "^2.0.3"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.2",
-    "@oclif/plugin-help": "^2.2.3",
+    "@oclif/dev-cli": "^1.26.10",
+    "@oclif/plugin-help": "^6.2.10",
     "@oclif/test": "^1.2.5",
     "@types/chai": "^4.2.7",
     "@types/mocha": "^10.0.6",

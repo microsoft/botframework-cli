@@ -52,7 +52,7 @@
   "dependencies": {
     "@microsoft/bf-cli-command": "1.0.0",
     "@microsoft/bf-lu": "1.0.0",
-    "@oclif/command": "~1.5.19",
+    "@oclif/command": "~1.8.36",
     "@oclif/config": "~1.13.3",
     "@oclif/errors": "~1.2.2",
     "@oclif/parser": "~3.8.4",
@@ -78,8 +78,8 @@
     "username": "^4.1.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "^1.22.0",
-    "@oclif/plugin-help": "^2.2.0",
+    "@oclif/dev-cli": "^1.26.10",
+    "@oclif/plugin-help": "^6.2.10",
     "@oclif/test": "^1.2.4",
     "@oclif/tslint": "^3.1.1",
     "@types/chai": "^4.1.7",
