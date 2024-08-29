@@ -48,7 +48,7 @@
     "@types/node-fetch": "~2.5.5",
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "antlr4": "4.9.2",
-    "axios": "~0.24.0",
+    "axios": "~1.6.0",
     "https-proxy-agent": "^5.0.0",
     "chalk": "2.4.1",
     "console-stream": "^0.1.1",
@@ -67,15 +67,15 @@
     "@types/lodash": "~4.14.159",
     "@types/mocha": "^10.0.6",
     "@types/nock": "^11.1.0",
-    "@types/node": "^10.14.15",
+    "@types/node": "^11.13.7",
     "chai": "^4.4.1",
     "mocha": "^10.4.0",
     "nock": "^11.7.0",
     "nyc": "^15.1.0",
     "rimraf": "^2.6.3",
-    "ts-node": "^9.0.0",
+    "ts-node": "^10.8.1",
     "tslint": "^5.18.0",
-    "typescript": "^4.0.3",
+    "typescript": "^4.9.5",
     "uuid": "^3.3.3"
   }
 }
