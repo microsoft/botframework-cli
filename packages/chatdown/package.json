@@ -18,7 +18,7 @@
     "latest-version": "5.1.0",
     "mime-types": "^2.1.18",
     "minimist": "^1.2.6",
-    "axios": "~0.24.0",
+    "axios": "~1.6.0",
     "https-proxy-agent": "^5.0.0",
     "please-upgrade-node": "^3.0.1",
     "semver": "^5.5.1",
@@ -33,16 +33,16 @@
     "@types/chai": "^4.1.7",
     "@types/fs-extra": "^5.0.5",
     "@types/mocha": "^10.0.6",
-    "@types/node": "^10.14.6",
+    "@types/node": "^11.3.7",
     "@types/rimraf": "^2.0.2",
     "chai": "^4.4.1",
     "globby": "^11.0.4",
     "nyc": "^15.1.0",
     "mocha": "^10.4.0",
     "rimraf": "^2.6.3",
-    "ts-node": "^9.0.0",
+    "ts-node": "^10.8.1",
     "tslint": "^5.16.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.9.5"
   },
   "engines": {
     "node": ">=8.0.0"
