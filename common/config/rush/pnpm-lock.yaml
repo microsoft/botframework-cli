@@ -47,7 +47,7 @@ specifiers:
   antlr4: 4.9.2
   applicationinsights: ^1.0.8
   argparse: ~1.0.10
-  axios: ~1.6.0
+  axios: ~1.7.5
   botbuilder-lg: 4.22.3
   botframework-schema: ^4.22.3
   camelcase: ^4.1.0
@@ -130,7 +130,7 @@ dependencies:
   antlr4: 4.9.2
   applicationinsights: 1.7.3
   argparse: 1.0.10
-  axios: 1.6.8_debug@4.1.1
+  axios: 1.7.5_debug@4.1.1
   botbuilder-lg: 4.22.3
   botframework-schema: 4.22.3
   camelcase: 4.1.0
@@ -1591,8 +1591,8 @@ packages:
     resolution: {integrity: sha512-LEeSAWeh2Gfa2FtlQE1shxQ8zi5F9GHarrGKz08TMdODD5T4eH6BMsvtnhbWZ+XQn+Gb6om/917ucvRu7l7ukw==}
     dev: false
 
-  /axios/1.6.8_debug@4.1.1:
-    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
+  /axios/1.7.5_debug@4.1.1:
+    resolution: {integrity: sha512-fZu86yCo+svH3uqJ/yTdQ0QHpQu5oL+/QE+QPSv6BZSkDAoky9vytxp7u5qk83OJFS3kEBcesWni9WTZAv3tSw==}
     dependencies:
       follow-redirects: 1.15.6_debug@4.1.1
       form-data: 4.0.0
@@ -6366,7 +6366,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-3zx8RG5DclnB4PKqCIyhpWN8O+Vt82u2kkinzid0UKGxU5ycf5f6M4+Agor5M/V/u1wLLw6epOKmx1Hf85DeBg==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-ZFpO0efqMMZ9dPEQczVA7P24svZPYEKZ2+TWEA3GsdaFOgr2U/HvikotG/STrPXTxucTlHL46RNnWSnPG9CnKg==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -6383,7 +6383,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 11.15.7
       '@types/rimraf': 2.0.3
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       botframework-schema: 4.22.3
       chai: 4.4.1
       chalk: 2.4.1
@@ -6524,7 +6524,7 @@ packages:
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-Go8eoD5w4LMSj5LyL7esGndfHE2v0xxqYHSa2UGpmihTy9jP8m6WSa0Q3mB+WsILQDKxTHErgjaTdjojpNaxSg==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-uQgF4WUNrBVMjbIDE4OXjSRsQc6otTaEhlXRpxKg8wqn/XIGYLLdrO4BpSvkBSt9+aX/LDgcOFta6A6sAuf4Zw==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -6547,7 +6547,7 @@ packages:
       '@types/seedrandom': 2.4.28
       '@types/xml2js': 0.4.5
       ajv: 6.12.6
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       chai: 4.4.1
       chalk: 2.4.2
       clone: 2.1.2
@@ -6607,7 +6607,7 @@ packages:
     dev: false
 
   file:projects/bf-lg-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-OY/ozp540GbhpaOCD7Clu6ULNn31QvGL4rjRbeyd2BnUDpl9HmjZsJLM7QMGRI46K7jO9mk0Wwz7VhEX/7urOw==, tarball: file:projects/bf-lg-cli.tgz}
+    resolution: {integrity: sha512-F4q0qQK3Lhh/B0RNesvIj7346PrhMoUR0VLutxn3r8SaE55Ne6pD0DHKmFdjMS/KowN+a1m2ddt1pwsz4kgF6g==, tarball: file:projects/bf-lg-cli.tgz}
     id: file:projects/bf-lg-cli.tgz
     name: '@rush-temp/bf-lg-cli'
     version: 0.0.0
@@ -6626,7 +6626,7 @@ packages:
       '@types/node-fetch': 2.5.4
       '@types/readline-sync': 1.4.3
       adaptive-expressions: 4.22.3
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       botbuilder-lg: 4.22.3
       chai: 4.4.1
       delay: 4.3.0
@@ -6653,7 +6653,7 @@ packages:
     dev: false
 
   file:projects/bf-lu.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-kut8RVGI5dXjEIQ49chZJ3jxIpwuFfAY0mef6SlLUGO8jG4lJ7O4nvMKTab8DiVzYOddiKrZ/fS9iEZ8B0YyOw==, tarball: file:projects/bf-lu.tgz}
+    resolution: {integrity: sha512-CQBwlB6J8xtFpjp9L70PSVRgD1Z6NjcYa6b+jEWYOQpclwnwl7bdUL+10m4TzdMKTfTEl0Jh1IFFKwXFC+kO6Q==, tarball: file:projects/bf-lu.tgz}
     id: file:projects/bf-lu.tgz
     name: '@rush-temp/bf-lu'
     version: 0.0.0
@@ -6666,7 +6666,7 @@ packages:
       '@types/node': 11.15.7
       '@types/node-fetch': 2.5.5
       antlr4: 4.9.2
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       chai: 4.4.1
       chalk: 2.4.1
       console-stream: 0.1.1
@@ -6696,7 +6696,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-2+kvIXQN27pJEmYREhalT0TZWIPx62sqqrHl2PW980zdUUZkMebE5WbuKx3ZNtIVytPs6wk416Qe42PQ+Qnu6w==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-FNTA2eKqwOxILMegI1a8/2vYdF1huFo7d/ram3YxyjJ3yWoyjKmXxpGJN3be12vU5SeQld9ZkoN4XKbnYY5N3Q==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -6719,7 +6719,7 @@ packages:
       '@types/node-fetch': 2.5.5
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.2
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       chai: 4.4.1
       cli-ux: 5.3.3
       fs-extra: 8.1.0
@@ -6781,7 +6781,7 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-ff7YXvArCrOSmKEftq69C1Cqbk6jNrq8r4nIcHWc0Et4sjHXO0jlCe5k8dk8nai7SptjEML7hwYacjUMMHJ26w==, tarball: file:projects/bf-orchestrator.tgz}
+    resolution: {integrity: sha512-F5bBjteLS/co1FcJfFE2UzM5ybCbpfuZ+WIrU6GQFDEmbykQw3/utOSs1hLFP2FamiBxWnHK6RIRXJoTVpwLXQ==, tarball: file:projects/bf-orchestrator.tgz}
     id: file:projects/bf-orchestrator.tgz
     name: '@rush-temp/bf-orchestrator'
     version: 0.0.0
@@ -6792,7 +6792,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 11.15.7
       '@types/sinon': 9.0.11
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       chai: 4.4.1
       eslint: 5.16.0
       fast-text-encoding: 1.0.3
@@ -6817,7 +6817,7 @@ packages:
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-Vq7sz4Ic+w68KduS2TIZZJgQYap0qQ8AwUw+yUWYIKku6fNK4yLOwg8Foelwa++ZEfOHQweWdfGPP5va4NvMRg==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-4mwLdT7CjoTC207IIoj5KeHvgCTFj3f0q0wJovUD5300esXUK7vRHVu2kny7cBG6wP8njfDcC4EKBMboFjcVXw==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
@@ -6834,7 +6834,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/nock': 11.1.0
       '@types/node': 11.15.7
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.5_debug@4.1.1
       camelcase: 4.1.0
       chai: 4.4.1
       chalk: 2.4.1

@@ -18,7 +18,7 @@
     "tslib": "^2.0.3",
     "read-text-file": "^1.1.0",
     "readline-sync": "^1.4.10",
-    "axios": "~1.6.0",
+    "axios": "~1.7.5",
     "https-proxy-agent": "^5.0.0"
   },
   "devDependencies": {
