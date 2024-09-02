@@ -76,6 +76,7 @@ specifiers:
   mime-types: ^2.1.18
   minimist: ^1.2.6
   mocha: ^10.4.0
+  node-fetch: 2.6.7
   nyc: ^15.1.0
   os: ~0.1.1
   pascal-case: ^2.0.1
@@ -88,7 +89,7 @@ specifiers:
   testdouble: ^3.11.0
   ts-md5: ^1.2.6
   typescript: ^4.9.5
-  unzip-stream: ^0.3.1
+  unzip-stream: ^0.3.4
   username: ^4.1.0
   uuid: ^3.3.3
   window-size: ^1.1.0
@@ -145,7 +146,7 @@ dependencies:
   eslint-config-oclif-typescript: 0.1.0_4ey7ugbthck6f4odk2ccukrvie
   fancy-test: 1.4.7
   fast-text-encoding: 1.0.3
-  fetch-mock: 7.7.3
+  fetch-mock: 7.7.3_node-fetch@2.6.7
   get-stdin: 6.0.0
   glob: 7.1.6
   globby: 11.1.0
@@ -159,6 +160,7 @@ dependencies:
   mime-types: 2.1.26
   minimist: 1.2.8
   mocha: 10.4.0
+  node-fetch: 2.6.7
   nyc: 15.1.0
   os: 0.1.1
   pascal-case: 2.0.1
@@ -171,7 +173,7 @@ dependencies:
   testdouble: 3.13.0
   ts-md5: 1.2.7
   typescript: 4.9.5
-  unzip-stream: 0.3.1
+  unzip-stream: 0.3.4
   username: 4.1.0
   uuid: 3.4.0
   window-size: 1.1.1
@@ -200,6 +202,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/cognitiveservices-luis-runtime/5.0.0:
@@ -207,6 +211,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/ms-rest-azure-js/2.0.1:
@@ -214,6 +220,8 @@ packages:
     dependencies:
       '@azure/ms-rest-js': 2.0.5
       tslib: 1.11.1
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@azure/ms-rest-js/2.0.5:
@@ -223,12 +231,14 @@ packages:
       '@types/tunnel': 0.0.1
       abort-controller: 3.0.0
       form-data: 2.5.1
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       tough-cookie: 3.0.1
       tslib: 1.11.1
       tunnel: 0.0.6
       uuid: 3.4.0
       xml2js: 0.5.0
+    transitivePeerDependencies:
+      - encoding
     dev: false
 
   /@babel/code-frame/7.24.2:
@@ -560,7 +570,7 @@ packages:
       detect-libc: 2.0.3
       https-proxy-agent: 5.0.0
       make-dir: 3.1.0
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       nopt: 5.0.0
       npmlog: 5.0.1
       rimraf: 3.0.2
@@ -1424,13 +1434,13 @@ packages:
       type-fest: 0.21.3
     dev: false
 
-  /ansi-regex/3.0.0:
-    resolution: {integrity: sha512-wFUFA5bg5dviipbQQ32yOQhl6gcJaJXiHE7dvR8VYPG97+J/GNC5FKGepKdEDUFeXRzDxPF1X/Btc8L+v7oqIQ==}
+  /ansi-regex/3.0.1:
+    resolution: {integrity: sha512-+O9Jct8wf++lXxxFc4hc8LsjaSq0HFzzL7cVsw8pRDIPdjKD2mT4ytDZlLuSBZ4cLKZFXIrMGO7DbQCtMJJMKw==}
     engines: {node: '>=4'}
     dev: false
 
-  /ansi-regex/4.1.0:
-    resolution: {integrity: sha512-1apePfXM1UOSqw0o9IiFAovVz9M5S1Dg+4TrDwfMewQ6p/rmMueb7tWZjQ1rx4Loy1ArBggoqGpfqqdI4rondg==}
+  /ansi-regex/4.1.1:
+    resolution: {integrity: sha512-ILlv4k/3f6vfQ4OoP2AGvirOktlQ98ZEL1k9FaQjxa3L1abBgbuTDAdPOpvbGncC0BTVQrl+OM8xZGK6tWXt7g==}
     engines: {node: '>=6'}
     dev: false
 
@@ -1620,7 +1630,7 @@ packages:
     dev: false
 
   /binary/0.3.0:
-    resolution: {integrity: sha1-n2BVO8XOjDOG87VTz/R0Yq3sqnk=}
+    resolution: {integrity: sha512-D4H1y5KYwpJgK8wk1Cue5LLPgmwHKYSChkbspQg5JtVuR5ulGckxfR62H3AE9UDkdMC8yyXlqYihuz3Aqg2XZg==}
     dependencies:
       buffers: 0.1.1
       chainsaw: 0.1.0
@@ -1670,11 +1680,11 @@ packages:
       balanced-match: 1.0.0
     dev: false
 
-  /braces/3.0.2:
-    resolution: {integrity: sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==}
+  /braces/3.0.3:
+    resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
     dependencies:
-      fill-range: 7.0.1
+      fill-range: 7.1.1
     dev: false
 
   /browser-stdout/1.3.1:
@@ -1708,7 +1718,7 @@ packages:
     dev: false
 
   /buffers/0.1.1:
-    resolution: {integrity: sha1-skV5w77U1tOWru5tmorn9Ugqt7s=}
+    resolution: {integrity: sha512-9q/rDEGSb/Qsvv2qvzIzdluL5k7AaJOTrw23z9reQthrbF7is4CtlT0DXyO1oei2DCp4uojjzQ7igaSHp1kAEQ==}
     engines: {node: '>=0.2.0'}
     dev: false
 
@@ -1747,7 +1757,7 @@ packages:
     dependencies:
       clone-response: 1.0.3
       get-stream: 5.1.0
-      http-cache-semantics: 4.1.0
+      http-cache-semantics: 4.1.1
       keyv: 3.1.0
       lowercase-keys: 2.0.0
       normalize-url: 4.5.1
@@ -1821,7 +1831,7 @@ packages:
     dev: false
 
   /chainsaw/0.1.0:
-    resolution: {integrity: sha1-XqtQsor+WAdNDVgpE4iCi15fvJg=}
+    resolution: {integrity: sha512-75kWfWt6MEKNC8xYXIdRpDehRYY/tNSgwKaJq+dbbDcxORuVrrQ+SEHoWsniVn9XPYfP4gmdWIeDk/4YNp1rNQ==}
     dependencies:
       traverse: 0.3.9
     dev: false
@@ -1879,7 +1889,7 @@ packages:
     engines: {node: '>= 8.10.0'}
     dependencies:
       anymatch: 3.1.3
-      braces: 3.0.2
+      braces: 3.0.3
       glob-parent: 5.1.2
       is-binary-path: 2.1.0
       is-glob: 4.0.1
@@ -2528,7 +2538,7 @@ packages:
     dev: false
 
   /escape-string-regexp/1.0.5:
-    resolution: {integrity: sha1-G2HAViGQqN/2rjuyzwIAyhMLhtQ=}
+    resolution: {integrity: sha512-vbRorB5FUQWvla16U8R/qgaFIya2qGzwDrNmCZuYKrbdSUMG6I1ZCGQRefkRVhuOkIGVne7BQ35DSfo1qvJqFg==}
     engines: {node: '>=0.8.0'}
     dev: false
 
@@ -2841,7 +2851,7 @@ packages:
       '@nodelib/fs.walk': 1.2.4
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.5
+      micromatch: 4.0.8
     dev: false
 
   /fast-json-stable-stringify/2.1.0:
@@ -2869,7 +2879,7 @@ packages:
       reusify: 1.0.4
     dev: false
 
-  /fetch-mock/7.7.3:
+  /fetch-mock/7.7.3_node-fetch@2.6.7:
     resolution: {integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==}
     engines: {node: '>=4.0.0'}
     requiresBuild: true
@@ -2883,25 +2893,7 @@ packages:
       core-js: 2.6.11
       glob-to-regexp: 0.4.1
       lodash.isequal: 4.5.0
-      path-to-regexp: 2.4.0
-      whatwg-url: 6.5.0
-    dev: false
-
-  /fetch-mock/7.7.3_node-fetch@2.7.0:
-    resolution: {integrity: sha512-I4OkK90JFQnjH8/n3HDtWxH/I6D1wrxoAM2ri+nb444jpuH3RTcgvXx2el+G20KO873W727/66T7QhOvFxNHPg==}
-    engines: {node: '>=4.0.0'}
-    requiresBuild: true
-    peerDependencies:
-      node-fetch: '*'
-    peerDependenciesMeta:
-      node-fetch:
-        optional: true
-    dependencies:
-      babel-polyfill: 6.26.0
-      core-js: 2.6.11
-      glob-to-regexp: 0.4.1
-      lodash.isequal: 4.5.0
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       path-to-regexp: 2.4.0
       whatwg-url: 6.5.0
     dev: false
@@ -2932,8 +2924,8 @@ packages:
       merge-descriptors: 1.0.1
     dev: false
 
-  /fill-range/7.0.1:
-    resolution: {integrity: sha512-qOo9F+dMUmC2Lcb4BbVvnKJxTPjCm+RRpe4gDuGrzkL7mEVl/djYSu2OdQ2Pa302N4oqkSg9ir6jaLWJ2USVpQ==}
+  /fill-range/7.1.1:
+    resolution: {integrity: sha512-YsGpe3WHLK8ZYi4tWDg2Jy3ebRz2rXowDxnld4bkQB00cc/1Zw9AWnC0i9ztDJitivtQvaI9KaLyKrc+hBW0yg==}
     engines: {node: '>=8'}
     dependencies:
       to-regex-range: 5.0.1
@@ -3325,8 +3317,8 @@ packages:
     resolution: {integrity: sha512-a4u9BeERWGu/S8JiWEAQcdrg9v4QArtP9keViQjGMdff20fBdd8waotXaNmODqBe6uZ3Nafi7K/ho4gCQHV3Ig==}
     dev: false
 
-  /http-cache-semantics/4.1.0:
-    resolution: {integrity: sha512-carPklcUh7ROWRK7Cv27RPtdhYhUsela/ue5/jKzjegVvXDqM2ILE9Q2BGn9JZJh1g87cp56su/FgQSzcWS8cQ==}
+  /http-cache-semantics/4.1.1:
+    resolution: {integrity: sha512-er295DKPVsV82j5kw1Gjt+ADA/XYHsajl82cGNQG2eyoPkvgUhX+nDIyelzhIWbbsXP39EHcI6l5tYs2FYqYXQ==}
     dev: false
 
   /http-call/5.3.0:
@@ -4104,7 +4096,7 @@ packages:
     dependencies:
       agentkeepalive: 4.1.4
       cacache: 15.3.0
-      http-cache-semantics: 4.1.0
+      http-cache-semantics: 4.1.1
       http-proxy-agent: 4.0.1
       https-proxy-agent: 5.0.0
       is-lambda: 1.0.1
@@ -4155,11 +4147,11 @@ packages:
     engines: {node: '>= 8'}
     dev: false
 
-  /micromatch/4.0.5:
-    resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
+  /micromatch/4.0.8:
+    resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
     dependencies:
-      braces: 3.0.2
+      braces: 3.0.3
       picomatch: 2.3.1
     dev: false
 
@@ -4399,13 +4391,8 @@ packages:
     resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
     dev: false
 
-  /node-fetch/2.6.1:
-    resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
-    engines: {node: 4.x || >=6.0.0}
-    dev: false
-
-  /node-fetch/2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
+  /node-fetch/2.6.7:
+    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -5424,14 +5411,14 @@ packages:
     resolution: {integrity: sha512-4XaJ2zQdCzROZDivEVIDPkcQn8LMFSa8kj8Gxb/Lnwzv9A8VctNZ+lfivC/sV3ivW8ElJTERXZoPBRrZKkNKow==}
     engines: {node: '>=4'}
     dependencies:
-      ansi-regex: 3.0.0
+      ansi-regex: 3.0.1
     dev: false
 
   /strip-ansi/5.2.0:
     resolution: {integrity: sha512-DuRs1gKbBqsMKIZlrffwlug8MHkcnpjs5VPmL1PAh+mA30U0DTotfDZ0d2UUsXpPmPmMMJ6W773MaA3J+lbiWA==}
     engines: {node: '>=6'}
     dependencies:
-      ansi-regex: 4.1.0
+      ansi-regex: 4.1.1
     dev: false
 
   /strip-ansi/6.0.1:
@@ -5630,7 +5617,7 @@ packages:
     dev: false
 
   /traverse/0.3.9:
-    resolution: {integrity: sha1-cXuPIgzAu3tE5AUUwisui7xw2Lk=}
+    resolution: {integrity: sha512-iawgk0hLP3SxGKDfnDJf8wTz4p2qImnyihM5Hh/sGvQ3K37dPi/w8sRhdNIxYA1TwFwc5mDhIJq+O0RsvXBKdQ==}
     dev: false
 
   /treeify/1.1.0:
@@ -5994,8 +5981,8 @@ packages:
     engines: {node: '>= 10.0.0'}
     dev: false
 
-  /unzip-stream/0.3.1:
-    resolution: {integrity: sha512-RzaGXLNt+CW+T41h1zl6pGz3EaeVhYlK+rdAap+7DxW5kqsqePO8kRtWPaCiVqdhZc86EctSPVYNix30YOMzmw==}
+  /unzip-stream/0.3.4:
+    resolution: {integrity: sha512-PyofABPVv+d7fL7GOpusx7eRT9YETY2X04PhwbSipdj6bMxVCFJrr+nm0Mxqbf9hUiTin/UsnuFWBXlDZFy0Cw==}
     dependencies:
       binary: 0.3.0
       mkdirp: 0.5.1
@@ -6684,7 +6671,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-2+kvIXQN27pJEmYREhalT0TZWIPx62sqqrHl2PW980zdUUZkMebE5WbuKx3ZNtIVytPs6wk416Qe42PQ+Qnu6w==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-bqjXkYCjHaRRiwEXv3zb7QJ/E+6LZmvGQsZuFFDgoBFbzMVG6bWrEs2Eqz4F8s011uB/U+xJ3laNj8dX3+73ug==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -6715,7 +6702,7 @@ packages:
       lodash: 4.17.21
       mocha: 10.4.0
       nock: 11.9.1
-      node-fetch: 2.6.1
+      node-fetch: 2.6.7
       nyc: 15.1.0
       rimraf: 3.0.2
       sinon: 7.5.0
@@ -6729,6 +6716,7 @@ packages:
       - '@swc/core'
       - '@swc/wasm'
       - debug
+      - encoding
       - supports-color
     dev: false
 
@@ -6769,7 +6757,7 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-ff7YXvArCrOSmKEftq69C1Cqbk6jNrq8r4nIcHWc0Et4sjHXO0jlCe5k8dk8nai7SptjEML7hwYacjUMMHJ26w==, tarball: file:projects/bf-orchestrator.tgz}
+    resolution: {integrity: sha512-uvW7IhnZX6XAB9RWnyMiio01EBZ+aPlLn7Ih8G7opUachiyqFEH4y4vbcd3ljs9/w95dUZRZ9obPSaJW4hYvUQ==, tarball: file:projects/bf-orchestrator.tgz}
     id: file:projects/bf-orchestrator.tgz
     name: '@rush-temp/bf-orchestrator'
     version: 0.0.0
@@ -6795,7 +6783,7 @@ packages:
       ts-node: 10.9.2_ddii57xqjjbv7ze2nchd2hqrca
       tslib: 2.6.2
       typescript: 4.9.5
-      unzip-stream: 0.3.1
+      unzip-stream: 0.3.4
     transitivePeerDependencies:
       - '@swc/core'
       - '@swc/wasm'
@@ -6805,7 +6793,7 @@ packages:
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-Vq7sz4Ic+w68KduS2TIZZJgQYap0qQ8AwUw+yUWYIKku6fNK4yLOwg8Foelwa++ZEfOHQweWdfGPP5va4NvMRg==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-5wPkddcRaruwGaM6QMNH/89OvCy0nVkEE7p2bl/LduIs9MatQh7DE5ZlJ8Z/xQOUhJORkN+oXTuDVW15xXOn5A==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
@@ -6829,7 +6817,7 @@ packages:
       cli-table3: 0.5.1
       cli-ux: 5.6.7
       delay: 5.0.0
-      fetch-mock: 7.7.3_node-fetch@2.7.0
+      fetch-mock: 7.7.3_node-fetch@2.6.7
       fs-extra: 5.0.0
       get-stdin: 6.0.0
       globby: 11.1.0
@@ -6838,7 +6826,7 @@ packages:
       md5: 2.2.1
       mocha: 10.4.0
       nock: 11.9.1
-      node-fetch: 2.7.0
+      node-fetch: 2.6.7
       nyc: 15.1.0
       pascal-case: 2.0.1
       readline: 1.3.0
