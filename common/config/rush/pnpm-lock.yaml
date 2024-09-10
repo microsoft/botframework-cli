@@ -49,7 +49,7 @@ specifiers:
   argparse: ~1.0.10
   axios: ~1.6.0
   botbuilder-lg: 4.22.3
-  botframework-schema: ^4.22.3
+  botframework-schema: 4.22.3
   camelcase: ^4.1.0
   chai: ^4.4.1
   cli-table3: ^0.5.1
@@ -6195,7 +6195,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-3zx8RG5DclnB4PKqCIyhpWN8O+Vt82u2kkinzid0UKGxU5ycf5f6M4+Agor5M/V/u1wLLw6epOKmx1Hf85DeBg==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-BLyk5NhiHOxsm8Qcu4XQPsNs9R62oG5RGlZoDKfrQ9YlcEYVhngqq+BSwmc0pZX8JjlqS8tt4XFvtqvjFup27w==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
