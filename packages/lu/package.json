@@ -59,7 +59,7 @@
     "globby": "^11.0.4",
     "intercept-stdout": "^0.1.2",
     "lodash": "^4.17.21",
-    "semver": "^5.5.1",
+    "semver": "^7.6.3",
     "tslib": "^2.0.3"
   },
   "devDependencies": {
