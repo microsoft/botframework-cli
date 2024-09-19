@@ -45,7 +45,7 @@ specifiers:
   antlr4: 4.9.2
   applicationinsights: ^1.0.8
   argparse: ~1.0.10
-  axios: ~1.6.0
+  axios: ~1.7.5
   botbuilder-lg: 4.22.3
   botframework-schema: ^4.22.3
   camelcase: ^4.1.0
@@ -133,7 +133,7 @@ dependencies:
   antlr4: 4.9.2
   applicationinsights: 1.7.3
   argparse: 1.0.10
-  axios: 1.6.8_debug@4.1.1
+  axios: 1.7.7_debug@4.1.1
   botbuilder-lg: 4.22.3
   botframework-schema: 4.22.3
   camelcase: 4.1.0
@@ -1304,7 +1304,7 @@ packages:
       typescript:
         optional: true
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.7
       eslint-visitor-keys: 1.1.0
       glob: 7.1.6
       is-glob: 4.0.1
@@ -1605,8 +1605,8 @@ packages:
     resolution: {integrity: sha512-LEeSAWeh2Gfa2FtlQE1shxQ8zi5F9GHarrGKz08TMdODD5T4eH6BMsvtnhbWZ+XQn+Gb6om/917ucvRu7l7ukw==}
     dev: false
 
-  /axios/1.6.8_debug@4.1.1:
-    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
+  /axios/1.7.7_debug@4.1.1:
+    resolution: {integrity: sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==}
     dependencies:
       follow-redirects: 1.15.6_debug@4.1.1
       form-data: 4.0.0
@@ -4596,7 +4596,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       define-properties: 1.1.3
-      function-bind: 1.1.1
+      function-bind: 1.1.2
       has-symbols: 1.0.1
       object-keys: 1.1.1
     dev: false
@@ -5394,7 +5394,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       define-properties: 1.1.3
-      function-bind: 1.1.1
+      function-bind: 1.1.2
     dev: false
 
   /string.prototype.trimright/2.1.1:
@@ -5402,7 +5402,7 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       define-properties: 1.1.3
-      function-bind: 1.1.1
+      function-bind: 1.1.2
     dev: false
 
   /string_decoder/1.3.0:
@@ -6232,7 +6232,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 11.15.7
       '@types/rimraf': 2.0.3
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       botframework-schema: 4.22.3
       chai: 4.4.1
       chalk: 2.4.1
@@ -6396,7 +6396,7 @@ packages:
       '@types/seedrandom': 2.4.28
       '@types/xml2js': 0.4.5
       ajv: 6.12.6
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       chai: 4.4.1
       chalk: 2.4.2
       clone: 2.1.2
@@ -6456,7 +6456,7 @@ packages:
     dev: false
 
   file:projects/bf-lg-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-XcsbNlssf7Ky04v1uvCVKj35mP5jcLnFvTV3JhaMUJ7HafG2CzRSRPIzgLquypMUKiAamTRvZXW1eNpMXZgawA==, tarball: file:projects/bf-lg-cli.tgz}
+    resolution: {integrity: sha512-AVmzH6g+AqRc5WEdiSXVHhPfmPn5jh2YYLu2xjYfMyUjR9qVKr7Nj8UHzmEavg4e1y1nnWO3zCnRjejzUc7OuQ==, tarball: file:projects/bf-lg-cli.tgz}
     id: file:projects/bf-lg-cli.tgz
     name: '@rush-temp/bf-lg-cli'
     version: 0.0.0
@@ -6475,7 +6475,7 @@ packages:
       '@types/node-fetch': 2.5.4
       '@types/readline-sync': 1.4.3
       adaptive-expressions: 4.22.3
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       botbuilder-lg: 4.22.3
       chai: 4.4.1
       delay: 4.3.0
@@ -6515,7 +6515,7 @@ packages:
       '@types/node': 11.15.7
       '@types/node-fetch': 2.5.5
       antlr4: 4.9.2
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       chai: 4.4.1
       chalk: 2.4.1
       console-stream: 0.1.1
@@ -6568,7 +6568,7 @@ packages:
       '@types/node-fetch': 2.5.5
       '@types/rimraf': 2.0.3
       '@types/sinon': 7.5.2
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       chai: 4.4.1
       cli-ux: 5.3.3
       fs-extra: 8.1.0
@@ -6642,7 +6642,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/node': 11.15.7
       '@types/sinon': 9.0.11
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       chai: 4.4.1
       eslint: 5.16.0
       fast-text-encoding: 1.0.3
@@ -6684,7 +6684,7 @@ packages:
       '@types/mocha': 10.0.6
       '@types/nock': 11.1.0
       '@types/node': 11.15.7
-      axios: 1.6.8_debug@4.1.1
+      axios: 1.7.7_debug@4.1.1
       camelcase: 4.1.0
       chai: 4.4.1
       chalk: 2.4.1
