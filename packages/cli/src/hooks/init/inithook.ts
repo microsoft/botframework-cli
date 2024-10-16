@@ -37,7 +37,7 @@ const hook: Hook<'init'> = async function (opts) {
 
     const execPromise = (command: string) => {
       return new Promise<string>((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
+        exec(command, (error: any, stdout: any, stderr: any) => {
           if (error) {
             reject(error)
           } else if (stderr) {
