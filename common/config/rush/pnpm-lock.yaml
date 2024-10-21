@@ -2671,7 +2671,7 @@ packages:
       eslint-utils: 1.4.3
       ignore: 4.0.6
       minimatch: 3.1.2
-      resolve: 1.15.1
+      resolve: 1.22.8
       semver: 5.7.2
     dev: false
 
@@ -4785,8 +4785,8 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /path-parse/1.0.6:
-    resolution: {integrity: sha512-GSmOT2EbHrINBf9SR7CDELwlJ8AENk3Qn7OikK4nFYAu3Ote2+JYNVvkpAEQm3/TLNEJFD/xZJjzyxg3KBWOzw==}
+  /path-parse/1.0.7:
+    resolution: {integrity: sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==}
     dev: false
 
   /path-to-regexp/8.1.0:
@@ -4890,7 +4890,7 @@ packages:
     dependencies:
       fill-keys: 1.0.2
       module-not-found-error: 1.0.1
-      resolve: 1.15.1
+      resolve: 1.22.8
     dev: false
 
   /psl/1.7.0:
@@ -4935,7 +4935,7 @@ packages:
     engines: {iojs: '>= 1.0.0', node: '>= 0.12.0'}
     dependencies:
       lodash: 4.17.21
-      resolve: 1.15.1
+      resolve: 1.22.8
     dev: false
 
   /ramda/0.26.1:
@@ -5063,10 +5063,13 @@ packages:
     engines: {node: '>=8'}
     dev: false
 
-  /resolve/1.15.1:
-    resolution: {integrity: sha512-84oo6ZTtoTUpjgNEr5SJyzQhzL72gaRodsSfyxC/AXRvwu0Yse9H8eF9IpGo7b8YetZhlI6v7ZQ6bKBFV/6S7w==}
+  /resolve/1.22.8:
+    resolution: {integrity: sha512-oKWePCxqpd6FlLvGV1VU0x7bkPmmCNolxzjMf4NczoDnQcIWrAF+cPtZn5i6n+RfD2d9i0tzpKnG6Yk168yIyw==}
+    hasBin: true
     dependencies:
-      path-parse: 1.0.6
+      is-core-module: 2.15.1
+      path-parse: 1.0.7
+      supports-preserve-symlinks-flag: 1.0.0
     dev: false
 
   /responselike/1.0.2:
@@ -5506,6 +5509,11 @@ packages:
       supports-color: 7.2.0
     dev: false
 
+  /supports-preserve-symlinks-flag/1.0.0:
+    resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
+    engines: {node: '>= 0.4'}
+    dev: false
+
   /table/5.4.6:
     resolution: {integrity: sha512-wmEc8m4fjnob4gt5riFRtTu/6+4rSe12TpAELNSqHMfF3IqnA+CH37USM6/YR3qRZv7e56kAEAtd6nKZaxe0Ug==}
     engines: {node: '>=6.0.0'}
@@ -5762,7 +5770,7 @@ packages:
       js-yaml: 3.13.1
       minimatch: 3.1.2
       mkdirp: 0.5.1
-      resolve: 1.15.1
+      resolve: 1.22.8
       semver: 5.7.2
       tslib: 1.11.1
       tsutils: 2.29.0_typescript@4.9.5
@@ -6215,7 +6223,7 @@ packages:
     dev: false
 
   file:projects/bf-chatdown.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-y6C7SQvE7fqOiAl8VbaVOPAY9XWbQsrxIYObRMKriuXvqyeML9quOKRA2lzWj685GdfVjT4IVyg4d4MczJX5Tw==, tarball: file:projects/bf-chatdown.tgz}
+    resolution: {integrity: sha512-eE+xPOSKXSpqPnfB3ZXWkeU756ojEd00jr1lUMgCwjrrOaxRV52IOd50FHYNPUN/8rKRmUtnHFc1PpKyhdIUVA==, tarball: file:projects/bf-chatdown.tgz}
     id: file:projects/bf-chatdown.tgz
     name: '@rush-temp/bf-chatdown'
     version: 0.0.0
@@ -6373,7 +6381,7 @@ packages:
     dev: false
 
   file:projects/bf-dialog.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-5FLUJkIo8PGHtz1bmp1Z7jY3qQf2Sdb/oSL3pEgSW+gmuBHwOeBiNuk7Ovti/95jXn2fPdwx+A96TqAGeFsi5g==, tarball: file:projects/bf-dialog.tgz}
+    resolution: {integrity: sha512-oKO9HfIC5V89sdhfdirhnb1fFl7YievGLKVI/1Z7vqG4rPNQAI7E6p5UzxA/3H8GoLgpfR6WXkDlWAGHfxUbfw==, tarball: file:projects/bf-dialog.tgz}
     id: file:projects/bf-dialog.tgz
     name: '@rush-temp/bf-dialog'
     version: 0.0.0
@@ -6502,7 +6510,7 @@ packages:
     dev: false
 
   file:projects/bf-lu.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-BjnqDh+VrBfoBz9op1y0185KWlbe414lIwTwpVEzp5KqmHdEVNek7ejFaStZLB+XJZEtBO9pO283MbUJa6PEJw==, tarball: file:projects/bf-lu.tgz}
+    resolution: {integrity: sha512-trsulc30gLvsLGd/6twjomU7JqoW4Wb6g5HQYrOMyLr/PTUA6u/dWp2eutirT398iu7WXR15T10C4MmgO47ndQ==, tarball: file:projects/bf-lu.tgz}
     id: file:projects/bf-lu.tgz
     name: '@rush-temp/bf-lu'
     version: 0.0.0
@@ -6545,7 +6553,7 @@ packages:
     dev: false
 
   file:projects/bf-luis-cli.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-JcKAhrmZBbJywdqCUCrAyp9jTWimu7GGdaisIsOshPu5XxkDmjQHtRVXyPLfhtT3WFSgRaq6jyWi+vaxDjPNqg==, tarball: file:projects/bf-luis-cli.tgz}
+    resolution: {integrity: sha512-zlIqAgzpbkhkiuQS4sT70rZPJxTpGtw9ipQ1wvGkvQMgvCflavzK542oYMvUyVkJVhQO2XBD76FV7admRNWFxQ==, tarball: file:projects/bf-luis-cli.tgz}
     id: file:projects/bf-luis-cli.tgz
     name: '@rush-temp/bf-luis-cli'
     version: 0.0.0
@@ -6631,7 +6639,7 @@ packages:
     dev: false
 
   file:projects/bf-orchestrator.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-qs1PqHeG3uFhgEFtd2b7iWYUmVGL/2I79VyDxaAqQaEQKiGZJAcbsdgvB18l5aBMZqjKPlnWbqEr2KWOCcyKjQ==, tarball: file:projects/bf-orchestrator.tgz}
+    resolution: {integrity: sha512-wI6GcvkcJxiTpS/cGchwruFWXep/w9eaSXlJ53LRDpi7JF+SEDWFc5KETY8Lhp5sz9XSooWfAVhHPekbzhDKog==, tarball: file:projects/bf-orchestrator.tgz}
     id: file:projects/bf-orchestrator.tgz
     name: '@rush-temp/bf-orchestrator'
     version: 0.0.0
@@ -6667,7 +6675,7 @@ packages:
     dev: false
 
   file:projects/bf-qnamaker.tgz_debug@4.1.1:
-    resolution: {integrity: sha512-7xG2K3WlkPkOrRqQXcebq+39LnqQYXJc/JVvltwe+ctTnbvw7QGguqe1eoxWKV7mHrC9Oj+2Yb7ULB4g2HTtQw==, tarball: file:projects/bf-qnamaker.tgz}
+    resolution: {integrity: sha512-yNuHfuz9FagHCGf06+v/1EP5Tl9VjfwCfDst6CCxlI/f+3C+Zc5vJBCvkh+sjuqtq0MHqc0vwqfNrtFWy3lwhg==, tarball: file:projects/bf-qnamaker.tgz}
     id: file:projects/bf-qnamaker.tgz
     name: '@rush-temp/bf-qnamaker'
     version: 0.0.0
