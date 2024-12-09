@@ -201,10 +201,17 @@ packages:
       js-yaml: 3.13.1
     dev: false
 
+  /@azure/abort-controller/2.1.2:
+    resolution: {integrity: sha512-nBrLsEWm4J2u5LpAPjxADTlq3trDgVZZXHNKabeXZtpq3d3AbN/KGO82R87rdDz5/lYB024rtEf10/q0urNgsA==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      tslib: 2.6.2
+    dev: false
+
   /@azure/cognitiveservices-luis-authoring/4.0.0-preview.1:
     resolution: {integrity: sha512-HAhnf+57iHn1s7U5H7Rr51JZQINeJeT0uxtXr/Ksa6wbmZDOm+VApWnFwp/+QH1ZnW8S6Qf0roKtuTeEBjmBZA==}
     dependencies:
-      '@azure/ms-rest-js': 2.0.5
+      '@azure/ms-rest-js': 2.7.0
       tslib: 1.11.1
     transitivePeerDependencies:
       - encoding
@@ -213,33 +220,48 @@ packages:
   /@azure/cognitiveservices-luis-runtime/5.0.0:
     resolution: {integrity: sha512-HzrRVohaqHdbvxEmON2JThnjfPFpF4PW05RDg8sRS7KsfetjozgQhP57vjJH2ERkJlAWUkoQCtLboAswCWcZQA==}
     dependencies:
-      '@azure/ms-rest-js': 2.0.5
+      '@azure/ms-rest-js': 2.7.0
       tslib: 1.11.1
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@azure/core-auth/1.9.0:
+    resolution: {integrity: sha512-FPwHpZywuyasDSLMqJ6fhbOK3TqUdviZNF8OqRGA4W5Ewib2lEEZ+pBsYcBa88B2NGO/SEnYPGhyBqNlE8ilSw==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.1.2
+      '@azure/core-util': 1.11.0
+      tslib: 2.6.2
+    dev: false
+
+  /@azure/core-util/1.11.0:
+    resolution: {integrity: sha512-DxOSLua+NdpWoSqULhjDyAZTXFdP/LKkqtYuxxz1SCN289zk3OG8UOpnCQAz/tygyACBtWp/BoO72ptK7msY8g==}
+    engines: {node: '>=18.0.0'}
+    dependencies:
+      '@azure/abort-controller': 2.1.2
+      tslib: 2.6.2
     dev: false
 
   /@azure/ms-rest-azure-js/2.0.1:
     resolution: {integrity: sha512-5e+A710O7gRFISoV4KI/ZyLQbKmjXxQZ1L8Z/sx7jSUQqmswjTnN4yyIZxs5JzfLVkobU0rXxbi5/LVzaI8QXQ==}
     dependencies:
-      '@azure/ms-rest-js': 2.0.5
+      '@azure/ms-rest-js': 2.7.0
       tslib: 1.11.1
     transitivePeerDependencies:
       - encoding
     dev: false
 
-  /@azure/ms-rest-js/2.0.5:
-    resolution: {integrity: sha512-zj9/JOSsbaJleZz9k9RXKJMBPA2NBUgsus5iZxGlhK+pDeb8M2ps+lkKhJSwLnlTUj5CvrcN3PZDF2b2nSYCQQ==}
+  /@azure/ms-rest-js/2.7.0:
+    resolution: {integrity: sha512-ngbzWbqF+NmztDOpLBVDxYM+XLcUj7nKhxGbSU9WtIsXfRB//cf2ZbAG5HkOrhU9/wd/ORRB6lM/d69RKVjiyA==}
     dependencies:
-      '@types/node-fetch': 2.5.5
-      '@types/tunnel': 0.0.1
+      '@azure/core-auth': 1.9.0
       abort-controller: 3.0.0
       form-data: 2.5.1
       node-fetch: 2.6.7
-      tough-cookie: 3.0.1
       tslib: 1.11.1
       tunnel: 0.0.6
-      uuid: 3.4.0
+      uuid: 8.3.2
       xml2js: 0.5.0
     transitivePeerDependencies:
       - encoding
@@ -1205,12 +1227,6 @@ packages:
 
   /@types/supports-color/5.3.0:
     resolution: {integrity: sha512-WxwTXnHTIsk7srax1icjLgX+6w1MUAJbhyCpRP/45paEElsPDQUJZDgr1UpKuL2S3Tb+ZyX9MjWwmcSD4bUoOQ==}
-    dev: false
-
-  /@types/tunnel/0.0.1:
-    resolution: {integrity: sha512-AOqu6bQu5MSWwYvehMXLukFHnupHrpZ8nvgae5Ggie9UwzDR1CCwoXgSSWNZJuyOlCdfdsWMA5F2LlmvyoTv8A==}
-    dependencies:
-      '@types/node': 13.9.0
     dev: false
 
   /@types/xml2js/0.4.5:
@@ -3448,11 +3464,6 @@ packages:
       sprintf-js: 1.1.3
     dev: false
 
-  /ip-regex/2.1.0:
-    resolution: {integrity: sha1-+ni/XS5pE8kRzp+BnuUUa7bYROk=}
-    engines: {node: '>=4'}
-    dev: false
-
   /is-accessor-descriptor/1.0.0:
     resolution: {integrity: sha512-m5hnHTkcVsPfqx3AKlyttIPb7J+XykHvJP2B9bZDjlhLIoEq4XoK64Vg7boZlVWYK6LUY94dYPEE7Lh0ZkZKcQ==}
     engines: {node: '>=0.10.0'}
@@ -4732,10 +4743,6 @@ packages:
       resolve: 1.22.8
     dev: false
 
-  /psl/1.7.0:
-    resolution: {integrity: sha512-5NsSEDv8zY70ScRnOTn7bK7eanl2MvFrOrS/R6x+dBt5g1ghnj9Zv90kO8GwT8gxcu2ANyFprnFYB85IogIJOQ==}
-    dev: false
-
   /pump/3.0.0:
     resolution: {integrity: sha512-LwZy+p3SFs1Pytd/jYct4wpv49HiYCqd9Rlc5ZVdk0V+8Yzv6jR5Blk3TRmPL1ft69TxP0IMZGJ+WPFU2BFhww==}
     dependencies:
@@ -5419,15 +5426,6 @@ packages:
     engines: {node: '>=8.0'}
     dependencies:
       is-number: 7.0.0
-    dev: false
-
-  /tough-cookie/3.0.1:
-    resolution: {integrity: sha512-yQyJ0u4pZsv9D4clxO69OEjLWYw+jbgspjTue4lTQZLfV0c5l1VmK2y1JK8E9ahdpltPOaAThPcp5nKPUgSnsg==}
-    engines: {node: '>=6'}
-    dependencies:
-      ip-regex: 2.1.0
-      psl: 1.7.0
-      punycode: 2.1.1
     dev: false
 
   /tr46/0.0.3:
