@@ -8,7 +8,7 @@ import cli from 'cli-ux'
 import * as fs from 'fs-extra'
 const chalk = require('chalk')
 const path = require('path')
-const latestVersion = require('latest-version')
+const {exec} = require('child_process')
 const semver = require('semver')
 const isCI = require('is-ci')
 
@@ -35,12 +35,30 @@ const hook: Hook<'init'> = async function (opts) {
       }
     }
 
+    const execPromise = (command: string) => {
+      return new Promise<string>((resolve, reject) => {
+        exec(command, (error: any, stdout: any, stderr: any) => {
+          if (error) {
+            reject(error)
+          } else if (stderr) {
+            reject(new Error(stderr))
+          } else {
+            resolve(stdout.trim())
+          }
+        })
+      })
+    }
+
     const checkForUpdate = async () => {
-      const latest = await latestVersion(opts.config.name, {version: `>${opts.config.version}`})
-      if (semver.gt(latest, opts.config.version)) {
-        this.log('Update available ')
-        this.log('     Run ')
-        this.log(`npm i -g ${opts.config.name} `)
+      try {
+        const latest = await execPromise(`npm view ${opts.config.name} version`)
+        if (semver.gt(latest, opts.config.version)) {
+          this.log('Update available')
+          this.log('     Run ')
+          this.log(`npm i -g ${opts.config.name}`)
+        }
+      } catch (error) {
+        this.log('Error checking for update:', error.message)
       }
     }
 
@@ -59,16 +77,16 @@ const hook: Hook<'init'> = async function (opts) {
     // if there is a timestamp in config and it's not from today, check for updates
     const lastCheck = userConfig.lastVersionCheck ? new Date(userConfig.lastVersionCheck) : null
     if ((opts.id === '-v'
-        || opts.id === '--version')
-        && !isToday(lastCheck, curDateTime)) {
+      || opts.id === '--version')
+      && !isToday(lastCheck, curDateTime)) {
       await checkForUpdate()
       await updateUserConfig(curDateTime)
     }
 
-  /* tslint:disable:no-unused */
+    /* tslint:disable:no-unused */
   } catch (err) {
-      // swallow the exception; we don't want to crash the app
-      // on a failed attempt to check version
+    // swallow the exception; we don't want to crash the app
+    // on a failed attempt to check version
   }
 
   // Ensure telemetry is set
@@ -95,7 +113,7 @@ const hook: Hook<'init'> = async function (opts) {
     }
 
     this.config.pjson.telemetry = userConfig.telemetry === null ? false : userConfig.telemetry
-  /* tslint:disable:no-unused */
+    /* tslint:disable:no-unused */
 
   } catch (err) {
     this.config.pjson.telemetry = false
