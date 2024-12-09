@@ -1,4 +1,7 @@
+# PRE-ARCHIVE NOTICE: 
+This project is no longer actively maintained and will be archived in January of 2025.  Functions of this project were superseded by [Microsoft Copilot Studio](https://aka.ms/copilotstudio),
 
+Archived projects are still available for use by developers, however they will not be actively maintained or serviced by Microsoft. 
 
 ![Bot Framework CLI](./media/BFCLI-header.png)
 
