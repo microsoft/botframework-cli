@@ -68,7 +68,6 @@ specifiers:
   is-ci: 2.0.0
   json-ptr: ~3.1.0
   json-schema-merge-allof: ~0.7.0
-  latest-version: 5.1.0
   lodash: ^4.17.21
   md5: ^2.2.1
   mime-types: ^2.1.18
@@ -156,7 +155,6 @@ dependencies:
   is-ci: 2.0.0
   json-ptr: 3.1.1
   json-schema-merge-allof: 0.7.0
-  latest-version: 5.1.0
   lodash: 4.17.21
   md5: 2.2.1
   mime-types: 2.1.26
@@ -3261,23 +3259,6 @@ packages:
       slash: 3.0.0
     dev: false
 
-  /got/9.6.0:
-    resolution: {integrity: sha512-R7eWptXuGYxwijs0eV+v3o6+XH1IqVK8dJOEecQfTmkncw9AV4dcw/Dhxi8MdlqPthxxpZyizMzyg8RTmEsG+Q==}
-    engines: {node: '>=8.6'}
-    dependencies:
-      '@sindresorhus/is': 0.14.0
-      '@szmarczak/http-timer': 1.1.2
-      cacheable-request: 6.1.0
-      decompress-response: 3.3.0
-      duplexer3: 0.1.5
-      get-stream: 4.1.0
-      lowercase-keys: 1.0.1
-      mimic-response: 1.0.1
-      p-cancelable: 1.1.0
-      to-readable-stream: 1.0.0
-      url-parse-lax: 3.0.0
-    dev: false
-
   /graceful-fs/4.2.10:
     resolution: {integrity: sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==}
     dev: false
@@ -3919,13 +3900,6 @@ packages:
   /kind-of/6.0.3:
     resolution: {integrity: sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==}
     engines: {node: '>=0.10.0'}
-    dev: false
-
-  /latest-version/5.1.0:
-    resolution: {integrity: sha512-weT+r0kTkRQdCdYCNtkMwWXQTMEswKrFBkm4ckQOMVhhqhIMI1UT2hMj+1iigIhgSZm5gTmrRXBNoGUgaTY1xA==}
-    engines: {node: '>=8'}
-    dependencies:
-      package-json: 6.5.0
     dev: false
 
   /levn/0.3.0:
@@ -4679,16 +4653,6 @@ packages:
       hasha: 5.2.2
       lodash.flattendeep: 4.4.0
       release-zalgo: 1.0.0
-    dev: false
-
-  /package-json/6.5.0:
-    resolution: {integrity: sha512-k3bdm2n25tkyxcjSKzB5x8kfVxlMdgsbPr0GkZcwHsLpba6cBjqCt1KlcChKEvxHIcTB1FVMuwoijZ26xex5MQ==}
-    engines: {node: '>=8'}
-    dependencies:
-      got: 9.6.0
-      registry-auth-token: 4.2.2
-      registry-url: 5.1.0
-      semver: 6.3.1
     dev: false
 
   /parent-module/1.0.1:
@@ -6219,7 +6183,6 @@ packages:
       globby: 11.1.0
       https-proxy-agent: 5.0.0
       intercept-stdout: 0.1.2
-      latest-version: 5.1.0
       mime-types: 2.1.26
       minimist: 1.2.8
       mocha: 10.4.0
@@ -6722,7 +6685,6 @@ packages:
       fs-extra: 7.0.1
       globby: 11.1.0
       is-ci: 2.0.0
-      latest-version: 5.1.0
       mocha: 10.4.0
       nock: 13.5.5
       nyc: 15.1.0
